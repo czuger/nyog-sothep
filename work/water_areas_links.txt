@@ -12,7 +12,7 @@ gulf_of_maine
 
 atlantic_ocean
 westerly
-narraganstett_pier
+narragansett_pier
 apponaug
 bristol
 newport
