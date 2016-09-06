@@ -1,24 +1,3 @@
-# README
-
-This README would normally document whatever steps are necessary to get the
-application up and running.
-
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+#Implementing Nyog'Sothep
+ 
+* see : http://laurent36.typepad.com/blog/2007/12/les-encarts-de-jeux-et-strat%C3%A9gie-n-51-%C3%A0-60.html
