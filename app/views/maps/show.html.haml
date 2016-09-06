@@ -1,0 +1,9 @@
+#board
+  #professor{ style:"top:#{@prof_zone.y-17}px;left:#{@prof_zone.x-17}px;transform:rotate(#{rand(-5..5)}deg);" }
+
+  - @prof_destinations.each do |destination|
+    = link_to "/maps?prof_zone_id=#{destination.id}&prof_zone_class=#{destination.class}", data: { 'turbolinks-scroll' => false } do
+      - if destination.class == WWaterArea
+        .dest-water{ style:"top:#{destination.y-13}px;left:#{destination.x-17-9}px" }
+      - else
+        .dest-road{ style:"top:#{destination.y-13}px;left:#{destination.x-17-9}px" }
