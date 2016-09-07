@@ -34,6 +34,6 @@ atlantic_ocean
 cape_cod_bay
 plymouth
 provincetown
-nantucket_sound
+gulf_of_maine
 massachusetts_bay
 

@@ -56,7 +56,7 @@ pascoag true
 pascoag
 
 woonsocket
-milford
+milford true
 dedham true
 providence
 attleboro
@@ -115,7 +115,7 @@ westboro
 ashland
 
 dedham
-soughton
+stoughton
 
 nashua
 dunwich true

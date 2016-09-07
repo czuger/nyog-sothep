@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160906175206) do
+ActiveRecord::Schema.define(version: 20160907124113) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -25,6 +25,23 @@ ActiveRecord::Schema.define(version: 20160906175206) do
     t.integer  "w_water_area_id"
     t.index ["code_name"], name: "index_c_cities_on_code_name", unique: true, using: :btree
     t.index ["w_water_area_id"], name: "index_c_cities_on_w_water_area_id", using: :btree
+  end
+
+  create_table "e_event_logs", force: :cascade do |t|
+    t.string   "event"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "p_positions", force: :cascade do |t|
+    t.string   "code_name",                       null: false
+    t.string   "l_location_type",                 null: false
+    t.integer  "l_location_id",                   null: false
+    t.boolean  "current",         default: false, null: false
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
+    t.index ["current"], name: "index_p_positions_on_current", using: :btree
+    t.index ["l_location_type", "l_location_id"], name: "index_p_positions_on_l_location_type_and_l_location_id", using: :btree
   end
 
   create_table "r_roads", force: :cascade do |t|

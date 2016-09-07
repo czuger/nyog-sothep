@@ -4,7 +4,7 @@
 
 # TODO : need to compute
 ready = ->
-  lowest_elem = $( '#professor' )
+  lowest_elem = $( '#token' )
   lowest_position = lowest_elem.position().top
 
   for elem in $( '.dest-road' )
