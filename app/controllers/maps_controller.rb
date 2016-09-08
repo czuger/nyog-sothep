@@ -2,12 +2,14 @@ require 'pp'
 
 class MapsController < ApplicationController
 
-  include GameLogic::BorderCrossing
+  include GameLogic::Movement
+  include GameLogic::Turn
+  include GameLogic::Events
 
   def show
 
-    @pos = PPosition.find_by( current: true )
-    @zone = @pos.l_location
+    @current_investigator = IInvestigator.find_by( current: true )
+    @zone = @current_investigator.current_location
 
     @events = EEventLog.all.order( 'id DESC' )
 
@@ -24,29 +26,18 @@ class MapsController < ApplicationController
 
   def update
     if params['zone_id'] && params['zone_class']
-      zone = params['zone_class'].constantize.find( params['zone_id'] )
+      dest_loc = params['zone_class'].constantize.find( params['zone_id'] )
     else
       raise "Zone error : #{params.inspect}"
     end
 
-    pos = PPosition.find_by( current: true )
-    current_loc = pos.l_location
-    pos.l_location = dest_loc = zone
-
-    # Select next pos
-    next_pos = PPosition.where( 'id > ?', pos.id ).order( :id ).first
-    next_pos = PPosition.order( :id ).first unless next_pos
-
     ActiveRecord::Base.transaction do
 
-      pos.update_attribute( :current, false )
-      next_pos.update_attribute( :current, true )
-
-      # Create events
-      event = "#{pos.code_name.humanize} move to #{zone.code_name.humanize}"
-      EEventLog.create!( event: event )
-
-      check_cross_border( current_loc, dest_loc, pos )
+      set_current_investigator
+      if move_current_investigator( dest_loc )
+        roll_event
+      end
+      set_next_investigator
 
       EEventLog.flush_old_events
     end

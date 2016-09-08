@@ -1,17 +1,32 @@
 namespace :load_data do
 
-  desc 'Populate board'
-  task :populate_board => :environment do
-    tokens = [ :professor, :inv1, :inv2, :inv3, :inv4, :inv5, :inv6 ]
-    tokens.each do |token|
-      p = PPosition.where( code_name: token ).first_or_initialize
+  desc 'Create investigators'
+  task :create_investigators => :environment do
+    investigators = %w( poirot hercule hastings le_capitaine sandy lemon )
+    investigators.each do |investigator|
+      puts 'Creating / updating ' + investigator.humanize
+      i = IInvestigator.where( code_name: investigator ).first_or_initialize
       c = CCity.all.sample
-      p.l_location = c
-      p.current = false
-      p.save!
+      i.current_location = c
+      i.current = false
+      i.san = 1.upto(3).map{ |e| rand( 1..6 ) }.reduce(&:+)
+      i.save!
     end
-    PPosition.first.update_attribute( :current, true )
+    IInvestigator.first.update_attribute( :current, true )
   end
+  #
+  # desc 'Populate board'
+  # task :populate_board => :environment do
+  #   tokens = [ :professor, :inv1, :inv2, :inv3, :inv4, :inv5, :inv6 ]
+  #   tokens.each do |token|
+  #     p = PPosition.where( code_name: token ).first_or_initialize
+  #     c = CCity.all.sample
+  #     p.l_location = c
+  #     p.current = false
+  #     p.save!
+  #   end
+  #   PPosition.first.update_attribute( :current, true )
+  # end
 
   desc 'Load all'
   task :all => [ :environment, :cities, :roads, :water_areas, :water_links ]

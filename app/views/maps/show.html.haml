@@ -1,7 +1,7 @@
 #board
 
   #token{ style: token_style }
-    = image_tag( "tokens/#{@pos.code_name}.png" )
+    = image_tag( "tokens/#{@current_investigator.code_name}.png" )
 
   - @aval_destinations.each do |destination|
     = link_to "/maps?zone_id=#{destination.id}&zone_class=#{destination.class}", method: :put do
@@ -10,7 +10,13 @@
       - else
         .dest-road{ style:"top:#{destination.y-13}px;left:#{destination.x-17-9}px" }
 
-#events
-  %ul
-    - @events.each do |event|
-      %li= event.event
+#infos
+  #investigator
+    = @current_investigator.code_name.humanize
+    %br
+    - %w( weapon sign medaillon spell ).each do |elem|
+      %div{ id: icon_div_id( elem ) }
+  #events
+    %ul
+      - @events.each do |event|
+        %li= event.event

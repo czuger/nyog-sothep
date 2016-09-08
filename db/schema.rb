@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160907124113) do
+ActiveRecord::Schema.define(version: 20160908143137) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -31,6 +31,22 @@ ActiveRecord::Schema.define(version: 20160907124113) do
     t.string   "event"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "i_investigators", force: :cascade do |t|
+    t.string   "code_name",                             null: false
+    t.integer  "san",                                   null: false
+    t.boolean  "delayed",               default: false, null: false
+    t.boolean  "weapon",                default: false, null: false
+    t.boolean  "medaillon",             default: false, null: false
+    t.boolean  "sign",                  default: false, null: false
+    t.boolean  "spell",                 default: false, null: false
+    t.boolean  "current",               default: false, null: false
+    t.string   "current_location_type"
+    t.integer  "current_location_id"
+    t.datetime "created_at",                            null: false
+    t.datetime "updated_at",                            null: false
+    t.index ["current"], name: "index_i_investigators_on_current", using: :btree
   end
 
   create_table "p_positions", force: :cascade do |t|

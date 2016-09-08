@@ -2,11 +2,48 @@
 // They will automatically be included in application.css.
 // You can use Sass here: http://sass-lang.com/
 
-#events
+#infos
   float: left
   position: fixed
   left: 1250px
   border: solid 1px saddlebrown
+
+#investigator
+  height: 100px
+
+#weapon-enabled
+  float: left
+  height: 86px
+  width: 86px
+  background-image: url( 'tokens/weapon.jpg' )
+
+#weapon-disabled
+  @extend #weapon-enabled
+  opacity: 0.10
+
+#sign-disabled
+  @extend #weapon-disabled
+  background-image: url( 'tokens/sign.jpg' )
+
+#medaillon-disabled
+  @extend #weapon-disabled
+  background-image: url( 'tokens/medaillon.jpg' )
+
+#spell-disabled
+  @extend #weapon-disabled
+  background-image: url( 'tokens/nyogsothep.jpg' )
+
+#sign-enabled
+  @extend #weapon-enabled
+  background-image: url( 'tokens/sign.jpg' )
+
+#medaillon-enabled
+  @extend #weapon-enabled
+  background-image: url( 'tokens/medaillon.jpg' )
+
+#spell-enabled
+  @extend #weapon-enabled
+  background-image: url( 'tokens/nyogsothep.jpg' )
 
 #board
   width: 1205px
