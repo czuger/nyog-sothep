@@ -1,7 +1,14 @@
 module GameLogic::Events
 
+  include GameLogic::Dices
+
   def roll_event
-    GameLogicM::Event.send( "e#{ rand( 1..6 ) }", @current_investigator )
+    roll = d6
+    roll += d6 if @current_investigator.sign
+    roll += d6 if @current_investigator.sign && @current_investigator.medaillon
+    if @current_investigator.current_location.class == CCity
+      GameLogicM::EventGround.send( "e#{roll}", @current_investigator )
+    end
   end
 
 end

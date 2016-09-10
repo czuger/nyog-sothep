@@ -6,8 +6,10 @@ module GameLogic::Movement
 
     unless cross_border_forbidden( current_loc, dest_loc )
       @current_investigator.current_location = dest_loc
-      event = "#{@current_investigator.code_name.humanize} se déplace à #{dest_loc.code_name.humanize}"
-      EEventLog.create!( event: event )
+
+      translated_dest_loc = I18n.t( "locations.#{dest_loc.code_name}", :default => "à #{dest_loc.code_name.humanize}" )
+      event = "#{I18n.t( "investigators.#{@current_investigator.code_name}" )} se déplace #{translated_dest_loc}"
+      EEventLog.log( event )
       return true
     end
 
@@ -31,9 +33,10 @@ module GameLogic::Movement
 
       if road.border
         dice = rand( 1 .. 6 )
-        if dice <= 2
-          event = "#{@current_investigator.code_name.humanize} a été empêché de passer la frontière par une patrouille."
-          EEventLog.create!( event: event )
+        if dice >= 5
+          inv_name = I18n.t( "investigators.#{@current_investigator.code_name}" )
+          event = I18n.t( "border_control.#{@current_investigator.gender}", investigator_name: inv_name )
+          EEventLog.log( event )
           border_forbidden = true
         end
       end

@@ -54,6 +54,8 @@ oxford
 pascoag true
 
 pascoag
+woonsocket
+oxford
 
 woonsocket
 milford true

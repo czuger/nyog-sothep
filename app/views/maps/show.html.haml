@@ -12,11 +12,20 @@
 
 #infos
   #investigator
-    = @current_investigator.code_name.humanize
-    %br
-    - %w( weapon sign medaillon spell ).each do |elem|
-      %div{ id: icon_div_id( elem ) }
+    #investigator-gen
+      = t( "investigators.#{@current_investigator.code_name}" )
+      %br
+      = "SAN : #{@current_investigator.san}"
+    #investigator-actions
+      = link_to t( '.go_psy' ), go_psy_actions_url, method: :patch
+    #investigator-items
+      - %w( weapon sign medaillon spell ).each do |elem|
+        %div{ id: icon_div_id( elem ) }
+  %hr
   #events
     %ul
       - @events.each do |event|
-        %li= event.event
+        - if event.event == '*'
+          %hr.event_separator
+        - else
+          %li= event.event

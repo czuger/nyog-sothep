@@ -11,7 +11,7 @@ class MapsController < ApplicationController
     @current_investigator = IInvestigator.find_by( current: true )
     @zone = @current_investigator.current_location
 
-    @events = EEventLog.all.order( 'id DESC' )
+    @events = EEventLog.all.order( 'logset DESC, id ASC' )
 
     @aval_destinations = []
     if @zone.class == CCity
@@ -33,13 +33,14 @@ class MapsController < ApplicationController
 
     ActiveRecord::Base.transaction do
 
+      EEventLog.start_event_block
+
       set_current_investigator
       if move_current_investigator( dest_loc )
         roll_event
       end
       set_next_investigator
 
-      EEventLog.flush_old_events
     end
 
     redirect_to maps_url

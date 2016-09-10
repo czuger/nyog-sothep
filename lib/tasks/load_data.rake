@@ -3,12 +3,14 @@ namespace :load_data do
   desc 'Create investigators'
   task :create_investigators => :environment do
     investigators = %w( poirot hercule hastings le_capitaine sandy lemon )
-    investigators.each do |investigator|
+    gender = %w( m m m m f f )
+    investigators.each_with_index do |investigator, index|
       puts 'Creating / updating ' + investigator.humanize
       i = IInvestigator.where( code_name: investigator ).first_or_initialize
       c = CCity.all.sample
       i.current_location = c
       i.current = false
+      i.gender = gender[index]
       i.san = 1.upto(3).map{ |e| rand( 1..6 ) }.reduce(&:+)
       i.save!
     end
