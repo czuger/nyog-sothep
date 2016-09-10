@@ -13,6 +13,9 @@ class MapsController < ApplicationController
 
     @events = EEventLog.all.order( 'logset DESC, id ASC' )
 
+    @prof = PProfessor.first
+    @prof_zone = @prof.current_location
+
     @aval_destinations = []
     if @zone.class == CCity
       @aval_destinations += @zone.dest_cities

@@ -7,7 +7,7 @@ namespace :load_data do
     investigators.each_with_index do |investigator, index|
       puts 'Creating / updating ' + investigator.humanize
       i = IInvestigator.where( code_name: investigator ).first_or_initialize
-      c = CCity.all.sample
+      c = WWaterArea.find_by( code_name: :nantucket_sound )
       i.current_location = c
       i.current = false
       i.gender = gender[index]
@@ -15,6 +15,9 @@ namespace :load_data do
       i.save!
     end
     IInvestigator.first.update_attribute( :current, true )
+
+    PProfessor.create!( hp: 14, current_location: CCity.all.sample )
+
   end
   #
   # desc 'Populate board'

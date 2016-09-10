@@ -3,6 +3,9 @@
   #token{ style: token_style }
     = image_tag( "tokens/#{@current_investigator.code_name}.png" )
 
+  #prof{ style: prof_token_style }
+    = image_tag( 'tokens/professor.png' )
+
   - @aval_destinations.each do |destination|
     = link_to "/maps?zone_id=#{destination.id}&zone_class=#{destination.class}", method: :put do
       - if destination.class == WWaterArea

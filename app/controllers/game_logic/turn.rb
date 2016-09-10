@@ -26,7 +26,27 @@ module GameLogic::Turn
 
   def cycle_investigators
     next_investigator = IInvestigator.where( 'id > ?', @current_investigator.id ).order( :id ).first
-    next_investigator = IInvestigator.order( :id ).first unless next_investigator
+    unless next_investigator
+
+      # Move professor.
+      prof = PProfessor.first
+      loc = prof.current_location
+      dests = []
+      if loc.class == CCity
+        dests += loc.dest_cities
+        dests << loc.w_water_area
+      else
+        dests += loc.ports
+        dests += loc.connected_w_water_areas
+      end
+      puts dests.inspect
+
+      prof.current_location = dests.compact.sample
+      prof.save!
+      # EEventLog.log( "Prof se déplace : #{prof.current_location.inspect}" )
+
+      next_investigator = IInvestigator.order( :id ).first unless next_investigator
+    end
 
     @current_investigator.update_attribute( :current, false )
     next_investigator.update_attribute( :current, true )
