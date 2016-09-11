@@ -31,7 +31,7 @@ module GameLogic
 
     def table2_e6( _ )
       EEventLog.log( I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) )
-      PProfPosition.set_random_positions( @professor.current_loation, 3 )
+      PProfPosition.set_random_positions( @professor.current_location, 3 )
     end
 
     def table2_e7( investigator )
@@ -48,7 +48,7 @@ module GameLogic
 
     def table2_e9( _ )
       EEventLog.log( I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) )
-      PProfPosition.set_random_positions( @professor.current_loation, 2 )
+      PProfPosition.set_random_positions( @professor.current_location, 2 )
     end
 
     def table2_e10( investigator )
