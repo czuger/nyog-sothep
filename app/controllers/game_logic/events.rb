@@ -10,11 +10,16 @@ module GameLogic::Events
     roll += d6 if @current_investigator.sign && @current_investigator.medaillon
     if @current_investigator.current_location.class == CCity
       if @current_investigator.event_table == 1
-        GameLogicM::EventGroundA.send( "table#{@current_investigator.event_table}_e#{roll}", @current_investigator )
+        send( "table#{@current_investigator.event_table}_e#{roll}", @current_investigator )
       elsif @current_investigator.event_table == 2
-        GameLogicM::EventGroundB.send( "table#{@current_investigator.event_table}_e#{roll}", @current_investigator )
+        send( "table#{@current_investigator.event_table}_e#{roll}", @current_investigator )
       end
     end
+  end
+
+  def method_missing( method_name, _ )
+    super unless method_name =~ /table.*/
+    EEventLog.log( 'Evenement non implémenté' )
   end
 
 end

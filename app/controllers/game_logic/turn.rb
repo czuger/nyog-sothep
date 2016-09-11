@@ -39,17 +39,7 @@ module GameLogic::Turn
       # Move professor.
       prof = PProfessor.first
       loc = prof.current_location
-      dests = []
-      if loc.class == CCity
-        dests += loc.dest_cities
-        dests << loc.w_water_area
-      else
-        dests += loc.ports
-        dests += loc.connected_w_water_areas
-      end
-      puts dests.inspect
-
-      prof.current_location = dests.compact.sample
+      prof.current_location = loc.destinations.sample
       prof.save!
       # EEventLog.log( "Prof se déplace : #{prof.current_location.inspect}" )
 

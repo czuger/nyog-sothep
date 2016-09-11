@@ -4,4 +4,9 @@ class CCity < ApplicationRecord
   has_many :dest_cities, through: :outgoing_r_roads
 
   has_many :people, as: :l_location
+
+  def destinations
+    ( dest_cities + [ loc.w_water_area ] ).comact
+  end
+
 end
