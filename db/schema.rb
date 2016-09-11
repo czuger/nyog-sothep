@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160911093716) do
+ActiveRecord::Schema.define(version: 20160911162117) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -52,15 +52,26 @@ ActiveRecord::Schema.define(version: 20160911093716) do
     t.index ["current"], name: "index_i_investigators_on_current", using: :btree
   end
 
-  create_table "p_positions", force: :cascade do |t|
-    t.string   "code_name",                       null: false
-    t.string   "l_location_type",                 null: false
-    t.integer  "l_location_id",                   null: false
-    t.boolean  "current",         default: false, null: false
-    t.datetime "created_at",                      null: false
-    t.datetime "updated_at",                      null: false
-    t.index ["current"], name: "index_p_positions_on_current", using: :btree
-    t.index ["l_location_type", "l_location_id"], name: "index_p_positions_on_l_location_type_and_l_location_id", using: :btree
+  create_table "m_monsters", force: :cascade do |t|
+    t.string   "code_name",  null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "p_monster_positions", force: :cascade do |t|
+    t.string   "location_type",                 null: false
+    t.integer  "location_id",                   null: false
+    t.string   "code_name",                     null: false
+    t.boolean  "discovered",    default: false, null: false
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
+    t.index ["location_type", "location_id"], name: "index_p_monster_positions_on_location_type_and_location_id", using: :btree
+  end
+
+  create_table "p_monsters", force: :cascade do |t|
+    t.string   "code_name",  null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "p_prof_positions", force: :cascade do |t|

@@ -24,6 +24,7 @@ class MapsController < ApplicationController
     @prof_zone = @prof.current_location
 
     @prof_positions = PProfPosition.all
+    @monsters_positions = PMonsterPosition.all
 
     @aval_destinations = []
     if @zone.class == CCity

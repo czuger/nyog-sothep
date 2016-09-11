@@ -1,0 +1,2 @@
+class MMonster < ApplicationRecord
+end

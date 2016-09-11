@@ -8,6 +8,10 @@ module MapsHelper
     "top:#{position.position.y-17}px;left:#{position.position.x-17}px;transform:rotate(#{rand(-15..15)}deg);"
   end
 
+  def monster_token_style( position )
+    "top:#{position.location.y-17}px;left:#{position.location.x-17}px;transform:rotate(#{rand(-15..15)}deg);"
+  end
+
   def icon_div_id( elem )
     "#{elem}-#{@current_investigator.send( elem ) ? :enabled : :disabled }"
   end

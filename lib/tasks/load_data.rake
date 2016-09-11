@@ -34,7 +34,30 @@ namespace :load_data do
   # end
 
   desc 'Load all'
-  task :all => [ :environment, :cities, :roads, :water_areas, :water_links ]
+  task :all => [ :environment, :cities, :roads, :water_areas, :water_links, :create_investigators, :populate_monsters ]
+
+  desc 'Populate monsters'
+  task :populate_monsters => :environment do
+    # monsters = %w( goule profond fanatique chose_brume habitants reves tempete horreur_volante teleportation )
+    # monsters_counts = [ 8, 8, 10, 3, 4, 6, 2, 1, 2 ]
+
+    monsters = %w( goules profonds fanatiques chose_brume habitants reves tempete )
+    monsters_counts = [ 8, 8, 10, 3, 4, 6, 2 ]
+
+    MMonster.delete_all
+    monsters.each_with_index do |monster, index|
+      1.upto( monsters_counts[ index ] ).each do
+        MMonster.create!( code_name: monster )
+      end
+    end
+
+    PMonster.delete_all
+    1.upto( 4 ).each do
+      m = MMonster.all.to_a.sample
+      PMonster.create!( code_name: m.code_name )
+      m.delete
+    end
+  end
 
   desc 'Load water links '
   task :water_links => :environment do

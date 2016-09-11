@@ -37,13 +37,8 @@ module GameLogic::Turn
     next_investigator = IInvestigator.where( 'id > ?', @current_investigator.id ).order( :id ).first
     unless next_investigator
       # END OF THE TURN
-      # Move professor.
-      loc = @professor.current_location
-      @professor.current_location = loc.destinations.sample
-      @professor.save!
-      # EEventLog.log( "Prof se déplace : #{prof.current_location.inspect}" )
 
-      PProfPosition.delete_all
+      GameCore::Professor.new( @professor ).play
 
       next_investigator = IInvestigator.order( :id ).first unless next_investigator
     end

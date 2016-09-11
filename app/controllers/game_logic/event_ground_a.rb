@@ -3,7 +3,7 @@ module GameLogic
 
     def table1_e1( investigator )
       EEventLog.log( I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) )
-      investigator.current_loc = @last_location
+      investigator.current_location = @last_location
       investigator.save!
     end
 

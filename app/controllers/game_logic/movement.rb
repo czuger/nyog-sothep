@@ -1,5 +1,7 @@
 module GameLogic::Movement
 
+  include GameLogic::Encounters
+
   def move_current_investigator( dest_loc )
 
     @last_location = @current_investigator.current_location
@@ -10,6 +12,9 @@ module GameLogic::Movement
       translated_dest_loc = I18n.t( "locations.#{dest_loc.code_name}", :default => "à #{dest_loc.code_name.humanize}" )
       event = "#{I18n.t( "investigators.#{@current_investigator.code_name}" )} se déplace #{translated_dest_loc}"
       EEventLog.log( event )
+
+      check_encounter
+
       return true
     end
 

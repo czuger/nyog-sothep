@@ -7,6 +7,11 @@
     .prof{ style: prof_token_style( position ) }
       = image_tag( 'tokens/professor.png' )
 
+  - @monsters_positions.each do |monster|
+    .monster{ style: monster_token_style( monster ) }
+      = image_tag( "tokens/#{monster.code_name}.jpg" )
+
+
   - @aval_destinations.each do |destination|
     = link_to "/maps?zone_id=#{destination.id}&zone_class=#{destination.class}", method: :put do
       - if destination.class == WWaterArea
