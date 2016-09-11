@@ -7,7 +7,11 @@ module GameLogic::Events
     roll += d6 if @current_investigator.sign
     roll += d6 if @current_investigator.sign && @current_investigator.medaillon
     if @current_investigator.current_location.class == CCity
-      GameLogicM::EventGround.send( "e#{roll}", @current_investigator )
+      if @current_investigator.event_table == 1
+        GameLogicM::EventGroundA.send( "e#{roll}", @current_investigator )
+      else
+        GameLogicM::EventGroundB.send( "e#{roll}", @current_investigator )
+      end
     end
   end
 

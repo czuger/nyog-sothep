@@ -6,6 +6,7 @@ fr:
   actions:
     result:
       pass: "%{investigator_name} passe son tour"
+      psy_rep: "%{investigator_name} gagne 5 points de SAN"
       psy:
        m: "%{investigator_name} va voir un psychanaliste. Il gagne %{san} points de SAN mais passe son prochain tour."
        f: "%{investigator_name} va voir un psychanaliste. Elle gagne %{san} points de SAN mais passe son prochain tour."

@@ -6,20 +6,28 @@ module GameLogic::Turn
 
   def set_next_investigator
 
-    begin
-      cycle_investigators
+    unless @current_investigator.replay?
+      begin
+        cycle_investigators
 
-      # If investigator is delayed, we remove the delayed flag and then cycle again to the next investigator
-      investigator_delayed = @current_investigator.delayed
-      if investigator_delayed
-        EEventLog.start_event_block
-        EEventLog.log( I18n.t( 'actions.result.pass', investigator_name: t( "investigators.#{@current_investigator.code_name}" ) ) )
-        @current_investigator.update_attribute( :delayed, false )
-      end
+        # If investigator is delayed, we remove the delayed flag and then cycle again to the next investigator
+        investigator_delayed = @current_investigator.delayed? || @current_investigator.delayed_and_increase_san?
+        if investigator_delayed
+          EEventLog.start_event_block
+          EEventLog.log( I18n.t( 'actions.result.pass', investigator_name: t( "investigators.#{@current_investigator.code_name}" ) ) )
+          if @current_investigator.delayed_and_increase_san?
+            EEventLog.log( I18n.t( 'actions.result.psy_rep', investigator_name: t( "investigators.#{@current_investigator.code_name}" ) ) )
+            @current_investigator.increase!( :san, 5 )
+          end
+          @current_investigator.reset!
+        end
 
-    end while investigator_delayed
+      end while investigator_delayed
+    else
+      @current_investigator.reset!
+    end
+
     EEventLog.flush_old_events
-
   end
 
   private

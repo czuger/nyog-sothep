@@ -5,15 +5,15 @@ fr:
       e2: Vous observez des Goules près dune vieille crypte : vous perdez 3 points de SAN, mais sous trouvez une arme.
       e3: Dans une malle, vous trouvez de vieux manuscrits qui montrent comment renvoyer l'Immonde. Ce sort de renvoi vous fait perdre 3 points de SAN.
       e4: Grâce a de bonnes informations, vous êtes lancé sur une piste qui vous semble intéressante rejouez.
-      e5: Un ermite dont ('esprit est an peu dérangé vous donne an signe protecteur et vous parle de créatures insensées : vous perdez 2 points de SAN.
-      e6: Vous entendez parler de Petersen: ce dernier doit vous citer trois villes dont son actuelle position (01 est en mer, il le dit).
+      e5: Un ermite dont (l'esprit est un peu dérangé vous donne an signe protecteur et vous parle de créatures insensées : vous perdez 2 points de SAN.
+      e6: Vous entendez parler de Petersen: ce dernier doit vous citer trois villes dont son actuelle position (S'il est en mer, il le dit).
       e7: Impossible de vous y retrouver dans ce labyrinthe de routes secondaires : retournez a la ville d’où vous venez pour vans informer sur le bon chemin.
       e8: Pres dune sortie d’égouts, no cadavre de Profond: auprès de lui vous trouvez un médaillon de Fanatique, mais vous perdez 3 points de SAN.
       e9: Des nouvelles du Professeur: il doit vous citer deux villes dont une est son actuelle position (s'il est en mer, il le dit).
       e10: La lecture d'un gros livre d'occultisme vous apprend le sort de renvoi. Vous perdez 2 points de SAN, mais vous rejouez immédiatement.
       e11: En discutant avec les policiers locaux vous vous êtes fait des amis. Vous gagnez une arme et vous rejouez.
       e12: Votre sommeil est peuplé de créatures étranges et de visions incroyables : vous perdez 2 points de SAN.
-      e13: Des voyageurs ont vu récemment Petersen: il doit se montrer et faire son prochain &placement a découvert,
+      e13: Des voyageurs ont vu récemment Petersen: il doit se montrer et faire son prochain déplacement a découvert,
       e14: Un prêtre vous parle de ces Fanatiques qui infestent la région: le Professeur doit vous citer deux villes dont une contient des Fanatiques.
       e15: Dans la bibliothèque, un vieux livre qui parle des légendes locales: certaines créatures brumeuses y sont citées. Vous perdez 2 points de SAN, mais vous pouvez citer deux villes au Professeur: it vous dit si Nyog'Sothep doit y apparaître.
       e16: Les plans du Professeur vous paraissent de plus en plus clairs : citez-lui une ville. S'il y a une rencontre dan celle-ci, il doit vous la préciser.

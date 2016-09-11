@@ -21,6 +21,11 @@
       = "SAN : #{@current_investigator.san}"
     #investigator-actions
       = link_to t( '.go_psy' ), go_psy_actions_url, method: :patch
+      #investigator-event-table
+        = label_tag 'Table 1'
+        = radio_button_tag 'event_table', 1, @current_investigator.event_table == 1, class: :event_table
+        = label_tag 'Table 2'
+        = radio_button_tag 'event_table', 2, @current_investigator.event_table == 2, class: :event_table
     #investigator-items
       - %w( weapon sign medaillon spell ).each do |elem|
         %div{ id: icon_div_id( elem ) }
