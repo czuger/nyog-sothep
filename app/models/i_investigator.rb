@@ -1,5 +1,9 @@
 class IInvestigator < ApplicationRecord
+
   include AASM
+
+  validates :event_table, inclusion: { in: [ 1, 2 ] }
+  validates :gender, inclusion: { in: %w( m f ) }
 
   belongs_to :current_location, polymorphic: true
 
