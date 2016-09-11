@@ -23,6 +23,8 @@ class MapsController < ApplicationController
     @prof = PProfessor.first
     @prof_zone = @prof.current_location
 
+    @prof_positions = PProfPosition.all
+
     @aval_destinations = []
     if @zone.class == CCity
       @aval_destinations += @zone.dest_cities

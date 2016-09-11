@@ -6,7 +6,7 @@ class CCity < ApplicationRecord
   has_many :people, as: :l_location
 
   def destinations
-    ( dest_cities + [ loc.w_water_area ] ).comact
+    ( dest_cities + [ w_water_area ] ).compact
   end
 
 end

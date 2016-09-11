@@ -19,7 +19,7 @@ module GameLogic::Events
 
   def method_missing( method_name, _ )
     super unless method_name =~ /table.*/
-    EEventLog.log( 'Evenement non implémenté' )
+    EEventLog.log( "Evenement non implémenté : #{method_name}" )
   end
 
 end

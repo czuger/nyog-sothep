@@ -2,6 +2,7 @@ module GameLogic::Turn
 
   def set_current_investigator
     @current_investigator = IInvestigator.find_by( current: true )
+    @professor = PProfessor.first
   end
 
   def set_next_investigator
@@ -35,13 +36,14 @@ module GameLogic::Turn
   def cycle_investigators
     next_investigator = IInvestigator.where( 'id > ?', @current_investigator.id ).order( :id ).first
     unless next_investigator
-
+      # END OF THE TURN
       # Move professor.
-      prof = PProfessor.first
-      loc = prof.current_location
-      prof.current_location = loc.destinations.sample
-      prof.save!
+      loc = @professor.current_location
+      @professor.current_location = loc.destinations.sample
+      @professor.save!
       # EEventLog.log( "Prof se déplace : #{prof.current_location.inspect}" )
+
+      PProfPosition.delete_all
 
       next_investigator = IInvestigator.order( :id ).first unless next_investigator
     end
