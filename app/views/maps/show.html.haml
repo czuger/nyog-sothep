@@ -21,7 +21,7 @@
       %br
       = "SAN : #{@current_investigator.san}"
     #investigator-actions
-      = link_to t( '.go_psy' ), go_psy_actions_url, method: :patch
+      = link_to t( '.go_psy' ), go_psy_actions_url, method: :patch if @zone.city?
       #investigator-event-table
         = label_tag 'Table 1'
         = radio_button_tag 'event_table', 1, @current_investigator.event_table == 1, class: :event_table

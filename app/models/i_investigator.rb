@@ -11,9 +11,10 @@ class IInvestigator < ApplicationRecord
     state :normal, :initial => true
     state :delayed
     state :replay
-    state :delayed_and_increase_san
+    state :great_psy_help
+    state :car_breakdown
 
-    event :delay do
+    event :pass_next_turn do
       transitions :from => :normal, :to => :delayed
     end
 
@@ -22,11 +23,15 @@ class IInvestigator < ApplicationRecord
     end
 
     event :see_psy do
-      transitions :from => :normal, :to => :delayed_and_increase_san
+      transitions :from => :normal, :to => :great_psy_help
+    end
+
+    event :car_break_down do
+      transitions :from => :normal, :to => :car_breakdown
     end
 
     event :reset do
-      transitions from: [:delayed, :replay, :delayed_and_increase_san], to: :normal
+      transitions from: [:delayed, :replay, :great_psy_help, :car_breakdown], to: :normal
     end
 
   end

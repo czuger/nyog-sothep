@@ -12,11 +12,11 @@ module GameLogic::Turn
         cycle_investigators
 
         # If investigator is delayed, we remove the delayed flag and then cycle again to the next investigator
-        investigator_delayed = @current_investigator.delayed? || @current_investigator.delayed_and_increase_san?
+        investigator_delayed = @current_investigator.delayed? || @current_investigator.great_psy_help?
         if investigator_delayed
           EEventLog.start_event_block
           EEventLog.log( I18n.t( 'actions.result.pass', investigator_name: t( "investigators.#{@current_investigator.code_name}" ) ) )
-          if @current_investigator.delayed_and_increase_san?
+          if @current_investigator.great_psy_help?
             EEventLog.log( I18n.t( 'actions.result.psy_rep', investigator_name: t( "investigators.#{@current_investigator.code_name}" ) ) )
             @current_investigator.increment!( :san, 5 )
           end

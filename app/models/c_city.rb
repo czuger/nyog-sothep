@@ -9,4 +9,8 @@ class CCity < ApplicationRecord
     ( dest_cities + [ w_water_area ] ).compact
   end
 
+  def city?
+    true
+  end
+
 end

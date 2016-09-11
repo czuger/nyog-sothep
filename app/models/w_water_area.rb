@@ -7,4 +7,8 @@ class WWaterArea < ApplicationRecord
     ports + connected_w_water_areas
   end
 
+  def city?
+    false
+  end
+
 end

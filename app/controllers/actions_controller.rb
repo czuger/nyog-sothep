@@ -11,13 +11,17 @@ class ActionsController < ApplicationController
 
       set_current_investigator
 
-      @current_investigator.update_attribute( :delayed, true )
-      san = d6
-      @current_investigator.increment!( :san, san )
-      EEventLog.log( I18n.t( "actions.result.psy.#{@current_investigator.gender}",
-        san: san, investigator_name: t( "investigators.#{@current_investigator.code_name}" ) ) )
+      if @current_investigator.current_location.city?
+        @current_investigator.pass_next_turn
+        san = d6
+        @current_investigator.increment!( :san, san )
+        EEventLog.log( I18n.t( "actions.result.psy.#{@current_investigator.gender}",
+                               san: san, investigator_name: t( "investigators.#{@current_investigator.code_name}" ) ) )
 
-      set_next_investigator
+        set_next_investigator
+      else
+        raise "Psy asked in non city area : #{params.inspect}"
+      end
 
     end
 

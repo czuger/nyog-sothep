@@ -1,7 +1,7 @@
 module GameLogic
   module EventGroundA
 
-    def table1_e2( investigator )
+    def table1_e1( investigator )
       EEventLog.log( I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) )
       investigator.current_loc = @last_location
       investigator.save!
@@ -26,7 +26,7 @@ module GameLogic
 
     def table1_e5( _ )
       EEventLog.log( I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) )
-      PProfPosition.set_random_positions( @professor.current_loation, 3 )
+      PProfPosition.set_random_positions( @professor.current_location, 3 )
     end
 
     def table1_e6( investigator )
@@ -41,6 +41,11 @@ module GameLogic
       investigator.update_attribute( :weapon, false )
     end
 
+    def table1_e8( investigator )
+      EEventLog.log( I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) )
+      investigator.car_break_down!
+    end
+
     def table1_e9( investigator )
       EEventLog.log( I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) )
       investigator.update_attribute( :medaillon, true )
@@ -49,7 +54,7 @@ module GameLogic
 
     def table1_e10( _ )
       EEventLog.log( I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) )
-      PProfPosition.set_random_positions( @professor.current_loation, 2 )
+      PProfPosition.set_random_positions( @professor.current_location, 2 )
     end
 
     def table1_e11( investigator )

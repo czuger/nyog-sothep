@@ -29,14 +29,55 @@ module GameLogic
       investigator.update_attribute( :sign, true )
     end
 
+    def table2_e6( _ )
+      EEventLog.log( I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) )
+      PProfPosition.set_random_positions( @professor.current_loation, 3 )
+    end
+
+    def table2_e7( investigator )
+      EEventLog.log( I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) )
+      investigator.current_loc = @last_location
+      investigator.save!
+    end
+
     def table2_e8( investigator )
       EEventLog.log( I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) )
       investigator.decrement( :san, 3 )
       investigator.update_attribute( :medaillon, true )
     end
 
-    def table2_method_missing( _, _ )
-      EEventLog.log( 'event non implementé' )
+    def table2_e9( _ )
+      EEventLog.log( I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) )
+      PProfPosition.set_random_positions( @professor.current_loation, 2 )
+    end
+
+    def table2_e10( investigator )
+      EEventLog.log( I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) )
+      investigator.decrement( :san, 2 )
+      investigator.update_attribute( :spell, true )
+      investigator.play_again!
+    end
+
+    def table2_e11( investigator )
+      EEventLog.log( I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) )
+      investigator.update_attribute( :weapon, true )
+      investigator.play_again!
+    end
+
+    def table2_e12( investigator )
+      EEventLog.log( I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) )
+      investigator.decrement( :san, 2 )
+    end
+
+    def table2_e17( investigator )
+      EEventLog.log( I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) )
+      investigator.play_again!
+    end
+
+    def table2_e18( investigator )
+      EEventLog.log( I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) )
+      investigator.decrement( :san, 2 )
+      investigator.update_attribute( :weapon, false )
     end
 
   end
