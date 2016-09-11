@@ -17,7 +17,7 @@ module GameLogic::Turn
           EEventLog.log( I18n.t( 'actions.result.pass', investigator_name: t( "investigators.#{@current_investigator.code_name}" ) ) )
           if @current_investigator.delayed_and_increase_san?
             EEventLog.log( I18n.t( 'actions.result.psy_rep', investigator_name: t( "investigators.#{@current_investigator.code_name}" ) ) )
-            @current_investigator.increase!( :san, 5 )
+            @current_investigator.increment!( :san, 5 )
           end
           @current_investigator.reset!
         end

@@ -6,9 +6,16 @@ class MapsController < ApplicationController
   include GameLogic::Turn
   include GameLogic::Events
 
+  def switch_table
+    params[:event_table]
+    set_current_investigator
+    @current_investigator.update_attribute( :event_table, params[:event_table] )
+    head :ok
+  end
+
   def show
 
-    @current_investigator = IInvestigator.find_by( current: true )
+    set_current_investigator
     @zone = @current_investigator.current_location
 
     @events = EEventLog.all.order( 'logset DESC, id ASC' )

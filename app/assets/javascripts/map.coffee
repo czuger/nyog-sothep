@@ -9,19 +9,19 @@ ready = ->
 
   for elem in $( '.dest-road' )
     top = $( elem ).position().top
-    console.log( top )
+    #console.log( top )
     if top > lowest_position
       lowest_position = top
       lowest_elem = $( elem )
 
   for elem in $( '.dest-water' )
     top = $( elem ).position().top
-    console.log( top )
+    #console.log( top )
     if top > lowest_position
       lowest_position = top
       lowest_elem = $( elem )
 
   lowest_elem[0].scrollIntoView( false )
 
-$(document).ready(ready)
+# $(document).ready(ready)
 $(document).on('turbolinks:load', ready)

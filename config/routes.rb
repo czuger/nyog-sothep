@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
 
-  resource :maps, only: [:show, :update]
+  resource :maps, only: [:show, :update] do
+    post :switch_table
+  end
 
   resource :actions, only: [] do
     patch :go_psy

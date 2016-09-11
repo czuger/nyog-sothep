@@ -1,3 +1,5 @@
+# Caution, in case of missing translation, think about quoting strings
+
 fr:
   maps:
     show:
@@ -11,30 +13,30 @@ fr:
        m: "%{investigator_name} va voir un psychanaliste. Il gagne %{san} points de SAN mais passe son prochain tour."
        f: "%{investigator_name} va voir un psychanaliste. Elle gagne %{san} points de SAN mais passe son prochain tour."
 
-  events:
-    e1:
-      m: 'Il se perd dans les petites rues et est retardé'
-      f: 'Elle se perd dans les petites rues et est retardée'
-
-    e2:
-      m: 'Il y découvre un repaire de Profonds. Il perd 2 points de SAN mais trouve une arme.'
-      f: 'Elle y découvre un repaire de Profonds. Elle perd 2 points de SAN mais trouve une arme.'
-
-    e3:
-      m: "Il rencontre un vieillard qui lui parle longuement des créatures de l'au dela. Il gagne un médaillon protecteur mais perd 2 points de SAN"
-      f: "Elle rencontre un vieillard qui lui parle longuement des créatures de l'au dela. Elle gagne un médaillon protecteur mais perd 2 points de SAN"
-
-    e4:
-      m: "Un pyschanalyste de renom s'intéresse a ses troubles. Il y passera le prochain tour mais gagne 5 points de SAN"
-      f: "Un pyschanalyste de renom s'intéresse a ses troubles. Elle y passera le prochain tour mais gagne 5 points de SAN"
-
-    e6:
-      m: "Dans le grenier d'une vieille maison, il trouve un grimoire en mauvais état. Certaines pages très pénibles a lire expliquent comment renvoyer Nyog'Sothep. Un sort de renvoi qui lui fait perdre 2 points de SAN"
-      f: "Dans le grenier d'une vieille maison, elle trouve un grimoire en mauvais état. Certaines pages très pénibles a lire expliquent comment renvoyer Nyog'Sothep. Un sort de renvoi qui lui fait perdre 2 points de SAN"
-
-    e7:
-      m: "Erre dans un cimetièrre la nuit. Il est infesté de goules. Il perd 2 points de SAN et son arme."
-      f: "Erre dans un cimetièrre la nuit. Il est infesté de goules. Elle perd 2 points de SAN et son arme."
+#  events:
+#    e1:
+#      m: 'Il se perd dans les petites rues et est retardé'
+#      f: 'Elle se perd dans les petites rues et est retardée'
+#
+#    e2:
+#      m: 'Il y découvre un repaire de Profonds. Il perd 2 points de SAN mais trouve une arme.'
+#      f: 'Elle y découvre un repaire de Profonds. Elle perd 2 points de SAN mais trouve une arme.'
+#
+#    e3:
+#      m: "Il rencontre un vieillard qui lui parle longuement des créatures de l'au dela. Il gagne un médaillon protecteur mais perd 2 points de SAN"
+#      f: "Elle rencontre un vieillard qui lui parle longuement des créatures de l'au dela. Elle gagne un médaillon protecteur mais perd 2 points de SAN"
+#
+#    e4:
+#      m: "Un pyschanalyste de renom s'intéresse a ses troubles. Il y passera le prochain tour mais gagne 5 points de SAN"
+#      f: "Un pyschanalyste de renom s'intéresse a ses troubles. Elle y passera le prochain tour mais gagne 5 points de SAN"
+#
+#    e6:
+#      m: "Dans le grenier d'une vieille maison, il trouve un grimoire en mauvais état. Certaines pages très pénibles a lire expliquent comment renvoyer Nyog'Sothep. Un sort de renvoi qui lui fait perdre 2 points de SAN"
+#      f: "Dans le grenier d'une vieille maison, elle trouve un grimoire en mauvais état. Certaines pages très pénibles a lire expliquent comment renvoyer Nyog'Sothep. Un sort de renvoi qui lui fait perdre 2 points de SAN"
+#
+#    e7:
+#      m: "Erre dans un cimetièrre la nuit. Il est infesté de goules. Il perd 2 points de SAN et son arme."
+#      f: "Erre dans un cimetièrre la nuit. Il est infesté de goules. Elle perd 2 points de SAN et son arme."
 
   investigators:
     lemon: 'Miss Lemon'
