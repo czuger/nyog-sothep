@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160911162117) do
+ActiveRecord::Schema.define(version: 20160912124640) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -29,56 +29,75 @@ ActiveRecord::Schema.define(version: 20160911162117) do
 
   create_table "e_event_logs", force: :cascade do |t|
     t.string   "event"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+    t.integer  "logset",          null: false
+    t.integer  "g_game_board_id", null: false
+    t.index ["g_game_board_id"], name: "index_e_event_logs_on_g_game_board_id", using: :btree
+  end
+
+  create_table "g_game_boards", force: :cascade do |t|
+    t.integer  "turn"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer  "logset",     null: false
+    t.string   "aasm_state", null: false
   end
 
   create_table "i_investigators", force: :cascade do |t|
-    t.string   "code_name",                                          null: false
-    t.integer  "san",                                                null: false
-    t.boolean  "weapon",                          default: false,    null: false
-    t.boolean  "medaillon",                       default: false,    null: false
-    t.boolean  "sign",                            default: false,    null: false
-    t.boolean  "spell",                           default: false,    null: false
-    t.boolean  "current",                         default: false,    null: false
+    t.string   "code_name",                                       null: false
+    t.integer  "san",                                             null: false
+    t.boolean  "weapon",                          default: false, null: false
+    t.boolean  "medaillon",                       default: false, null: false
+    t.boolean  "sign",                            default: false, null: false
+    t.boolean  "spell",                           default: false, null: false
+    t.boolean  "current",                         default: false, null: false
     t.string   "current_location_type"
     t.integer  "current_location_id"
-    t.datetime "created_at",                                         null: false
-    t.datetime "updated_at",                                         null: false
-    t.string   "gender",                limit: 1,                    null: false
-    t.integer  "event_table",                     default: 1,        null: false
-    t.string   "aasm_state",                      default: "normal"
+    t.datetime "created_at",                                      null: false
+    t.datetime "updated_at",                                      null: false
+    t.string   "gender",                limit: 1,                 null: false
+    t.integer  "event_table",                     default: 1,     null: false
+    t.string   "aasm_state",                                      null: false
+    t.integer  "g_game_board_id",                                 null: false
     t.index ["current"], name: "index_i_investigators_on_current", using: :btree
+    t.index ["g_game_board_id"], name: "index_i_investigators_on_g_game_board_id", using: :btree
   end
 
   create_table "m_monsters", force: :cascade do |t|
-    t.string   "code_name",  null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.string   "code_name",       null: false
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+    t.integer  "g_game_board_id", null: false
+    t.index ["g_game_board_id"], name: "index_m_monsters_on_g_game_board_id", using: :btree
   end
 
   create_table "p_monster_positions", force: :cascade do |t|
-    t.string   "location_type",                 null: false
-    t.integer  "location_id",                   null: false
-    t.string   "code_name",                     null: false
-    t.boolean  "discovered",    default: false, null: false
-    t.datetime "created_at",                    null: false
-    t.datetime "updated_at",                    null: false
+    t.string   "location_type",                   null: false
+    t.integer  "location_id",                     null: false
+    t.string   "code_name",                       null: false
+    t.boolean  "discovered",      default: false, null: false
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
+    t.integer  "g_game_board_id",                 null: false
+    t.index ["g_game_board_id"], name: "index_p_monster_positions_on_g_game_board_id", using: :btree
     t.index ["location_type", "location_id"], name: "index_p_monster_positions_on_location_type_and_location_id", using: :btree
   end
 
   create_table "p_monsters", force: :cascade do |t|
-    t.string   "code_name",  null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.string   "code_name",       null: false
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+    t.integer  "g_game_board_id", null: false
+    t.index ["g_game_board_id"], name: "index_p_monsters_on_g_game_board_id", using: :btree
   end
 
   create_table "p_prof_positions", force: :cascade do |t|
-    t.string   "position_type", null: false
-    t.integer  "position_id",   null: false
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
+    t.string   "position_type",   null: false
+    t.integer  "position_id",     null: false
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+    t.integer  "g_game_board_id", null: false
+    t.index ["g_game_board_id"], name: "index_p_prof_positions_on_g_game_board_id", using: :btree
     t.index ["position_type", "position_id"], name: "index_p_prof_positions_on_position_type_and_position_id", using: :btree
   end
 
@@ -88,6 +107,8 @@ ActiveRecord::Schema.define(version: 20160911162117) do
     t.integer  "current_location_id",   null: false
     t.datetime "created_at",            null: false
     t.datetime "updated_at",            null: false
+    t.integer  "g_game_board_id",       null: false
+    t.index ["g_game_board_id"], name: "index_p_professors_on_g_game_board_id", using: :btree
   end
 
   create_table "r_roads", force: :cascade do |t|
@@ -120,6 +141,13 @@ ActiveRecord::Schema.define(version: 20160911162117) do
   end
 
   add_foreign_key "c_cities", "w_water_areas"
+  add_foreign_key "e_event_logs", "g_game_boards"
+  add_foreign_key "i_investigators", "g_game_boards"
+  add_foreign_key "m_monsters", "g_game_boards"
+  add_foreign_key "p_monster_positions", "g_game_boards"
+  add_foreign_key "p_monsters", "g_game_boards"
+  add_foreign_key "p_prof_positions", "g_game_boards"
+  add_foreign_key "p_professors", "g_game_boards"
   add_foreign_key "r_roads", "c_cities", column: "dest_city_id"
   add_foreign_key "r_roads", "c_cities", column: "src_city_id"
   add_foreign_key "w_water_area_connections", "w_water_areas", column: "dest_w_water_area_id"

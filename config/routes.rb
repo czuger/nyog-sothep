@@ -1,11 +1,16 @@
 Rails.application.routes.draw do
 
-  resource :maps, only: [:show, :update] do
-    post :switch_table
-  end
+  resources :g_game_boards, only: [] do
 
-  resource :actions, only: [] do
-    patch :go_psy
+    resource :maps, only: [:show] do
+      post :switch_table
+    end
+
+    resource :actions, only: [] do
+      patch :go_psy
+      patch :move
+    end
+
   end
 
   root 'maps#show'

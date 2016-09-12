@@ -1,12 +1,21 @@
 namespace :load_data do
 
+  desc 'Load all'
+  task :all => [ :environment, :cities, :roads, :water_areas, :water_links, :create_investigators, :populate_monsters ]
+
   desc 'Create investigators'
   task :create_investigators => :environment do
     investigators = %w( poirot hercule hastings le_capitaine sandy lemon )
     gender = %w( m m m m f f )
+
+    GGameBoard.destroy_all
+
+    gb = GGameBoard.first
+    gb = GGameBoard.create!( turn: 1 ) unless gb
+
     investigators.each_with_index do |investigator, index|
       puts 'Creating / updating ' + investigator.humanize
-      i = IInvestigator.where( code_name: investigator ).first_or_initialize
+      i = gb.i_investigators.where( code_name: investigator ).first_or_initialize
       c = WWaterArea.find_by( code_name: :nantucket_sound )
       i.current_location = c
       i.current = false
@@ -14,27 +23,10 @@ namespace :load_data do
       i.san = 1.upto(3).map{ |e| rand( 1..6 ) }.reduce(&:+)
       i.save!
     end
-    IInvestigator.first.update_attribute( :current, true )
+    gb.i_investigators.first.update_attribute( :current, true )
 
-    PProfessor.create!( hp: 14, current_location: CCity.all.sample )
-
+    gb.create_p_professor!( hp: 14, current_location: CCity.all.sample )
   end
-  #
-  # desc 'Populate board'
-  # task :populate_board => :environment do
-  #   tokens = [ :professor, :inv1, :inv2, :inv3, :inv4, :inv5, :inv6 ]
-  #   tokens.each do |token|
-  #     p = PPosition.where( code_name: token ).first_or_initialize
-  #     c = CCity.all.sample
-  #     p.l_location = c
-  #     p.current = false
-  #     p.save!
-  #   end
-  #   PPosition.first.update_attribute( :current, true )
-  # end
-
-  desc 'Load all'
-  task :all => [ :environment, :cities, :roads, :water_areas, :water_links, :create_investigators, :populate_monsters ]
 
   desc 'Populate monsters'
   task :populate_monsters => :environment do
@@ -44,17 +36,16 @@ namespace :load_data do
     monsters = %w( goules profonds fanatiques chose_brume habitants reves tempete )
     monsters_counts = [ 8, 8, 10, 3, 4, 6, 2 ]
 
-    MMonster.delete_all
+    gb = GGameBoard.first
     monsters.each_with_index do |monster, index|
       1.upto( monsters_counts[ index ] ).each do
-        MMonster.create!( code_name: monster )
+        gb.m_monsters.create!( code_name: monster )
       end
     end
 
-    PMonster.delete_all
     1.upto( 4 ).each do
-      m = MMonster.all.to_a.sample
-      PMonster.create!( code_name: m.code_name )
+      m = gb.m_monsters.all.to_a.sample
+      gb.p_monsters.create!( code_name: m.code_name )
       m.delete
     end
   end

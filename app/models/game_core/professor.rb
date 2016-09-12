@@ -1,7 +1,8 @@
 module GameCore
   class Professor
 
-    def initialize( professor )
+    def initialize( game_board, professor )
+      @game_board = game_board
       @professor = professor
     end
 
@@ -24,9 +25,9 @@ module GameCore
 
     def place_monster
       if city_free
-        monster = PMonster.all.to_a.sample
+        monster = @game_board.m_monsters.all.to_a.sample
         c_loc = @professor.current_location
-        PMonsterPosition.create!( location: c_loc, code_name: monster.code_name )
+        @game_board.p_monster_positions.create!( location: c_loc, code_name: monster.code_name )
         monster.delete
       end
     end
@@ -34,7 +35,7 @@ module GameCore
     def city_free
       c_loc = @professor.current_location
       if c_loc.city?
-        unless PMonsterPosition.where( location_id: c_loc.id ).exists?
+        unless @game_board.p_monster_positions.where( location_id: c_loc.id ).exists?
           return true
         end
       end

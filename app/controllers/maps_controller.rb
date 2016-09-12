@@ -2,9 +2,7 @@ require 'pp'
 
 class MapsController < ApplicationController
 
-  include GameLogic::Movement
   include GameLogic::Turn
-  include GameLogic::Events
 
   def switch_table
     params[:event_table]
@@ -15,47 +13,21 @@ class MapsController < ApplicationController
 
   def show
 
+    @game_board = GGameBoard.find( params[:g_game_board_id])
+
     set_current_investigator
     @zone = @current_investigator.current_location
 
-    @events = EEventLog.all.order( 'logset DESC, id ASC' )
+    @events = @game_board.e_event_logs.all.order( 'logset DESC, id ASC' )
 
-    @prof = PProfessor.first
+    @prof = @game_board.p_professor
     @prof_zone = @prof.current_location
 
-    @prof_positions = PProfPosition.all
-    @monsters_positions = PMonsterPosition.all
+    @prof_positions = @game_board.p_prof_positions.all
+    @monsters_positions = @game_board.p_monster_positions.all
 
-    @aval_destinations = []
-    if @zone.class == CCity
-      @aval_destinations += @zone.dest_cities
-      @aval_destinations << @zone.w_water_area if @zone.w_water_area
-    elsif @zone.class == WWaterArea
-      @aval_destinations += @zone.ports
-      @aval_destinations += @zone.connected_w_water_areas
-    end
+    @aval_destinations = @zone.destinations
 
   end
 
-  def update
-    if params['zone_id'] && params['zone_class']
-      dest_loc = params['zone_class'].constantize.find( params['zone_id'] )
-    else
-      raise "Zone error : #{params.inspect}"
-    end
-
-    ActiveRecord::Base.transaction do
-
-      EEventLog.start_event_block
-
-      set_current_investigator
-      if move_current_investigator( dest_loc )
-        roll_event
-      end
-      set_next_investigator
-
-    end
-
-    redirect_to maps_url
-  end
 end
