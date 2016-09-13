@@ -11,11 +11,11 @@ Rails.application.routes.draw do
       patch :move
     end
 
-    get 'professor_map'
-
   end
 
-  root 'maps#show'
+  get 'professor_map/show'
+
+  root 'professor_map#show'
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
