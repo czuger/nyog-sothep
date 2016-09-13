@@ -30,6 +30,8 @@ class InvestigatorsActionsController < ApplicationController
           end
           EEventLog.flush_old_events( @game_board )
         end
+        # After that, the game board goes to next step
+        @game_board.inv_move_end!
       end
     end
 
