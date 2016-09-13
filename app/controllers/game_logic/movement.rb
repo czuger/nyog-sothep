@@ -1,19 +1,18 @@
 module GameLogic::Movement
 
   include GameLogic::Encounters
+  include GameLogic::Dices
 
   def move_current_investigator( dest_loc )
 
-    @last_location = @current_investigator.current_location
-
     unless cross_border_forbidden( dest_loc )
+      @current_investigator.last_location = @current_investigator.current_location
       @current_investigator.current_location = dest_loc
+      @current_investigator.save!
 
       translated_dest_loc = I18n.t( "locations.#{dest_loc.code_name}", :default => "à #{dest_loc.code_name.humanize}" )
       event = "#{I18n.t( "investigators.#{@current_investigator.code_name}" )} se déplace #{translated_dest_loc}"
       EEventLog.log( @game_board, event )
-
-      check_encounter
 
       return true
     end
@@ -27,8 +26,8 @@ module GameLogic::Movement
 
     border_forbidden = false
 
-    if dest_loc.class == CCity && @last_location.class == CCity
-      road = @last_location.outgoing_r_roads.where( dest_city_id: dest_loc.id )
+    if dest_loc.city? && @current_investigator.current_location.city?
+      road = @current_investigator.current_location.outgoing_r_roads.where( dest_city_id: dest_loc.id )
       raise "More than one road : #{road.inspect}" if road.count > 1
 
       road = road.first
@@ -37,7 +36,7 @@ module GameLogic::Movement
       # puts "Road : #{road.inspect}"
 
       if road.border
-        dice = rand( 1 .. 6 )
+        dice = d6
         if dice >= 5
           inv_name = I18n.t( "investigators.#{@current_investigator.code_name}" )
           event = I18n.t( "border_control.#{@current_investigator.gender}", investigator_name: inv_name )

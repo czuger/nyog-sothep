@@ -39,6 +39,7 @@ group :development, :test do
   gem 'factory_girl_rails'
   gem 'simplecov'
   gem 'rails-controller-testing'
+  gem 'mocha'
 end
 
 group :development do
@@ -49,7 +50,6 @@ group :development do
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
   gem 'bullet'
-  gem 'simplecov'
   # gem 'i18n-debug'
 end
 

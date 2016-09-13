@@ -1,8 +1,8 @@
 require 'pp'
 
-class MapsController < ApplicationController
+class InvestigatorsMapController < ApplicationController
 
-  include GameLogic::Turn
+  include GameLogic::InvestigatorsTurn
 
   def switch_table
     params[:event_table]
@@ -13,20 +13,19 @@ class MapsController < ApplicationController
 
   def show
 
-    @game_board = GGameBoard.find( params[:g_game_board_id])
+    @game_board = GGameBoard.first
 
-    set_current_investigator
+    set_current_moving_investigator
     @zone = @current_investigator.current_location
 
     @events = @game_board.e_event_logs.all.order( 'logset DESC, id ASC' )
 
-    @prof = @game_board.p_professor
-    @prof_zone = @prof.current_location
-
     @prof_positions = @game_board.p_prof_positions.all
     @monsters_positions = @game_board.p_monster_positions.all
 
-    @aval_destinations = @zone.destinations
+    if @game_board.inv_move? && @current_investigator.ready?
+      @aval_destinations = @zone.destinations
+    end
 
   end
 

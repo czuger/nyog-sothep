@@ -3,7 +3,7 @@ class EEventLog < ApplicationRecord
   def self.flush_old_events( game_board )
     e = game_board.e_event_logs.all.order( :id ).pluck( :id )
     keeping_e = e.last( 30 )
-    game_board.e_event_logs.delete_all( id: e - keeping_e ) unless ( e - keeping_e ).empty?
+    game_board.e_event_logs.where( id: e - keeping_e ).delete_all unless ( e - keeping_e ).empty?
   end
 
   def self.start_event_block( game_board )

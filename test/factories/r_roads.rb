@@ -7,6 +7,9 @@ FactoryGirl.define do
     factory :inv_road do
       src_city { create( :inv_city ) }
       dest_city { create( :inv_dest_city ) }
+      factory :inv_cross_border_road do
+        border true
+      end
     end
 
     factory :prof_road do

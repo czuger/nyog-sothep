@@ -17,7 +17,9 @@ namespace :load_data do
       puts 'Creating / updating ' + investigator.humanize
       i = gb.i_investigators.where( code_name: investigator ).first_or_initialize
       c = WWaterArea.find_by( code_name: :nantucket_sound )
+      last_loc = CCity.find_by( code_name: :nantucket )
       i.current_location = c
+      i.last_location = last_loc
       i.current = false
       i.gender = gender[index]
       i.san = 1.upto(3).map{ |e| rand( 1..6 ) }.reduce(&:+)

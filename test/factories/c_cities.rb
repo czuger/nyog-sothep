@@ -3,16 +3,24 @@ FactoryGirl.define do
     x 1
     y 1
     factory :inv_city do
-      code_name 'Inv city'
+      sequence :code_name do |i|
+        "Inv city #{i}"
+      end
     end
     factory :inv_dest_city do
-      code_name 'Inv dest city'
+      sequence :code_name do |i|
+        "Inv dest city #{i}"
+      end
     end
     factory :prof_city do
-      code_name 'Prof city'
+      sequence :code_name do |i|
+        "Prof city #{i}"
+      end
     end
     factory :prof_dest_city do
-      code_name 'Prof dest city'
+      sequence :code_name do |i|
+        "Prof dest city #{i}"
+      end
     end
   end
 end

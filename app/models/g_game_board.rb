@@ -38,7 +38,7 @@ class GGameBoard < ApplicationRecord
       transitions :from => :inv_event, :to => :inv_fight_prof
     end
 
-    event :inv_event_end do
+    event :inv_fight_prof_end do
       transitions :from => :inv_fight_prof, :to => :start
     end
 

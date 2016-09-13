@@ -1,7 +1,11 @@
 require 'test_helper'
 
 class ProfessorMapControllerTest < ActionDispatch::IntegrationTest
-  # test "the truth" do
-  #   assert true
-  # end
+
+  test 'should show professor' do
+    create( :g_game_board )
+    get professor_map_show_url
+    assert_response :success
+  end
+
 end

@@ -1,6 +1,6 @@
-class ActionsController < ApplicationController
+class InvestigatorsActionsController < ApplicationController
 
-  include GameLogic::Turn
+  include GameLogic::InvestigatorsTurn
   include GameLogic::Dices
   include GameLogic::Movement
   include GameLogic::Events
@@ -13,20 +13,27 @@ class ActionsController < ApplicationController
     end
 
     @game_board = GGameBoard.find( params[:g_game_board_id])
+    set_current_moving_investigator
 
     ActiveRecord::Base.transaction do
-
       EEventLog.start_event_block( @game_board )
+      if @current_investigator
+        move_current_investigator( dest_loc )
+        @current_investigator.move!
 
-      set_current_investigator
-      if move_current_investigator( dest_loc )
-        roll_event
+        set_current_moving_investigator
+        # If all the investigators have moved, we roll the events
+        unless @current_investigator
+          @professor = @game_board.p_professor
+          @game_board.i_investigators.where( aasm_state: :move_done ).order( :id ).each do |investigator|
+            roll_event( investigator )
+          end
+          EEventLog.flush_old_events( @game_board )
+        end
       end
-      set_next_investigator
-
     end
 
-    redirect_to g_game_board_maps_url
+    redirect_to investigators_map_show_url
   end
 
 
@@ -38,23 +45,22 @@ class ActionsController < ApplicationController
 
       EEventLog.start_event_block( @game_board )
 
-      set_current_investigator
+      set_current_moving_investigator
 
       if @current_investigator.current_location.city?
-        @current_investigator.pass_next_turn
         san = d6
         @current_investigator.increment!( :san, san )
         EEventLog.log( @game_board, I18n.t( "actions.result.psy.#{@current_investigator.gender}",
           san: san, investigator_name: t( "investigators.#{@current_investigator.code_name}" ) ) )
 
-        set_next_investigator
+        @current_investigator.move
       else
         raise "Psy asked in non city area : #{params.inspect}"
       end
 
     end
 
-    redirect_to g_game_board_maps_url
+    redirect_to investigators_map_show_url
   end
 
 end

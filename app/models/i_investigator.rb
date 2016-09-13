@@ -6,32 +6,30 @@ class IInvestigator < ApplicationRecord
   validates :gender, inclusion: { in: %w( m f ) }
 
   belongs_to :current_location, polymorphic: true
+  belongs_to :last_location, polymorphic: true
 
   aasm do
-    state :normal, :initial => true
-    state :delayed
-    state :replay
-    state :great_psy_help
-    state :car_breakdown
+    state :ready, :initial => true
+    state :move_done, :known_psy_help, :delayed, :replay
 
-    event :pass_next_turn do
-      transitions :from => :normal, :to => :delayed
+    event :move do
+      transitions :from => :ready, :to => :move_done
+    end
+
+    event :helped_by_kown_psy do
+      transitions :from => :move_done, :to => :known_psy_help
+    end
+
+    event :be_delayed do
+      transitions :from => :move_done, :to => :delayed
     end
 
     event :play_again do
-      transitions :from => :normal, :to => :replay
+      transitions :from => :move_done, :to => :replay
     end
 
-    event :see_psy do
-      transitions :from => :normal, :to => :great_psy_help
-    end
-
-    event :car_break_down do
-      transitions :from => :normal, :to => :car_breakdown
-    end
-
-    event :reset do
-      transitions from: [:delayed, :replay, :great_psy_help, :car_breakdown], to: :normal
+    event :be_ready do
+      transitions :from => [ :move_done, :known_psy_help, :delayed, :replay ], :to => :ready
     end
 
   end

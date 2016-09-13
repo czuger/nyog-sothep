@@ -9,7 +9,7 @@ class CreateIInvestigators < ActiveRecord::Migration[5.0]
       t.boolean :sign, null: false, default: false
       t.boolean :spell, null: false, default: false
       t.boolean :current, index: true, null: false, default: false
-      t.references :current_location, polymorphic: true, index: false
+      t.references :current_location, polymorphic: true, index: false, null: false
 
       t.timestamps
     end
