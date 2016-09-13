@@ -11,6 +11,8 @@ Rails.application.routes.draw do
       patch :move
     end
 
+    get 'professor_map'
+
   end
 
   root 'maps#show'

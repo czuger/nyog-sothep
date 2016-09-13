@@ -41,7 +41,7 @@ module GameLogic::Movement
         if dice >= 5
           inv_name = I18n.t( "investigators.#{@current_investigator.code_name}" )
           event = I18n.t( "border_control.#{@current_investigator.gender}", investigator_name: inv_name )
-          EEventLog.log( event )
+          EEventLog.log( @game_board, event )
           border_forbidden = true
         end
       end

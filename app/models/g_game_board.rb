@@ -11,23 +11,35 @@ class GGameBoard < ApplicationRecord
 
   aasm do
 
-    state :prof_turn, :initial => true
-    state :inv_turn, :inv_actions, :inv_prof_fight
+    state :start, :initial => true
+    state :prof_move, :prof_attack, :inv_move, :inv_encounter, :inv_event, :inv_fight_prof
 
-    event :prof_turn_end do
-      transitions :from => :prof_turn, :to => :inv_turn
+    event :start_turn do
+      transitions :from => :start, :to => :prof_move
     end
 
-    event :inv_turn_end do
-      transitions :from => :inv_turn, :to => :inv_actions
+    event :prof_move_end do
+      transitions :from => :prof_move, :to => :prof_attack
     end
 
-    event :inv_actions_end do
-      transitions :from => :inv_actions, :to => :inv_prof_fight
+    event :prof_attack_end do
+      transitions :from => :prof_attack, :to => :inv_move
     end
 
-    event :inv_prof_fight_end do
-      transitions :from => :inv_prof_fight, :to => :prof_turn
+    event :inv_move_end do
+      transitions :from => :inv_move, :to => :inv_encounter
+    end
+
+    event :inv_encounter_end do
+      transitions :from => :inv_encounter, :to => :inv_event
+    end
+
+    event :inv_event_end do
+      transitions :from => :inv_event, :to => :inv_fight_prof
+    end
+
+    event :inv_event_end do
+      transitions :from => :inv_fight_prof, :to => :start
     end
 
   end
