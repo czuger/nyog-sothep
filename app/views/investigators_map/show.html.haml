@@ -4,7 +4,7 @@
     = image_tag( "tokens/#{@current_investigator.code_name}.png" )
 
   - @prof_positions.each do |position|
-    .prof{ style: prof_token_style( position ) }
+    .prof{ style: token_style( position ) }
       = image_tag( 'tokens/professor.png' )
 
   - @monsters_positions.each do |monster|

@@ -13,6 +13,8 @@ class InvestigatorsActionsController < ApplicationController
     end
 
     @game_board = GGameBoard.find( params[:g_game_board_id])
+    raise "Game board not in inv_move state : #{@game_board.inspect}" unless @game_board.inv_move?
+
     set_current_moving_investigator
 
     ActiveRecord::Base.transaction do
@@ -24,14 +26,16 @@ class InvestigatorsActionsController < ApplicationController
         set_current_moving_investigator
         # If all the investigators have moved, we roll the events
         unless @current_investigator
+          @game_board.inv_move_end!
           @professor = @game_board.p_professor
           @game_board.i_investigators.where( aasm_state: :move_done ).order( :id ).each do |investigator|
             roll_event( investigator )
           end
           EEventLog.flush_old_events( @game_board )
+          # After that, the game board goes to next step
+          @game_board.inv_event_end!
+          @game_board.inv_fight_prof_end!
         end
-        # After that, the game board goes to next step
-        @game_board.inv_move_end!
       end
     end
 

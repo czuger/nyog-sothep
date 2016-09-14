@@ -12,7 +12,7 @@ class GGameBoard < ApplicationRecord
   aasm do
 
     state :start, :initial => true
-    state :prof_move, :prof_attack, :inv_move, :inv_encounter, :inv_event, :inv_fight_prof
+    state :prof_move, :prof_attack, :inv_move, :inv_event, :inv_fight_prof
 
     event :start_turn do
       transitions :from => :start, :to => :prof_move
@@ -27,11 +27,7 @@ class GGameBoard < ApplicationRecord
     end
 
     event :inv_move_end do
-      transitions :from => :inv_move, :to => :inv_encounter
-    end
-
-    event :inv_encounter_end do
-      transitions :from => :inv_encounter, :to => :inv_event
+      transitions :from => :inv_move, :to => :inv_event
     end
 
     event :inv_event_end do
