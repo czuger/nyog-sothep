@@ -71,8 +71,7 @@ module GameCore
 
     def self.table1_e13( game_board, investigator, professor )
       EEventLog.log( game_board, ( I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) ) )
-      game_board.p_prof_positions.delete_all
-      game_board.p_prof_positions.create!( position: professor.current_location )
+      professor.update_attribute( :spotted, true )
     end
 
     def self.table1_e14( game_board, investigator, professor )

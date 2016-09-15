@@ -1,4 +1,4 @@
-module InvestigatorsMapHelper
+module MapHelper
 
   def token_style( position )
     "top:#{position.y-17}px;left:#{position.x-17}px;transform:rotate(#{rand(-15..15)}deg);"

@@ -13,5 +13,6 @@ module NyogSothep
     # -- all .rb files in that directory are automatically loaded.
 
     config.sass.preferred_syntax = :sass
+    config.active_record.schema_format = :sql
   end
 end

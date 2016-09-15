@@ -9,29 +9,36 @@ class IInvestigator < ApplicationRecord
   belongs_to :last_location, polymorphic: true
 
   aasm do
-    state :ready, :initial => true
-    state :move_done, :known_psy_help, :delayed, :replay
+    state :ready_to_move, :initial => true
+    state :move_phase_done, :known_psy_help, :delayed, :event_phase_done
 
-    event :move do
-      transitions :from => :ready, :to => :move_done
+    event :moved do
+      transitions :from => :ready_to_move, :to => :move_phase_done
+    end
+
+    event :didnt_move do
+      transitions :from => :ready_to_move, :to => :event_phase_done
     end
 
     event :helped_by_kown_psy do
-      transitions :from => :move_done, :to => :known_psy_help
+      transitions :from => :move_phase_done, :to => :known_psy_help
     end
 
     event :be_delayed do
-      transitions :from => :move_done, :to => :delayed
+      transitions :from => :move_phase_done, :to => :delayed
     end
 
     event :play_again do
-      transitions :from => :move_done, :to => :replay
+      transitions :from => :move_phase_done, :to => :ready_to_move
     end
 
-    event :be_ready do
-      transitions :from => [ :move_done, :known_psy_help, :delayed, :replay ], :to => :ready
+    event :finalize_event do
+      transitions :from => [:move_phase_done, :known_psy_help, :delayed], :to => :event_phase_done
     end
 
+    event :next_turn do
+      transitions :from => :event_phase_done, :to => :ready_to_move
+    end
   end
 
 end

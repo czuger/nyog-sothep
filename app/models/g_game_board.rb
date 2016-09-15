@@ -11,19 +11,11 @@ class GGameBoard < ApplicationRecord
 
   aasm do
 
-    state :start, :initial => true
-    state :prof_move, :prof_attack, :inv_move, :inv_event, :inv_fight_prof
-
-    event :start_turn do
-      transitions :from => :start, :to => :prof_move
-    end
+    state :prof_move, :initial => true
+    state :inv_move, :inv_event
 
     event :prof_move_end do
-      transitions :from => :prof_move, :to => :prof_attack
-    end
-
-    event :prof_attack_end do
-      transitions :from => :prof_attack, :to => :inv_move
+      transitions :from => :prof_move, :to => :inv_move, after: :reset_investigators
     end
 
     event :inv_move_end do
@@ -31,12 +23,19 @@ class GGameBoard < ApplicationRecord
     end
 
     event :inv_event_end do
-      transitions :from => :inv_event, :to => :inv_fight_prof
+      transitions :from => :inv_event, :to => :prof_move
     end
 
-    event :inv_fight_prof_end do
-      transitions :from => :inv_fight_prof, :to => :start
+    event :players_replay do
+      transitions :from => :inv_event, :to => :inv_move
     end
 
   end
+
+  def reset_investigators
+    i_investigators.where( aasm_state: :event_phase_done ).each do |inv|
+      inv.next_turn!
+    end
+  end
+
 end

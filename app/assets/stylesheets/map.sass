@@ -66,17 +66,15 @@
   background-image: url('map.jpg')
   float: left
 
-#token
+.token
   width: 45px
   height: 44px
   position: absolute
   box-shadow: -1px 2px 5px 1px rgba(0, 0, 0, 0.7)
 
-.prof
-  @extend #token
-
-.monster
-  @extend #token
+.prof_maybe_position
+  @extend .token
+  opacity: 0.5
 
 .dest-road
   width: 65px

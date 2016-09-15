@@ -2,7 +2,7 @@ Rails.application.routes.draw do
 
   resources :g_game_boards, only: [] do
 
-    resource :investigators_map, only: [] do
+    resource :map, only: [] do
       post :switch_table
     end
 
@@ -10,8 +10,10 @@ Rails.application.routes.draw do
       member do
         get :move
         get :go_psy
+        get :special_event
       end
     end
+    get 'investigators_actions/roll_events'
 
     resource :professor_actions, only: [] do
       member do
@@ -22,10 +24,9 @@ Rails.application.routes.draw do
   end
 
 
-  get 'professor_map/show'
-  get 'investigators_map/show'
+  get 'map/show'
 
-  root 'professor_map#show'
+  root 'map#show'
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

@@ -1,6 +1,8 @@
 FactoryGirl.define do
   factory :i_investigator do
-    code_name 'Std investigator'
+    sequence :code_name do |n|
+      "Std investigator #{n}"
+    end
     san 1
     weapon false
     sign false
@@ -13,7 +15,7 @@ FactoryGirl.define do
       sequence :code_name  do |n|
         "Has moved investigator #{n}"
       end
-      aasm_state :move_done
+      aasm_state :move_phase_done
     end
 
   end

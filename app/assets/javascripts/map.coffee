@@ -2,9 +2,8 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
-# TODO : need to compute
-ready = ->
-  lowest_elem = $( '#token' )
+scroll_screen_to_lowest_elem = ->
+  lowest_elem = $( '.token' )
   lowest_position = lowest_elem.position().top
 
   for elem in $( '.dest-road' )
@@ -23,5 +22,5 @@ ready = ->
 
   lowest_elem[0].scrollIntoView( false )
 
-# $(document).ready(ready)
-$(document).on('turbolinks:load', ready)
+# $(document).ready(scroll_screen_to_lowest_elem)
+$(document).on('turbolinks:load', scroll_screen_to_lowest_elem)
