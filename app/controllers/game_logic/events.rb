@@ -47,9 +47,7 @@ module GameLogic::Events
   def roll_event( investigator )
     if investigator.current_location.city? && investigator.last_location.city?
 
-      roll = d6
-      roll += d6 if investigator.sign
-      roll += d6 if investigator.sign && investigator.medaillon
+      roll = event_dices( investigator )
 
       if investigator.event_table == 1
         GameCore::EventGroundA.send( "table#{investigator.event_table}_e#{roll}", @game_board, investigator, @professor )
@@ -59,6 +57,13 @@ module GameLogic::Events
     end
     # If nothing else happens, then the investigator is ready for next adventures
     investigator.finalize_event! if investigator.move_phase_done?
+  end
+
+  def event_dices( investigator )
+    roll = d6
+    roll += d6 if investigator.sign
+    roll += d6 if investigator.sign && investigator.medaillon
+    roll
   end
 
 end

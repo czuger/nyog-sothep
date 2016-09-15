@@ -20,6 +20,8 @@ class InvestigatorsActionsController < ApplicationController
     end
     EEventLog.log( @game_board, I18n.t( 'actions.result.pass' ) )
 
+    check_end_of_movements
+
     redirect_to map_show_url
   end
 
@@ -88,7 +90,7 @@ class InvestigatorsActionsController < ApplicationController
 
   def check_end_of_movements
     # If all the investigators have moved, we set the game board on next state
-    if @game_board.i_investigators.where( aasm_state: :ready_to_move ).count == 0
+    if @game_board.i_investigators.where( aasm_state: [ :ready_to_move, :known_psy_help, :delayed ] ).count == 0
       @game_board.inv_move_end!
     end
 
