@@ -15,7 +15,7 @@ FactoryGirl.define do
       sequence :code_name  do |n|
         "Has moved investigator #{n}"
       end
-      aasm_state :move_phase_done
+      aasm_state :roll_event
     end
 
   end

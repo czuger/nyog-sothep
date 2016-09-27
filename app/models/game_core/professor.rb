@@ -1,27 +1,43 @@
 module GameCore
-  class Professor
+  module Professor
 
-    def initialize( game_board, professor )
-      @game_board = game_board
-      @professor = professor
+    MONSTERS_ROLL_MAP = {
+      2 => :horreur_volante,
+      3 => :goule,
+      4 => :goule,
+      5 => :profonds,
+      6 => :profonds,
+      7 => :chose_brume,
+      8 => :habitants,
+      9 => :reves,
+      10 => :reves,
+      11 => :reves,
+      12 => :teleportation,
+      13 => :tempete,
+      14 => :fanatiques,
+      15 => :fanatiques,
+      16 => :fanatiques
+    }
+
+    def professor_pick_one_monster
+      begin
+        dice_rolled = rand( 1 .. 8 ) + rand( 1 .. 8 )
+        monster_choosed = MONSTERS_ROLL_MAP[ dice_rolled ]
+        raise "#{dice_rolled} correspond to no monster" unless monster_choosed
+
+        monster = m_monsters.find_by_code_name( monster_choosed )
+      end until monster
+      p_monsters.create!( code_name: monster.code_name )
+      monster.destroy!
     end
 
-    def play
-      place_monster
-      move_professor
+    def professor_pick_start_monsters
+      1.upto( 4 ).each do
+        professor_pick_one_monster
+      end
     end
 
     private
-
-    def move_professor
-      # Move professor.
-      loc = @professor.current_location
-      @professor.current_location = loc.destinations.sample
-      @professor.save!
-      # EEventLog.log( "Prof se déplace : #{prof.current_location.inspect}" )
-
-      PProfPosition.delete_all
-    end
 
     def place_monster
       if city_free

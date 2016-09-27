@@ -9,35 +9,47 @@ class IInvestigator < ApplicationRecord
   belongs_to :last_location, polymorphic: true
 
   aasm do
-    state :ready_to_move, :initial => true
-    state :move_phase_done, :known_psy_help, :delayed, :event_phase_done
+    state :inv_move, :initial => true
+    state :inv_skip_turn, :roll_event, :roll_no_event, :replay, :play_next_turn, :skip_next_turn
 
-    event :moved do
-      transitions :from => :ready_to_move, :to => :move_phase_done
+    event :roll_event do
+      transitions :from => :inv_move, :to => :roll_event
     end
 
-    event :didnt_move do
-      transitions :from => :ready_to_move, :to => :event_phase_done
+    event :roll_no_event do
+      transitions :from => :inv_move, :to => :roll_no_event
     end
 
-    event :helped_by_kown_psy do
-      transitions :from => :move_phase_done, :to => :known_psy_help
+    event :roll_no_event_after_passing_turn do
+      transitions :from => :inv_skip_turn, :to => :roll_no_event
     end
 
-    event :be_delayed do
-      transitions :from => :move_phase_done, :to => :delayed
+    event :replay do
+      transitions :from => :roll_event, :to => :replay
     end
 
-    event :play_again do
-      transitions :from => :move_phase_done, :to => :ready_to_move
+    event :play_next_turn do
+      transitions :from => :roll_event, :to => :play_next_turn
     end
 
-    event :finalize_event do
-      transitions :from => [:move_phase_done, :known_psy_help, :delayed], :to => :event_phase_done
+    event :play_next_turn_after_passing_turn do
+      transitions :from => :roll_no_event, :to => :play_next_turn
     end
 
-    event :next_turn do
-      transitions :from => :event_phase_done, :to => :ready_to_move
+    event :skip_next_turn do
+      transitions :from => :roll_event, :to => :skip_next_turn
+    end
+
+    event :inv_move do
+      transitions :from => :play_next_turn, :to => :inv_move
+    end
+
+    event :inv_move_after_replay do
+      transitions :from => :replay, :to => :inv_move
+    end
+
+    event :inv_skip_turn do
+      transitions :from => :skip_next_turn, :to => :inv_skip_turn
     end
   end
 

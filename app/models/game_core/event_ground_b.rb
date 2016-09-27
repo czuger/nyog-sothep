@@ -1,10 +1,10 @@
 module GameCore
   class EventGroundB
 
-    def self.table2_e1( game_board, investigator, professor )
-      EEventLog.log( game_board, I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) )
-      investigator.helped_by_kown_psy!
-    end
+#     def self.table2_e1( game_board, investigator, professor )
+#       EEventLog.log( game_board, I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) )
+# #       investigator.helped_by_kown_psy!
+#     end
 
     def self.table2_e2( game_board, investigator, professor )
       EEventLog.log( game_board, I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) )
@@ -20,7 +20,7 @@ module GameCore
 
     def self.table2_e4( game_board, investigator, professor )
       EEventLog.log( game_board, I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) )
-      investigator.play_again!
+      investigator.replay!
     end
 
     def self.table2_e5( game_board, investigator, professor )
@@ -55,13 +55,13 @@ module GameCore
       EEventLog.log( game_board, I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) )
       investigator.decrement( :san, 2 )
       investigator.update_attribute( :spell, true )
-      investigator.play_again!
+      investigator.replay!
     end
 
     def self.table2_e11( game_board, investigator, professor )
       EEventLog.log( game_board, I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) )
       investigator.update_attribute( :weapon, true )
-      investigator.play_again!
+      investigator.replay!
     end
 
     def self.table2_e12( game_board, investigator, professor )
@@ -71,7 +71,7 @@ module GameCore
 
     def self.table2_e17( game_board, investigator, professor )
       EEventLog.log( game_board, I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) )
-      investigator.play_again!
+      investigator.replay!
     end
 
     def self.table2_e18( game_board, investigator, professor )

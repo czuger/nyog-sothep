@@ -1,0 +1,12 @@
+- if @prof_move || @prof_breed
+  #prof-gen
+    = t( '.professeur' )
+    %br
+    = "HP : #{@prof.hp}"
+  #prof-items
+    - @prof_monsters.each do |monster|
+      - if @prof_move
+        = image_tag( "tokens/#{monster.code_name}.jpg" )
+      - elsif @prof_breed
+        = link_to monster_breed_g_game_board_professor_actions_url( g_game_board_id: @game_board.id, monster_id: monster.id ) do
+          = image_tag( "tokens/#{monster.code_name}.jpg" )

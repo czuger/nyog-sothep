@@ -35,21 +35,22 @@ namespace :load_data do
     # monsters = %w( goule profond fanatique chose_brume habitants reves tempete horreur_volante teleportation )
     # monsters_counts = [ 8, 8, 10, 3, 4, 6, 2, 1, 2 ]
 
-    monsters = %w( goules profonds fanatiques chose_brume habitants reves tempete )
-    monsters_counts = [ 8, 8, 10, 3, 4, 6, 2 ]
+    monsters = %w( goules profonds fanatiques chose_brume habitants reves tempete horreur_volante )
+    monsters_counts = [ 8, 8, 10, 3, 4, 6, 2, 1 ]
 
     gb = GGameBoard.first
+
+    gb.m_monsters.delete_all
+    gb.p_monsters.delete_all
+
     monsters.each_with_index do |monster, index|
       1.upto( monsters_counts[ index ] ).each do
         gb.m_monsters.create!( code_name: monster )
       end
     end
 
-    1.upto( 4 ).each do
-      m = gb.m_monsters.all.to_a.sample
-      gb.p_monsters.create!( code_name: m.code_name )
-      m.delete
-    end
+    gb.professor_pick_start_monsters
+
   end
 
   desc 'Load water links '

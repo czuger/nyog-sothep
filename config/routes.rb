@@ -10,14 +10,15 @@ Rails.application.routes.draw do
       member do
         get :move
         get :go_psy
-        get :special_event
+        # get :special_event
       end
     end
-    get 'investigators_actions/roll_events'
+    # get 'investigators_actions/roll_events'
 
     resource :professor_actions, only: [] do
       member do
         get :move
+        get ':monster_id/breed', action: :breed, as: :monster_breed
       end
     end
 

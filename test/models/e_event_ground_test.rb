@@ -9,10 +9,10 @@ class EEventGroundTest < ActiveSupport::TestCase
     EEventLog.start_event_block( gb )
     1.upto(18).each do |i|
 
-      investigator.update_attribute( :aasm_state, :move_phase_done )
+      investigator.update_attribute( :aasm_state, :roll_event )
       GameCore::EventGroundA.send( "table#{1}_e#{i}", gb, investigator, professor )
 
-      investigator.update_attribute( :aasm_state, :move_phase_done )
+      investigator.update_attribute( :aasm_state, :roll_event )
       GameCore::EventGroundB.send( "table#{2}_e#{i}", gb, investigator, professor )
     end
   end

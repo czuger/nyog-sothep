@@ -1,6 +1,6 @@
 #board
 
-  - if @prof_move
+  - if @prof_move || @prof_breed
     - @investigators.each do |investigator|
       .token{ style: token_style( investigator.current_location ) }
         = image_tag( "tokens/#{investigator.code_name}.png" )
@@ -8,17 +8,17 @@
     .token{ style: token_style( @current_investigator.current_location ) }
       = image_tag( "tokens/#{@current_investigator.code_name}.png" )
 
-  - if @prof_move || ( @inv_move && @prof_spotted )
-    .token{ style: token_style( @prof_location ) }
+  - if @prof_move || @prof_breed || ( @inv_move && @prof_spotted )
+    .token{ style: token_style( @prof_location, important: true ) }
       = image_tag( 'tokens/professor.png' )
 
   - @prof_maybe_positions.each do |position|
     .prof_maybe_position{ style: token_style( position.position ) }
       = image_tag( 'tokens/professor.png' )
 
-  - if @inv_move || @prof_move
+  - if @inv_move || @prof_move || @prof_breed
     - @monsters_positions.each do |monster|
-      .token{ style: monster_token_style( monster.location ) }
+      .token{ style: token_style( monster.location ) }
         = image_tag( "tokens/#{monster.code_name}.jpg" )
 
   - if @inv_move
@@ -61,6 +61,9 @@
       #investigator-items
         - %w( weapon sign medaillon spell ).each do |elem|
           %div{ id: icon_div_id( elem ) }
+
+    = render partial: 'prof_info'
+
   %hr
   #events
     %ul

@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class InvestigatorsActionsControllerTest < ActionDispatch::IntegrationTest
+class InvestigatorsActionsControllerMoveTest < ActionDispatch::IntegrationTest
 
   def setup
     @gb = create( :g_game_board_with_event_ready_to_move_investigators )
@@ -33,24 +33,24 @@ class InvestigatorsActionsControllerTest < ActionDispatch::IntegrationTest
     assert @gb.inv_move?
   end
 
-  test "should roll events for investigators on table 1" do
-    @gb = create( :g_game_board_with_event_ready_for_events_investigators )
-    @gb.prof_move_end!
-    @gb.inv_move_end!
-    InvestigatorsActionsController.any_instance.stubs(:d6).returns(1)
-    get g_game_board_investigators_actions_roll_events_url( g_game_board_id: @gb.id )
-    assert_redirected_to map_show_url
-    assert @gb.reload.prof_move?
-  end
-
-  test "should roll events for investigators on table 2" do
-    @gb = create( :g_game_board_with_event_ready_for_events_investigators )
-    @gb.prof_move_end!
-    @gb.inv_move_end!
-    @investigator.update_attribute( :event_table, 2 )
-    get g_game_board_investigators_actions_roll_events_url( g_game_board_id: @gb.id )
-    assert_redirected_to map_show_url
-    assert @gb.reload.prof_move?
-  end
+  # test "should roll events for investigators on table 1" do
+  #   @gb = create( :g_game_board_with_event_ready_for_events_investigators )
+  #   @gb.prof_move_end!
+  #   @gb.inv_move_end!
+  #   InvestigatorsActionsController.any_instance.stubs(:d6).returns(1)
+  #   get g_game_board_investigators_actions_roll_events_url( g_game_board_id: @gb.id )
+  #   assert_redirected_to map_show_url
+  #   assert @gb.reload.prof_move?
+  # end
+  #
+  # test "should roll events for investigators on table 2" do
+  #   @gb = create( :g_game_board_with_event_ready_for_events_investigators )
+  #   @gb.prof_move_end!
+  #   @gb.inv_move_end!
+  #   @investigator.update_attribute( :event_table, 2 )
+  #   get g_game_board_investigators_actions_roll_events_url( g_game_board_id: @gb.id )
+  #   assert_redirected_to map_show_url
+  #   assert @gb.reload.prof_move?
+  # end
 
 end

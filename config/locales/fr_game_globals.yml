@@ -4,6 +4,7 @@ fr:
   maps:
     show:
       go_psy: 'Voir un psychanaliste'
+      professeur: 'Le professeur'
 
   actions:
     result:
@@ -13,8 +14,12 @@ fr:
        m: "%{investigator_name} va voir un psychanaliste. Il gagne %{san} points de SAN mais passe son prochain tour."
        f: "%{investigator_name} va voir un psychanaliste. Elle gagne %{san} points de SAN mais passe son prochain tour."
 
+  events:
+    no_water_events: 'Rien ne se passe ...'
+
   log:
     incarn: "Vous incarnez %{investigator_name}"
+    pass: "Vous passez votre tour"
 
   investigators:
     lemon: 'Miss Lemon'

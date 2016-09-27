@@ -4,28 +4,6 @@ class InvestigatorsActionsController < ApplicationController
   include GameLogic::Movement
   include GameLogic::Events
 
-  def special_event
-    set_game_board
-    set_current_investigator
-
-    log_event_for_investigator( @current_investigator )
-    case @current_investigator.aasm_state
-      when 'known_psy_help' then
-        @current_investigator.increment( :san, 5 )
-        @current_investigator.finalize_event!
-      when 'delayed' then
-        @current_investigator.finalize_event!
-      else
-        raise "Unknown aasm_state : #{investigator.aasm_state}"
-    end
-    EEventLog.log( @game_board, I18n.t( 'actions.result.pass' ) )
-
-    check_end_of_movements
-
-    redirect_to map_show_url
-  end
-
-
   def move
     set_game_board
 
@@ -38,21 +16,29 @@ class InvestigatorsActionsController < ApplicationController
     end
 
     ActiveRecord::Base.transaction do
+
+      # First step : pass all investigators that does not move this turn
+      # @game_board.investigators_that_pass_move_phase.each do |inv|
+      #   EEventLog.start_event_block( @game_board )
+      #   inv.no_move_to_event_step!
+      # end
+
       EEventLog.start_event_block( @game_board )
       set_current_investigator
 
-      # TODO : need to fix special events issues.
-      unless @current_investigator.ready_to_move?
+      unless @current_investigator.inv_move?
         raise "Investigator able to move only if ready : #{@current_investigator.inspect}"
       end
 
       if move_current_investigator( dest_loc )
-        @current_investigator.moved!
+        @current_investigator.roll_event!
       else
-        @current_investigator.didnt_move!
+        @current_investigator.roll_no_event!
       end
 
-      check_end_of_movements
+#       inv_move_end
+
+      # check_end_of_movements
     end
 
     redirect_to map_show_url
@@ -75,9 +61,8 @@ class InvestigatorsActionsController < ApplicationController
         EEventLog.log( @game_board, I18n.t( "actions.result.psy.#{@current_investigator.gender}",
           san: san, investigator_name: t( "investigators.#{@current_investigator.code_name}" ) ) )
 
-        @current_investigator.didnt_move!
+        @current_investigator.roll_no_event!
 
-        check_end_of_movements
       else
         raise "Psy asked in non city area : #{params.inspect}"
       end
@@ -88,12 +73,12 @@ class InvestigatorsActionsController < ApplicationController
 
   private
 
-  def check_end_of_movements
-    # If all the investigators have moved, we set the game board on next state
-    if @game_board.i_investigators.where( aasm_state: [ :ready_to_move, :known_psy_help, :delayed ] ).count == 0
-      @game_board.inv_move_end!
-    end
-
-  end
+  # def check_end_of_movements
+  #   # If all the investigators have moved, we set the game board on next state
+  #   unless @game_board.get_next_investigator_for_move_phase
+  #     @game_board.inv_move_end!
+  #   end
+  #
+  # end
 
 end

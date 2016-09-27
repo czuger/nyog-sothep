@@ -2,6 +2,8 @@ require 'pp'
 
 class MapController < ApplicationController
 
+  include GameLogic::Events
+
   def switch_table
     params[:event_table]
     set_current_investigator
@@ -10,9 +12,6 @@ class MapController < ApplicationController
   end
 
   def show
-
-    # TODO : refaire sur papier les AASM pour la board et les invest.
-
     @game_board = GGameBoard.first
 
     @investigators = @game_board.i_investigators
@@ -21,38 +20,59 @@ class MapController < ApplicationController
     @prof = @game_board.p_professor
     @prof_location = @prof.current_location
 
-    case @game_board.aasm_state
-      when 'prof_move' then
+    replay = nil
+    begin
+      replay = false
+      case @game_board.aasm_state
+        when 'prof_move' then
+          prof_move
 
-        @monsters_positions = @game_board.p_monster_positions.all
+          # TODO : prof should not be able to breed on an occuped position.
+        when 'prof_breed' then
+          prof_breed
 
-        @aval_destinations = @prof_location.destinations
-        @prof_move = true
+        when 'inv_move' then
 
-      when 'inv_move' then
+          # puts "Next moving investigator = #{@game_board.next_moving_investigator.inspect}"
 
-        @current_investigator = @game_board.i_investigators.where( aasm_state: :ready_to_move ).first
-        if @current_investigator
-          @zone = @current_investigator.current_location
-
-          @monsters_positions = @game_board.p_monster_positions.where( discovered: true )
-
-          if @current_investigator.ready_to_move?
+          if( @current_investigator = @game_board.next_moving_investigator )
+            @zone = @current_investigator.current_location
+            @monsters_positions = @game_board.p_monster_positions.where( discovered: true )
             @aval_destinations = @zone.destinations
+            @prof_spotted = @prof.spotted
+            @inv_move = true
+          else
+            @game_board.inv_move_end!
+            replay = process_events
           end
 
-          @prof_spotted = @prof.spotted
+        when 'inv_event' then
+          replay = process_events
 
-          @inv_move = true
-        else
-          @current_investigator = @game_board.i_investigators.where( aasm_state: [ :known_psy_help, :delayed ] ).first
-          @inv_special_event = true if @current_investigator
-        end
+        else raise "Show case non implemented : #{@game_board.aasm_state}"
+      end
+    end while replay
 
-      when 'inv_event' then
-        @inv_event = true
+    prof_move if @game_board.prof_move?
 
-      else raise "Show case non implemented : #{@game_board.aasm_state}"
+  end
+
+  private
+
+  def prof_move
+    unless @prof_move
+      @monsters_positions = @game_board.p_monster_positions.all
+      @prof_monsters = @game_board.p_monsters
+
+      @aval_destinations = @prof_location.destinations
+      @prof_move = true
     end
+  end
+
+  def prof_breed
+    @monsters_positions = @game_board.p_monster_positions.all
+    @prof_monsters = @game_board.p_monsters
+
+    @prof_breed = true
   end
 end
