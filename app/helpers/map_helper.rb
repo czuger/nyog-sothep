@@ -10,4 +10,8 @@ module MapHelper
     "#{elem}-#{@current_investigator.send( elem ) ? :enabled : :disabled }"
   end
 
+  def can_breed_monster( monster )
+    !@prof_move && @prof_breed && !@prof_in_water && !( monster.code_name == 'profonds' && !@prof_in_port )
+  end
+
 end

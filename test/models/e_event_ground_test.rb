@@ -16,4 +16,5 @@ class EEventGroundTest < ActiveSupport::TestCase
       GameCore::EventGroundB.send( "table#{2}_e#{i}", gb, investigator, professor )
     end
   end
+
 end

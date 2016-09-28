@@ -1,6 +1,5 @@
 module GameLogic::Movement
 
-  include GameLogic::Encounters
   include GameLogic::Dices
 
   def move_current_investigator( dest_loc )
@@ -10,9 +9,7 @@ module GameLogic::Movement
       @current_investigator.current_location = dest_loc
       @current_investigator.save!
 
-      translated_dest_loc = I18n.t( "locations.#{dest_loc.code_name}", :default => "à #{dest_loc.code_name.humanize}" )
-      event = "#{I18n.t( "investigators.#{@current_investigator.code_name}" )} se déplace #{translated_dest_loc}"
-      EEventLog.log( @game_board, event )
+      EEventLog.log_investigator_movement( @game_board, @current_investigator, dest_loc )
 
       return true
     end

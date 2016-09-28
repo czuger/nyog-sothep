@@ -14,6 +14,7 @@ FactoryGirl.define do
     end
 
     factory :g_game_board_with_event_ready_to_move_investigators do
+      aasm_state 'inv_move'
       after(:create) do |gb|
         inv_road = create( :inv_road )
         1.upto(4).each do
@@ -31,5 +32,6 @@ FactoryGirl.define do
         end
       end
     end
+
   end
 end

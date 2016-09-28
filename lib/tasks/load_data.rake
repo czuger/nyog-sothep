@@ -35,16 +35,19 @@ namespace :load_data do
     # monsters = %w( goule profond fanatique chose_brume habitants reves tempete horreur_volante teleportation )
     # monsters_counts = [ 8, 8, 10, 3, 4, 6, 2, 1, 2 ]
 
-    monsters = %w( goules profonds fanatiques chose_brume habitants reves tempete horreur_volante )
-    monsters_counts = [ 8, 8, 10, 3, 4, 6, 2, 1 ]
+    monsters = {
+      goules: 8, profonds: 8, fanatiques: 10, chose_brume: 3, habitants: 4, reves: 6, tempete: 2, horreur_volante: 1 }
+    # implemented_monsters = [ :reves, :goules ]
+    implemented_monsters = [ :goules, :reves, :profonds ]
 
     gb = GGameBoard.first
+    EEventLog.start_event_block( gb )
 
     gb.m_monsters.delete_all
     gb.p_monsters.delete_all
 
-    monsters.each_with_index do |monster, index|
-      1.upto( monsters_counts[ index ] ).each do
+    implemented_monsters.each do |monster|
+      1.upto( monsters[monster] ).each do
         gb.m_monsters.create!( code_name: monster )
       end
     end

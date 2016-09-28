@@ -1,0 +1,97 @@
+module GameCore
+  module Encounters
+
+    def resolve_encounter( investigator )
+      encounter = p_monster_positions.find_by_location_id( investigator.current_location_id )
+      if encounter
+        send( "resolve_encounter_#{encounter.code_name}", investigator, encounter )
+      end
+    end
+
+    private
+
+    def resolve_encounter_fanatiques( investigator, encounter )
+      log = I18n.t( 'encounter.fanatiques.common' )
+      unless investigator.weapon
+        log << I18n.t( 'encounter.fanatiques.no_weapon' )
+        EEventLog.log( self, log )
+        investigator_goes_back( self, investigator )
+        monster_spotted( encounter )
+      else
+        roll = dice
+        roll += 1 if investigator.medaillon
+        if roll <= 5
+          log << I18n.t( 'encounter.fanatiques.weapon_fail' )
+          EEventLog.log( self, log )
+          investigator_goes_back( self, investigator )
+          monster_spotted( encounter )
+        elsif roll == 6
+          log << I18n.t( 'encounter.fanatiques.weapon_success' )
+          EEventLog.log( self, log )
+          investigator_loose_san( self, investigator, 2 )
+          encounter_destroyed( encounter )
+        else
+          log << I18n.t( 'encounter.fanatiques.weapon_critical' )
+          EEventLog.log( self, log )
+          encounter_destroyed( encounter )
+        end
+      end
+    end
+
+    def resolve_encounter_profonds( investigator, encounter )
+      log = I18n.t( 'encounter.profonds.common' )
+      if investigator.sign
+        san_loss = 1
+        replace_encounter_in_monsters_stack( encounter )
+        investigator.update_attribute( :sign, false )
+        log << I18n.t( 'encounter.profonds.sign' )
+      else
+        san_loss = 3
+        monster_spotted( encounter )
+        log << I18n.t( 'encounter.profonds.no_sign' )
+      end
+      investigator_loose_san( self, investigator, san_loss )
+      EEventLog.log( self, log )
+    end
+
+    def resolve_encounter_goules( investigator, encounter )
+      log = I18n.t( 'encounter.goules.common' )
+      if investigator.weapon
+        san_loss = 3
+        san_loss = 2 if dice >= 5
+        san_loss -= 1 if investigator.sign
+        replace_encounter_in_monsters_stack( encounter )
+        log << I18n.t( 'encounter.goules.weapon' )
+      else
+        san_loss = 4
+        monster_spotted( encounter )
+        log << I18n.t( 'encounter.goules.no_weapon' )
+      end
+      investigator_loose_san( self, investigator, san_loss )
+      EEventLog.log( self, log )
+    end
+
+    def resolve_encounter_reves( investigator, encounter )
+      EEventLog.log( self, I18n.t( 'encounter.reves' ) )
+      investigator_loose_san( self, investigator, 2 )
+      replace_encounter_in_monsters_stack( encounter )
+    end
+
+    # Common methods
+
+    def monster_spotted( encounter )
+      encounter.update( discovered: true )
+    end
+
+    def replace_encounter_in_monsters_stack( encounter )
+      m_monsters.create!( code_name: encounter.code_name )
+      encounter.destroy!
+    end
+
+    def encounter_destroyed( encounter )
+      encounter.destroy!
+    end
+
+
+  end
+end

@@ -2,6 +2,8 @@ class GGameBoard < ApplicationRecord
   include AASM
 
   include GameCore::Professor
+  include GameCore::Encounters
+  include GameCore::CommonMethods
 
   has_many :e_event_logs, dependent: :destroy
   has_many :i_investigators, dependent: :destroy
@@ -29,7 +31,7 @@ class GGameBoard < ApplicationRecord
     end
 
     event :inv_event_end do
-      transitions :from => :inv_event, :to => :prof_move, after: Proc.new {|*args| reset_investigators_status(*args) }
+      transitions :from => :inv_event, :to => :prof_move, after: Proc.new {|*args| end_turn(*args) }
     end
 
     event :someplayer_shoot_again do
@@ -54,7 +56,7 @@ class GGameBoard < ApplicationRecord
     end
   end
 
-  def reset_investigators_status
+  def end_turn
     i_investigators.where( aasm_state: :roll_no_event ).each do |inv|
       inv.play_next_turn_after_passing_turn!
     end
@@ -62,6 +64,7 @@ class GGameBoard < ApplicationRecord
       inv.inv_move! if inv.play_next_turn?
       inv.inv_skip_turn! if inv.skip_next_turn?
     end
+    p_professor.update_attribute( :spotted, false )
   end
 
   def investigator_in_event_phase

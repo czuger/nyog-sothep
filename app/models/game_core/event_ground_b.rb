@@ -1,6 +1,8 @@
 module GameCore
   class EventGroundB
 
+    extend GameCore::CommonMethods
+
 #     def self.table2_e1( game_board, investigator, professor )
 #       EEventLog.log( game_board, I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) )
 # #       investigator.helped_by_kown_psy!
@@ -8,14 +10,12 @@ module GameCore
 
     def self.table2_e2( game_board, investigator, professor )
       EEventLog.log( game_board, I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) )
-      investigator.decrement( :san, 3 )
-      investigator.update_attribute( :weapon, true )
+      investigator.update_attribute( :weapon, true ) if investigator_loose_san( game_board, investigator, 3 )
     end
 
     def self.table2_e3( game_board, investigator, professor )
       EEventLog.log( game_board, I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) )
-      investigator.decrement( :san, 2 )
-      investigator.update_attribute( :spell, true )
+      investigator.update_attribute( :spell, true ) if investigator_loose_san( game_board, investigator, 2 )
     end
 
     def self.table2_e4( game_board, investigator, professor )
@@ -25,8 +25,7 @@ module GameCore
 
     def self.table2_e5( game_board, investigator, professor )
       EEventLog.log( game_board, I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) )
-      investigator.decrement( :san, 2 )
-      investigator.update_attribute( :sign, true )
+      investigator.update_attribute( :sign, true ) if investigator_loose_san( game_board, investigator, 2 )
     end
 
     def self.table2_e6( game_board, investigator, professor )
@@ -36,14 +35,12 @@ module GameCore
 
     def self.table2_e7( game_board, investigator, professor )
       EEventLog.log( game_board, I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) )
-      investigator.current_location = investigator.last_location
-      investigator.save!
+      investigator_goes_back( game_board, investigator )
     end
 
     def self.table2_e8( game_board, investigator, professor )
       EEventLog.log( game_board, I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) )
-      investigator.decrement( :san, 3 )
-      investigator.update_attribute( :medaillon, true )
+      investigator.update_attribute( :medaillon, true ) if investigator_loose_san( game_board, investigator, 2 )
     end
 
     def self.table2_e9( game_board, investigator, professor )
@@ -53,9 +50,10 @@ module GameCore
 
     def self.table2_e10( game_board, investigator, professor )
       EEventLog.log( game_board, I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) )
-      investigator.decrement( :san, 2 )
-      investigator.update_attribute( :spell, true )
-      investigator.replay!
+      if investigator_loose_san( game_board, investigator, 2 )
+        investigator.update_attribute( :spell, true )
+        investigator.replay!
+      end
     end
 
     def self.table2_e11( game_board, investigator, professor )
@@ -66,7 +64,7 @@ module GameCore
 
     def self.table2_e12( game_board, investigator, professor )
       EEventLog.log( game_board, I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) )
-      investigator.decrement( :san, 2 )
+      investigator_loose_san( game_board, investigator, 2 )
     end
 
     def self.table2_e17( game_board, investigator, professor )
@@ -76,8 +74,7 @@ module GameCore
 
     def self.table2_e18( game_board, investigator, professor )
       EEventLog.log( game_board, I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) )
-      investigator.decrement( :san, 2 )
-      investigator.update_attribute( :weapon, false )
+      investigator.update_attribute( :weapon, false ) if investigator_loose_san( game_board, investigator, 2 )
     end
 
     def self.method_missing( method_name, game_board, *args )

@@ -23,11 +23,7 @@ module GameLogic::Events
         if next_investigator_for_event
           log_event_for_investigator( next_investigator_for_event )
 
-          # Il faut gérer les rencontres
-          monster = @game_board.p_monsters_positions.find_by_location_id( next_investigator_for_event.location_id )
-          if monster
-            if next_investigator_for_event.location_id ==
-          end
+          @game_board.resolve_encounter( next_investigator_for_event )
 
           if next_investigator_for_event.roll_event?
             roll_event( next_investigator_for_event )
@@ -35,13 +31,17 @@ module GameLogic::Events
             EEventLog.log( @game_board, I18n.t( 'log.pass' ) )
           end
 
-          # If nothing else happens, then the investigator is ready for next adventures
-          next_investigator_for_event.play_next_turn! if next_investigator_for_event.roll_event?
-          next_investigator_for_event.play_next_turn_after_passing_turn! if next_investigator_for_event.roll_no_event?
+          unless next_investigator_for_event.dead
+            # If nothing else happens, then the investigator is ready for next adventures
+            next_investigator_for_event.play_next_turn! if next_investigator_for_event.roll_event?
+            next_investigator_for_event.play_next_turn_after_passing_turn! if next_investigator_for_event.roll_no_event?
 
-          # If we have someone that replay : then break the loop
-          replay = next_investigator_for_event.replay?
-          break if replay
+            # If we have someone that replay : then break the loop
+            replay = next_investigator_for_event.replay?
+            break if replay
+          else
+            next_investigator_for_event.destroy!
+          end
 
         end
 

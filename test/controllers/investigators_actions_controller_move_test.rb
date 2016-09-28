@@ -4,7 +4,6 @@ class InvestigatorsActionsControllerMoveTest < ActionDispatch::IntegrationTest
 
   def setup
     @gb = create( :g_game_board_with_event_ready_to_move_investigators )
-    @gb.prof_move_end!
     @investigator = @gb.i_investigators.first
     @dest = @investigator.current_location.destinations.first
   end

@@ -73,6 +73,9 @@ class MapController < ApplicationController
     @monsters_positions = @game_board.p_monster_positions.all
     @prof_monsters = @game_board.p_monsters
 
+    @prof_in_water = !@prof.current_location.city?
+    @prof_in_port = @prof.current_location.port if @prof.current_location.city?
+
     @prof_breed = true
   end
 end

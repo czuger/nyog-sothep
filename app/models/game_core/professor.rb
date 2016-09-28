@@ -3,8 +3,8 @@ module GameCore
 
     MONSTERS_ROLL_MAP = {
       2 => :horreur_volante,
-      3 => :goule,
-      4 => :goule,
+      3 => :goules,
+      4 => :goules,
       5 => :profonds,
       6 => :profonds,
       7 => :chose_brume,
@@ -20,15 +20,22 @@ module GameCore
     }
 
     def professor_pick_one_monster
+      try_counter = 0
       begin
         dice_rolled = rand( 1 .. 8 ) + rand( 1 .. 8 )
         monster_choosed = MONSTERS_ROLL_MAP[ dice_rolled ]
         raise "#{dice_rolled} correspond to no monster" unless monster_choosed
 
         monster = m_monsters.find_by_code_name( monster_choosed )
-      end until monster
-      p_monsters.create!( code_name: monster.code_name )
-      monster.destroy!
+        try_counter += 1
+      end until monster || try_counter > 10
+      if monster
+        p_monsters.create!( code_name: monster.code_name )
+        monster.destroy!
+        EEventLog.log( self, I18n.t( 'actions.result.prof_pick_monsters' ) )
+      else
+        EEventLog.log( self, I18n.t( 'errors.no_more_monsters' ) )
+      end
     end
 
     def professor_pick_start_monsters

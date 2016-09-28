@@ -18,6 +18,7 @@ Rails.application.routes.draw do
     resource :professor_actions, only: [] do
       member do
         get :move
+        get :dont_breed
         get ':monster_id/breed', action: :breed, as: :monster_breed
       end
     end

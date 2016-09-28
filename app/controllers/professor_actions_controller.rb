@@ -1,5 +1,11 @@
 class ProfessorActionsController < ApplicationController
 
+  def dont_breed
+    set_game_board
+    @game_board.prof_breed!
+    redirect_to map_show_url
+  end
+
   def breed
     set_game_board
     raise "Prof breed called while game_board not in prof_breed state : #{@game_board.inspect}" unless @game_board.prof_breed?
@@ -8,6 +14,7 @@ class ProfessorActionsController < ApplicationController
     raise "Unable to find monster for #{params.inspect}" unless monster
 
     ActiveRecord::Base.transaction do
+      EEventLog.start_event_block( @game_board )
       monster_loc = @game_board.p_professor.current_location
       @game_board.p_monster_positions.create!( location: monster_loc, code_name: monster.code_name )
       monster.destroy!

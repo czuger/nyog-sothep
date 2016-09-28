@@ -1,0 +1,23 @@
+fr:
+  encounter:
+    reves: "Lors de votre sommeil, le professeur vous fait voyager dans les contrées du rêve. Vous y faites d'étranges rencontres qui vous font perdre deux points de SAN."
+
+    goules:
+      common: "Vous rencontrez des goules animées par le professeur. "
+      weapon: "Vous les éliminez gràce à votre arme mais perdez #{san} points de SAN."
+      no_weapon: "Desarmé vous vous enfuyez et et perdez 4 points de SAN."
+
+    profonds:
+      common: "Vous rencontrez un groupe de profonds appelés par le professeur. "
+      sign: "A l'aide de votre signe protecteur vous les renvoyez, mais perdez 1 point de SAN et votre signe."
+      no_sign: "N'ayant rien pour vous protéger contre ces horreurs, vous vous enfuyez en perdant 3 points de SAN."
+
+    fanatiques:
+      common: "Vous rencontrez un groupe d'adorateurs de Nyog'Sothep. "
+      no_weapon: "Sans armes, vous comprenez que vous n'avez aucune chance et retournez d'ou vous venez."
+      weapon_fail: "Vous les menacez avec votre arme, mais leur détermination est plus forte. Vous retournez d'ou vous venez."
+      weapon_success: "Arme au poing vous dispersez la foule des fanatiques. Mais l'action vous éprouve : vous perdez 2 points de SAN."
+      weapon_critical: "Vous dispersez les fanatiques comme un boss."
+
+
+

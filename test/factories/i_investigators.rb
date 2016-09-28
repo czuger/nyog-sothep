@@ -3,7 +3,7 @@ FactoryGirl.define do
     sequence :code_name do |n|
       "Std investigator #{n}"
     end
-    san 1
+    san 500 # Otherwise full t
     weapon false
     sign false
     medaillon false

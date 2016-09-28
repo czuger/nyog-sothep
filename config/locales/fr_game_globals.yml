@@ -5,14 +5,28 @@ fr:
     show:
       go_psy: 'Voir un psychanaliste'
       professeur: 'Le professeur'
+      dont_breed: 'Ne pas invoquer de monstres'
+
+  errors:
+    no_more_monsters: 'Le professeur ne peux plus prendre de monstre. Le stock est vide.'
 
   actions:
     result:
+      perte_san: '%{investigator_name} perd %{san} points de SAN -> %{final_san}'
+      prof_pick_monsters: 'Le professeur pioche un monstre.'
       pass: 'Vous passez votre tour'
       psy_rep: "%{investigator_name} gagne 5 points de SAN"
       psy:
        m: "%{investigator_name} va voir un psychanaliste. Il gagne %{san} points de SAN mais passe son prochain tour."
        f: "%{investigator_name} va voir un psychanaliste. Elle gagne %{san} points de SAN mais passe son prochain tour."
+      crazy:
+       m: "%{investigator_name} devient fou et devient fanatique."
+       f: "%{investigator_name} devient folle et devient fanatique."
+
+  movement:
+    goes: '%{who} se déplace %{where}'
+    return: '%{who} retourne %{where}'
+    default_to: 'à %{destination_name}'
 
   events:
     no_water_events: 'Rien ne se passe ...'
