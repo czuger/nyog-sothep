@@ -4,6 +4,9 @@ class FullTurnTest < ActionDispatch::IntegrationTest
 
   test 'A full turn' do
 
+    # Normally deactivated, because very long
+    # return
+
     @gb = create( :g_game_board_with_event_ready_to_move_investigators )
     @gb.update_attribute( :aasm_state, 'prof_move' )
     @gb.i_investigators.last.update( { event_table: 2 } )
@@ -18,12 +21,15 @@ class FullTurnTest < ActionDispatch::IntegrationTest
 
       1.upto(2).each do |i|
         # puts "Turn : #{i}"
-        @prof = @gb.p_professor
-        @prof_dest = @prof.current_location.destinations.first
+        prof = @gb.p_professor
+        road = create( :inv_road )
+        prof.current_location = road.src_city
+        prof.save!
+        prof_dest = prof.current_location.destinations.first
 
         # We call it because normally use should call it
         get map_show_url
-        get move_g_game_board_professor_actions_url( g_game_board_id: @gb.id, zone_id: @prof_dest.id, zone_class: @prof_dest.class )
+        get move_g_game_board_professor_actions_url( g_game_board_id: @gb.id, zone_id: prof_dest.id, zone_class: prof_dest.class )
         assert_redirected_to map_show_url
 
         follow_redirect!
@@ -45,7 +51,7 @@ class FullTurnTest < ActionDispatch::IntegrationTest
             dices_result = 1
           end
 
-          InvestigatorsActionsController.any_instance.stubs( :event_dices ).returns( dices_result )
+          GameCore::Events.stubs( :event_dices ).returns( dices_result )
           MapController.any_instance.stubs( :event_dices ).returns( dices_result )
 
           if inv&.inv_move?

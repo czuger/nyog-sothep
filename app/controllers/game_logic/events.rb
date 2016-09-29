@@ -1,6 +1,6 @@
 module GameLogic::Events
 
-  include GameLogic::Dices
+  private
 
   def process_events
     raise "Process events called while game_board not in inv_event state : #{@game_board.inspect}" unless @game_board.inv_event?
@@ -11,7 +11,6 @@ module GameLogic::Events
     # pp @game_board.i_investigators
 
     @professor = @game_board.p_professor
-    replay = false
 
     ActiveRecord::Base.transaction do
       @professor.update( spotted: false )
@@ -21,12 +20,12 @@ module GameLogic::Events
         next_investigator_for_event = @game_board.next_investigator_ready_for_event
         # puts "Next investigator ready for event = #{next_investigator_for_event.inspect}"
         if next_investigator_for_event
-          log_event_for_investigator( next_investigator_for_event )
+          EEventLog.log_event_for_investigator( @game_board, next_investigator_for_event )
 
           @game_board.resolve_encounter( next_investigator_for_event )
 
           if next_investigator_for_event.roll_event?
-            roll_event( next_investigator_for_event )
+            GameCore::Events.roll_event( @game_board, next_investigator_for_event, @professor )
           else
             EEventLog.log( @game_board, I18n.t( 'log.pass' ) )
           end
@@ -54,41 +53,9 @@ module GameLogic::Events
         @game_board.inv_event_end!
       end
 
+      @loop = true
+
       EEventLog.flush_old_events( @game_board )
     end
-    replay
   end
-
-  private
-
-  def log_event_for_investigator( investigator )
-    EEventLog.start_event_block( @game_board )
-    iname = I18n.t( "investigators.#{investigator.code_name}" )
-    EEventLog.log( @game_board, I18n.t( 'log.incarn', investigator_name: iname ) )
-  end
-
-  def roll_event( investigator )
-    if investigator.current_location.city? && investigator.last_location.city?
-
-      roll = event_dices( investigator )
-
-      if investigator.event_table == 1
-        GameCore::EventGroundA.send( "table#{investigator.event_table}_e#{roll}", @game_board, investigator, @professor )
-      elsif investigator.event_table == 2
-        GameCore::EventGroundB.send( "table#{investigator.event_table}_e#{roll}", @game_board, investigator, @professor )
-      else
-        raise "Bad event table for investigator : #{investigator.inspect}"
-      end
-    else
-      EEventLog.log( @game_board, I18n.t( 'events.no_water_events' ) )
-    end
-  end
-
-  def event_dices( investigator )
-    roll = d6
-    roll += d6 if investigator.sign
-    roll += d6 if investigator.sign && investigator.medaillon
-    roll
-  end
-
 end

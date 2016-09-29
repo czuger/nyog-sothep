@@ -2,15 +2,11 @@ Rails.application.routes.draw do
 
   resources :g_game_boards, only: [] do
 
-    resource :map, only: [] do
-      post :switch_table
-    end
-
     resources :investigators_actions, only: [] do
       member do
         get :move
         get :go_psy
-        # get :special_event
+        post :switch_table
       end
     end
     # get 'investigators_actions/roll_events'

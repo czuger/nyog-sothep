@@ -22,7 +22,7 @@ namespace :load_data do
       i.last_location = last_loc
       i.current = false
       i.gender = gender[index]
-      i.san = 1.upto(3).map{ |e| rand( 1..6 ) }.reduce(&:+)
+      i.san = GameCore::Dices.d6( 3 )
       i.save!
     end
     gb.i_investigators.first.update_attribute( :current, true )

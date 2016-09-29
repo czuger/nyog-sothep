@@ -26,9 +26,5 @@ module GameCore
       investigator.update_attribute( :dead, true )
     end
 
-    def dice( value = 6 )
-      rand( 1 .. value )
-    end
-
   end
 end

@@ -13,6 +13,12 @@ class ProfessorActionsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to map_show_url
   end
 
+  test 'professor should not breed' do
+    @gb.update( aasm_state: 'prof_breed' )
+    get dont_breed_g_game_board_professor_actions_url( g_game_board_id: @gb.id )
+    assert_redirected_to map_show_url
+  end
+
   test 'professor should breed' do
     monster = create( :p_monster, g_game_board_id: @gb.id )
     @gb.update( aasm_state: 'prof_breed' )

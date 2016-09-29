@@ -8,6 +8,13 @@ class MapControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test 'should show professor breed screen' do
+    @gb = create( :g_game_board )
+    @gb.update( aasm_state: 'prof_breed' )
+    get map_show_url
+    assert_response :success
+  end
+
   test 'should show investigator' do
     gb = create( :g_game_board_with_event_ready_to_move_investigators )
     gb.update( aasm_state: :inv_move )

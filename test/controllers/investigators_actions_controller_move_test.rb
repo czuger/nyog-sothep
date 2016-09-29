@@ -8,8 +8,12 @@ class InvestigatorsActionsControllerMoveTest < ActionDispatch::IntegrationTest
     @dest = @investigator.current_location.destinations.first
   end
 
+  test 'switch event table' do
+    post switch_table_g_game_board_investigators_action_url( g_game_board_id: @gb.id, id: @investigator.id, event_table: 2 )
+  end
+
   test "should go psy" do
-    get go_psy_g_game_board_investigators_action_url( g_game_board_id: @gb.id, id: @investigator.id  )
+    get go_psy_g_game_board_investigators_action_url( g_game_board_id: @gb.id, id: @investigator.id )
     assert_redirected_to map_show_url
   end
 
@@ -24,7 +28,7 @@ class InvestigatorsActionsControllerMoveTest < ActionDispatch::IntegrationTest
     @investigator.current_location = border_cross_road.src_city
     @investigator.save!
     @dest = border_cross_road.dest_city
-    InvestigatorsActionsController.any_instance.stubs(:d6).returns(6) # Stubs the dice method in order it fails always
+    Kernel.stubs(:rand).returns(6) # Stubs the dice method in order it fails always
 
     get move_g_game_board_investigators_action_url( g_game_board_id: @gb.id, id: @investigator.id, zone_id: @dest.id, zone_class: @dest.class )
     assert_redirected_to map_show_url

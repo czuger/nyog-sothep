@@ -1,5 +1,8 @@
 class ProfessorActionsController < ApplicationController
 
+  include GameLogic::BreedCheck
+  include GameLogic::Movement
+
   def dont_breed
     set_game_board
     @game_board.prof_breed!
@@ -16,10 +19,14 @@ class ProfessorActionsController < ApplicationController
     ActiveRecord::Base.transaction do
       EEventLog.start_event_block( @game_board )
       monster_loc = @game_board.p_professor.current_location
+
+      assert_breed_validity( monster_loc )
+
       @game_board.p_monster_positions.create!( location: monster_loc, code_name: monster.code_name )
       monster.destroy!
       @game_board.prof_breed!
       @game_board.professor_pick_one_monster
+
       # TODO : need to check that prof has no more than 5 monsters.
       # Need to ask him to remove one if this is the case
     end
@@ -38,8 +45,7 @@ class ProfessorActionsController < ApplicationController
     end
 
     ActiveRecord::Base.transaction do
-      @game_board.p_professor.current_location = dest_loc
-      @game_board.p_professor.save!
+      regular_move_token(@game_board.p_professor, dest_loc )
       @game_board.prof_move_end!
     end
 

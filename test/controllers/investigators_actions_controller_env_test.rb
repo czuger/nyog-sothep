@@ -8,7 +8,8 @@ class InvestigatorsActionsControllerEnvTest < ActionDispatch::IntegrationTest
   end
 
   test 'investigator should replay then should be able to move again' do
-    MapController.any_instance.expects(:event_dices).returns(9) # Should fall in replay case
+
+    GameCore::Events.stubs(:event_dices).returns(9) # Should fall in replay case
 
     get map_show_url
 

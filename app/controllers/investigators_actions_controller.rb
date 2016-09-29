@@ -1,8 +1,14 @@
 class InvestigatorsActionsController < ApplicationController
 
-  include GameLogic::Dices
   include GameLogic::Movement
   include GameLogic::Events
+
+  def switch_table
+    params[:event_table]
+    set_current_investigator
+    @current_investigator.update_attribute( :event_table, params[:event_table] )
+    head :ok
+  end
 
   def move
     set_game_board
@@ -30,7 +36,7 @@ class InvestigatorsActionsController < ApplicationController
         raise "Investigator able to move only if ready : #{@current_investigator.inspect}"
       end
 
-      if move_current_investigator( dest_loc )
+      if regular_move_token( @current_investigator, dest_loc )
         @current_investigator.roll_event!
       else
         @current_investigator.roll_no_event!
@@ -56,7 +62,7 @@ class InvestigatorsActionsController < ApplicationController
       set_current_investigator
 
       if @current_investigator.current_location.city?
-        san = d6
+        san = GameCore::Dices.d6
         @current_investigator.increment!( :san, san )
         EEventLog.log( @game_board, I18n.t( "actions.result.psy.#{@current_investigator.gender}",
           san: san, investigator_name: t( "investigators.#{@current_investigator.code_name}" ) ) )

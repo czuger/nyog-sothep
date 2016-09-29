@@ -56,5 +56,5 @@ class IInvestigator < ApplicationRecord
   def translated_name
     I18n.t( "investigators.#{code_name}" )
   end
-
+  
 end

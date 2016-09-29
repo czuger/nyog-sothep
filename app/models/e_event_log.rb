@@ -16,6 +16,12 @@ class EEventLog < ApplicationRecord
     game_board.e_event_logs.create!( logset: logset, event: event )
   end
 
+  def self.log_event_for_investigator( game_board, investigator )
+    start_event_block( game_board )
+    iname = I18n.t( "investigators.#{investigator.code_name}" )
+    log( game_board, I18n.t( 'log.incarn', investigator_name: iname ) )
+  end
+
   def self.log_investigator_movement( game_board, investigator, dest_loc, direction: :goes )
 
     translated_dest_loc = I18n.t( "locations.#{dest_loc.code_name}", :default => "à #{dest_loc.code_name.humanize}" )
