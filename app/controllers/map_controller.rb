@@ -19,6 +19,8 @@ class MapController < ApplicationController
       case @game_board.aasm_state
         when 'prof_move' then
           prof_move
+        when 'prof_attack' then
+          prof_attack
         when 'prof_breed' then
           prof_breed
         when 'inv_move' then
@@ -33,6 +35,24 @@ class MapController < ApplicationController
   end
 
   private
+
+  def prof_attack
+    inv_to_attack = @game_board.i_investigators.find_by( current_location_id: @prof_location.id )
+    if inv_to_attack
+      if GameCore::Dices.d6 <= 2
+        # Prof spotted
+        # Remember if not spotted, the professor has to say that he is in the same city as the investigators
+        # Log that information (prof in an investigator city)
+      else
+        # Prof can choose to attack or not
+        # TODO : like breed map, no links on monsters, two buttons : attack, pass
+      end
+    else
+      # Here choose the action regarding the state of the game board (prof attack or inv attack)
+      @game_board.prof_attack!
+      @loop = true
+    end
+  end
 
   def inv_move
     if( @current_investigator = @game_board.next_moving_investigator )

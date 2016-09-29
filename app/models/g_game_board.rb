@@ -16,14 +16,18 @@ class GGameBoard < ApplicationRecord
   aasm do
 
     state :prof_move, :initial => true
-    state :inv_move, :inv_event, :prof_breed
+    state :inv_move, :inv_event, :prof_breed, :prof_attack
 
     event :prof_move_end do
       transitions :from => :prof_move, :to => :prof_breed
     end
 
+    event :prof_attack do
+      transitions :from => :prof_move, :to => :prof_attack
+    end
+
     event :prof_breed do
-      transitions :from => :prof_breed, :to => :inv_move
+      transitions :from => :prof_attack, :to => :inv_move
     end
 
     event :inv_move_end do
