@@ -2,6 +2,30 @@ class ProfessorActionsController < ApplicationController
 
   include GameLogic::BreedCheck
   include GameLogic::Movement
+  include GameLogic::ProfFight
+
+  def attack
+    set_game_board
+    investigator = @game_board.i_investigators.find( params[ :investigator_id ] )
+
+    # TODO : check that investigator and prof are at the same place
+    # raise "Investigator and prof not at the same place : #{investigator}"
+
+    prof_fight( investigator )
+
+    @game_board.prof_attack!
+    redirect_to map_show_url
+  end
+
+  def dont_attack
+    set_game_board
+
+    EEventLog.start_event_block( @game_board )
+    EEventLog.log( @game_board, I18n.t( 'log.prof_in_inv_city' ) )
+
+    @game_board.prof_attack!
+    redirect_to map_show_url
+  end
 
   def dont_breed
     set_game_board

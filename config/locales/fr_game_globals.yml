@@ -6,6 +6,8 @@ fr:
       go_psy: 'Voir un psychanaliste'
       professeur: 'Le professeur'
       dont_breed: 'Ne pas invoquer de monstres'
+      prof_attack: "Attaquer l'investigateur"
+      prof_dont_attack: "Ne pas attaquer l'investigateur"
 
   errors:
     no_more_monsters: 'Le professeur ne peux plus prendre de monstre. Le stock est vide.'
@@ -34,6 +36,7 @@ fr:
   log:
     incarn: "Vous incarnez %{investigator_name}"
     pass: "Vous passez votre tour"
+    prof_in_inv_city: "Le professeur se trouve dans la même ville qu'un investigateur"
 
   investigators:
     lemon: 'Miss Lemon'

@@ -4,6 +4,7 @@ class MapController < ApplicationController
 
   include GameLogic::Events
   include GameLogic::BreedCheck
+  include GameLogic::ProfFight
 
   def show
     @game_board = GGameBoard.first
@@ -40,12 +41,9 @@ class MapController < ApplicationController
     inv_to_attack = @game_board.i_investigators.find_by( current_location_id: @prof_location.id )
     if inv_to_attack
       if GameCore::Dices.d6 <= 2
-        # Prof spotted
-        # Remember if not spotted, the professor has to say that he is in the same city as the investigators
-        # Log that information (prof in an investigator city)
+        prof_fight( inv_to_attack )
       else
-        # Prof can choose to attack or not
-        # TODO : like breed map, no links on monsters, two buttons : attack, pass
+        @prof_choose_attack = true
       end
     else
       # Here choose the action regarding the state of the game board (prof attack or inv attack)

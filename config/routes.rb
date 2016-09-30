@@ -15,12 +15,13 @@ Rails.application.routes.draw do
       member do
         get :move
         get :dont_breed
+        get ':investigator_id/attack', action: :attack, as: :attack
+        get :dont_attack
         get ':monster_id/breed', action: :breed, as: :monster_breed
       end
     end
 
   end
-
 
   get 'map/show'
 

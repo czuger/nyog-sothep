@@ -14,3 +14,8 @@
     - if @prof_breed
       %br
       = link_to t( '.dont_breed' ), dont_breed_g_game_board_professor_actions_url( g_game_board_id: @game_board.id )
+
+    - if @prof_choose_attack
+      %br
+      = link_to t( 'maps.show.prof_attack' ), dont_breed_g_game_board_professor_actions_url( g_game_board_id: @game_board.id )
+
