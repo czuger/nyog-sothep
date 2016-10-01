@@ -11,6 +11,7 @@ FactoryGirl.define do
     current true
     gender 'm'
     current_location { create( :c_city ) }
+    last_location { create( :c_city ) }
     factory :has_moved_investigator do
       sequence :code_name  do |n|
         "Has moved investigator #{n}"

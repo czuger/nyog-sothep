@@ -16,25 +16,37 @@ class GGameBoard < ApplicationRecord
   aasm do
 
     state :prof_move, :initial => true
-    state :inv_move, :inv_event, :prof_breed, :prof_attack
-
-    event :prof_move_end do
-      transitions :from => :prof_move, :to => :prof_breed
-    end
+    state :inv_move, :inv_event, :prof_breed, :prof_attack, :prof_fall_back, :inv_repelled
 
     event :prof_attack do
       transitions :from => :prof_move, :to => :prof_attack
     end
 
-    event :prof_breed do
-      transitions :from => :prof_attack, :to => :inv_move
+    event :prof_fall_back do
+      transitions :from => :prof_attack, :to => :prof_fall_back
     end
 
-    event :inv_move_end do
+    event :prof_attack_after_fall_back do
+      transitions :from => :prof_fall_back, :to => :prof_attack
+    end
+
+    event :inv_repelled do
+      transitions :from => :prof_attack, :to => :inv_repelled
+    end
+
+    event :prof_breed do
+      transitions :from => :prof_attack, :to => :prof_breed
+    end
+
+    event :inv_move do
+      transitions :from => :prof_breed, :to => :inv_move
+    end
+
+    event :inv_event do
       transitions :from => :inv_move, :to => :inv_event, after: Proc.new {|*args| switch_status_of_skipping_inv_turn(*args) }
     end
 
-    event :inv_event_end do
+    event :prof_move do
       transitions :from => :inv_event, :to => :prof_move, after: Proc.new {|*args| end_turn(*args) }
     end
 

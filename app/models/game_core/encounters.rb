@@ -15,20 +15,20 @@ module GameCore
       unless investigator.weapon
         log << I18n.t( 'encounter.fanatiques.no_weapon' )
         EEventLog.log( self, log )
-        investigator_goes_back( self, investigator )
+        investigator.goes_back( self )
         monster_spotted( encounter )
       else
-        roll = dice
+        roll = GameCore::Dices.d6
         roll += 1 if investigator.medaillon
         if roll <= 5
           log << I18n.t( 'encounter.fanatiques.weapon_fail' )
           EEventLog.log( self, log )
-          investigator_goes_back( self, investigator )
+          investigator.goes_back( self )
           monster_spotted( encounter )
         elsif roll == 6
           log << I18n.t( 'encounter.fanatiques.weapon_success' )
           EEventLog.log( self, log )
-          investigator_loose_san( self, investigator, 2 )
+          investigator.loose_san( self, 2 )
           encounter_destroyed( encounter )
         else
           log << I18n.t( 'encounter.fanatiques.weapon_critical' )
@@ -50,7 +50,7 @@ module GameCore
         monster_spotted( encounter )
         log << I18n.t( 'encounter.profonds.no_sign' )
       end
-      investigator_loose_san( self, investigator, san_loss )
+      investigator.loose_san( self, san_loss )
       EEventLog.log( self, log )
     end
 
@@ -58,7 +58,7 @@ module GameCore
       log = I18n.t( 'encounter.goules.common' )
       if investigator.weapon
         san_loss = 3
-        san_loss = 2 if dice >= 5
+        san_loss = 2 if GameCore::Dices.d6 >= 5
         san_loss -= 1 if investigator.sign
         replace_encounter_in_monsters_stack( encounter )
         log << I18n.t( 'encounter.goules.weapon' )
@@ -67,13 +67,13 @@ module GameCore
         monster_spotted( encounter )
         log << I18n.t( 'encounter.goules.no_weapon' )
       end
-      investigator_loose_san( self, investigator, san_loss )
+      investigator.loose_san( self, san_loss )
       EEventLog.log( self, log )
     end
 
     def resolve_encounter_reves( investigator, encounter )
       EEventLog.log( self, I18n.t( 'encounter.reves' ) )
-      investigator_loose_san( self, investigator, 2 )
+      investigator.loose_san( self, 2 )
       replace_encounter_in_monsters_stack( encounter )
     end
 

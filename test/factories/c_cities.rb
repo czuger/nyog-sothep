@@ -2,6 +2,9 @@ FactoryGirl.define do
   factory :c_city do
     x 1
     y 1
+    sequence :code_name do |i|
+      "Std city #{i}"
+    end
     factory :inv_city do
       sequence :code_name do |i|
         "Inv city #{i}"

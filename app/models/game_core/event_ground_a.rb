@@ -5,17 +5,17 @@ module GameCore
 
     def self.table1_e1( game_board, investigator, professor )
       EEventLog.log( game_board, ( I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) ) )
-      investigator_goes_back( game_board, investigator )
+      investigator.goes_back( game_board )
     end
 
     def self.table1_e2( game_board, investigator, professor )
       EEventLog.log( game_board, ( I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) ) )
-      investigator.update_attribute( :weapon, true ) if investigator_loose_san( game_board, investigator, 2 )
+      investigator.update_attribute( :weapon, true ) if investigator.loose_san( game_board, 2 )
     end
 
     def self.table1_e3( game_board, investigator, professor )
       EEventLog.log( game_board, ( I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) ) )
-      investigator.update_attribute( :sign, true ) if investigator_loose_san( game_board, investigator, 2 )
+      investigator.update_attribute( :sign, true ) if investigator.loose_san( game_board, 2 )
     end
 
     # def self.table1_e4( game_board, investigator, professor )
@@ -31,12 +31,12 @@ module GameCore
 
     def self.table1_e6( game_board, investigator, professor )
       EEventLog.log( game_board, ( I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) ) )
-      investigator.update_attribute( :spell, true ) if investigator_loose_san( game_board, investigator, 2 )
+      investigator.update_attribute( :spell, true ) if investigator.loose_san( game_board, 2 )
     end
 
     def self.table1_e7( game_board, investigator, professor )
       EEventLog.log( game_board, ( I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) ) )
-      investigator.update_attribute( :weapon, false ) if investigator_loose_san( game_board, investigator, 2 )
+      investigator.update_attribute( :weapon, false ) if investigator.loose_san( game_board, 2 )
     end
 
     # def self.table1_e8( game_board, investigator, professor )
@@ -57,12 +57,12 @@ module GameCore
 
     def self.table1_e11( game_board, investigator, professor )
       EEventLog.log( game_board, ( I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) ) )
-      investigator.update_attribute( :weapon, true ) if investigator_loose_san( game_board, investigator, 2 )
+      investigator.update_attribute( :weapon, true ) if investigator.loose_san( game_board, 2 )
     end
 
     def self.table1_e12( game_board, investigator, professor )
       EEventLog.log( game_board, ( I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) ) )
-      investigator.update_attribute( :spell, true ) if investigator_loose_san( game_board, investigator, 3 )
+      investigator.update_attribute( :spell, true ) if investigator.loose_san( game_board, 3 )
     end
 
     def self.table1_e13( game_board, investigator, professor )

@@ -1,8 +1,22 @@
 module GameCore
   module Professor
 
-    MONSTERS_ROLL_MAP = { 2 => :horreur_volante, 3 => :goules, 4 => :goules, 5 => :profonds, 6 => :profonds, 7 => :chose_brume, 8 => :habitants,
-      9 => :reves, 10 => :reves, 11 => :reves, 12 => :teleportation, 13 => :tempete, 14 => :fanatiques, 15 => :fanatiques,   16 => :fanatiques }
+    MONSTERS_ROLL_MAP = {
+      3 => :horreur_volante,
+      2 => :goules,
+      4 => :goules,
+      5 => :profonds,
+      6 => :profonds,
+      7 => :chose_brume,
+      8 => :habitants,
+      9 => :reves,
+      10 => :reves,
+      11 => :reves,
+      12 => :teleportation,
+      13 => :fanatiques,
+      14 => :tempete,
+      15 => :fanatiques,
+      16 => :fanatiques }
 
     def professor_pick_one_monster
       try_counter = 0

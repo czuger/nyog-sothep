@@ -5,7 +5,7 @@ class FullTurnTest < ActionDispatch::IntegrationTest
   test 'A full turn' do
 
     # Normally deactivated, because very long
-    # return
+    return
 
     @gb = create( :g_game_board_with_event_ready_to_move_investigators )
     @gb.update_attribute( :aasm_state, 'prof_move' )

@@ -38,7 +38,7 @@ namespace :load_data do
     monsters = {
       goules: 8, profonds: 8, fanatiques: 10, chose_brume: 3, habitants: 4, reves: 6, tempete: 2, horreur_volante: 1 }
     # implemented_monsters = [ :reves, :goules ]
-    implemented_monsters = [ :goules, :reves, :profonds ]
+    implemented_monsters = [ :goules, :reves, :profonds, :fanatiques ]
 
     gb = GGameBoard.first
     EEventLog.start_event_block( gb )

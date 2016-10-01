@@ -41,6 +41,7 @@
 
 #infos
   #investigator
+    = "Board state = #{@game_board.aasm_state}"
     - if @inv_event
       = link_to 'Roll events', g_game_board_investigators_actions_roll_events_url( g_game_board_id: @game_board.id )
     - if @inv_special_event
@@ -72,3 +73,6 @@
           %hr.event_separator
         - else
           %li= event.event
+
+= hidden_field_tag :game_board_id, @game_board.id
+= hidden_field_tag :investigator_id, @current_investigator&.id

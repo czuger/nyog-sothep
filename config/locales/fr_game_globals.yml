@@ -3,24 +3,31 @@
 fr:
   maps:
     show:
-      go_psy: 'Voir un psychanaliste'
+      go_psy: 'Voir un psychanalyste'
       professeur: 'Le professeur'
       dont_breed: 'Ne pas invoquer de monstres'
-      prof_attack: "Attaquer l'investigateur"
+      prof_attack: "Attaquer %{investigator_name}"
       prof_dont_attack: "Ne pas attaquer l'investigateur"
 
   errors:
     no_more_monsters: 'Le professeur ne peux plus prendre de monstre. Le stock est vide.'
 
+  prof_fight:
+    gun_shot: "%{investigator_name} se sert de son arme et cause %{hit} points de dégâts au professeur -> %{final_hp}."
+    gun_miss: "%{investigator_name} rate le professeur."
+    sign_protect: "%{investigator_name} se protège avec son signe."
+    no_protection: "%{investigator_name} ne peut rien faire contre le professeur."
+
   actions:
     result:
       perte_san: '%{investigator_name} perd %{san} points de SAN -> %{final_san}'
+
       prof_pick_monsters: 'Le professeur pioche un monstre.'
       pass: 'Vous passez votre tour'
       psy_rep: "%{investigator_name} gagne 5 points de SAN"
       psy:
-       m: "%{investigator_name} va voir un psychanaliste. Il gagne %{san} points de SAN mais passe son prochain tour."
-       f: "%{investigator_name} va voir un psychanaliste. Elle gagne %{san} points de SAN mais passe son prochain tour."
+       m: "%{investigator_name} va voir un psychanalyste. Il gagne %{san} points de SAN mais passe son prochain tour."
+       f: "%{investigator_name} va voir un psychanalyste. Elle gagne %{san} points de SAN mais passe son prochain tour."
       crazy:
        m: "%{investigator_name} devient fou et devient fanatique."
        f: "%{investigator_name} devient folle et devient fanatique."
@@ -29,6 +36,7 @@ fr:
     goes: '%{who} se déplace %{where}'
     return: '%{who} retourne %{where}'
     default_to: 'à %{destination_name}'
+    prof_move: 'Le professeur se déplace'
 
   events:
     no_water_events: 'Rien ne se passe ...'

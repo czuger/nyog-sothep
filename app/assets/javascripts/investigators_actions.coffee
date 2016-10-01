@@ -5,7 +5,11 @@
 actions_init = ->
 
   switch_table = ->
-    $.post '/maps/switch_table',
+
+    game_board_id = $( '#game_board_id' ).val()
+    investigator_id = $( '#investigator_id' ).val()
+
+    $.post "/g_game_boards/#{game_board_id}/investigators_actions/#{investigator_id}/switch_table",
       event_table: $(this)[0].value
 
   $( '.event_table' ).change( switch_table )

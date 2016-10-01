@@ -13,7 +13,11 @@ module GameLogic::Movement
       token.current_location = dest_loc
       token.save!
 
-      EEventLog.log_investigator_movement( @game_board, token, dest_loc ) unless token.class == PProfessor
+      unless token.class == PProfessor
+        EEventLog.log_investigator_movement( @game_board, token, dest_loc )
+      else
+        EEventLog.log( @game_board, I18n.t( 'movement.prof_move' ) )
+      end
 
       return true
     end

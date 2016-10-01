@@ -13,6 +13,16 @@ FactoryGirl.define do
       end
     end
 
+    factory :g_game_board_ready_for_fight do
+      aasm_state 'prof_attack'
+      after(:create) do |gb|
+        inv_road = create( :inv_road )
+        1.upto(4).each do
+          create( :i_investigator, g_game_board_id: gb.id, current_location: inv_road.src_city, last_location: inv_road.src_city )
+        end
+      end
+    end
+
     factory :g_game_board_with_event_ready_to_move_investigators do
       aasm_state 'inv_move'
       after(:create) do |gb|

@@ -50,7 +50,7 @@ module GameLogic::Events
         next_investigator_for_event.inv_move_after_replay!
         @game_board.someplayer_shoot_again!
       else
-        @game_board.inv_event_end!
+        @game_board.prof_move!
       end
 
       @loop = true

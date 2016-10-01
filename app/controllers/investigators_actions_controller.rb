@@ -58,7 +58,6 @@ class InvestigatorsActionsController < ApplicationController
     ActiveRecord::Base.transaction do
 
       EEventLog.start_event_block( @game_board )
-
       set_current_investigator
 
       if @current_investigator.current_location.city?
