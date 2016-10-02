@@ -2,7 +2,9 @@ require 'test_helper'
 
 class GGameBoardsControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @g_game_board = create( :g_game_board )
+    create( :c_city, code_name: :nantucket )
+    create( :w_water_area, code_name: :nantucket_sound )
+    @g_game_board = create( :g_game_board_with_event_ready_to_move_investigators )
   end
 
   test "should get index" do

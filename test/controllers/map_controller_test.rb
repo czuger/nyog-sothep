@@ -6,6 +6,13 @@ class MapControllerTest < ActionDispatch::IntegrationTest
     @gb = create( :g_game_board )
   end
 
+  test 'prof ia should play' do
+    gb = create( :g_game_board_ready_for_ia_play )
+    gb.reload
+    get g_game_board_play_url( g_game_board_id: gb.id )
+    assert_response :success
+  end
+
   test 'prof should skip next step as there is no investigator on the same city' do
     @gb.update( aasm_state: 'prof_attack' )
     get g_game_board_play_url( g_game_board_id: @gb.id )

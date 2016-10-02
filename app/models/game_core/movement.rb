@@ -1,12 +1,12 @@
-module GameLogic::Movement
+module GameCore::Movement
 
   private
 
-  def regular_move_token( token, dest_loc )
+  def regular_move_token( gb, token, dest_loc )
 
     assert_regular_movement_allowed( token.current_location, dest_loc )
 
-    if token.class == PProfessor || cross_border_allowed( token, dest_loc )
+    if token.class == PProfessor || cross_border_allowed( gb, token, dest_loc )
 
       token.last_location = token.current_location unless token.class == PProfessor
 
@@ -14,9 +14,9 @@ module GameLogic::Movement
       token.save!
 
       unless token.class == PProfessor
-        EEventLog.log_investigator_movement( @game_board, token, dest_loc )
+        EEventLog.log_investigator_movement( gb, token, dest_loc )
       else
-        EEventLog.log( @game_board, I18n.t( 'movement.prof_move' ) )
+        EEventLog.log( gb, I18n.t( 'movement.prof_move' ) )
       end
 
       return true
@@ -25,7 +25,7 @@ module GameLogic::Movement
     false
   end
 
-  def cross_border_allowed( token, dest_loc )
+  def cross_border_allowed( gb, token, dest_loc )
 
     border_allowed = true
 
@@ -40,7 +40,7 @@ module GameLogic::Movement
         if dice >= 5
           inv_name = I18n.t( "investigators.#{token.code_name}" )
           event = I18n.t( "border_control.#{token.gender}", investigator_name: inv_name )
-          EEventLog.log( @game_board, event )
+          EEventLog.log( gb, event )
           border_allowed = false
         end
       end

@@ -4,7 +4,7 @@ class EncountersProfondsTest < ActiveSupport::TestCase
 
   def setup
     @gb = create( :g_game_board_with_event_ready_for_events_investigators )
-    @investigator = @gb.i_investigators.first
+    @investigator = @gb.reload.i_investigators.first
     @current_location = @investigator.current_location
     @profonds = create( :profonds, g_game_board_id: @gb.id, location: @investigator.current_location )
     EEventLog.start_event_block( @gb )

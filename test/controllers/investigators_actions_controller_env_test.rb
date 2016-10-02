@@ -4,7 +4,7 @@ class InvestigatorsActionsControllerEnvTest < ActionDispatch::IntegrationTest
 
   def setup
     @gb = create( :g_game_board_with_event_ready_for_events_investigators )
-    @investigator = @gb.i_investigators.first
+    @investigator = @gb.reload.i_investigators.first
   end
 
   test 'investigator should replay then should be able to move again' do

@@ -1,7 +1,7 @@
 class InvestigatorsActionsController < ApplicationController
 
-  include GameLogic::Movement
   include GameLogic::Events
+  include GameCore::Movement
 
   def switch_table
     params[:event_table]
@@ -36,7 +36,7 @@ class InvestigatorsActionsController < ApplicationController
         raise "Investigator able to move only if ready : #{@current_investigator.inspect}"
       end
 
-      if regular_move_token( @current_investigator, dest_loc )
+      if regular_move_token( @game_board, @current_investigator, dest_loc )
         @current_investigator.roll_event!
       else
         @current_investigator.roll_no_event!

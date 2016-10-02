@@ -1,7 +1,6 @@
 class GGameBoard < ApplicationRecord
   include AASM
 
-  include GameCore::Professor
   include GameCore::Encounters
   include GameCore::CommonMethods
 
@@ -66,6 +65,12 @@ class GGameBoard < ApplicationRecord
 
   def next_moving_investigator
     investigator_in_move_phase.order( :id ).first
+  end
+
+  def professor_pick_start_monsters
+    1.upto( 4 ).each do
+      p_professor.pick_one_monster
+    end
   end
 
   private

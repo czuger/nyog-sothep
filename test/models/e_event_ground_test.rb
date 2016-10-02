@@ -4,7 +4,7 @@ class EEventGroundTest < ActiveSupport::TestCase
 
   def setup
     @gb = create( :g_game_board_with_event_ready_for_events_investigators )
-    @investigator = @gb.i_investigators.first
+    @investigator = @gb.reload.i_investigators.first
     @professor = @gb.p_professor
     EEventLog.start_event_block( @gb )
   end

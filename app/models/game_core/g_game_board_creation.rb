@@ -11,7 +11,7 @@ module GameCore
       gender = %w( m m m m f f )
 
       investigators.each_with_index do |investigator, index|
-        puts 'Creating / updating ' + investigator.humanize
+        # puts 'Creating / updating ' + investigator.humanize
         i = gb.i_investigators.where( code_name: investigator ).first_or_initialize
         c = WWaterArea.find_by( code_name: :nantucket_sound )
         last_loc = CCity.find_by( code_name: :nantucket )
