@@ -1,0 +1,16 @@
+= form_for @g_game_board do |f|
+  - if @g_game_board.errors.any?
+    #error_explanation
+      %h2= "#{pluralize(@g_game_board.errors.count, "error")} prohibited this g_game_board from being saved:"
+      %ul
+        - @g_game_board.errors.full_messages.each do |msg|
+          %li= msg
+
+  .field
+    = f.label :players_count
+    = f.number_field :players_count, min: 1, max: 2
+  .field
+    = f.label :ia_side
+    = f.select :ia_side, [ [ 'Prof', :prof ], [ 'Investigators', :inv ] ]
+  .actions
+    = f.submit 'Save'

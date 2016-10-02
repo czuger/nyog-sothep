@@ -47,7 +47,7 @@ class InvestigatorsActionsController < ApplicationController
       # check_end_of_movements
     end
 
-    redirect_to map_show_url
+    redirect_to g_game_board_play_url( g_game_board_id: @game_board.id )
   end
 
 
@@ -73,7 +73,7 @@ class InvestigatorsActionsController < ApplicationController
       end
     end
 
-    redirect_to map_show_url
+    redirect_to g_game_board_play_url( g_game_board_id: @game_board.id )
   end
 
   private

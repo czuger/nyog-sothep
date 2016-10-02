@@ -1,0 +1,2 @@
+module GGameBoardsHelper
+end

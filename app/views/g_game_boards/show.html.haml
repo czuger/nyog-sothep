@@ -1,0 +1,12 @@
+%p#notice= notice
+
+%p
+  %b Players count:
+  = @g_game_board.players_count
+%p
+  %b Ia side:
+  = @g_game_board.ia_side
+
+= link_to 'Edit', edit_g_game_board_path(@g_game_board)
+\|
+= link_to 'Back', g_game_boards_path

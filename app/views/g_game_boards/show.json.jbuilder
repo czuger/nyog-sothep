@@ -1,0 +1,1 @@
+json.partial! "g_game_boards/g_game_board", g_game_board: @g_game_board

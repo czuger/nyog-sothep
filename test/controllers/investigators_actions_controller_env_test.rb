@@ -11,11 +11,11 @@ class InvestigatorsActionsControllerEnvTest < ActionDispatch::IntegrationTest
 
     GameCore::Events.stubs(:event_dices).returns(9) # Should fall in replay case
 
-    get map_show_url
+    get g_game_board_play_url( g_game_board_id: @gb.id )
 
     @dest = @investigator.current_location.destinations.first
     get move_g_game_board_investigators_action_url( g_game_board_id: @gb.id, id: @investigator.id, zone_id: @dest.id, zone_class: @dest.class )
-    assert_redirected_to map_show_url
+    assert_redirected_to g_game_board_play_url( g_game_board_id: @gb.id )
     assert_equal @dest, @investigator.reload.current_location
     assert @gb.inv_event?
   end

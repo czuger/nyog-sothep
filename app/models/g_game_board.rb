@@ -34,6 +34,10 @@ class GGameBoard < ApplicationRecord
       transitions :from => :prof_attack, :to => :inv_repelled
     end
 
+    event :prof_attack_after_inv_repelled do
+      transitions :from => :inv_repelled, :to => :prof_attack
+    end
+
     event :prof_breed do
       transitions :from => :prof_attack, :to => :prof_breed
     end
@@ -84,11 +88,11 @@ class GGameBoard < ApplicationRecord
   end
 
   def investigator_in_event_phase
-    i_investigators.where( aasm_state: [ :roll_event, :roll_no_event ] )
+    i_investigators.where( aasm_state: [ :roll_event, :roll_no_event ] ).where.not( dead: true )
   end
 
   def investigator_in_move_phase
-    i_investigators.where( aasm_state: [ :inv_move ] )
+    i_investigators.where( aasm_state: [ :inv_move ] ).where.not( dead: true )
   end
 
 end

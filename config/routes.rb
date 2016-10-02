@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
 
-  resources :g_game_boards, only: [] do
+  resources :g_game_boards do
 
     resources :investigators_actions, only: [] do
       member do
@@ -21,11 +21,11 @@ Rails.application.routes.draw do
       end
     end
 
+    get 'play', action: :show, controller: :map
+
   end
 
-  get 'map/show'
-
-  root 'map#show'
+  root 'g_game_boards#index'
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

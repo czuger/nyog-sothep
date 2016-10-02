@@ -14,7 +14,7 @@ class ProfessorActionsController < ApplicationController
     EEventLog.start_event_block( @game_board )
     prof_fight( investigator, @game_board.p_professor )
 
-    redirect_to map_show_url( attacking_investigator_id: params[ :investigator_id ] )
+    redirect_to g_game_board_play_url( g_game_board_id: @game_board.id, attacking_investigator_id: params[ :investigator_id ], side: :prof )
   end
 
   def dont_attack
@@ -23,13 +23,13 @@ class ProfessorActionsController < ApplicationController
     EEventLog.log( @game_board, I18n.t( 'log.prof_in_inv_city' ) )
 
     @game_board.prof_breed!
-    redirect_to map_show_url
+    redirect_to g_game_board_play_url( g_game_board_id: @game_board.id, side: :prof )
   end
 
   def dont_breed
     set_game_board
     @game_board.inv_move!
-    redirect_to map_show_url
+    redirect_to g_game_board_play_url( g_game_board_id: @game_board.id, side: :prof )
   end
 
   def breed
@@ -55,7 +55,7 @@ class ProfessorActionsController < ApplicationController
       # Need to ask him to remove one if this is the case
     end
 
-    redirect_to map_show_url
+    redirect_to g_game_board_play_url( g_game_board_id: @game_board.id, side: :prof )
   end
 
   def move
@@ -80,7 +80,7 @@ class ProfessorActionsController < ApplicationController
 
     end
 
-    redirect_to map_show_url
+    redirect_to g_game_board_play_url( g_game_board_id: @game_board.id, side: :prof )
   end
 
 end

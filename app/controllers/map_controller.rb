@@ -5,6 +5,7 @@ class MapController < ApplicationController
   include GameLogic::Events
   include GameLogic::BreedCheck
   include GameLogic::ProfFight
+  include GameLogic::TinyIa
 
   def show
     @game_board = GGameBoard.first
@@ -15,6 +16,23 @@ class MapController < ApplicationController
     @prof = @game_board.p_professor
     @prof_location = @prof.current_location
 
+    @side = params[ :side ] || 'inv'
+
+    main_loop
+    # if ( @side == 'prof' && ( @game_board.prof_move? || @game_board.prof_attack? || @game_board.prof_fall_back? ||
+    #   @game_board.inv_repelled? || @game_board.prof_move? ) ) || ( @side == 'inv' && ( @game_board.inv_move? || @game_board.inv_event? ) )
+    #   main_loop
+    # else
+    #   @other_side_play = true
+    # end
+
+    # puts @side
+  end
+
+
+  private
+
+  def main_loop
     ActiveRecord::Base.transaction do
       begin
         @loop = false
@@ -38,15 +56,14 @@ class MapController < ApplicationController
         end
       end while @loop
     end
-
   end
-
-  private
 
   def inv_repelled
     @inv_to_attack = @game_board.i_investigators.find( params[ :attacking_investigator_id ] ) unless @inv_to_attack
     @inv_to_attack.current_location = CCity.where.not( id: @inv_to_attack.current_location_id ).sample
     @inv_to_attack.save!
+    @game_board.prof_attack_after_inv_repelled!
+    @loop = true
   end
 
   def prof_attack
@@ -83,6 +100,9 @@ class MapController < ApplicationController
   end
 
   def prof_move
+
+    tiny_ia_professor_move( @game_board )
+
     unless @prof_move
       @monsters_positions = @game_board.p_monster_positions.all
       @prof_monsters = @game_board.p_monsters

@@ -1,6 +1,8 @@
 FactoryGirl.define do
   factory :g_game_board do
     turn 1
+    players_count 2
+    prof_security_code 123456
 
     after(:create) do |gb|
       prof_road = create( :prof_road )

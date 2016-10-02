@@ -14,12 +14,12 @@ class InvestigatorsActionsControllerMoveTest < ActionDispatch::IntegrationTest
 
   test "should go psy" do
     get go_psy_g_game_board_investigators_action_url( g_game_board_id: @gb.id, id: @investigator.id )
-    assert_redirected_to map_show_url
+    assert_redirected_to g_game_board_play_url( g_game_board_id: @gb.id )
   end
 
   test "investigator should move" do
     get move_g_game_board_investigators_action_url( g_game_board_id: @gb.id, id: @investigator.id, zone_id: @dest.id, zone_class: @dest.class )
-    assert_redirected_to map_show_url
+    assert_redirected_to g_game_board_play_url( g_game_board_id: @gb.id )
     assert @gb.inv_move?
   end
 
@@ -31,7 +31,7 @@ class InvestigatorsActionsControllerMoveTest < ActionDispatch::IntegrationTest
     Kernel.stubs(:rand).returns(6) # Stubs the dice method in order it fails always
 
     get move_g_game_board_investigators_action_url( g_game_board_id: @gb.id, id: @investigator.id, zone_id: @dest.id, zone_class: @dest.class )
-    assert_redirected_to map_show_url
+    assert_redirected_to g_game_board_play_url( g_game_board_id: @gb.id )
     assert_equal border_cross_road.src_city, @investigator.reload.current_location
     assert @gb.inv_move?
   end
@@ -42,7 +42,7 @@ class InvestigatorsActionsControllerMoveTest < ActionDispatch::IntegrationTest
   #   @gb.inv_move_end!
   #   InvestigatorsActionsController.any_instance.stubs(:d6).returns(1)
   #   get g_game_board_investigators_actions_roll_events_url( g_game_board_id: @gb.id )
-  #   assert_redirected_to map_show_url
+  #   assert_redirected_to g_game_board_play_url( g_game_board_id: @gb.id )
   #   assert @gb.reload.prof_move?
   # end
   #
@@ -52,7 +52,7 @@ class InvestigatorsActionsControllerMoveTest < ActionDispatch::IntegrationTest
   #   @gb.inv_move_end!
   #   @investigator.update_attribute( :event_table, 2 )
   #   get g_game_board_investigators_actions_roll_events_url( g_game_board_id: @gb.id )
-  #   assert_redirected_to map_show_url
+  #   assert_redirected_to g_game_board_play_url( g_game_board_id: @gb.id )
   #   assert @gb.reload.prof_move?
   # end
 

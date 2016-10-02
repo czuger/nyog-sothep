@@ -1,69 +1,15 @@
 #board
-
-  - if @prof_move || @prof_breed
-    - @investigators.each do |investigator|
-      .token{ style: token_style( investigator.current_location ) }
-        = image_tag( "tokens/#{investigator.code_name}.png" )
-  - elsif @inv_move
-    .token{ style: token_style( @current_investigator.current_location ) }
-      = image_tag( "tokens/#{@current_investigator.code_name}.png" )
-
-  - if @prof_move || @prof_breed || ( @inv_move && @prof_spotted )
-    .token{ style: token_style( @prof_location, important: true ) }
-      = image_tag( 'tokens/professor.png' )
-
-  - @prof_maybe_positions.each do |position|
-    .prof_maybe_position{ style: token_style( position.position ) }
-      = image_tag( 'tokens/professor.png' )
-
-  - if @inv_move || @prof_move || @prof_breed
-    - @monsters_positions.each do |monster|
-      .token{ style: token_style( monster.location ) }
-        = image_tag( "tokens/#{monster.code_name}.jpg" )
-
-  - if @inv_move
-    - if @aval_destinations
-      - @aval_destinations.each do |destination|
-        = link_to move_g_game_board_investigators_action_url( g_game_board_id: @game_board.id, id: @current_investigator.id,
-          zone_id: destination.id, zone_class: destination.class ) do
-          - unless destination.city?
-            .dest-water{ style:"top:#{destination.y-13}px;left:#{destination.x-17-9}px" }
-          - else
-            .dest-road{ style:"top:#{destination.y-13}px;left:#{destination.x-17-9}px" }
-  - elsif @prof_move
-    - @aval_destinations.each do |destination|
-      = link_to move_g_game_board_professor_actions_url( g_game_board_id: @game_board.id, zone_id: destination.id, zone_class: destination.class ) do
-        - unless destination.city?
-          .dest-water{ style:"top:#{destination.y-13}px;left:#{destination.x-17-9}px" }
-        - else
-          .dest-road{ style:"top:#{destination.y-13}px;left:#{destination.x-17-9}px" }
-
+  - if @side == 'prof'
+    = render partial: 'prof_map'
+  - else
+    = render partial: 'inv_map'
 
 #infos
   #investigator
-    = "Board state = #{@game_board.aasm_state}"
-    - if @inv_event
-      = link_to 'Roll events', g_game_board_investigators_actions_roll_events_url( g_game_board_id: @game_board.id )
-    - if @inv_special_event
-      = link_to 'Resolve special events', special_event_g_game_board_investigators_action_url( g_game_board_id: @game_board.id, id: @current_investigator.id )
-
-    - if @inv_move
-      #investigator-gen
-        = t( "investigators.#{@current_investigator.code_name}" )
-        %br
-        = "SAN : #{@current_investigator.san}"
-      #investigator-actions
-        = link_to t( '.go_psy' ), go_psy_g_game_board_investigators_action_url( g_game_board_id: @game_board.id, id: @current_investigator.id ) if @zone.city?
-        #investigator-event-table
-          = label_tag 'Table 1'
-          = radio_button_tag 'event_table', 1, @current_investigator.event_table == 1, class: :event_table
-          = label_tag 'Table 2'
-          = radio_button_tag 'event_table', 2, @current_investigator.event_table == 2, class: :event_table
-      #investigator-items
-        - %w( weapon sign medaillon spell ).each do |elem|
-          %div{ id: icon_div_id( elem ) }
-
-    = render partial: 'prof_info'
+    - if @side == 'prof'
+      = render partial: 'prof_info'
+    - else
+      = render partial: 'inv_info'
 
   %hr
   #events

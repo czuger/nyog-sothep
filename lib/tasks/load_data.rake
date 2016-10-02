@@ -1,60 +1,8 @@
 namespace :load_data do
 
   desc 'Load all'
-  task :all => [ :environment, :cities, :roads, :water_areas, :water_links, :create_investigators, :populate_monsters ]
+  task :all => [ :environment, :cities, :roads, :water_areas, :water_links ]
 
-  desc 'Create investigators'
-  task :create_investigators => :environment do
-    investigators = %w( poirot hercule hastings le_capitaine sandy lemon )
-    gender = %w( m m m m f f )
-
-    GGameBoard.destroy_all
-
-    gb = GGameBoard.first
-    gb = GGameBoard.create!( turn: 1 ) unless gb
-
-    investigators.each_with_index do |investigator, index|
-      puts 'Creating / updating ' + investigator.humanize
-      i = gb.i_investigators.where( code_name: investigator ).first_or_initialize
-      c = WWaterArea.find_by( code_name: :nantucket_sound )
-      last_loc = CCity.find_by( code_name: :nantucket )
-      i.current_location = c
-      i.last_location = last_loc
-      i.current = false
-      i.gender = gender[index]
-      i.san = GameCore::Dices.d6( 3 )
-      i.save!
-    end
-    gb.i_investigators.first.update_attribute( :current, true )
-
-    gb.create_p_professor!( hp: 14, current_location: CCity.all.sample )
-  end
-
-  desc 'Populate monsters'
-  task :populate_monsters => :environment do
-    # monsters = %w( goule profond fanatique chose_brume habitants reves tempete horreur_volante teleportation )
-    # monsters_counts = [ 8, 8, 10, 3, 4, 6, 2, 1, 2 ]
-
-    monsters = {
-      goules: 8, profonds: 8, fanatiques: 10, chose_brume: 3, habitants: 4, reves: 6, tempete: 2, horreur_volante: 1 }
-    # implemented_monsters = [ :reves, :goules ]
-    implemented_monsters = [ :goules, :reves, :profonds, :fanatiques ]
-
-    gb = GGameBoard.first
-    EEventLog.start_event_block( gb )
-
-    gb.m_monsters.delete_all
-    gb.p_monsters.delete_all
-
-    implemented_monsters.each do |monster|
-      1.upto( monsters[monster] ).each do
-        gb.m_monsters.create!( code_name: monster )
-      end
-    end
-
-    gb.professor_pick_start_monsters
-
-  end
 
   desc 'Load water links '
   task :water_links => :environment do
