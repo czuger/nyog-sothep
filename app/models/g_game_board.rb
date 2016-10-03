@@ -2,7 +2,6 @@ class GGameBoard < ApplicationRecord
   include AASM
 
   include GameCore::Encounters
-  include GameCore::CommonMethods
 
   has_many :e_event_logs, dependent: :destroy
   has_many :i_investigators, dependent: :destroy

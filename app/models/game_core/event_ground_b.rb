@@ -1,8 +1,6 @@
 module GameCore
   class EventGroundB
 
-    extend GameCore::CommonMethods
-
 #     def self.table2_e1( game_board, investigator, professor )
 #       EEventLog.log( game_board, I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) )
 # #       investigator.helped_by_kown_psy!
