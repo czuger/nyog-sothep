@@ -15,7 +15,6 @@ class GGameBoardsController < ApplicationController
   # GET /g_game_boards/new
   def new
     @g_game_board = GGameBoard.new
-    @g_game_board.players_count = 1
   end
 
   # GET /g_game_boards/1/edit
@@ -26,6 +25,9 @@ class GGameBoardsController < ApplicationController
   # POST /g_game_boards.json
   def create
     @g_game_board = GGameBoard.new(g_game_board_params)
+
+    @g_game_board.players_count = 1
+    @g_game_board.ia_side = 'inv'
 
     @g_game_board.prof_security_code = rand.to_s
     respond_to do |format|
@@ -74,7 +76,7 @@ class GGameBoardsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def g_game_board_params
-      params.require(:g_game_board).permit(:players_count, :ia_side)
+      # params.require(:g_game_board)    # .permit(:players_count, :ia_side)
     end
 
 end

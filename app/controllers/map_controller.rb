@@ -32,37 +32,34 @@ class MapController < ApplicationController
 
   def main_loop
     ActiveRecord::Base.transaction do
-      begin
-        @loop = false
-        if GameCore::TinyIa.professor_should_play?( @game_board )
-          GameCore::TinyIa.professor_play( @game_board )
-          @loop = true
-        else
-          case_switch
-        end
-      end while @loop
+
+      case_switch
+
     end
   end
 
   def case_switch
-    case @game_board.aasm_state
-      when 'prof_move' then
-        prof_move
-      when 'prof_attack' then
-        prof_attack
-      when 'prof_fall_back' then
-        prof_move
-      when 'inv_repelled' then
-        inv_repelled
-      when 'prof_breed' then
-        prof_breed
-      when 'inv_move' then
-        inv_move
-      when 'inv_event' then
-        process_events
 
-      else raise "Show case non implemented : #{@game_board.aasm_state}"
-    end
+    prof_move
+
+    # case @game_board.aasm_state
+    #   when 'prof_move' then
+    #     prof_move
+    #   when 'prof_attack' then
+    #     prof_attack
+    #   when 'prof_fall_back' then
+    #     prof_move
+    #   when 'inv_repelled' then
+    #     inv_repelled
+    #   when 'prof_breed' then
+    #     prof_breed
+    #   when 'inv_move' then
+    #     inv_move
+    #   when 'inv_event' then
+    #     process_events
+    #
+    #   else raise "Show case non implemented : #{@game_board.aasm_state}"
+    # end
   end
 
   def inv_repelled
@@ -93,13 +90,13 @@ class MapController < ApplicationController
 
   def prof_move
 
-    unless @prof_move
+    # unless @prof_move
       @monsters_positions = @game_board.p_monster_positions.all
       @prof_monsters = @game_board.p_monsters
 
       @aval_destinations = @prof_location.destinations
       @prof_move = true
-    end
+    # end
   end
 
   def prof_breed

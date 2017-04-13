@@ -15,8 +15,6 @@ module GameCore::Movement
 
       unless token.class == PProfessor
         EEventLog.log_investigator_movement( gb, token, dest_loc )
-      else
-        EEventLog.log( gb, I18n.t( 'movement.prof_move' ) )
       end
 
       return true

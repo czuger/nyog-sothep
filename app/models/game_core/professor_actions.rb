@@ -52,11 +52,10 @@ module GameCore
       end
 
       ActiveRecord::Base.transaction do
-        EEventLog.start_event_block( gb )
         regular_move_token( gb, gb.p_professor, dest_loc )
 
-        gb.prof_attack! if gb.prof_move?
-        gb.prof_attack_after_fall_back! if gb.prof_fall_back?
+        # gb.prof_attack! if gb.prof_move?
+        # gb.prof_attack_after_fall_back! if gb.prof_fall_back?
 
       end
     end

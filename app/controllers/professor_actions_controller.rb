@@ -50,6 +50,10 @@ class ProfessorActionsController < ApplicationController
 
     @game_board.p_professor.move( dest_loc )
 
+    @game_board.i_investigators.each do |i|
+      i.ia_invest_random_move( @game_board )
+    end
+
     redirect_to g_game_board_play_url( g_game_board_id: @game_board.id )
   end
 

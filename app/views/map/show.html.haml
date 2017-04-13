@@ -1,15 +1,9 @@
 #board
-  - if @side == 'prof'
-    = render partial: 'prof_map'
-  - else
-    = render partial: 'inv_map'
+  = render partial: 'prof_map'
 
 #infos
   #investigator
-    - if @side == 'prof'
-      = render partial: 'prof_info'
-    - else
-      = render partial: 'inv_info'
+    = render partial: 'prof_info'
 
   %hr
   #events

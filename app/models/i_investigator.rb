@@ -1,6 +1,7 @@
 class IInvestigator < ApplicationRecord
 
   include AASM
+  include GameCore::Ia::InvestigatorMovement
 
   validates :event_table, inclusion: { in: [ 1, 2 ] }
   validates :gender, inclusion: { in: %w( m f ) }
