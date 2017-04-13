@@ -6,6 +6,8 @@ module GameCore::Movement
 
     assert_regular_movement_allowed( token.current_location, dest_loc )
 
+    p token
+
     if token.class == PProfessor || cross_border_allowed( gb, token, dest_loc )
 
       token.last_location = token.current_location unless token.class == PProfessor

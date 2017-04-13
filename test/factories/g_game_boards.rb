@@ -3,7 +3,7 @@ FactoryGirl.define do
     turn 1
     players_count 2
     prof_security_code 123456
-    ia_side :prof
+    ia_side :inv
 
     after(:create) do |gb|
       prof_road = create( :prof_road )
@@ -40,9 +40,21 @@ FactoryGirl.define do
       aasm_state 'inv_event'
       after(:create) do |gb|
         gb.i_investigators.destroy_all
+        gb.reload
         inv_road = create( :inv_road )
         1.upto( 4 ).each do
           create( :has_moved_investigator, g_game_board_id: gb.id, current_location: inv_road.src_city, last_location: inv_road.src_city )
+        end
+      end
+    end
+
+    factory :g_game_board_for_inv_movement_tests do
+      after(:create) do |gb|
+        gb.i_investigators.destroy_all
+        gb.reload
+        inv_road = create( :true_road )
+        1.upto( 4 ).each do
+          create( :i_investigator, g_game_board_id: gb.id, current_location: inv_road.src_city, last_location: inv_road.src_city, ia_target_destination: inv_road.dest_city )
         end
       end
     end

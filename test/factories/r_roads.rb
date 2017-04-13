@@ -16,5 +16,11 @@ FactoryGirl.define do
       src_city { create( :prof_city ) }
       dest_city { create( :prof_dest_city ) }
     end
+
+    factory :true_road do
+      src_city { create( :oxford ) }
+      dest_city { create( :plainfield ) }
+    end
+
   end
 end

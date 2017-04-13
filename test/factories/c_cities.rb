@@ -25,5 +25,14 @@ FactoryGirl.define do
         "Prof dest city #{i}"
       end
     end
+
+    factory :oxford do
+      code_name 'oxford'
+    end
+
+    factory :plainfield do
+      code_name 'plainfield'
+    end
+
   end
 end

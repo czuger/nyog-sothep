@@ -8,6 +8,7 @@ class IInvestigator < ApplicationRecord
 
   belongs_to :current_location, polymorphic: true
   belongs_to :last_location, polymorphic: true
+  belongs_to :ia_target_destination, polymorphic: true, optional: true
 
   aasm do
     state :inv_move, :initial => true
