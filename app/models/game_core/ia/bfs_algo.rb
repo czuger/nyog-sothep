@@ -3,251 +3,157 @@ module GameCore
 
     class BfsAlgo
       
-      DESTINATIONS = {
-       'plainfield'=>
-         [{:code_name=>'providence', :klass=>'CCity'},
-          {:code_name=>'oxford', :klass=>'CCity'},
-          {:code_name=>'westerly', :klass=>'CCity'}],
-       'pascoag'=>
-         [{:code_name=>'woonsocket', :klass=>'CCity'},
-          {:code_name=>'oxford', :klass=>'CCity'}],
-       'woonsocket'=>
-         [{:code_name=>'pascoag', :klass=>'CCity'},
-          {:code_name=>'providence', :klass=>'CCity'},
-          {:code_name=>'attleboro', :klass=>'CCity'},
-          {:code_name=>'dedham', :klass=>'CCity'},
-          {:code_name=>'milford', :klass=>'CCity'}],
-       'providence'=>
-         [{:code_name=>'plainfield', :klass=>'CCity'},
-          {:code_name=>'woonsocket', :klass=>'CCity'},
-          {:code_name=>'attleboro', :klass=>'CCity'},
-          {:code_name=>'apponaug', :klass=>'CCity'},
-          {:code_name=>'bristol', :klass=>'CCity'},
-          {:code_name=>'fall_river', :klass=>'CCity'}],
-       'foxboro'=>
-         [{:code_name=>'attleboro', :klass=>'CCity'},
-          {:code_name=>'taunton', :klass=>'CCity'},
-          {:code_name=>'stoughton', :klass=>'CCity'}],
-       'attleboro'=>
-         [{:code_name=>'woonsocket', :klass=>'CCity'},
-          {:code_name=>'providence', :klass=>'CCity'},
-          {:code_name=>'foxboro', :klass=>'CCity'},
-          {:code_name=>'taunton', :klass=>'CCity'}],
-       'taunton'=>
-         [{:code_name=>'foxboro', :klass=>'CCity'},
-          {:code_name=>'attleboro', :klass=>'CCity'},
-          {:code_name=>'middleboro', :klass=>'CCity'},
-          {:code_name=>'stoughton', :klass=>'CCity'},
-          {:code_name=>'fall_river', :klass=>'CCity'}],
-       'rockland'=>
-         [{:code_name=>'bridgewater_junction', :klass=>'CCity'},
-          {:code_name=>'greenbush', :klass=>'CCity'},
-          {:code_name=>'boston', :klass=>'CCity'}],
-       'bridgewater_junction'=>
-         [{:code_name=>'rockland', :klass=>'CCity'},
-          {:code_name=>'middleboro', :klass=>'CCity'},
-          {:code_name=>'boston', :klass=>'CCity'}],
-       'middleboro'=>
-         [{:code_name=>'taunton', :klass=>'CCity'},
-          {:code_name=>'bridgewater_junction', :klass=>'CCity'},
-          {:code_name=>'tremont', :klass=>'CCity'},
-          {:code_name=>'new_bedford', :klass=>'CCity'},
-          {:code_name=>'plymouth', :klass=>'CCity'}],
-       'greenbush'=>
-         [{:code_name=>'rockland', :klass=>'CCity'},
-          {:code_name=>'plymouth', :klass=>'CCity'}],
-       'tremont'=>
-         [{:code_name=>'middleboro', :klass=>'CCity'},
-          {:code_name=>'falmouth', :klass=>'CCity'},
-          {:code_name=>'barnstable', :klass=>'CCity'},
-          {:code_name=>'plymouth', :klass=>'CCity'}],
-       'falmouth'=>
-         [{:code_name=>'tremont', :klass=>'CCity'},
-          {:code_name=>'barnstable', :klass=>'CCity'}],
-       'barnstable'=>
-         [{:code_name=>'tremont', :klass=>'CCity'},
-          {:code_name=>'falmouth', :klass=>'CCity'},
-          {:code_name=>'chatham', :klass=>'CCity'},
-          {:code_name=>'provincetown', :klass=>'CCity'}],
-       'worcester'=>
-         [{:code_name=>'oxford', :klass=>'CCity'},
-          {:code_name=>'westboro', :klass=>'CCity'},
-          {:code_name=>'milford', :klass=>'CCity'},
-          {:code_name=>'oakdale', :klass=>'CCity'}],
-       'oxford'=>
-         [{:code_name=>'plainfield', :klass=>'CCity'},
-          {:code_name=>'pascoag', :klass=>'CCity'},
-          {:code_name=>'worcester', :klass=>'CCity'}],
-       'westboro'=>
-         [{:code_name=>'worcester', :klass=>'CCity'},
-          {:code_name=>'ashland', :klass=>'CCity'}],
-       'ashland'=>
-         [{:code_name=>'westboro', :klass=>'CCity'},
-          {:code_name=>'milford', :klass=>'CCity'},
-          {:code_name=>'sudbury', :klass=>'CCity'},
-          {:code_name=>'boston', :klass=>'CCity'}],
-       'dedham'=>
-         [{:code_name=>'woonsocket', :klass=>'CCity'},
-          {:code_name=>'stoughton', :klass=>'CCity'},
-          {:code_name=>'boston', :klass=>'CCity'}],
-       'milford'=>
-         [{:code_name=>'woonsocket', :klass=>'CCity'},
-          {:code_name=>'worcester', :klass=>'CCity'},
-          {:code_name=>'ashland', :klass=>'CCity'}],
-       'stoughton'=>
-         [{:code_name=>'foxboro', :klass=>'CCity'},
-          {:code_name=>'taunton', :klass=>'CCity'},
-          {:code_name=>'dedham', :klass=>'CCity'}],
-       'sudbury'=>
-         [{:code_name=>'ashland', :klass=>'CCity'},
-          {:code_name=>'oakdale', :klass=>'CCity'},
-          {:code_name=>'concord', :klass=>'CCity'},
-          {:code_name=>'boston', :klass=>'CCity'}],
-       'nashua'=>
-         [{:code_name=>'dunwich', :klass=>'CCity'},
-          {:code_name=>'lowel', :klass=>'CCity'}],
-       'dunwich'=>
-         [{:code_name=>'nashua', :klass=>'CCity'},
-          {:code_name=>'lowel', :klass=>'CCity'},
-          {:code_name=>'fitchburg', :klass=>'CCity'},
-          {:code_name=>'concord', :klass=>'CCity'}],
-       'lowel'=>
-         [{:code_name=>'nashua', :klass=>'CCity'},
-          {:code_name=>'dunwich', :klass=>'CCity'},
-          {:code_name=>'fitchburg', :klass=>'CCity'},
-          {:code_name=>'concord', :klass=>'CCity'},
-          {:code_name=>'lawrence', :klass=>'CCity'}],
-       'fitchburg'=>
-         [{:code_name=>'dunwich', :klass=>'CCity'},
-          {:code_name=>'lowel', :klass=>'CCity'},
-          {:code_name=>'oakdale', :klass=>'CCity'},
-          {:code_name=>'concord', :klass=>'CCity'}],
-       'oakdale'=>
-         [{:code_name=>'worcester', :klass=>'CCity'},
-          {:code_name=>'sudbury', :klass=>'CCity'},
-          {:code_name=>'fitchburg', :klass=>'CCity'}],
-       'concord'=>
-         [{:code_name=>'sudbury', :klass=>'CCity'},
-          {:code_name=>'dunwich', :klass=>'CCity'},
-          {:code_name=>'lowel', :klass=>'CCity'},
-          {:code_name=>'fitchburg', :klass=>'CCity'},
-          {:code_name=>'boston', :klass=>'CCity'}],
-       'lawrence'=>
-         [{:code_name=>'lowel', :klass=>'CCity'},
-          {:code_name=>'newburyport', :klass=>'CCity'},
-          {:code_name=>'arkham', :klass=>'CCity'}],
-       'newburyport'=>
-         [{:code_name=>'lawrence', :klass=>'CCity'},
-          {:code_name=>'innsmouth', :klass=>'CCity'},
-          {:code_name=>'arkham', :klass=>'CCity'},
-          {:code_name=>'gulf_of_maine', :klass=>'WWaterArea'}],
-       'innsmouth'=>
-         [{:code_name=>'newburyport', :klass=>'CCity'},
-          {:code_name=>'arkham', :klass=>'CCity'},
-          {:code_name=>'gulf_of_maine', :klass=>'WWaterArea'}],
-       'gloucester'=>[{:code_name=>'gulf_of_maine', :klass=>'WWaterArea'}],
-       'arkham'=>
-         [{:code_name=>'lawrence', :klass=>'CCity'},
-          {:code_name=>'newburyport', :klass=>'CCity'},
-          {:code_name=>'innsmouth', :klass=>'CCity'},
-          {:code_name=>'lynn', :klass=>'CCity'},
-          {:code_name=>'massachusetts_bay', :klass=>'WWaterArea'}],
-       'lynn'=>
-         [{:code_name=>'arkham', :klass=>'CCity'},
-          {:code_name=>'boston', :klass=>'CCity'},
-          {:code_name=>'massachusetts_bay', :klass=>'WWaterArea'}],
-       'boston'=>
-         [{:code_name=>'rockland', :klass=>'CCity'},
-          {:code_name=>'bridgewater_junction', :klass=>'CCity'},
-          {:code_name=>'ashland', :klass=>'CCity'},
-          {:code_name=>'dedham', :klass=>'CCity'},
-          {:code_name=>'sudbury', :klass=>'CCity'},
-          {:code_name=>'concord', :klass=>'CCity'},
-          {:code_name=>'lynn', :klass=>'CCity'},
-          {:code_name=>'massachusetts_bay', :klass=>'WWaterArea'}],
-       'westerly'=>
-         [{:code_name=>'plainfield', :klass=>'CCity'},
-          {:code_name=>'narragansett_pier', :klass=>'CCity'},
-          {:code_name=>'atlantic_ocean', :klass=>'WWaterArea'}],
-       'narragansett_pier'=>
-         [{:code_name=>'westerly', :klass=>'CCity'},
-          {:code_name=>'apponaug', :klass=>'CCity'},
-          {:code_name=>'atlantic_ocean', :klass=>'WWaterArea'}],
-       'apponaug'=>
-         [{:code_name=>'providence', :klass=>'CCity'},
-          {:code_name=>'narragansett_pier', :klass=>'CCity'},
-          {:code_name=>'atlantic_ocean', :klass=>'WWaterArea'}],
-       'bristol'=>
-         [{:code_name=>'providence', :klass=>'CCity'},
-          {:code_name=>'fall_river', :klass=>'CCity'},
-          {:code_name=>'atlantic_ocean', :klass=>'WWaterArea'}],
-       'newport'=>
-         [{:code_name=>'fall_river', :klass=>'CCity'},
-          {:code_name=>'atlantic_ocean', :klass=>'WWaterArea'}],
-       'fall_river'=>
-         [{:code_name=>'providence', :klass=>'CCity'},
-          {:code_name=>'taunton', :klass=>'CCity'},
-          {:code_name=>'bristol', :klass=>'CCity'},
-          {:code_name=>'newport', :klass=>'CCity'},
-          {:code_name=>'new_bedford', :klass=>'CCity'},
-          {:code_name=>'atlantic_ocean', :klass=>'WWaterArea'}],
-       'new_bedford'=>
-         [{:code_name=>'middleboro', :klass=>'CCity'},
-          {:code_name=>'fall_river', :klass=>'CCity'},
-          {:code_name=>'buzzards_bay', :klass=>'WWaterArea'}],
-       'edgartown'=>[{:code_name=>'nantucket_sound', :klass=>'WWaterArea'}],
-       'nantucket'=>[{:code_name=>'nantucket_sound', :klass=>'WWaterArea'}],
-       'chatham'=>
-         [{:code_name=>'barnstable', :klass=>'CCity'},
-          {:code_name=>'provincetown', :klass=>'CCity'},
-          {:code_name=>'nantucket_sound', :klass=>'WWaterArea'}],
-       'plymouth'=>
-         [{:code_name=>'middleboro', :klass=>'CCity'},
-          {:code_name=>'greenbush', :klass=>'CCity'},
-          {:code_name=>'tremont', :klass=>'CCity'},
-          {:code_name=>'cape_cod_bay', :klass=>'WWaterArea'}],
-       'provincetown'=>
-         [{:code_name=>'barnstable', :klass=>'CCity'},
-          {:code_name=>'chatham', :klass=>'CCity'},
-          {:code_name=>'cape_cod_bay', :klass=>'WWaterArea'}],
-       'gulf_of_maine'=>
-         [{:code_name=>'newburyport', :klass=>'CCity'},
-          {:code_name=>'innsmouth', :klass=>'CCity'},
-          {:code_name=>'gloucester', :klass=>'CCity'},
-          {:code_name=>'massachusetts_bay', :klass=>'WWaterArea'},
-          {:code_name=>'nantucket_sound', :klass=>'WWaterArea'},
-          {:code_name=>'cape_cod_bay', :klass=>'WWaterArea'}],
-       'massachusetts_bay'=>
-         [{:code_name=>'arkham', :klass=>'CCity'},
-          {:code_name=>'lynn', :klass=>'CCity'},
-          {:code_name=>'boston', :klass=>'CCity'},
-          {:code_name=>'gulf_of_maine', :klass=>'WWaterArea'},
-          {:code_name=>'cape_cod_bay', :klass=>'WWaterArea'}],
-       'atlantic_ocean'=>
-         [{:code_name=>'westerly', :klass=>'CCity'},
-          {:code_name=>'narragansett_pier', :klass=>'CCity'},
-          {:code_name=>'apponaug', :klass=>'CCity'},
-          {:code_name=>'bristol', :klass=>'CCity'},
-          {:code_name=>'newport', :klass=>'CCity'},
-          {:code_name=>'fall_river', :klass=>'CCity'},
-          {:code_name=>'buzzards_bay', :klass=>'WWaterArea'},
-          {:code_name=>'nantucket_sound', :klass=>'WWaterArea'}],
-       'buzzards_bay'=>
-         [{:code_name=>'new_bedford', :klass=>'CCity'},
-          {:code_name=>'atlantic_ocean', :klass=>'WWaterArea'},
-          {:code_name=>'nantucket_sound', :klass=>'WWaterArea'}],
-       'nantucket_sound'=>
-         [{:code_name=>'edgartown', :klass=>'CCity'},
-          {:code_name=>'nantucket', :klass=>'CCity'},
-          {:code_name=>'chatham', :klass=>'CCity'},
-          {:code_name=>'gulf_of_maine', :klass=>'WWaterArea'},
-          {:code_name=>'atlantic_ocean', :klass=>'WWaterArea'},
-          {:code_name=>'buzzards_bay', :klass=>'WWaterArea'}],
-       'cape_cod_bay'=>
-         [{:code_name=>'plymouth', :klass=>'CCity'},
-          {:code_name=>'provincetown', :klass=>'CCity'},
-          {:code_name=>'gulf_of_maine', :klass=>'WWaterArea'},
-          {:code_name=>'massachusetts_bay', :klass=>'WWaterArea'}]}
+      DESTINATIONS = {'plainfield'=>['providence', 'oxford', 'westerly'],
+                      'pascoag'=>['woonsocket', 'oxford'],
+                      'woonsocket'=>['pascoag', 'providence', 'attleboro', 'dedham', 'milford'],
+                      'providence'=>
+                        ['plainfield',
+                         'woonsocket',
+                         'attleboro',
+                         'apponaug',
+                         'bristol',
+                         'fall_river'],
+                      'foxboro'=>['attleboro', 'taunton', 'stoughton'],
+                      'attleboro'=>['woonsocket', 'providence', 'foxboro', 'taunton'],
+                      'taunton'=>['foxboro', 'attleboro', 'middleboro', 'stoughton', 'fall_river'],
+                      'rockland'=>['bridgewater_junction', 'greenbush', 'boston'],
+                      'bridgewater_junction'=>['rockland', 'middleboro', 'boston'],
+                      'middleboro'=>
+                        ['taunton', 'bridgewater_junction', 'tremont', 'new_bedford', 'plymouth'],
+                      'greenbush'=>['rockland', 'plymouth'],
+                      'tremont'=>['middleboro', 'falmouth', 'barnstable', 'plymouth'],
+                      'falmouth'=>['tremont', 'barnstable'],
+                      'barnstable'=>['tremont', 'falmouth', 'chatham', 'provincetown'],
+                      'worcester'=>['oxford', 'westboro', 'milford', 'oakdale'],
+                      'oxford'=>['plainfield', 'pascoag', 'worcester'],
+                      'westboro'=>['worcester', 'ashland'],
+                      'ashland'=>['westboro', 'milford', 'sudbury', 'boston'],
+                      'dedham'=>['woonsocket', 'stoughton', 'boston'],
+                      'milford'=>['woonsocket', 'worcester', 'ashland'],
+                      'stoughton'=>['foxboro', 'taunton', 'dedham'],
+                      'sudbury'=>['ashland', 'oakdale', 'concord', 'boston'],
+                      'nashua'=>['dunwich', 'lowel'],
+                      'dunwich'=>['nashua', 'lowel', 'fitchburg', 'concord'],
+                      'lowel'=>['nashua', 'dunwich', 'fitchburg', 'concord', 'lawrence'],
+                      'fitchburg'=>['dunwich', 'lowel', 'oakdale', 'concord'],
+                      'oakdale'=>['worcester', 'sudbury', 'fitchburg'],
+                      'concord'=>['sudbury', 'dunwich', 'lowel', 'fitchburg', 'boston'],
+                      'lawrence'=>['lowel', 'newburyport', 'arkham'],
+                      'newburyport'=>['lawrence', 'innsmouth', 'arkham', 'gulf_of_maine'],
+                      'innsmouth'=>['newburyport', 'arkham', 'gulf_of_maine'],
+                      'gloucester'=>['gulf_of_maine'],
+                      'arkham'=>
+                        ['lawrence', 'newburyport', 'innsmouth', 'lynn', 'massachusetts_bay'],
+                      'lynn'=>['arkham', 'boston', 'massachusetts_bay'],
+                      'boston'=>
+                        ['rockland',
+                         'bridgewater_junction',
+                         'ashland',
+                         'dedham',
+                         'sudbury',
+                         'concord',
+                         'lynn',
+                         'massachusetts_bay'],
+                      'westerly'=>['plainfield', 'narragansett_pier', 'atlantic_ocean'],
+                      'narragansett_pier'=>['westerly', 'apponaug', 'atlantic_ocean'],
+                      'apponaug'=>['providence', 'narragansett_pier', 'atlantic_ocean'],
+                      'bristol'=>['providence', 'fall_river', 'atlantic_ocean'],
+                      'newport'=>['fall_river', 'atlantic_ocean'],
+                      'fall_river'=>
+                        ['providence',
+                         'taunton',
+                         'bristol',
+                         'newport',
+                         'new_bedford',
+                         'atlantic_ocean'],
+                      'new_bedford'=>['middleboro', 'fall_river', 'buzzards_bay'],
+                      'edgartown'=>['nantucket_sound'],
+                      'nantucket'=>['nantucket_sound'],
+                      'chatham'=>['barnstable', 'provincetown', 'nantucket_sound'],
+                      'plymouth'=>['middleboro', 'greenbush', 'tremont', 'cape_cod_bay'],
+                      'provincetown'=>['barnstable', 'chatham', 'cape_cod_bay'],
+                      'gulf_of_maine'=>
+                        ['newburyport',
+                         'innsmouth',
+                         'gloucester',
+                         'massachusetts_bay',
+                         'nantucket_sound',
+                         'cape_cod_bay'],
+                      'massachusetts_bay'=>
+                        ['arkham', 'lynn', 'boston', 'gulf_of_maine', 'cape_cod_bay'],
+                      'atlantic_ocean'=>
+                        ['westerly',
+                         'narragansett_pier',
+                         'apponaug',
+                         'bristol',
+                         'newport',
+                         'fall_river',
+                         'buzzards_bay',
+                         'nantucket_sound'],
+                      'buzzards_bay'=>['new_bedford', 'atlantic_ocean', 'nantucket_sound'],
+                      'nantucket_sound'=>
+                        ['edgartown',
+                         'nantucket',
+                         'chatham',
+                         'gulf_of_maine',
+                         'atlantic_ocean',
+                         'buzzards_bay'],
+                      'cape_cod_bay'=>
+                        ['plymouth', 'provincetown', 'gulf_of_maine', 'massachusetts_bay']}
+      
+      DEST_KLASS = {'plainfield'=>'CCity',
+                    'pascoag'=>'CCity',
+                    'woonsocket'=>'CCity',
+                    'providence'=>'CCity',
+                    'foxboro'=>'CCity',
+                    'attleboro'=>'CCity',
+                    'taunton'=>'CCity',
+                    'rockland'=>'CCity',
+                    'bridgewater_junction'=>'CCity',
+                    'middleboro'=>'CCity',
+                    'greenbush'=>'CCity',
+                    'tremont'=>'CCity',
+                    'falmouth'=>'CCity',
+                    'barnstable'=>'CCity',
+                    'worcester'=>'CCity',
+                    'oxford'=>'CCity',
+                    'westboro'=>'CCity',
+                    'ashland'=>'CCity',
+                    'dedham'=>'CCity',
+                    'milford'=>'CCity',
+                    'stoughton'=>'CCity',
+                    'sudbury'=>'CCity',
+                    'nashua'=>'CCity',
+                    'dunwich'=>'CCity',
+                    'lowel'=>'CCity',
+                    'fitchburg'=>'CCity',
+                    'oakdale'=>'CCity',
+                    'concord'=>'CCity',
+                    'lawrence'=>'CCity',
+                    'newburyport'=>'CCity',
+                    'innsmouth'=>'CCity',
+                    'gloucester'=>'CCity',
+                    'arkham'=>'CCity',
+                    'lynn'=>'CCity',
+                    'boston'=>'CCity',
+                    'westerly'=>'CCity',
+                    'narragansett_pier'=>'CCity',
+                    'apponaug'=>'CCity',
+                    'bristol'=>'CCity',
+                    'newport'=>'CCity',
+                    'fall_river'=>'CCity',
+                    'new_bedford'=>'CCity',
+                    'edgartown'=>'CCity',
+                    'nantucket'=>'CCity',
+                    'chatham'=>'CCity',
+                    'plymouth'=>'CCity',
+                    'provincetown'=>'CCity',
+                    'gulf_of_maine'=>'WWaterArea',
+                    'massachusetts_bay'=>'WWaterArea',
+                    'atlantic_ocean'=>'WWaterArea',
+                    'buzzards_bay'=>'WWaterArea',
+                    'nantucket_sound'=>'WWaterArea',
+                    'cape_cod_bay'=>'WWaterArea'}
 
       def self.find_next_dest_to_goal( current_position, goal )
 
@@ -261,18 +167,14 @@ module GameCore
         until frontier.empty?
           current_name = frontier.shift
 
-          if current_name
-            if current_name == goal_name
-              break
-            end
+          if current_name == goal_name
+            break
+          end
 
-            p current_name
-
-            DESTINATIONS[ current_name ].each do |next_location|
-              unless came_from.has_key?( next_location[ 'code_name' ] )
-                frontier << next_location[ 'code_name' ]
-                came_from[ next_location[ 'code_name' ] ] = next_location[ 'code_name' ]
-              end
+          DESTINATIONS[ current_name ].each do |next_location|
+            unless came_from.has_key?( next_location )
+              frontier << next_location
+              came_from[ next_location ] = current_name
             end
           end
         end
@@ -280,32 +182,33 @@ module GameCore
         back_token = goal_name
         next_step = nil
 
-        pp came_from
-
         while back_token != current_position.code_name
           next_step = back_token
           back_token = came_from[ back_token ]
-          p next_step
+          # p next_step
           break if next_step == nil
         end
 
-        next_step = DESTINATIONS[ next_step ]
-        next_step[ 'klass' ].constantize.find_by( next_step[ 'code_name' ] )
+        DEST_KLASS[ next_step ].constantize.find_by( code_name: next_step )
       end
 
       def self.create_dest_hash
 
         dest_hash = {}
+        class_hash = {}
 
         CCity.all.each do |c|
-          dest_hash[ c.code_name ] = c.destinations.map{ |e| { code_name: e.code_name, klass: e.class.to_s } }
+          dest_hash[ c.code_name ] = c.destinations.map{ |e| e.code_name }
+          class_hash[ c.code_name ] = c.class.to_s
         end
 
         WWaterArea.all.each do |c|
-          dest_hash[ c.code_name ] = c.destinations.map{ |e| { code_name: e.code_name, klass: e.class.to_s } }
+          dest_hash[ c.code_name ] = c.destinations.map{ |e| e.code_name }
+          class_hash[ c.code_name ] = c.class.to_s
         end
 
         pp dest_hash
+        pp class_hash
 
       end
     end

@@ -6,7 +6,7 @@ module GameCore::Movement
 
     assert_regular_movement_allowed( token.current_location, dest_loc )
 
-    p token
+    # p token
 
     if token.class == PProfessor || cross_border_allowed( gb, token, dest_loc )
 
