@@ -9,16 +9,6 @@ class ProfessorActionsController < ApplicationController
     redirect_to g_game_board_play_url( g_game_board_id: @game_board.id, attacking_investigator_id: params[ :investigator_id ] )
   end
 
-  def dont_attack
-    set_game_board
-
-    EEventLog.start_event_block( @game_board )
-    EEventLog.log( @game_board, I18n.t( 'log.prof_in_inv_city' ) )
-
-    @game_board.prof_breed!
-    redirect_to g_game_board_play_url( g_game_board_id: @game_board.id )
-  end
-
   def breed
     set_game_board
 
