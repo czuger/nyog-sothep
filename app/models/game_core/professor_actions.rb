@@ -24,7 +24,7 @@ module GameCore
 
       gb = g_game_board
 
-      raise "Prof breed called while g_game_board not in prof_breed state : #{gb.inspect}" unless gb.prof_breed?
+      # raise "Prof breed called while g_game_board not in prof_breed state : #{gb.inspect}" unless gb.prof_breed?
 
       ActiveRecord::Base.transaction do
         monster_loc = gb.p_professor.current_location
@@ -33,10 +33,10 @@ module GameCore
 
         gb.p_monster_positions.create!( location: monster_loc, code_name: monster.code_name )
         monster.destroy!
-        gb.inv_move!
-
-        EEventLog.start_event_block( gb )
-        gb.p_professor.pick_one_monster
+        # gb.inv_move!
+        #
+        # EEventLog.start_event_block( gb )
+        # gb.p_professor.pick_one_monster
 
         # TODO : need to check that prof has no more than 5 monsters.
         # Need to ask him to remove one if this is the case

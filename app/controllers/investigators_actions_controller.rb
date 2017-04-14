@@ -1,6 +1,5 @@
 class InvestigatorsActionsController < ApplicationController
 
-  include GameLogic::Events
   include GameCore::Movement
 
   def switch_table
@@ -45,32 +44,6 @@ class InvestigatorsActionsController < ApplicationController
 #       inv_move_end
 
       # check_end_of_movements
-    end
-
-    redirect_to g_game_board_play_url( g_game_board_id: @game_board.id )
-  end
-
-
-  def go_psy
-    set_game_board
-    raise "Go psy called while game_board not in inv_move state : #{@game_board.inspect}" unless @game_board.inv_move?
-
-    ActiveRecord::Base.transaction do
-
-      EEventLog.start_event_block( @game_board )
-      set_current_investigator
-
-      if @current_investigator.current_location.city?
-        san = GameCore::Dices.d6
-        @current_investigator.increment!( :san, san )
-        EEventLog.log( @game_board, I18n.t( "actions.result.psy.#{@current_investigator.gender}",
-          san: san, investigator_name: t( "investigators.#{@current_investigator.code_name}" ) ) )
-
-        @current_investigator.roll_no_event!
-
-      else
-        raise "Psy asked in non city area : #{params.inspect}"
-      end
     end
 
     redirect_to g_game_board_play_url( g_game_board_id: @game_board.id )

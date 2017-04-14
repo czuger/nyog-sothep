@@ -11,7 +11,7 @@ module MapHelper
   end
 
   def can_breed_monster( monster )
-    !@prof_move && @prof_breed && !@prof_in_water && !( monster.code_name == 'profonds' && !@prof_in_port )
+    !@monster_at_prof_location && !@prof_in_water && !( monster.code_name == 'profonds' && !@prof_in_port )
   end
 
 end

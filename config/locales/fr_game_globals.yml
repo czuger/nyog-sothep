@@ -31,6 +31,7 @@ fr:
       crazy:
        m: "%{investigator_name} devient fou et devient fanatique."
        f: "%{investigator_name} devient folle et devient fanatique."
+    psy: "%{investigator_name} va voir un psychanalyste et gagne %{san} points de SAN."
 
   movement:
     goes: '%{who} se déplace %{where}'

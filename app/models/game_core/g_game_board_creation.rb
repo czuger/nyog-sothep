@@ -13,7 +13,7 @@ module GameCore
       investigators.each_with_index do |investigator, index|
         # puts 'Creating / updating ' + investigator.humanize
         i = gb.i_investigators.where( code_name: investigator ).first_or_initialize
-        c = WWaterArea.find_by( code_name: :nantucket_sound )
+        c = CCity.find_by( code_name: :nantucket )
         last_loc = CCity.find_by( code_name: :nantucket )
         i.current_location = c
         i.last_location = last_loc

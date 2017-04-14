@@ -1,29 +1,34 @@
+# To be included in investigator
 module GameCore
-  class Events
+  module Events
 
-    def self.roll_event( game_board, investigator, professor )
-      if investigator.current_location.city? && investigator.last_location.city?
+    include GameCore::EventGroundA
+    include GameCore::EventGroundB
 
-        roll = event_dices( investigator )
+    def roll_event( game_board, professor )
+      if current_location.city? && last_location.city?
 
-        if investigator.event_table == 1
-          GameCore::EventGroundA.send( "table#{investigator.event_table}_e#{roll}", game_board, investigator, professor )
-        elsif investigator.event_table == 2
-          GameCore::EventGroundB.send( "table#{investigator.event_table}_e#{roll}", game_board, investigator, professor )
-        else
-          raise "Bad event table for investigator : #{investigator.inspect}"
-        end
+        table = rand( 1 ..2 )
+        roll = event_dices
+
+        send( "table#{table}_e#{roll}", game_board, professor )
       else
         EEventLog.log( game_board, I18n.t( 'events.no_water_events' ) )
       end
     end
 
-    def self.event_dices( investigator )
+    def event_dices
       roll = GameCore::Dices.d6
-      roll += GameCore::Dices.d6 if investigator.sign
-      roll += GameCore::Dices.d6 if investigator.sign && investigator.medaillon
+      roll += GameCore::Dices.d6 if sign
+      roll += GameCore::Dices.d6 if sign && medaillon
       roll
     end
+
+    def method_missing( method_name, *args )
+      super unless method_name =~ /table.*/
+      EEventLog.log( args.first, 'event non implementé' )
+    end
+
   end
 
 end

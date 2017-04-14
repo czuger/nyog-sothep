@@ -1,28 +1,24 @@
-- if @other_side_play
-  = 'Waiting for other side to play'
+#prof-gen
+  = t( '.professeur' )
+  %br
+  = "HP : #{@prof.hp}"
+#prof-items
+  - @prof_monsters.each do |monster|
+    .monster-icon
 
-- else
+      %span.remove-monster-icon
+        %i.fa.fa-close{ 'aria-hidden' => 'true' }
 
-  - if @prof_move || @prof_breed
-    #prof-gen
-      = t( '.professeur' )
-      %br
-      = "HP : #{@prof.hp}"
-    #prof-items
-      - @prof_monsters.each do |monster|
+      .monster-picture
         - if can_breed_monster( monster )
           = link_to monster_breed_g_game_board_professor_actions_url( g_game_board_id: @game_board.id, monster_id: monster.id ) do
-            = image_tag( "tokens/#{monster.code_name}.jpg" )
+            - image_tag( "tokens/#{monster.code_name}.jpg" )
         - else
           = image_tag( "tokens/#{monster.code_name}.jpg" )
 
-      - if @prof_breed
-        %br
-        = link_to t( '.dont_breed' ), dont_breed_g_game_board_professor_actions_url( g_game_board_id: @game_board.id )
-
-  - if @prof_choose_attack
-    %br
-    = link_to t( 'maps.show.prof_attack', investigator_name: @inv_to_attack.translated_name ),
-      attack_g_game_board_professor_actions_url( g_game_board_id: @game_board.id, investigator_id: @inv_to_attack.id )
-    = link_to t( 'maps.show.prof_dont_attack' ), dont_attack_g_game_board_professor_actions_url( g_game_board_id: @game_board.id )
+- if @prof_choose_attack
+  %br
+  = link_to t( 'maps.show.prof_attack', investigator_name: @inv_to_attack.translated_name ),
+    attack_g_game_board_professor_actions_url( g_game_board_id: @game_board.id, investigator_id: @inv_to_attack.id )
+  = link_to t( 'maps.show.prof_dont_attack' ), dont_attack_g_game_board_professor_actions_url( g_game_board_id: @game_board.id )
 

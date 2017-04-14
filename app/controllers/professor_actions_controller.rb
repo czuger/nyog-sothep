@@ -22,12 +22,6 @@ class ProfessorActionsController < ApplicationController
     redirect_to g_game_board_play_url( g_game_board_id: @game_board.id )
   end
 
-  def dont_breed
-    set_game_board
-    @game_board.inv_move!
-    redirect_to g_game_board_play_url( g_game_board_id: @game_board.id )
-  end
-
   def breed
     set_game_board
 
@@ -48,10 +42,17 @@ class ProfessorActionsController < ApplicationController
       raise "Zone error : #{params.inspect}"
     end
 
-    @game_board.p_professor.move( dest_loc )
+    # Prof move
+    @prof.move( dest_loc )
 
-    @game_board.i_investigators.each do |i|
-      i.ia_invest_random_move( @game_board )
+    # Prof get a monster if count less than 4
+    if @game_board.p_monsters.count < 4
+      @prof.pick_one_monster
+    end
+
+    # Investigators play
+    @game_board.alive_investigators.each do |i|
+      i.ia_play( @game_board, @prof )
     end
 
     redirect_to g_game_board_play_url( g_game_board_id: @game_board.id )

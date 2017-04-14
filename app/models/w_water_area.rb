@@ -11,4 +11,8 @@ class WWaterArea < ApplicationRecord
     false
   end
 
+  def port
+    false
+  end
+
 end

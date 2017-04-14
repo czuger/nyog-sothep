@@ -4,6 +4,8 @@ module GameCore
 
       include GameCore::Movement
 
+      private
+
       def ia_invest_random_move( game_board )
 
         # If we does not have a destination or we are at destination, then we chose one

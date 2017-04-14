@@ -45,9 +45,9 @@ class PProfessor < ApplicationRecord
     if monster
       gb.p_monsters.create!( code_name: monster.code_name )
       monster.destroy!
-      EEventLog.log( gb, I18n.t( 'actions.result.prof_pick_monsters' ) )
+      # EEventLog.log( gb, I18n.t( 'actions.result.prof_pick_monsters' ) )
     else
-      EEventLog.log( gb, I18n.t( 'errors.no_more_monsters' ) )
+      # EEventLog.log( gb, I18n.t( 'errors.no_more_monsters' ) )
     end
   end
 
