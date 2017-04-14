@@ -11,7 +11,7 @@ class GGameBoard < ApplicationRecord
   has_many :m_monsters, dependent: :destroy
   has_many :p_monster_positions, dependent: :destroy
   has_many :p_monsters, dependent: :destroy
-  has_many :p_prof_positions, dependent: :destroy
+  has_many :i_inv_target_position, dependent: :destroy
   has_one :p_professor, dependent: :destroy
 
   aasm do

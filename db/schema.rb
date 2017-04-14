@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170413114757) do
+ActiveRecord::Schema.define(version: 20170414190120) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,6 +44,16 @@ ActiveRecord::Schema.define(version: 20170413114757) do
     t.integer  "players_count",      null: false
     t.string   "ia_side"
     t.string   "prof_security_code", null: false
+  end
+
+  create_table "i_inv_target_positions", force: :cascade do |t|
+    t.integer  "g_game_board_id"
+    t.string   "position_type",               null: false
+    t.integer  "position_id",                 null: false
+    t.integer  "memory_counter",  default: 3, null: false
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+    t.index ["g_game_board_id"], name: "index_i_inv_target_positions_on_g_game_board_id", using: :btree
   end
 
   create_table "i_investigators", force: :cascade do |t|
@@ -99,16 +109,6 @@ ActiveRecord::Schema.define(version: 20170413114757) do
     t.index ["g_game_board_id"], name: "index_p_monsters_on_g_game_board_id", using: :btree
   end
 
-  create_table "p_prof_positions", force: :cascade do |t|
-    t.string   "position_type",   null: false
-    t.integer  "position_id",     null: false
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
-    t.integer  "g_game_board_id", null: false
-    t.index ["g_game_board_id"], name: "index_p_prof_positions_on_g_game_board_id", using: :btree
-    t.index ["position_type", "position_id"], name: "index_p_prof_positions_on_position_type_and_position_id", using: :btree
-  end
-
   create_table "p_professors", force: :cascade do |t|
     t.integer  "hp",                                    null: false
     t.string   "current_location_type",                 null: false
@@ -155,7 +155,6 @@ ActiveRecord::Schema.define(version: 20170413114757) do
   add_foreign_key "m_monsters", "g_game_boards"
   add_foreign_key "p_monster_positions", "g_game_boards"
   add_foreign_key "p_monsters", "g_game_boards"
-  add_foreign_key "p_prof_positions", "g_game_boards"
   add_foreign_key "p_professors", "g_game_boards"
   add_foreign_key "r_roads", "c_cities", column: "dest_city_id"
   add_foreign_key "r_roads", "c_cities", column: "src_city_id"

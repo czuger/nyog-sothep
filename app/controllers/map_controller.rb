@@ -2,10 +2,6 @@ require 'pp'
 
 class MapController < ApplicationController
 
-  include GameLogic::Events
-  include GameLogic::BreedCheck
-  include GameLogic::ProfFight
-
   def show
     set_game_board
 

@@ -1,8 +1,5 @@
 class ProfessorActionsController < ApplicationController
 
-  include GameLogic::BreedCheck
-  include GameLogic::ProfFight
-
   def attack
     set_game_board
     investigator = @game_board.i_investigators.find( params[ :investigator_id ] )
