@@ -24,10 +24,10 @@ module GameCore
     #   skip_next_turn!
     # end
 
-    # def self.table1_e5( game_board, professor )
-    #   EEventLog.log( game_board, ( I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) ) )
-    #   PProfPosition.set_random_positions( game_board, professor.current_location, 3 )
-    # end
+    def self.table1_e5( game_board, professor )
+      EEventLog.log( game_board, ( I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) ) )
+      PProfPosition.set_random_positions( game_board, professor.current_location, 3 )
+    end
 
     def table1_e6( game_board, _ )
       EEventLog.log( game_board, ( I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) ) )

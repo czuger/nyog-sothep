@@ -12,4 +12,8 @@ class ApplicationController < ActionController::Base
     @current_investigator = IInvestigator.find( params[:id])
   end
 
+  def assert( assertion, message = nil )
+    raise "Assertion failed : #{message}" unless assertion
+  end
+
 end

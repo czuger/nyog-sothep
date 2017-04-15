@@ -3,7 +3,7 @@ require 'test_helper'
 class ProfFakePosControllerTest < ActionDispatch::IntegrationTest
 
   def setup
-    @gb = create( :g_game_board )
+    @gb = create( :g_game_board_for_inv_movement_tests )
   end
 
   test "should get new" do
@@ -12,9 +12,41 @@ class ProfFakePosControllerTest < ActionDispatch::IntegrationTest
     assert_select '#investigator', 'Selectionnez 3 villes ou le professeur pourrait être. Votre position actuelle sera ajoutée a la liste.'
   end
 
-  test "should get create" do
+  test 'should fail because gb state wrong' do
+    assert_raise do
+      post g_game_board_prof_fake_pos_url( g_game_board_id: @gb.id, cities_ids: [] )
+    end
+  end
+
+  test 'should fail because cities_ids.count wrong' do
     cities_ids = [ 1, 2, 3, 4 ]
-    post g_game_board_prof_fake_pos_url( g_game_board_id: @gb.id, cities_ids: cities_ids )
+    @gb.ask_prof_for_fake_cities!
+    @gb.update( asked_fake_cities_count: 2 )
+
+    assert_raise do
+      post g_game_board_prof_fake_pos_url( g_game_board_id: @gb.id, cities_ids: cities_ids )
+    end
+  end
+
+  test 'should fail because we give the same location as the prof location' do
+    cities_ids = [ CCity.first ]
+    @gb.ask_prof_for_fake_cities!
+    @gb.update( asked_fake_cities_count: 1 )
+
+    assert_raise do
+      post g_game_board_prof_fake_pos_url( g_game_board_id: @gb.id, cities_ids: cities_ids )
+    end
+  end
+
+  test 'should set city' do
+    cities_ids = [ CCity.second ]
+    @gb.ask_prof_for_fake_cities!
+    @gb.update( asked_fake_cities_count: 1 )
+
+    assert_difference 'IInvTargetPosition.count', 2 do
+      post g_game_board_prof_fake_pos_url( g_game_board_id: @gb.id, cities_ids: cities_ids )
+    end
+
     assert_redirected_to g_game_board_play_url( id: @gb.id )
   end
 
