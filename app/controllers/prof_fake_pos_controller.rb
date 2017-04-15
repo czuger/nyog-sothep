@@ -12,5 +12,8 @@ class ProfFakePosController < ApplicationController
   end
 
   def create
+    set_game_board
+
+    redirect_to g_game_board_play_url( id: @game_board.id )
   end
 end
