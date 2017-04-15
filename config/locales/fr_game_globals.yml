@@ -1,6 +1,13 @@
 # Caution, in case of missing translation, think about quoting strings
 
 fr:
+
+  prof_fake_pos:
+    new:
+      info:
+        one: Selectionnez une ville ou le professeur pourrait être. Votre position actuelle sera ajoutée a la liste.
+        other: Selectionnez %{count} villes ou le professeur pourrait être. Votre position actuelle sera ajoutée a la liste.
+
   maps:
     show:
       go_psy: 'Voir un psychanalyste'

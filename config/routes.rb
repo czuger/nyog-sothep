@@ -2,7 +2,9 @@ Rails.application.routes.draw do
 
   resources :g_game_boards do
 
-    resource :fake_pos, only: [ :new, :create ]
+    resource :prof_fake_pos, only: [ :create ] do
+      get ':nb_cities/new', action: :new, as: :new
+    end
 
     resource :professor_actions, only: [] do
       member do

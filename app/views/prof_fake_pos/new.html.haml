@@ -1,0 +1,13 @@
+#board
+  = render partial: 'map/prof_map'
+
+- @cities.each do |city|
+  .token.prof-fake-position{ style: token_style( city ) }
+    -#= image_tag( 'tokens/professor.png' )
+
+#infos
+  #investigator
+    = t( '.info', count: @nb_cities )
+
+= hidden_field_tag :game_board_id, @game_board.id
+= hidden_field_tag :nb_cities, @nb_cities
