@@ -1,5 +1,7 @@
 class InvestigatorsActionsController < ApplicationController
 
+  include GameLogic::GameBoardStatusRedirection
+
   def investigators_ia_play
 
     set_game_board
@@ -21,11 +23,7 @@ class InvestigatorsActionsController < ApplicationController
       break if @game_board.prof_asked_for_fake_cities?
     end
 
-    if @game_board.prof_asked_for_fake_cities?
-      redirect_to new_g_game_board_prof_fake_pos_url( g_game_board_id: @game_board.id, nb_cities: @game_board.asked_fake_cities_count )
-    else
-      redirect_to g_game_board_play_url( g_game_board_id: @game_board.id )
-    end
+    check_prof_asked_for_fake_cities{ redirect_to g_game_board_play_url( g_game_board_id: @game_board.id ) }
 
   end
 

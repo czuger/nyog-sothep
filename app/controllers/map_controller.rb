@@ -2,6 +2,8 @@ require 'pp'
 
 class MapController < ApplicationController
 
+  include GameLogic::GameBoardStatusRedirection
+
   def show
     set_game_board
 
@@ -18,6 +20,8 @@ class MapController < ApplicationController
 
     @monster_at_prof_location = PMonsterPosition.where(
       g_game_board_id: @game_board.id, location_type: @prof_location.class.to_s, location_id: @prof_location.id ).exists?
+
+    check_prof_asked_for_fake_cities{}
   end
 
 end

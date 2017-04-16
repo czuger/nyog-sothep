@@ -1,0 +1,9 @@
+#inherit_from: ../.rubocop.yml
+
+Style:
+  Description: 'Keep indentation straight.'
+  StyleGuide: '#spaces-indentation'
+  Enabled: false
+
+Metrics/LineLength:
+  Max: 200
