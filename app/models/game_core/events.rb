@@ -11,6 +11,10 @@ module GameCore
         table = rand( 1 ..2 )
         roll = event_dices
 
+        # For dev
+        # table = 1
+        # roll = 5
+
         send( "table#{table}_e#{roll}", game_board, professor )
       else
         EEventLog.log( game_board, I18n.t( 'events.no_water_events' ) )
@@ -26,7 +30,7 @@ module GameCore
 
     def method_missing( method_name, *args )
       super unless method_name =~ /table.*/
-      EEventLog.log( args.first, 'event non implementé' )
+      EEventLog.log( args.first, "event non implementé : #{method_name}" )
     end
 
   end

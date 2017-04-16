@@ -12,11 +12,14 @@ module GameCore
           ia_invest_random_move( game_board )
 
           # Investigator encounters check
+
           game_board.resolve_encounter( self )
 
           # Investigator event check
           roll_event( game_board, prof )
         end
+
+        update( current: false )
       end
 
       private

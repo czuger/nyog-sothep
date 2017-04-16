@@ -37,12 +37,7 @@ class ProfessorActionsController < ApplicationController
       @prof.pick_one_monster
     end
 
-    # Investigators play
-    @game_board.alive_investigators.each do |i|
-      i.ia_play( @game_board, @prof )
-    end
-
-    redirect_to g_game_board_play_url( g_game_board_id: @game_board.id )
+    redirect_to g_game_board_investigators_ia_play_url( g_game_board_id: @game_board.id )
   end
 
 end

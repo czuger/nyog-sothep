@@ -47,10 +47,6 @@ module GameCore
 
       gb = g_game_board
       
-      unless gb.prof_move? || gb.prof_fall_back?
-        raise "Prof move called while gb not in prof_move state : #{gb.inspect}"
-      end
-
       ActiveRecord::Base.transaction do
         regular_move_token( gb, gb.p_professor, dest_loc )
 

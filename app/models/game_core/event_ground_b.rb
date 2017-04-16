@@ -3,7 +3,7 @@ module GameCore
 
     private
 
-#     def self.table2_e1( game_board, professor )
+#     def table2_e1( game_board, professor )
 #       EEventLog.log( game_board, I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) )
 # #       helped_by_kown_psy!
 #     end
@@ -18,7 +18,7 @@ module GameCore
       update_attribute( :spell, true ) if loose_san( game_board, 2 )
     end
 
-    # def self.table2_e4( game_board, professor )
+    # def table2_e4( game_board, professor )
     #   EEventLog.log( game_board, I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) )
     #   replay!
     # end
@@ -28,12 +28,12 @@ module GameCore
       update_attribute( :sign, true ) if loose_san( game_board, 2 )
     end
 
-    # def self.table2_e6( game_board, _, professor )
-    #   EEventLog.log( game_board, I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) )
-    #   PProfPosition.set_random_positions( game_board, professor.current_location, 3 )
-    # end
+    def table2_e6( game_board, _ )
+      game_board.update( asked_fake_cities_count: 3 )
+      game_board.ask_prof_for_fake_cities!
+    end
 
-    # def self.table2_e7( game_board, professor )
+    # def table2_e7( game_board, professor )
     #   EEventLog.log( game_board, I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) )
     #   goes_back( game_board )
     # end
@@ -43,12 +43,12 @@ module GameCore
       update_attribute( :medaillon, true ) if loose_san( game_board, 2 )
     end
 
-    # def self.table2_e9( game_board, _, professor )
-    #   EEventLog.log( game_board, I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) )
-    #   PProfPosition.set_random_positions( game_board, professor.current_location, 2 )
-    # end
+    def table2_e9( game_board, _ )
+      game_board.update( asked_fake_cities_count: 2 )
+      game_board.ask_prof_for_fake_cities!
+    end
 
-    # def self.table2_e10( game_board, professor )
+    # def table2_e10( game_board, professor )
     #   EEventLog.log( game_board, I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) )
     #   if loose_san( game_board, 2 )
     #     update_attribute( :spell, true )
@@ -56,7 +56,7 @@ module GameCore
     #   end
     # end
 
-    # def self.table2_e11( game_board, professor )
+    # def table2_e11( game_board, professor )
     #   EEventLog.log( game_board, I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) )
     #   update_attribute( :weapon, true )
     #   replay!
@@ -67,7 +67,7 @@ module GameCore
       loose_san( game_board, 2 )
     end
 
-    # def self.table2_e17( game_board, professor )
+    # def table2_e17( game_board, professor )
     #   EEventLog.log( game_board, I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) )
     #   replay!
     # end

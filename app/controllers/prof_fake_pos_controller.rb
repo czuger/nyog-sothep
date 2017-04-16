@@ -15,7 +15,7 @@ class ProfFakePosController < ApplicationController
     set_game_board
 
     cities_ids = params[ :cities_ids ]
-    assert( @game_board.prof_asked_for_fake_cities?, "@game_board.aasm_state = #{@game_board.aasm_state}" )
+    assert( @game_board.prof_asked_for_fake_cities?, "@game_board.aasm_state = #{@game_board.aasm_state}, should be prof_asked_for_fake_cities" )
     assert( @game_board.asked_fake_cities_count == cities_ids.count,
             "#{@game_board.asked_fake_cities_count} != #{cities_ids.count}" )
 
@@ -29,10 +29,12 @@ class ProfFakePosController < ApplicationController
 
     ActiveRecord::Base.transaction do
       cities.each do |city|
-        IInvTargetPosition.create!( g_game_board_id: @game_board.id, position: city, memory_counter: 3 )
+        IInvTargetPosition.find_or_create_by!( g_game_board_id: @game_board.id, position: city, memory_counter: 5 )
       end
     end
 
-    redirect_to g_game_board_play_url( id: @game_board.id )
+    @game_board.return_to_move_status!
+
+    redirect_to g_game_board_investigators_ia_play_url( g_game_board_id: @game_board.id )
   end
 end

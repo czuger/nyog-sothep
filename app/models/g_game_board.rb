@@ -6,7 +6,8 @@ class GGameBoard < ApplicationRecord
   has_many :e_event_logs, dependent: :destroy
 
   has_many :i_investigators, dependent: :destroy
-  has_many :alive_investigators, -> { where( dead: false ) }, dependent: :destroy, class_name: 'IInvestigator'
+  has_many :alive_investigators, -> { where( dead: false ) }, class_name: 'IInvestigator'
+  has_many :ready_to_play_investigators, -> { where( dead: false, current: true ) }, class_name: 'IInvestigator'
 
   has_many :m_monsters, dependent: :destroy
   has_many :p_monster_positions, dependent: :destroy
