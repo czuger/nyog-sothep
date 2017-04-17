@@ -11,7 +11,12 @@ module GameCore
         # If we does not have a destination or we are at destination, then we chose one
         # p ia_target_destination
         if !ia_target_destination || ia_target_destination.code_name == current_location.code_name
-          self.ia_target_destination = CCity.all.reject{ |e| e.code_name == current_location.code_name}.sample # Random first
+
+          if game_board.i_inv_target_positions.count > 0
+            self.ia_target_destination = game_board.i_inv_target_positions.sample.position
+          else
+            self.ia_target_destination = CCity.all.reject{ |e| e.code_name == current_location.code_name}.sample # Random first
+          end
         end
 
         # p ia_target_destination

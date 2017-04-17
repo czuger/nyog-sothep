@@ -67,7 +67,7 @@ module GameCore
       loose_san( game_board, 2 )
     end
 
-    def table2_e13( game_board, _ )
+    def table2_e13( game_board, professor )
       EEventLog.log( game_board, ( I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) ) )
       prof_spotted( game_board, professor )
     end
