@@ -11,6 +11,10 @@ class MapController < ApplicationController
     @events = @game_board.e_event_logs.all.order( 'logset DESC, id ASC' )
 
     @prof_location = @prof.current_location
+
+    @nyog_sothep_location = @game_board.nyog_sothep_invocation_position
+    @nyog_sothep_location_rotation = @game_board.nyog_sothep_invocation_position_rotation
+
     @prof_in_port = @prof_location.port
 
     @prof_monsters = @game_board.p_monsters

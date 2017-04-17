@@ -15,6 +15,7 @@ class GGameBoardsController < ApplicationController
   # GET /g_game_boards/new
   def new
     @g_game_board = GGameBoard.new
+    @cities = CCity.all
   end
 
   # GET /g_game_boards/1/edit
@@ -33,12 +34,21 @@ class GGameBoardsController < ApplicationController
 
     @g_game_board.turn = 0
 
+    @prof_start_position = params[ 'prof_position' ].empty? ? CCity.all.sample : CCity.find( params[ 'prof_position' ] )
+    assert( @prof_start_position, "Prof start position is nil : #{params[ 'prof_position' ]}" )
+
+    @nyog_start_position = params[ 'nyog_sothep_position' ].empty? ? CCity.all.sample : CCity.find( params[ 'nyog_sothep_position' ] )
+    assert( @nyog_start_position, "Nyog start position is nil : #{params[ 'nyog_sothep_position' ]}" )
+
+    @g_game_board.nyog_sothep_invocation_position = @nyog_start_position
+    @g_game_board.nyog_sothep_invocation_position_rotation = rand( -15 .. 15 )
+
     respond_to do |format|
       if @g_game_board.save
 
         @g_game_board.next_turn
 
-        GameCore::GGameBoardCreation.populate_game_board( @g_game_board )
+        GameCore::GGameBoardCreation.populate_game_board( @g_game_board, @prof_start_position )
 
         format.html { redirect_to @g_game_board, notice: 'G game board was successfully created.' }
         format.json { render :show, status: :created, location: @g_game_board }

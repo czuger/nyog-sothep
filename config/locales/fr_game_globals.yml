@@ -2,6 +2,10 @@
 
 fr:
 
+  g_game_boards:
+    new:
+      info: Selectionnez une position de départ du professeur et une position ou vous invoquerez nyog sothep.
+
   prof_fake_pos:
     new:
       inv_turn: 'Investigateur actuel : %{inv_name}'

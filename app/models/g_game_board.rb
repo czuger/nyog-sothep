@@ -16,6 +16,7 @@ class GGameBoard < ApplicationRecord
   has_one :p_professor, dependent: :destroy
 
   belongs_to :asked_fake_cities_investigator, class_name: 'IInvestigator', optional: true
+  belongs_to :nyog_sothep_invocation_position, class_name: 'CCity'
 
   aasm do
     state :prof_move, :initial => true

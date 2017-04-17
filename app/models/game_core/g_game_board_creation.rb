@@ -1,12 +1,12 @@
 module GameCore
   class GGameBoardCreation
 
-    def self.populate_game_board( gb )
-      create_investigators( gb )
+    def self.populate_game_board( gb, prof_position )
+      create_investigators( gb, prof_position )
       populate_monsters( gb )
     end
 
-    def self.create_investigators( gb )
+    def self.create_investigators( gb, prof_position )
       investigators = %w( poirot hercule hastings le_capitaine sandy lemon )
       gender = %w( m m m m f f )
 
@@ -25,7 +25,7 @@ module GameCore
       end
       # gb.i_investigators.first.update_attribute( :current, true )
 
-      gb.create_p_professor!( hp: 14, current_location: CCity.all.sample, token_rotation: rand( -15 .. 15 ) )
+      gb.create_p_professor!( hp: 14, current_location: prof_position, token_rotation: rand( -15 .. 15 ) )
     end
 
     def self.populate_monsters( gb )

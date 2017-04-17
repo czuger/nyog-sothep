@@ -1,5 +1,15 @@
-%h1 New g_game_board
+#board
+  - @cities.each do |city|
+    .token.prof-fake-position.prof-nyog-positions{ style: token_style( city ), city_id: city.id }
 
-= render 'form'
+#infos
+  #investigator
+    = t( '.info' )
+    %br
+    = submit_tag :valider, id: 'game-board-creation-button'
 
-= link_to 'Back', g_game_boards_path
+    .drag-drop-icons.professor
+      = image_tag( 'tokens/professor.jpg', class: 'drag-drop-pic' )
+
+    .drag-drop-icons.nyog-sothep
+      = image_tag( 'tokens/nyogsothep.jpg', class: 'drag-drop-pic' )

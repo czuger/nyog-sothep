@@ -8,6 +8,9 @@ class ProfFakePosController < ApplicationController
     @monsters_positions = @game_board.p_monster_positions.all
     @nb_cities = @game_board.asked_fake_cities_count
 
+    @nyog_sothep_location = @game_board.nyog_sothep_invocation_position
+    @nyog_sothep_location_rotation = @game_board.nyog_sothep_invocation_position_rotation
+
     @cities = CCity.all.reject{ |e| e == @prof_location }
   end
 
