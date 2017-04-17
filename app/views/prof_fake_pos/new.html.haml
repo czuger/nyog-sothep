@@ -7,6 +7,8 @@
 
 #infos
   #investigator
+    = t( '.inv_turn', inv_name: @game_board.asked_fake_cities_investigator.translated_name )
+    %br
     = t( '.info', count: @nb_cities )
     %br
     = submit_tag :valider, id: 'prof-fake-position-submit-button', disabled: 'disabled'

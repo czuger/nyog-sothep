@@ -12,11 +12,16 @@ FactoryGirl.define do
     gender 'm'
     current_location { create( :c_city ) }
     last_location { create( :c_city ) }
+
     factory :has_moved_investigator do
       sequence :code_name  do |n|
         "Has moved investigator #{n}"
       end
       aasm_state :roll_event
+    end
+
+    factory :le_capitaine do
+      code_name 'le_capitaine'
     end
 
   end

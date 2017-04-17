@@ -4,12 +4,18 @@ class ProfFakePosControllerTest < ActionDispatch::IntegrationTest
 
   def setup
     @gb = create( :g_game_board_for_inv_movement_tests )
+    @le_capitaine = create( :le_capitaine, g_game_board_id: @gb.id )
   end
 
   test "should get new" do
-    get new_g_game_board_prof_fake_pos_url( g_game_board_id: @gb.id, nb_cities: 3 )
+    @gb.ask_prof_for_fake_cities!
+    @gb.update( asked_fake_cities_count: 2, asked_fake_cities_investigator: @le_capitaine )
+
+    get new_g_game_board_prof_fake_pos_url( g_game_board_id: @gb.id)
     assert_response :success
-    assert_select '#investigator', 'Selectionnez 3 villes ou le professeur pourrait être. Votre position actuelle sera ajoutée a la liste.'
+    assert_select '#investigator', 'Investigateur actuel : Le capitaine
+
+Selectionnez 2 villes ou le professeur pourrait être. Votre position actuelle sera ajoutée a la liste.'
   end
 
   test 'should fail because gb state wrong' do
@@ -47,7 +53,7 @@ class ProfFakePosControllerTest < ActionDispatch::IntegrationTest
       post g_game_board_prof_fake_pos_url( g_game_board_id: @gb.id, cities_ids: cities_ids )
     end
 
-    assert_redirected_to g_game_board_play_url( id: @gb.id )
+    assert_redirected_to g_game_board_investigators_ia_play_url( @gb.id )
   end
 
 end

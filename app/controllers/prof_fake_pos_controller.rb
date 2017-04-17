@@ -6,7 +6,7 @@ class ProfFakePosController < ApplicationController
     @investigators = @game_board.alive_investigators
     @prof_location = @prof.current_location
     @monsters_positions = @game_board.p_monster_positions.all
-    @nb_cities = params[ :nb_cities ].to_i
+    @nb_cities = @game_board.asked_fake_cities_count
 
     @cities = CCity.all.reject{ |e| e == @prof_location }
   end

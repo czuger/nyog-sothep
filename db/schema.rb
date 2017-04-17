@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170415204012) do
+ActiveRecord::Schema.define(version: 20170417052755) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -38,13 +38,14 @@ ActiveRecord::Schema.define(version: 20170415204012) do
 
   create_table "g_game_boards", force: :cascade do |t|
     t.integer  "turn"
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
-    t.string   "aasm_state",              null: false
-    t.integer  "players_count",           null: false
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
+    t.string   "aasm_state",                        null: false
+    t.integer  "players_count",                     null: false
     t.string   "ia_side"
-    t.string   "prof_security_code",      null: false
+    t.string   "prof_security_code",                null: false
     t.integer  "asked_fake_cities_count"
+    t.integer  "asked_fake_cities_investigator_id"
   end
 
   create_table "i_inv_target_positions", force: :cascade do |t|
@@ -152,6 +153,7 @@ ActiveRecord::Schema.define(version: 20170415204012) do
 
   add_foreign_key "c_cities", "w_water_areas"
   add_foreign_key "e_event_logs", "g_game_boards"
+  add_foreign_key "g_game_boards", "i_investigators", column: "asked_fake_cities_investigator_id"
   add_foreign_key "i_investigators", "g_game_boards"
   add_foreign_key "m_monsters", "g_game_boards"
   add_foreign_key "p_monster_positions", "g_game_boards"

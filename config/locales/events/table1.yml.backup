@@ -1,0 +1,21 @@
+fr:
+  events:
+    table1:
+      e1: "Absorbé par d'inquiétantes réflexions, vous vous perdez sur les petites routes : revenez à la ville que vous venez de quitter."
+      e2: "Vous découvrez un repaire de Profonds: sous perdez 2 points de SAN, mais vous trouvez une arme."
+      e3: "Vous rencontrez un vieillard. Il vous donne un signe protecteur et vous parle longuement des créatures de l’au-delà: vous perdez 2 points de SAN."
+      e4: "Un psychanalyste de renom s'intéresse à vos troubles: vous devez passer votre prochain tour, mais vous gagnerez 5 points de SAN."
+      e5: "Des voyageurs vous parlent du Professeur: celui-ci doit vous citer trois villes dont une est son actuelle Position (s'il est en mer, il le dit)."
+      e6: "Dans le grenier d'une vieille maison, un grimoire en mauvais état: certaines pages, pénibles a lire, expliquent comment renvoyer Nyog'Sothep. Un sort de renvoi qui vous fait perdre 2 points de SAN"
+      e7: "Vous errez dans le cimetière, la nuit. Vous vous rendez compte que ce dernier est infesté de Goules : vous perdez 2 points de SAN et votre arme (si vous en avez une)"
+      e8: "Votre voiture refuse d'avancer: passez le tour suivant, sauf si vous prenez la mer."
+      e9: "Vous trouvez des traces du Professeur et un médaillon. Simulé par ces découvertes, vous rejouez immédiatement."
+      e10: "Le Professeur fait parler de lui: il doit vous dire deux villes dont une est son actuelle position (s'il est en mer, il le dit)."
+      e11: "Vous êtes agressé par des adorateurs déments: vous perdez 2 points de SAN, mais vous gagnez une arme."
+      e12: "Vous trouvez un vieux manuscrit qui parle a demi-mots de Nyog'Sothep : vous y apprenez le sort de renvoi, mais vous perdez 3 points de SAN."
+      e13: "Le Professeur doit révéler son actuelle position."
+      e14: "Vous gagnez du temps sur le Professeur : rejouez."
+      e15: "Le Professeur Petersen doit désormais signaler ses mouvements en mer (sans préciser la zone)."
+      e16: "Citez deux villes an Professeur: il doit vous dire s'il y a des rencontres dans celles-ci. S'il y est, il n'ajoute rien. II ne précise pas les rencontres."
+      e17: "Citez deux villes an Professeur: it doit vous dire si Nyog'Sothep doit y apparaître."
+      e18: "Le Professeur doit révéler sa position et indiquer le nombre de Fanatiques qui sont déjà prêts."

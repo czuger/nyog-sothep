@@ -4,9 +4,7 @@ Rails.application.routes.draw do
 
     get 'investigators_ia_play', action: :investigators_ia_play, as: :investigators_ia_play, controller: :investigators_actions
 
-    resource :prof_fake_pos, only: [ :create ] do
-      get ':nb_cities/new', action: :new, as: :new
-    end
+    resource :prof_fake_pos, only: [ :create, :new ]
 
     resource :professor_actions, only: [] do
       member do

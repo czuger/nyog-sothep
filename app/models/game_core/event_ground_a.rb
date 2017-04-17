@@ -25,8 +25,8 @@ module GameCore
     # end
 
     def table1_e5( game_board, _ )
-      game_board.update( asked_fake_cities_count: 2 )
-      game_board.ask_prof_for_fake_cities!
+      EEventLog.log( game_board, ( I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) ) )
+      ask_prof_for_fake_cities( game_board, 2 )
     end
 
     def table1_e6( game_board, _ )
@@ -51,8 +51,8 @@ module GameCore
     # end
 
     def table1_e10( game_board, _ )
-      game_board.update( asked_fake_cities_count: 2 )
-      game_board.ask_prof_for_fake_cities!
+      EEventLog.log( game_board, ( I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) ) )
+      ask_prof_for_fake_cities( game_board, 1 )
     end
 
     def table1_e11( game_board, _ )
@@ -65,15 +65,20 @@ module GameCore
       update_attribute( :spell, true ) if loose_san( game_board, 3 )
     end
 
-    # def table1_e13( game_board, professor )
-    #   EEventLog.log( game_board, ( I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) ) )
-    #   professor.update_attribute( :spotted, true )
-    # end
+    def table1_e13( game_board, professor )
+      EEventLog.log( game_board, ( I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) ) )
+      prof_spotted( game_board, professor )
+    end
 
     # def table1_e14( game_board, _ )
     #   EEventLog.log( game_board, ( I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) ) )
     #   replay!
     # end
+
+    def table1_e18( game_board, professor )
+      EEventLog.log( game_board, ( I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) ) )
+      prof_spotted( game_board, professor )
+    end
 
   end
 end
