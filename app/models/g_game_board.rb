@@ -31,6 +31,13 @@ class GGameBoard < ApplicationRecord
 
   end
 
+  def next_turn
+    increment!( :turn )
+
+    EEventLog.start_event_block( self )
+    EEventLog.log( self, "Turn : #{turn}" )
+  end
+
   def professor_pick_start_monsters
     1.upto( 4 ).each do
       p_professor.pick_one_monster

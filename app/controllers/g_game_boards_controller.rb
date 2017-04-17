@@ -30,8 +30,13 @@ class GGameBoardsController < ApplicationController
     @g_game_board.ia_side = 'inv'
 
     @g_game_board.prof_security_code = rand.to_s
+
+    @g_game_board.turn = 0
+
     respond_to do |format|
       if @g_game_board.save
+
+        @g_game_board.next_turn
 
         GameCore::GGameBoardCreation.populate_game_board( @g_game_board )
 

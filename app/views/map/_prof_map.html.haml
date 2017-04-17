@@ -1,11 +1,11 @@
 
 - @investigators.each do |investigator|
-  .token.investigator-token{ style: token_style( investigator.current_location ) }
+  .token.investigator-token{ style: token_style( investigator.current_location, investigator.token_rotation ) }
     = image_tag( "tokens/#{investigator.code_name}.png" )
 
-.token{ style: token_style( @prof_location, important: true ) }
+.token.prof_position{ style: token_style( @prof_location, @prof.token_rotation ) }
   = image_tag( 'tokens/professor.png' )
 
 - @monsters_positions.each do |monster|
-  .token{ style: token_style( monster.location ) }
+  .token{ style: token_style( monster.location, monster.token_rotation ) }
     = image_tag( "tokens/#{monster.code_name}.jpg" )

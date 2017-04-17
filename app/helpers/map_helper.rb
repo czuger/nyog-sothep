@@ -1,9 +1,7 @@
 module MapHelper
 
-  def token_style( position, important: false )
-    style = "top:#{position.y-17}px;left:#{position.x-17}px;transform:rotate(#{rand(-15..15)}deg);"
-    style += 'z-index:10' if important
-    style
+  def token_style( position, token_rotation = 0 )
+    "top:#{position.y-17}px;left:#{position.x-17}px;transform:rotate(#{token_rotation}deg);"
   end
 
   def icon_div_id( elem )

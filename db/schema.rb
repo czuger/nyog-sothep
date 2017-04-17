@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170417052755) do
+ActiveRecord::Schema.define(version: 20170417090242) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -37,7 +37,7 @@ ActiveRecord::Schema.define(version: 20170417052755) do
   end
 
   create_table "g_game_boards", force: :cascade do |t|
-    t.integer  "turn"
+    t.integer  "turn",                              null: false
     t.datetime "created_at",                        null: false
     t.datetime "updated_at",                        null: false
     t.string   "aasm_state",                        null: false
@@ -79,6 +79,7 @@ ActiveRecord::Schema.define(version: 20170417052755) do
     t.boolean  "dead",                                 default: false, null: false
     t.string   "ia_target_destination_type"
     t.integer  "ia_target_destination_id"
+    t.integer  "token_rotation",                                       null: false
     t.index ["current"], name: "index_i_investigators_on_current", using: :btree
     t.index ["g_game_board_id"], name: "index_i_investigators_on_g_game_board_id", using: :btree
   end
@@ -99,6 +100,7 @@ ActiveRecord::Schema.define(version: 20170417052755) do
     t.datetime "created_at",                      null: false
     t.datetime "updated_at",                      null: false
     t.integer  "g_game_board_id",                 null: false
+    t.integer  "token_rotation",                  null: false
     t.index ["g_game_board_id"], name: "index_p_monster_positions_on_g_game_board_id", using: :btree
     t.index ["location_type", "location_id"], name: "index_p_monster_positions_on_location_type_and_location_id", using: :btree
   end
@@ -119,6 +121,7 @@ ActiveRecord::Schema.define(version: 20170417052755) do
     t.datetime "updated_at",                            null: false
     t.integer  "g_game_board_id",                       null: false
     t.boolean  "spotted",               default: false, null: false
+    t.integer  "token_rotation",                        null: false
     t.index ["g_game_board_id"], name: "index_p_professors_on_g_game_board_id", using: :btree
   end
 
@@ -153,7 +156,6 @@ ActiveRecord::Schema.define(version: 20170417052755) do
 
   add_foreign_key "c_cities", "w_water_areas"
   add_foreign_key "e_event_logs", "g_game_boards"
-  add_foreign_key "g_game_boards", "i_investigators", column: "asked_fake_cities_investigator_id"
   add_foreign_key "i_investigators", "g_game_boards"
   add_foreign_key "m_monsters", "g_game_boards"
   add_foreign_key "p_monster_positions", "g_game_boards"

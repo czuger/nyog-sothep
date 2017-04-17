@@ -17,14 +17,15 @@ module GameCore
         last_loc = CCity.find_by( code_name: :nantucket )
         i.current_location = c
         i.last_location = last_loc
-        i.current = false
+        i.current = true
         i.gender = gender[index]
         i.san = GameCore::Dices.d6( 3 )
+        i.token_rotation = rand( rand( -15 .. 15 ) )
         i.save!
       end
-      gb.i_investigators.first.update_attribute( :current, true )
+      # gb.i_investigators.first.update_attribute( :current, true )
 
-      gb.create_p_professor!( hp: 14, current_location: CCity.all.sample )
+      gb.create_p_professor!( hp: 14, current_location: CCity.all.sample, token_rotation: rand( -15 .. 15 ) )
     end
 
     def self.populate_monsters( gb )

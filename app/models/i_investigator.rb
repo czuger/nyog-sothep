@@ -44,7 +44,7 @@ class IInvestigator < ApplicationRecord
   def die( game_board )
     EEventLog.log( game_board, I18n.t( "actions.result.crazy.#{gender}", investigator_name: translated_name ) )
     game_board.p_monster_positions.create!(
-      location: current_location, code_name: 'fanatiques', discovered: true )
+      location: current_location, code_name: 'fanatiques', discovered: true, token_rotation: rand( -15 .. 15 ) )
     update_attribute( :dead, true )
   end
   
