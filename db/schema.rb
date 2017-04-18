@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170417180934) do
+ActiveRecord::Schema.define(version: 20170418053318) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -116,14 +116,13 @@ ActiveRecord::Schema.define(version: 20170417180934) do
   end
 
   create_table "p_professors", force: :cascade do |t|
-    t.integer  "hp",                                    null: false
-    t.string   "current_location_type",                 null: false
-    t.integer  "current_location_id",                   null: false
-    t.datetime "created_at",                            null: false
-    t.datetime "updated_at",                            null: false
-    t.integer  "g_game_board_id",                       null: false
-    t.boolean  "spotted",               default: false, null: false
-    t.integer  "token_rotation",                        null: false
+    t.integer  "hp",                    null: false
+    t.string   "current_location_type", null: false
+    t.integer  "current_location_id",   null: false
+    t.datetime "created_at",            null: false
+    t.datetime "updated_at",            null: false
+    t.integer  "g_game_board_id",       null: false
+    t.integer  "token_rotation",        null: false
     t.index ["g_game_board_id"], name: "index_p_professors_on_g_game_board_id", using: :btree
   end
 
