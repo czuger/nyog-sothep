@@ -24,3 +24,18 @@
 #
 ## $(document).ready(scroll_screen_to_lowest_elem)
 #$(document).on('turbolinks:load', scroll_screen_to_lowest_elem)
+
+
+investigator_informations = ->
+  $('.investigator-token').hover (->
+      inv_id = $(this).attr( 'inv_id' )
+      $( "#investigator-#{inv_id}-info" ).show()
+#      console.log( "hoover : #{inv_id}" )
+    ),
+    ->
+      inv_id = $(this).attr( 'inv_id' )
+      $( "#investigator-#{inv_id}-info" ).hide()
+#      console.log( 'unhoover' )
+
+$(document).on('turbolinks:load', investigator_informations)
+

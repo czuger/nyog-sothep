@@ -1,7 +1,9 @@
 
 - @investigators.each do |investigator|
-  .token.investigator-token{ style: token_style( investigator.current_location, investigator.token_rotation ) }
+  .token.investigator-token{ style: token_style( investigator.current_location, investigator.token_rotation ), inv_id: investigator.id }
     = image_tag( "tokens/#{investigator.code_name}.png" )
+    .investigator-info{ id: "investigator-#{investigator.id}-info" }
+      = investigator_info_string( investigator )
 
 .token.prof_position{ style: token_style( @prof_location, @prof.token_rotation ) }
   = image_tag( 'tokens/professor.png' )
