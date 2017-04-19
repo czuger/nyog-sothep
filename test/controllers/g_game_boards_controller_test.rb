@@ -22,7 +22,7 @@ class GGameBoardsControllerTest < ActionDispatch::IntegrationTest
       post g_game_boards_url, params: { prof_position: @city.id, nyog_sothep_position: @city.id }
     end
 
-    assert_redirected_to g_game_board_url(GGameBoard.last)
+    assert_redirected_to g_game_board_play_url(GGameBoard.last)
   end
 
   test "should destroy g_game_board" do

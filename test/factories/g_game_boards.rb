@@ -21,6 +21,12 @@ FactoryGirl.define do
     end
 
     after(:create) do |gb|
+      1.upto( 4 ).each do
+        create( :p_monster, g_game_board_id: gb.id )
+      end
+    end
+
+    after(:create) do |gb|
       road = RRoad.first || create( :true_road )
       1.upto(4).each do
         create( :i_investigator, g_game_board_id: gb.id, current_location: road.src_city, last_location: road.src_city )

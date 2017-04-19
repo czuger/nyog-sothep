@@ -8,7 +8,7 @@ module GameCore
     def roll_event( game_board, professor )
       if current_location.city? && last_location.city?
 
-        table = rand( 1 ..2 )
+        table = Kernel.rand( 1 ..2 )
         roll = event_dices
 
         #  For dev

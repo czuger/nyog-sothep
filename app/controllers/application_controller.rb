@@ -8,10 +8,6 @@ class ApplicationController < ActionController::Base
     @prof = @game_board.p_professor
   end
 
-  def set_current_investigator
-    @current_investigator = IInvestigator.find( params[:id])
-  end
-
   def assert( assertion, message = nil )
     raise "Assertion failed : #{message}" unless assertion
   end

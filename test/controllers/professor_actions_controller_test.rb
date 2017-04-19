@@ -42,8 +42,43 @@ class ProfessorActionsControllerTest < ActionDispatch::IntegrationTest
 
   test 'professor should move' do
     @gb.update( aasm_state: 'prof_move' )
-    Kernel.stubs(:rand).returns(1)
+    # Kernel.stubs(:rand).returns(1)
     get move_g_game_board_professor_actions_url( g_game_board_id: @gb.id, zone_id: @dest.id, zone_class: @dest.class )
+    assert_redirected_to g_game_board_play_url
+  end
+
+  test 'professor should move then be asked for fake cities - test with only one investigators' do
+    @gb.update( aasm_state: 'prof_move' )
+
+    1.upto(3) do
+      @gb.i_investigators.first.destroy
+    end
+
+    # Expects are stacked and played in inverse order
+    Kernel.expects(:rand).returns(5)
+    Kernel.expects(:rand).returns(1)
+    # IInvestigator.expects(:event_dices).returns(5)
+
+    get move_g_game_board_professor_actions_url( g_game_board_id: @gb.id, zone_id: @dest.id, zone_class: @dest.class )
+    assert_redirected_to new_g_game_board_prof_fake_pos_url
+  end
+
+  test 'professor should move then be asked for fake cities - test with all investigators' do
+    @gb.update( aasm_state: 'prof_move' )
+
+    # Expects are stacked and played in inverse order
+    Kernel.expects(:rand).returns(5)
+    Kernel.expects(:rand).returns(1)
+    # IInvestigator.expects(:event_dices).returns(5)
+
+    get move_g_game_board_professor_actions_url( g_game_board_id: @gb.id, zone_id: @dest.id, zone_class: @dest.class )
+    assert_redirected_to new_g_game_board_prof_fake_pos_url
+  end
+
+  test 'professor should breed' do
+    monster = create( :p_monster, g_game_board_id: @gb.id )
+    @gb.update( aasm_state: 'prof_breed' )
+    get monster_breed_g_game_board_professor_actions_url( g_game_board_id: @gb.id, monster_id: monster.id )
     assert_redirected_to g_game_board_play_url
   end
 

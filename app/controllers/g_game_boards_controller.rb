@@ -44,7 +44,7 @@ class GGameBoardsController < ApplicationController
 
         GameCore::GGameBoardCreation.populate_game_board( @g_game_board, @prof_start_position )
 
-        format.html { redirect_to g_game_board_play( @g_game_board ) }
+        format.html { redirect_to g_game_board_play_url( @g_game_board ) }
         format.json { render :show, status: :created, location: @g_game_board }
       else
         format.html { render :new }
