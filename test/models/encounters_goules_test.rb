@@ -5,7 +5,7 @@ class EncountersGoulesTest < ActiveSupport::TestCase
   def setup
     @gb = create( :g_game_board_with_event_ready_for_events_investigators )
     @investigator = @gb.reload.i_investigators.first
-    current_location = create( :inv_dest_city )
+    current_location = CCity.find_by( code_name: :oxford ) || create( :oxford )
     @investigator.current_location = current_location
     @investigator.save!
     @current_location = @investigator.current_location

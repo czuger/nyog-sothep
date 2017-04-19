@@ -8,8 +8,6 @@
       %th Ia side
       %th
       %th
-      %th
-      %th
 
   %tbody
     - @g_game_boards.each do |g_game_board|
@@ -18,8 +16,6 @@
         %td= g_game_board.players_count
         %td= g_game_board.ia_side
         %td= link_to 'Play', g_game_board_play_url( g_game_board_id: g_game_board.id )
-        %td= link_to 'Show', g_game_board
-        %td= link_to 'Edit', edit_g_game_board_path(g_game_board)
         %td= link_to 'Destroy', g_game_board, :method => :delete, :data => { :confirm => 'Are you sure?' }
 
 %br

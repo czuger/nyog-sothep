@@ -38,6 +38,6 @@ class ProfFakePosController < ApplicationController
 
     @game_board.return_to_move_status!
 
-    redirect_to g_game_board_investigators_ia_play_url( g_game_board_id: @game_board.id )
+    redirect_to g_game_board_play_url( @game_board )
   end
 end

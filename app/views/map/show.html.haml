@@ -10,10 +10,10 @@
   #events-area
     %ul
       - @events.each do |event|
-        - if event.event == '*'
+        - if event.message == '*'
           %hr.event_separator
         - else
-          %li= event.event
+          %li= event.message
 
 = hidden_field_tag :game_board_id, @game_board.id
 = hidden_field_tag :investigator_id, @current_investigator&.id

@@ -53,7 +53,7 @@ Selectionnez 2 villes ou le professeur pourrait être. Votre position actuelle s
       post g_game_board_prof_fake_pos_url( g_game_board_id: @gb.id, cities_ids: cities_ids )
     end
 
-    assert_redirected_to g_game_board_investigators_ia_play_url( @gb.id )
+    assert_redirected_to g_game_board_play_url( @gb )
   end
 
 end

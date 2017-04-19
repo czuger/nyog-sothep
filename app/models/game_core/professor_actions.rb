@@ -77,7 +77,7 @@ module GameCore
             else
               raise "Quantic perturbation : roll = #{result}"
           end
-          gb.prof_fall_back!
+          # gb.prof_fall_back!
 
         elsif investigator.sign
           EEventLog.log( gb, investigator, I18n.t( 'prof_fight.sign_protect', investigator_name: investigator.translated_name ) )

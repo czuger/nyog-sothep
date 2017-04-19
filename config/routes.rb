@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
 
-  resources :g_game_boards do
+  resources :g_game_boards, only: [ :create, :new, :index, :destroy ] do
 
     resource :prof_fake_pos, only: [ :create, :new ]
 
@@ -8,7 +8,6 @@ Rails.application.routes.draw do
       member do
         get :move
         get ':investigator_id/attack', action: :attack, as: :attack
-        get ':monster_id/breed', action: :breed, as: :monster_breed
       end
     end
 

@@ -10,7 +10,7 @@ class MapController < ApplicationController
     check_prof_asked_for_fake_cities{}
 
     @investigators = @game_board.alive_investigators
-    @events = @game_board.e_event_logs.all.order( 'logset DESC, id ASC' )
+    @events = @game_board.e_event_logs.all
 
     @prof_location = @prof.current_location
 

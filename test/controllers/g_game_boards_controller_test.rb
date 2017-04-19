@@ -25,21 +25,6 @@ class GGameBoardsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to g_game_board_url(GGameBoard.last)
   end
 
-  test "should show g_game_board" do
-    get g_game_board_url(@g_game_board)
-    assert_response :success
-  end
-
-  test "should get edit" do
-    get edit_g_game_board_url(@g_game_board)
-    assert_response :success
-  end
-
-  test "should update g_game_board" do
-    patch g_game_board_url(@g_game_board), params: { g_game_board: { ia_side: @g_game_board.ia_side, players_count: @g_game_board.players_count } }
-    assert_redirected_to g_game_board_url(@g_game_board)
-  end
-
   test "should destroy g_game_board" do
     assert_difference('GGameBoard.count', -1) do
       delete g_game_board_url(@g_game_board)

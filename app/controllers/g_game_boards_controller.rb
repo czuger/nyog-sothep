@@ -18,10 +18,6 @@ class GGameBoardsController < ApplicationController
     @cities = CCity.all
   end
 
-  # GET /g_game_boards/1/edit
-  def edit
-  end
-
   # POST /g_game_boards
   # POST /g_game_boards.json
   def create
@@ -61,17 +57,7 @@ class GGameBoardsController < ApplicationController
 
   # PATCH/PUT /g_game_boards/1
   # PATCH/PUT /g_game_boards/1.json
-  def update
-    respond_to do |format|
-      if @g_game_board.update(g_game_board_params)
-        format.html { redirect_to @g_game_board, notice: 'G game board was successfully updated.' }
-        format.json { render :show, status: :ok, location: @g_game_board }
-      else
-        format.html { render :edit }
-        format.json { render json: @g_game_board.errors, status: :unprocessable_entity }
-      end
-    end
-  end
+
 
   # DELETE /g_game_boards/1
   # DELETE /g_game_boards/1.json

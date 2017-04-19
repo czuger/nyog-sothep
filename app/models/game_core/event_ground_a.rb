@@ -26,7 +26,7 @@ module GameCore
 
     def table1_e5( game_board, _ )
       EEventLog.log( game_board, self, ( I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) ) )
-      ask_prof_for_fake_cities( game_board, self, 2 )
+      ask_prof_for_fake_cities( game_board, 2 )
     end
 
     def table1_e6( game_board, _ )
@@ -52,7 +52,7 @@ module GameCore
 
     def table1_e10( game_board, _ )
       EEventLog.log( game_board, self, ( I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) ) )
-      ask_prof_for_fake_cities( game_board, self, 1 )
+      ask_prof_for_fake_cities( game_board, 1 )
     end
 
     def table1_e11( game_board, _ )
