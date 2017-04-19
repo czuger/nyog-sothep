@@ -17,7 +17,7 @@ module GameCore
         last_loc = CCity.find_by( code_name: :nantucket )
         i.current_location = c
         i.last_location = last_loc
-        i.current = true
+
         i.gender = gender[index]
         i.san = GameCore::Dices.d6( 3 )
         i.token_rotation = rand( rand( -15 .. 15 ) )
@@ -36,8 +36,6 @@ module GameCore
         goules: 8, profonds: 8, fanatiques: 10, chose_brume: 3, habitants: 4, reves: 6, tempete: 2, horreur_volante: 1 }
       # implemented_monsters = [ :reves, :goules ]
       implemented_monsters = [ :goules, :reves, :profonds, :fanatiques ]
-
-      EEventLog.start_event_block( gb )
 
       gb.m_monsters.delete_all
       gb.p_monsters.delete_all

@@ -8,6 +8,7 @@ Rails.application.routes.draw do
       member do
         get :move
         get ':investigator_id/attack', action: :attack, as: :attack
+        get ':monster_id/breed', action: :breed, as: :monster_breed
       end
     end
 

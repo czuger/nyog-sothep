@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170419121658) do
+ActiveRecord::Schema.define(version: 20170419152027) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -71,7 +71,6 @@ ActiveRecord::Schema.define(version: 20170419121658) do
     t.boolean  "medaillon",                            default: false, null: false
     t.boolean  "sign",                                 default: false, null: false
     t.boolean  "spell",                                default: false, null: false
-    t.boolean  "current",                              default: false, null: false
     t.string   "current_location_type",                                null: false
     t.integer  "current_location_id",                                  null: false
     t.datetime "created_at",                                           null: false
@@ -86,7 +85,6 @@ ActiveRecord::Schema.define(version: 20170419121658) do
     t.string   "ia_target_destination_type"
     t.integer  "ia_target_destination_id"
     t.integer  "token_rotation",                                       null: false
-    t.index ["current"], name: "index_i_investigators_on_current", using: :btree
     t.index ["g_game_board_id"], name: "index_i_investigators_on_g_game_board_id", using: :btree
   end
 

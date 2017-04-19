@@ -42,6 +42,7 @@ class ProfessorActionsControllerTest < ActionDispatch::IntegrationTest
 
   test 'professor should move' do
     @gb.update( aasm_state: 'prof_move' )
+    Kernel.stubs(:rand).returns(1)
     get move_g_game_board_professor_actions_url( g_game_board_id: @gb.id, zone_id: @dest.id, zone_class: @dest.class )
     assert_redirected_to g_game_board_play_url
   end

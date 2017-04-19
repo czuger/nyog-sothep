@@ -2,7 +2,7 @@ require 'test_helper'
 
 class GGameBoardsControllerTest < ActionDispatch::IntegrationTest
   setup do
-    create( :c_city, code_name: :nantucket )
+    @city = create( :c_city, code_name: :nantucket )
     create( :w_water_area, code_name: :nantucket_sound )
     @g_game_board = create( :g_game_board_with_event_ready_to_move_investigators )
   end
@@ -19,7 +19,7 @@ class GGameBoardsControllerTest < ActionDispatch::IntegrationTest
 
   test "should create g_game_board" do
     assert_difference('GGameBoard.count') do
-      post g_game_boards_url, params: { g_game_board: { ia_side: @g_game_board.ia_side, players_count: @g_game_board.players_count } }
+      post g_game_boards_url, params: { prof_position: @city.id, nyog_sothep_position: @city.id }
     end
 
     assert_redirected_to g_game_board_url(GGameBoard.last)

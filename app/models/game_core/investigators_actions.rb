@@ -27,6 +27,11 @@ module GameCore
           end
         end
 
+        # Once all investigators have played, we goes to next turn
+        unless some_investigator_is_ready_to_play?
+          @game_board.next_turn
+        end
+
       end
     end
 

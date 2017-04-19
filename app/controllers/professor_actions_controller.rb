@@ -1,5 +1,7 @@
 class ProfessorActionsController < ApplicationController
 
+  include GameLogic::GameBoardStatusRedirection
+
   def attack
     set_game_board
     investigator = @game_board.i_investigators.find( params[ :investigator_id ] )
@@ -7,6 +9,17 @@ class ProfessorActionsController < ApplicationController
     @game_board.p_professor.prof_fight( investigator )
 
     redirect_to g_game_board_play_url( g_game_board_id: @game_board.id, attacking_investigator_id: params[ :investigator_id ] )
+  end
+
+  def breed
+    set_game_board
+
+    monster = PMonster.find( params[ :monster_id ] )
+    raise "Unable to find monster for #{params.inspect}" unless monster
+
+    @game_board.p_professor.breed( monster )
+
+    redirect_to g_game_board_play_url( g_game_board_id: @game_board.id )
   end
 
   def move

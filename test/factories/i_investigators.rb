@@ -8,7 +8,7 @@ FactoryGirl.define do
     sign false
     medaillon false
     spell false
-    current true
+
     gender 'm'
     current_location { CCity.find_by( code_name: :oxford ) || create( :oxford ) }
     last_location { CCity.find_by( code_name: :oxford ) || create( :oxford ) }

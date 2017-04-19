@@ -28,7 +28,7 @@ class GGameBoardsController < ApplicationController
 
     @g_game_board.prof_security_code = rand.to_s
 
-    @g_game_board.turn = 0
+    @g_game_board.turn = 1
 
     @prof_start_position = params[ 'prof_position' ].empty? ? CCity.all.sample : CCity.find( params[ 'prof_position' ] )
     assert( @prof_start_position, "Prof start position is nil : #{params[ 'prof_position' ]}" )
@@ -42,11 +42,9 @@ class GGameBoardsController < ApplicationController
     respond_to do |format|
       if @g_game_board.save
 
-        @g_game_board.next_turn
-
         GameCore::GGameBoardCreation.populate_game_board( @g_game_board, @prof_start_position )
 
-        format.html { redirect_to @g_game_board, notice: 'G game board was successfully created.' }
+        format.html { redirect_to g_game_board_play( @g_game_board ) }
         format.json { render :show, status: :created, location: @g_game_board }
       else
         format.html { render :new }

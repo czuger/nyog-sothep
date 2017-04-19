@@ -1,5 +1,6 @@
 module GameCore
   module Ia
+    # Included in investigator
     module Investigator
 
       include GameCore::Ia::InvestigatorMovement
@@ -26,12 +27,11 @@ module GameCore
       private
 
       def go_psy( game_board )
-        EEventLog.start_event_block( game_board )
         san = GameCore::Dices.d6
         self.increment!( :san, san )
         # EEventLog.log( game_board, I18n.t( "actions.psy.#{gender}", san: san,
         #                                    investigator_name: I18n.t( "investigators.#{code_name}" ) ) )
-        EEventLog.log( game_board, I18n.t( 'actions.psy', san: san, investigator_name: I18n.t( "investigators.#{code_name}" ) ) )
+        EEventLog.log( game_board, self, I18n.t( 'actions.psy', san: san, investigator_name: I18n.t( "investigators.#{code_name}" ) ) )
       end
     end
   end
