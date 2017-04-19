@@ -14,7 +14,25 @@ class IInvestigator < ApplicationRecord
   belongs_to :ia_target_destination, polymorphic: true, optional: true
 
   aasm do
-    state :inv_move, :initial => true
+    state :move, :initial => true
+    state :events, :dead, :psy
+
+    event :movement_done do
+      transitions :from => :move, :to => :events
+    end
+
+    event :psy do
+      transitions :from => :move, :to => :psy
+    end
+
+    event :events_done do
+      transitions :from => [:events, :psy], :to => :move
+    end
+
+    event :die do
+      transitions :from => :events, :to => :dead
+    end
+
   end
 
   def translated_name
@@ -46,6 +64,7 @@ class IInvestigator < ApplicationRecord
     game_board.p_monster_positions.create!(
       location: current_location, code_name: 'fanatiques', discovered: true, token_rotation: rand( -15 .. 15 ) )
     update_attribute( :dead, true )
+    die!
   end
   
 end

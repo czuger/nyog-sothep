@@ -37,6 +37,8 @@ class ProfessorActionsController < ApplicationController
       @prof.pick_one_monster
     end
 
+    @game_board.prof_movement_done!
+
     redirect_to g_game_board_investigators_ia_play_url( g_game_board_id: @game_board.id )
   end
 

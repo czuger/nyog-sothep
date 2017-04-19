@@ -4,22 +4,22 @@ module GameCore
 
       include GameCore::Ia::InvestigatorMovement
 
-      def ia_play( game_board, prof )
+      def ia_play_movements( game_board, prof )
         if san < 5 && current_location.city?
           # If san is below 5 and investigator is in city, then he/she goes to the psy
           go_psy( game_board )
+          psy!
         else
           ia_invest_random_move( game_board )
-
-          # Investigator encounters check
-
-          game_board.resolve_encounter( self )
-
-          # Investigator event check
-          roll_event( game_board, prof )
+          movement_done!
         end
+      end
 
-        update( current: false )
+      def ia_play_events( game_board, prof )
+        game_board.resolve_encounter( self )
+
+        # Investigator event check
+        roll_event( game_board, prof )
       end
 
       private
