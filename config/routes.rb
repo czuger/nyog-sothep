@@ -2,8 +2,6 @@ Rails.application.routes.draw do
 
   resources :g_game_boards do
 
-    get 'investigators_ia_play', action: :investigators_ia_play, as: :investigators_ia_play, controller: :investigators_actions
-
     resource :prof_fake_pos, only: [ :create, :new ]
 
     resource :professor_actions, only: [] do

@@ -15,7 +15,7 @@ class IInvestigator < ApplicationRecord
 
   aasm do
     state :move, :initial => true
-    state :events, :dead, :psy
+    state :events, :turn_finished, :dead, :psy
 
     event :movement_done do
       transitions :from => :move, :to => :events
@@ -26,7 +26,11 @@ class IInvestigator < ApplicationRecord
     end
 
     event :events_done do
-      transitions :from => [:events, :psy], :to => :move
+      transitions :from => [:events, :psy], :to => :turn_finished
+    end
+
+    event :new_turn do
+      transitions :from => :turn_finished, :to => :move
     end
 
     event :die do

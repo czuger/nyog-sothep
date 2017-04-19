@@ -20,6 +20,7 @@ module GameCore
 
         # Investigator event check
         roll_event( game_board, prof )
+        events_done!
       end
 
       private

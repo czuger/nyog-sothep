@@ -7,6 +7,8 @@ class MapController < ApplicationController
   def show
     set_game_board
 
+    check_prof_asked_for_fake_cities{}
+
     @investigators = @game_board.alive_investigators
     @events = @game_board.e_event_logs.all.order( 'logset DESC, id ASC' )
 
@@ -24,12 +26,6 @@ class MapController < ApplicationController
 
     @monster_at_prof_location = PMonsterPosition.where(
       g_game_board_id: @game_board.id, location_type: @prof_location.class.to_s, location_id: @prof_location.id ).exists?
-
-    if @game_board.inv_move? || @game_board.inv_events?
-      redirect_to g_game_board_investigators_ia_play_url( @game_board )
-    end
-
-    check_prof_asked_for_fake_cities{}
   end
 
 end

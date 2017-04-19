@@ -48,6 +48,22 @@ class GGameBoard < ApplicationRecord
   def next_turn
     increment!( :turn )
 
+    if @game_board.ready_for_events_investigators.count == 0
+      # if no more investigators ready to play, then we start a new turn
+      if @game_board.ready_to_move_investigators.count == 0 &&
+        @game_board.alive_investigators.each do |i|
+          i.update( current: true )
+        end
+
+        # Prof positions are forgotten over time
+        IInvTargetPosition.where( g_game_board_id: @game_board.id ).update_all( 'memory_counter = memory_counter - 1' )
+        IInvTargetPosition.where( g_game_board_id: @game_board.id ).delete_all( 'memory_counter <= 0' )
+
+        @game_board.inv_movement_done!
+        @game_board.next_turn
+      end
+    end
+
     EEventLog.start_event_block( self )
     EEventLog.log( self, "Turn : #{turn}" )
   end
