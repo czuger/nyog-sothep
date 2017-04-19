@@ -3,7 +3,7 @@ require 'test_helper'
 class ProfFakePosControllerTest < ActionDispatch::IntegrationTest
 
   def setup
-    @gb = create( :g_game_board_for_inv_movement_tests )
+    @gb = create( :g_game_board_with_event_ready_for_events_investigators )
     @le_capitaine = create( :le_capitaine, g_game_board_id: @gb.id )
   end
 

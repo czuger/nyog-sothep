@@ -10,7 +10,6 @@ class EncountersFanatiquesTest < ActiveSupport::TestCase
     @investigator.current_location = current_location
     @investigator.save!
     @fanatiques = create( :fanatiques, g_game_board_id: @gb.id, location: @investigator.current_location )
-    EEventLog.start_event_block( @gb )
     @inv_san = @investigator.san
   end
 

@@ -23,7 +23,6 @@ module GameCore
 
         next_step = GameCore::Ia::BfsAlgo.find_next_dest_to_goal( current_location, ia_target_destination )
 
-        EEventLog.start_event_block( game_board )
         regular_move_token( game_board, self, next_step  )
       end
 

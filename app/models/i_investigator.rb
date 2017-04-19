@@ -52,7 +52,7 @@ class IInvestigator < ApplicationRecord
 
   def loose_san( game_board, san_amount )
     decrement!( :san, san_amount )
-    EEventLog.log( game_board, I18n.t( 'actions.result.perte_san', san: san_amount,
+    EEventLog.log( game_board, self,I18n.t( 'actions.result.perte_san', san: san_amount,
       investigator_name: translated_name, final_san: san ) )
     if san <= 0
       die( game_board )
@@ -64,7 +64,7 @@ class IInvestigator < ApplicationRecord
   private
 
   def die( game_board )
-    EEventLog.log( game_board, I18n.t( "actions.result.crazy.#{gender}", investigator_name: translated_name ) )
+    EEventLog.log( game_board, self,I18n.t( "actions.result.crazy.#{gender}", investigator_name: translated_name ) )
     game_board.p_monster_positions.create!(
       location: current_location, code_name: 'fanatiques', discovered: true, token_rotation: rand( -15 .. 15 ) )
     update_attribute( :dead, true )

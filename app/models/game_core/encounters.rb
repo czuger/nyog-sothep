@@ -14,7 +14,7 @@ module GameCore
       log = I18n.t( 'encounter.fanatiques.common' )
       unless investigator.weapon
         log << I18n.t( 'encounter.fanatiques.no_weapon' )
-        EEventLog.log( self, log )
+        EEventLog.log( self, investigator,log )
         investigator.goes_back( self )
         monster_spotted( encounter )
       else
@@ -22,17 +22,17 @@ module GameCore
         roll += 1 if investigator.medaillon
         if roll <= 5
           log << I18n.t( 'encounter.fanatiques.weapon_fail' )
-          EEventLog.log( self, log )
+          EEventLog.log( self, investigator,log )
           investigator.goes_back( self )
           monster_spotted( encounter )
         elsif roll == 6
           log << I18n.t( 'encounter.fanatiques.weapon_success' )
-          EEventLog.log( self, log )
+          EEventLog.log( self, investigator,log )
           investigator.loose_san( self, 2 )
           encounter_destroyed( encounter )
         else
           log << I18n.t( 'encounter.fanatiques.weapon_critical' )
-          EEventLog.log( self, log )
+          EEventLog.log( self, investigator,log )
           encounter_destroyed( encounter )
         end
       end
@@ -51,7 +51,7 @@ module GameCore
         log << I18n.t( 'encounter.profonds.no_sign' )
       end
       investigator.loose_san( self, san_loss )
-      EEventLog.log( self, log )
+      EEventLog.log( self, investigator,log )
     end
 
     def resolve_encounter_goules( investigator, encounter )
@@ -68,11 +68,11 @@ module GameCore
         log << I18n.t( 'encounter.goules.no_weapon' )
       end
       investigator.loose_san( self, san_loss )
-      EEventLog.log( self, log )
+      EEventLog.log( self, investigator,log )
     end
 
     def resolve_encounter_reves( investigator, encounter )
-      EEventLog.log( self, I18n.t( 'encounter.reves' ) )
+      EEventLog.log( self, investigator,I18n.t( 'encounter.reves' ) )
       investigator.loose_san( self, 2 )
       replace_encounter_in_monsters_stack( encounter )
     end

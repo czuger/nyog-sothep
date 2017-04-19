@@ -13,11 +13,13 @@ FactoryGirl.define do
     current_location { create( :c_city ) }
     last_location { create( :c_city ) }
 
+    token_rotation 5
+
     factory :has_moved_investigator do
       sequence :code_name  do |n|
         "Has moved investigator #{n}"
       end
-      aasm_state :roll_event
+      aasm_state :events
     end
 
     factory :le_capitaine do

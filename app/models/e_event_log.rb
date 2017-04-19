@@ -1,25 +1,10 @@
 class EEventLog < ApplicationRecord
 
-  def self.flush_old_events( game_board )
-    e = game_board.e_event_logs.all.order( :id ).pluck( :id )
-    keeping_e = e.last( 30 )
-    game_board.e_event_logs.where( id: e - keeping_e ).delete_all unless ( e - keeping_e ).empty?
-  end
+  belongs_to :g_game_board
+  belongs_to :actor, polymorphic: true
 
-  def self.start_event_block( game_board )
-    ActiveRecord::Base.connection.execute("SELECT nextval('e_event_logs_logset')")
-    log( game_board, '*' )
-  end
-
-  def self.log( game_board, event )
-    logset = ActiveRecord::Base.connection.select_value("SELECT currval('e_event_logs_logset')")
-    game_board.e_event_logs.create!( logset: logset, event: event )
-  end
-
-  def self.log_event_for_investigator( game_board, investigator )
-    start_event_block( game_board )
-    iname = I18n.t( "investigators.#{investigator.code_name}" )
-    log( game_board, I18n.t( 'log.incarn', investigator_name: iname ) )
+  def self.log( game_board, actor, event )
+    game_board.e_event_logs.create!( turn: game_board.turn, actor: actor, actor_aasm_state: actor.aasm_state, message: event )
   end
 
   def self.log_investigator_movement( game_board, investigator, dest_loc, direction: :goes )
@@ -36,8 +21,8 @@ class EEventLog < ApplicationRecord
         raise "Unknown direction : #{direction}. Can only be :goes or :return"
     end
 
-    EEventLog.log( game_board, event )
-
+    log( game_board,investigator, event )
   end
+
 end
 

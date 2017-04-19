@@ -15,17 +15,17 @@ module GameCore
         # table = 1
         # roll = 18
 
-        EEventLog.log( game_board, "table#{table}_e#{roll}" )
+        EEventLog.log( game_board, self, "table#{table}_e#{roll}" )
 
         send( "table#{table}_e#{roll}", game_board, professor )
       else
-        EEventLog.log( game_board, I18n.t( 'events.no_water_events' ) )
+        EEventLog.log( game_board, self, I18n.t( 'events.no_water_events' ) )
       end
     end
 
     def method_missing( method_name, *args )
       super unless method_name =~ /table.*/
-      EEventLog.log( args.first, "event non implementé : #{method_name}" )
+      EEventLog.log( args.first, self, "event non implementé : #{method_name}" )
     end
 
     private

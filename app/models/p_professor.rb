@@ -55,7 +55,7 @@ class PProfessor < ApplicationRecord
 
   def loose_life( gb, investigator, amount )
     decrement!( :hp, amount )
-    EEventLog.log( gb, I18n.t( 'prof_fight.gun_shot', investigator_name: investigator.translated_name,
+    EEventLog.log( gb, investigator,I18n.t( 'prof_fight.gun_shot', investigator_name: investigator.translated_name,
                                hit: amount, final_hp: hp ) )
 
     # TODO : implement gamover on professor death

@@ -6,7 +6,6 @@ class EEventGroundTest < ActiveSupport::TestCase
     @gb = create( :g_game_board_with_event_ready_for_events_investigators )
     @investigator = @gb.reload.i_investigators.first
     @professor = @gb.p_professor
-    EEventLog.start_event_block( @gb )
   end
 
   def test_events_on_table_2

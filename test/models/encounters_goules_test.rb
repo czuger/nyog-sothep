@@ -10,7 +10,6 @@ class EncountersGoulesTest < ActiveSupport::TestCase
     @investigator.save!
     @current_location = @investigator.current_location
     @goules = create( :goules, g_game_board_id: @gb.id, location: @investigator.current_location )
-    EEventLog.start_event_block( @gb )
     @inv_san = @investigator.san
   end
 

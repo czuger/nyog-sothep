@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170418053318) do
+ActiveRecord::Schema.define(version: 20170419121658) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -28,12 +28,16 @@ ActiveRecord::Schema.define(version: 20170418053318) do
   end
 
   create_table "e_event_logs", force: :cascade do |t|
-    t.string   "event"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
-    t.integer  "logset",          null: false
-    t.integer  "g_game_board_id", null: false
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
+    t.integer  "g_game_board_id",  null: false
+    t.integer  "turn"
+    t.string   "actor_type",       null: false
+    t.integer  "actor_id",         null: false
+    t.string   "actor_aasm_state", null: false
+    t.string   "message",          null: false
     t.index ["g_game_board_id"], name: "index_e_event_logs_on_g_game_board_id", using: :btree
+    t.index ["turn"], name: "index_e_event_logs_on_turn", using: :btree
   end
 
   create_table "g_game_boards", force: :cascade do |t|

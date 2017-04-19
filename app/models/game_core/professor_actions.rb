@@ -64,7 +64,6 @@ module GameCore
       gb = g_game_board
 
       ActiveRecord::Base.transaction do
-        EEventLog.start_event_block( gb )
 
         if investigator.weapon
           result = GameCore::Dices.d6
@@ -74,21 +73,21 @@ module GameCore
             when 2..5
               loose_life( gb, investigator, 2 )
             when 1
-              EEventLog.log( gb, I18n.t( 'prof_fight.gun_miss', investigator_name: investigator.translated_name ) )
+              EEventLog.log( gb, investigator, I18n.t( 'prof_fight.gun_miss', investigator_name: investigator.translated_name ) )
             else
               raise "Quantic perturbation : roll = #{result}"
           end
           gb.prof_fall_back!
 
         elsif investigator.sign
-          EEventLog.log( gb, I18n.t( 'prof_fight.sign_protect', investigator_name: investigator.translated_name ) )
+          EEventLog.log( gb, investigator, I18n.t( 'prof_fight.sign_protect', investigator_name: investigator.translated_name ) )
           investigator.loose_san( gb, 2 )
-          gb.inv_repelled!
+          # gb.inv_repelled!
 
         else
-          EEventLog.log( gb, I18n.t( 'prof_fight.no_protection', investigator_name: investigator.translated_name ) )
+          EEventLog.log( gb, investigator, I18n.t( 'prof_fight.no_protection', investigator_name: investigator.translated_name ) )
           investigator.loose_san( gb, 4 )
-          gb.inv_repelled!
+          # gb.inv_repelled!
 
         end
       end
