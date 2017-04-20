@@ -40,7 +40,7 @@ module GameCore::Movement
         if dice >= 5
           inv_name = I18n.t( "investigators.#{token.code_name}" )
           event = I18n.t( "border_control.#{token.gender}", investigator_name: inv_name )
-          EEventLog.log( gb, event )
+          EEventLog.log( gb, self, event )
           border_allowed = false
         end
       end

@@ -69,5 +69,17 @@ FactoryGirl.define do
       end
     end
 
+    factory :g_game_board_with_cross_border do
+      after(:create) do |gb|
+        RRoad.first.destroy
+        road = create( :inv_cross_border_road )
+        gb.i_investigators.destroy_all
+        gb.reload
+        1.upto( 4 ).each do
+          create( :i_investigator, g_game_board_id: gb.id, current_location: road.src_city, last_location: road.src_city, ia_target_destination: road.dest_city )
+        end
+      end
+    end
+
   end
 end

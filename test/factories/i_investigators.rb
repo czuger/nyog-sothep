@@ -26,5 +26,9 @@ FactoryGirl.define do
       code_name 'le_capitaine'
     end
 
+    factory :low_san_investigator do
+      san 1
+    end
+
   end
 end

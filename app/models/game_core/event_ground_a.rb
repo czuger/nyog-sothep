@@ -67,7 +67,7 @@ module GameCore
 
     def table1_e13( game_board, professor )
       EEventLog.log( game_board, self, ( I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) ) )
-      prof_spotted( game_board, self, professor )
+      prof_spotted( game_board, professor )
     end
 
     # def table1_e14( game_board, _ )
@@ -77,7 +77,7 @@ module GameCore
 
     def table1_e18( game_board, professor )
       EEventLog.log( game_board, self, ( I18n.t( "events.#{__method__.to_s.gsub('_','.')}" ) ) )
-      prof_spotted( game_board, self, professor )
+      prof_spotted( game_board, professor )
     end
 
   end

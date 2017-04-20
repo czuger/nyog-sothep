@@ -157,6 +157,8 @@ module GameCore
 
       def self.find_next_dest_to_goal( current_position, goal )
 
+        raise "Current position and goal are the same" if current_position == goal
+
         goal_name = goal.code_name
 
         frontier = []

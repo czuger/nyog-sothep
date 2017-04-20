@@ -5,26 +5,6 @@ class PProfessor < ApplicationRecord
 
   include GameCore::ProfessorActions
 
-  def prof_has_to_choose_attack?
-    prof_loc = current_location
-    gb = g_game_board
-
-    if prof_loc.city?
-      if ( inv_to_attack = gb.i_investigators.where( current_location_id: prof_loc.id ).order( :id ).first )
-        if GameCore::Dices.d6 <= 2
-          prof_fight( inv_to_attack )
-        else
-          prof_choose_attack = true
-        end
-      else
-        gb.prof_breed!
-      end
-    else
-      gb.prof_breed!
-    end
-    [ prof_choose_attack, inv_to_attack ]
-  end
-
   def can_breed_in_city?( position )
     !g_game_board.p_monster_positions.exists?( location_id: position.id )
   end
