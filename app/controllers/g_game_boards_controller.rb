@@ -24,7 +24,6 @@ class GGameBoardsController < ApplicationController
     @g_game_board = GGameBoard.new(g_game_board_params)
 
     @g_game_board.players_count = 1
-    @g_game_board.ia_side = 'inv'
 
     @g_game_board.prof_security_code = rand.to_s
 

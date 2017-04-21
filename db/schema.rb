@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170419152027) do
+ActiveRecord::Schema.define(version: 20170421101648) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -46,7 +46,6 @@ ActiveRecord::Schema.define(version: 20170419152027) do
     t.datetime "updated_at",                               null: false
     t.string   "aasm_state",                               null: false
     t.integer  "players_count",                            null: false
-    t.string   "ia_side"
     t.string   "prof_security_code",                       null: false
     t.integer  "asked_fake_cities_count"
     t.integer  "asked_fake_cities_investigator_id"

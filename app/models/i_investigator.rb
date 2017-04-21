@@ -26,11 +26,11 @@ class IInvestigator < ApplicationRecord
     end
 
     event :events_done do
-      transitions :from => [:events, :psy], :to => :turn_finished
+      transitions :from => [:events], :to => :turn_finished
     end
 
     event :new_turn do
-      transitions :from => :turn_finished, :to => :move
+      transitions :from => [:turn_finished, :psy], :to => :move
     end
 
     event :die do
