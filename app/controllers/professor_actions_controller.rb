@@ -25,6 +25,8 @@ class ProfessorActionsController < ApplicationController
   def move
     set_game_board
 
+    raise "Game board not in movement state : '#{@game_board.aasm_state}'" unless @game_board.aasm_state == 'prof_move'
+
     if params['zone_id'] && params['zone_class'] && (params['zone_class'] == 'CCity' || params['zone_class'] == 'WWaterArea')
       dest_loc = params['zone_class'].constantize.find( params['zone_id'] )
     else

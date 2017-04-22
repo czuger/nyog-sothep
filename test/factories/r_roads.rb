@@ -17,5 +17,15 @@ FactoryGirl.define do
       dest_city { CCity.find_by( code_name: :oxford ) || create( :oxford ) }
     end
 
+    factory :plainfield_to_providence do
+      src_city { CCity.find_by( code_name: :plainfield ) || create( :plainfield ) }
+      dest_city { CCity.find_by( code_name: :providence ) || create( :providence ) }
+    end
+
+    factory :plainfield_to_providence_back do
+      dest_city { CCity.find_by( code_name: :plainfield ) || create( :plainfield ) }
+      src_city { CCity.find_by( code_name: :providence ) || create( :providence ) }
+    end
+
   end
 end

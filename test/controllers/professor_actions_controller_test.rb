@@ -83,6 +83,27 @@ class ProfessorActionsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to g_game_board_play_url
   end
 
+  test 'professor should move, then give 2 fake positions, then move again' do
+    @gb.update( aasm_state: 'prof_move' )
+    Kernel.expects(:rand).returns(5)
+    Kernel.expects(:rand).returns(1)
+
+    src = CCity.find_by_code_name( :oxford )
+    dest = CCity.find_by_code_name( :plainfield )
+    third_city = CCity.find_by_code_name( :providence )
+
+    get move_g_game_board_professor_actions_url( g_game_board_id: @gb.id, zone_id: dest.id, zone_class: dest.class )
+
+    Kernel.stubs(:rand).returns(1)
+    cities_ids = [ src, third_city ]
+    post g_game_board_prof_fake_pos_url( g_game_board_id: @gb.id, cities_ids: cities_ids )
+
+
+    get move_g_game_board_professor_actions_url( g_game_board_id: @gb.id, zone_id: src.id, zone_class: src.class )
+
+    assert_redirected_to g_game_board_play_url
+  end
+
   test 'professor should move 5 times' do
     @gb.update( aasm_state: 'prof_move' )
     Kernel.stubs(:rand).returns(1)

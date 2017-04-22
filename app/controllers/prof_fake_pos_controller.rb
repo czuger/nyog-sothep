@@ -20,7 +20,7 @@ class ProfFakePosController < ApplicationController
     cities_ids = params[ :cities_ids ]
     assert( @game_board.prof_asked_for_fake_cities?, "@game_board.aasm_state = #{@game_board.aasm_state}, should be prof_asked_for_fake_cities" )
     assert( @game_board.asked_fake_cities_count == cities_ids.count,
-            "#{@game_board.asked_fake_cities_count} != #{cities_ids.count}" )
+            "Bad city count#{@game_board.asked_fake_cities_count} != #{cities_ids.count}" )
 
     cities = CCity.find( cities_ids )
     cities << @game_board.p_professor.current_location
@@ -37,6 +37,10 @@ class ProfFakePosController < ApplicationController
     end
 
     @game_board.return_to_move_status!
+
+    # The we need to finish the Investigators IA play
+    # At the end of the professor move, investigators play
+    GameCore::InvestigatorsActions.new( @game_board ).investigators_ia_play
 
     redirect_to g_game_board_play_url( @game_board )
   end

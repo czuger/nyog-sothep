@@ -11,5 +11,9 @@ FactoryGirl.define do
       code_name 'plainfield'
     end
 
+    factory :providence do
+      code_name 'providence'
+    end
+
   end
 end

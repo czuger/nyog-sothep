@@ -11,9 +11,13 @@ FactoryGirl.define do
     after(:create) do |gb|
       oxford = CCity.find_by( code_name: :oxford ) || create( :oxford )
       plainfield = CCity.find_by( code_name: :plainfield ) || create( :plainfield )
+      providence = CCity.find_by( code_name: :providence ) || create( :providence )
 
       RRoad.find_by( src_city_id: oxford.id, dest_city_id: plainfield.id ) || create( :true_road )
       RRoad.find_by( src_city_id: plainfield.id, dest_city_id: oxford.id ) || create( :back_true_road )
+
+      RRoad.find_by( src_city_id: providence.id, dest_city_id: plainfield.id ) || create( :plainfield_to_providence )
+      RRoad.find_by( src_city_id: plainfield.id, dest_city_id: providence.id ) || create( :plainfield_to_providence_back )
 
       create( :p_professor, g_game_board_id: gb.id )
     end
