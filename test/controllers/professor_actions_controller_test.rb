@@ -98,7 +98,6 @@ class ProfessorActionsControllerTest < ActionDispatch::IntegrationTest
     cities_ids = [ src, third_city ]
     post g_game_board_prof_fake_pos_url( g_game_board_id: @gb.id, cities_ids: cities_ids )
 
-
     get move_g_game_board_professor_actions_url( g_game_board_id: @gb.id, zone_id: src.id, zone_class: src.class )
 
     assert_redirected_to g_game_board_play_url

@@ -16,8 +16,8 @@ FactoryGirl.define do
       RRoad.find_by( src_city_id: oxford.id, dest_city_id: plainfield.id ) || create( :true_road )
       RRoad.find_by( src_city_id: plainfield.id, dest_city_id: oxford.id ) || create( :back_true_road )
 
-      RRoad.find_by( src_city_id: providence.id, dest_city_id: plainfield.id ) || create( :plainfield_to_providence )
-      RRoad.find_by( src_city_id: plainfield.id, dest_city_id: providence.id ) || create( :plainfield_to_providence_back )
+      RRoad.find_by( src_city_id: providence.id, dest_city_id: plainfield.id ) || create( :plainfield_to_providence_back )
+      RRoad.find_by( src_city_id: plainfield.id, dest_city_id: providence.id ) || create( :plainfield_to_providence )
 
       create( :p_professor, g_game_board_id: gb.id )
     end
@@ -35,7 +35,7 @@ FactoryGirl.define do
     end
 
     after(:create) do |gb|
-      road = RRoad.first || create( :true_road )
+      road = RRoad.first
       1.upto(4).each do
         create( :i_investigator, g_game_board_id: gb.id, current_location: road.src_city, last_location: road.src_city )
       end
@@ -57,7 +57,7 @@ FactoryGirl.define do
     factory :g_game_board_with_event_ready_for_events_investigators do
       aasm_state 'inv_events'
       after(:create) do |gb|
-        road = RRoad.first || create( :true_road )
+        road = RRoad.first
         gb.i_investigators.destroy_all
         gb.reload
         1.upto( 4 ).each do
@@ -68,7 +68,7 @@ FactoryGirl.define do
 
     factory :g_game_board_for_inv_movement_tests do
       after(:create) do |gb|
-        road = RRoad.first || create( :true_road )
+
         gb.i_investigators.destroy_all
         gb.reload
         1.upto( 4 ).each do
