@@ -52,7 +52,7 @@ module GameCore::Movement
 
   def assert_regular_movement_allowed( src, dest )
     unless src.destinations.include?( dest )
-      raise "Illegal move attempt : token.current_location = #{src.inspect}, dest = #{dest.inspect}"
+      raise "Illegal move attempt : token.current_location = #{src.code_name}, dest = #{dest.code_name}"
     end
   end
 

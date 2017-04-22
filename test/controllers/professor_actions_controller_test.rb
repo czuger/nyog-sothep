@@ -83,4 +83,25 @@ class ProfessorActionsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to g_game_board_play_url
   end
 
+  test 'professor should move 5 times' do
+    @gb.update( aasm_state: 'prof_move' )
+    Kernel.stubs(:rand).returns(1)
+
+    src = CCity.find_by_code_name( :oxford )
+    dest = CCity.find_by_code_name( :plainfield )
+
+    1.upto(10) do |i|
+      # puts i
+      # puts "src = #{src.code_name}"
+      # puts "dest = #{dest.code_name}"
+
+      get move_g_game_board_professor_actions_url( g_game_board_id: @gb.id, zone_id: dest.id, zone_class: dest.class )
+      tmp = dest
+      dest = src
+      src = tmp
+    end
+
+    assert_redirected_to g_game_board_play_url
+  end
+
 end

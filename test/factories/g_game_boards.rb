@@ -9,8 +9,13 @@ FactoryGirl.define do
     nyog_sothep_invocation_position_rotation 5
 
     after(:create) do |gb|
-      road = RRoad.first || create( :true_road )
-      create( :p_professor, g_game_board_id: gb.id, current_location: road.src_city )
+      oxford = CCity.find_by( code_name: :oxford ) || create( :oxford )
+      plainfield = CCity.find_by( code_name: :plainfield ) || create( :plainfield )
+
+      RRoad.find_by( src_city_id: oxford.id, dest_city_id: plainfield.id ) || create( :true_road )
+      RRoad.find_by( src_city_id: plainfield.id, dest_city_id: oxford.id ) || create( :back_true_road )
+
+      create( :p_professor, g_game_board_id: gb.id )
     end
 
     after(:create) do |gb|

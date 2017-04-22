@@ -25,7 +25,7 @@ class ProfessorActionsController < ApplicationController
   def move
     set_game_board
 
-    if params['zone_id'] && params['zone_class']
+    if params['zone_id'] && params['zone_class'] && (params['zone_class'] == 'CCity' || params['zone_class'] == 'WWaterArea')
       dest_loc = params['zone_class'].constantize.find( params['zone_id'] )
     else
       raise "Zone error : #{params.inspect}"

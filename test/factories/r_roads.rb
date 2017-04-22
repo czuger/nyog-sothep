@@ -12,5 +12,10 @@ FactoryGirl.define do
       end
     end
 
+    factory :back_true_road do
+      src_city { CCity.find_by( code_name: :plainfield ) || create( :plainfield ) }
+      dest_city { CCity.find_by( code_name: :oxford ) || create( :oxford ) }
+    end
+
   end
 end
