@@ -11,7 +11,7 @@ module GameCore
     private
 
     def resolve_encounter_fanatiques( investigator, encounter )
-      log = I18n.t( 'encounter.fanatiques.common' )
+      log = I18n.t( 'encounter.fanatiques.common', investigator_name: investigator.translated_name )
       unless investigator.weapon
         log << I18n.t( 'encounter.fanatiques.no_weapon' )
         EEventLog.log( self, investigator,log )
@@ -39,7 +39,7 @@ module GameCore
     end
 
     def resolve_encounter_profonds( investigator, encounter )
-      log = I18n.t( 'encounter.profonds.common' )
+      log = I18n.t( 'encounter.profonds.common', investigator_name: investigator.translated_name )
       if investigator.sign
         san_loss = 1
         replace_encounter_in_monsters_stack( encounter )
@@ -55,13 +55,13 @@ module GameCore
     end
 
     def resolve_encounter_goules( investigator, encounter )
-      log = I18n.t( 'encounter.goules.common' )
+      log = I18n.t( 'encounter.goules.common', investigator_name: investigator.translated_name )
       if investigator.weapon
         san_loss = 3
         san_loss = 2 if GameCore::Dices.d6 >= 5
         san_loss -= 1 if investigator.sign
         replace_encounter_in_monsters_stack( encounter )
-        log << I18n.t( 'encounter.goules.weapon' )
+        log << I18n.t( 'encounter.goules.weapon', san: san_loss )
       else
         san_loss = 4
         monster_spotted( encounter )
@@ -72,7 +72,7 @@ module GameCore
     end
 
     def resolve_encounter_reves( investigator, encounter )
-      EEventLog.log( self, investigator,I18n.t( 'encounter.reves' ) )
+      EEventLog.log( self, investigator,I18n.t( 'encounter.reves', investigator_name: investigator.translated_name ) )
       investigator.loose_san( self, 2 )
       replace_encounter_in_monsters_stack( encounter )
     end

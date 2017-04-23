@@ -59,6 +59,7 @@ class GGameBoard < ApplicationRecord
       IInvTargetPosition.where( g_game_board_id: id ).where( 'memory_counter <= 0' ).delete_all
 
       inv_events_done!
+
     end
   end
 

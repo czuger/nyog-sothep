@@ -1,19 +1,19 @@
 fr:
   encounter:
-    reves: "L'investigateur rencontre un pion rêve et perds 2 points de SAN."
+    reves: "%{investigator_name} rencontre un pion rêve et perds 2 points de SAN."
 
     goules:
-      common: "L'investigateur rencontre un pion goules."
+      common: "%{investigator_name} rencontre un pion goules."
       weapon: "Il les élimine gràce à son arme mais perds #{san} points de SAN."
       no_weapon: "Desarmé il s'enfuit et perds 4 points de SAN."
 
     profonds:
-      common: "L'investigateur rencontre un pion profonds."
+      common: "%{investigator_name} rencontre un pion profonds."
       sign: "Il les renvoie a l'aide de son signe protecteur, mais perds 1 point de SAN et son signe."
       no_sign: "Il s'enfuie et perds 3 points de SAN."
 
     fanatiques:
-      common: "L'investigateur rencontre un pion fanatiques."
+      common: "%{investigator_name} rencontre un pion fanatiques."
       no_weapon: "Sans armes, il s'en retourne d'ou il vient."
       weapon_fail: "Il les menace de son arme mais leur détermination est plus forte. Il revient d'ou il vient."
       weapon_success: "Il disperse les fanatiques. Mais l'action l'éprouve : il perds 2 points de SAN."

@@ -15,11 +15,11 @@ module GameCore
         # table = 1
         # roll = 18
 
-        EEventLog.log( game_board, self, "table#{table}_e#{roll}" )
+        # EEventLog.log( game_board, self, "table#{table}_e#{roll}" )
 
         send( "table#{table}_e#{roll}", game_board, professor )
       else
-        EEventLog.log( game_board, self, I18n.t( 'events.no_water_events' ) )
+        EEventLog.log( game_board, self, I18n.t( 'events.no_water_events', investigator_name: translated_name ) )
       end
     end
 

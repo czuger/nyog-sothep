@@ -52,7 +52,7 @@ fr:
     prof_move: 'Le professeur se déplace'
 
   events:
-    no_water_events: 'Rien ne se passe ...'
+    no_water_events: '%{investigator_name} continue son chemin.'
 
   log:
     incarn: "Vous incarnez %{investigator_name}"
