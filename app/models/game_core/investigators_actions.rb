@@ -1,8 +1,9 @@
 module GameCore
   class InvestigatorsActions
 
-    def initialize( game_board )
+    def initialize( game_board, prof )
       @game_board = game_board
+      @prof = prof
     end
 
     def investigators_ia_play

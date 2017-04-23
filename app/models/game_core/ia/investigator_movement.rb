@@ -13,10 +13,14 @@ module GameCore
         if !ia_target_destination || ia_target_destination.code_name == current_location.code_name
 
           if game_board.i_inv_target_positions.count > 0
-            self.ia_target_destination = game_board.i_inv_target_positions.sample.position
-          else
-            self.ia_target_destination = CCity.all.reject{ |e| e.code_name == current_location.code_name}.sample # Random first
+            position = game_board.i_inv_target_positions.reject{ |e| e.position.code_name == current_location.code_name}.sample&.position
           end
+
+          unless position
+            position = CCity.all.reject{ |e| e.code_name == current_location.code_name}.sample # Random first
+          end
+
+          self.ia_target_destination = position
         end
 
         # p ia_target_destination
@@ -27,5 +31,7 @@ module GameCore
       end
 
     end
+
+    private
   end
 end
