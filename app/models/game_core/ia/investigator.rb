@@ -21,7 +21,7 @@ module GameCore
 
         # Investigator event check
         roll_event( game_board, prof )
-        events_done!
+        events_done! unless dead?
       end
 
       private

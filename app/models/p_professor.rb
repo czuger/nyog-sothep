@@ -4,9 +4,23 @@ class PProfessor < ApplicationRecord
   belongs_to :current_location, polymorphic: true
 
   include GameCore::ProfessorActions
+  include GameCore::ProfessorFight
 
   def can_breed_in_city?( position )
     !g_game_board.p_monster_positions.exists?( location_id: position.id )
+  end
+
+  def spotted( game_board )
+    # If the prof is really spotted we create 5 records to increase the probability of targeting
+    ActiveRecord::Base.transaction do
+      city = current_location
+      # Le prof n'est jamais repéré dans l'eau
+      unless city.kind_of?( WWaterArea )
+        1.upto( 5 ).each do
+          IInvTargetPosition.create!( g_game_board_id: game_board.id, position: city, memory_counter: 5 )
+        end
+      end
+    end
   end
 
   private

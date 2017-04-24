@@ -1,5 +1,6 @@
 module GameCore
   module Ia
+    # Included in Investigator
     module InvestigatorMovement
 
       include GameCore::Movement
@@ -9,10 +10,10 @@ module GameCore
       def ia_invest_random_move( game_board )
 
         # If we does not have a destination or we are at destination, then we chose one
-        # p ia_target_destination
         if !ia_target_destination || ia_target_destination.code_name == current_location.code_name
 
-          if game_board.i_inv_target_positions.count > 0
+          # We chase the professor only if we have a weapon. Otherwise, we walk randomly
+          if weapon && game_board.i_inv_target_positions.count > 0
             position = game_board.i_inv_target_positions.reject{ |e| e.position.code_name == current_location.code_name}.sample&.position
           end
 

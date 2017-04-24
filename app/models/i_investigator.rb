@@ -4,7 +4,7 @@ class IInvestigator < ApplicationRecord
 
   include GameCore::Events
   include GameCore::Ia::Investigator
-
+  include GameCore::InvestigatorFight
 
   validates :event_table, inclusion: { in: [ 1, 2 ] }
   validates :gender, inclusion: { in: %w( m f ) }
@@ -34,7 +34,7 @@ class IInvestigator < ApplicationRecord
     end
 
     event :die do
-      transitions :from => :events, :to => :dead
+      transitions :from => [:move, :events], :to => :dead
     end
 
   end

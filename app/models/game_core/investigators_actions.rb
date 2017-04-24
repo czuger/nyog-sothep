@@ -23,6 +23,9 @@ module GameCore
                 i.ia_play_events( @game_board, @prof )
                 # Break out of the investigators loop
                 break if @game_board.prof_asked_for_fake_cities?
+
+                # When the turn of the investigator is finished we need to check for a prof fight
+                i.check_for_prof_to_fight_in_city( @game_board, @prof )
               end
               # Break out of the while
               break if @game_board.prof_asked_for_fake_cities?

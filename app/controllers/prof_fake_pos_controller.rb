@@ -34,13 +34,13 @@ class ProfFakePosController < ApplicationController
       cities.each do |city|
         IInvTargetPosition.find_or_create_by!( g_game_board_id: @game_board.id, position: city, memory_counter: 5 )
       end
+
+      @game_board.return_to_move_status!
+
+      # The we need to finish the Investigators IA play
+      # At the end of the professor move, investigators play
+      GameCore::InvestigatorsActions.new( @game_board, @prof ).investigators_ia_play
     end
-
-    @game_board.return_to_move_status!
-
-    # The we need to finish the Investigators IA play
-    # At the end of the professor move, investigators play
-    GameCore::InvestigatorsActions.new( @game_board, @prof ).investigators_ia_play
 
     redirect_to g_game_board_play_url( @game_board )
   end

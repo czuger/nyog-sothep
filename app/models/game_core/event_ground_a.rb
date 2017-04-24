@@ -26,7 +26,7 @@ module GameCore
 
     def table1_e5( game_board, _ )
       EEventLog.log( game_board, self, ( I18n.t( "events.#{__method__.to_s.gsub('_','.')}", investigator_name: translated_name ) ) )
-      ask_prof_for_fake_cities( game_board, 2 )
+      ask_prof_for_fake_cities( game_board, 2 ) unless game_board.p_professor.current_location.kind_of?( WWaterArea )
     end
 
     def table1_e6( game_board, _ )
@@ -52,7 +52,7 @@ module GameCore
 
     def table1_e10( game_board, _ )
       EEventLog.log( game_board, self, ( I18n.t( "events.#{__method__.to_s.gsub('_','.')}", investigator_name: translated_name ) ) )
-      ask_prof_for_fake_cities( game_board, 1 )
+      ask_prof_for_fake_cities( game_board, 1 ) unless game_board.p_professor.current_location.kind_of?( WWaterArea )
     end
 
     def table1_e11( game_board, _ )
@@ -67,7 +67,7 @@ module GameCore
 
     def table1_e13( game_board, professor )
       EEventLog.log( game_board, self, ( I18n.t( "events.#{__method__.to_s.gsub('_','.')}", investigator_name: translated_name ) ) )
-      prof_spotted( game_board, professor )
+      professor.spotted( game_board )
     end
 
     # def table1_e14( game_board, _ )
@@ -77,7 +77,7 @@ module GameCore
 
     def table1_e18( game_board, professor )
       EEventLog.log( game_board, self, ( I18n.t( "events.#{__method__.to_s.gsub('_','.')}", investigator_name: translated_name ) ) )
-      prof_spotted( game_board, professor )
+      professor.spotted( game_board )
     end
 
   end
