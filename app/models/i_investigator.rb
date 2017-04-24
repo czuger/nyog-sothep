@@ -15,7 +15,7 @@ class IInvestigator < ApplicationRecord
 
   aasm do
     state :move, :initial => true
-    state :events, :turn_finished, :dead, :psy
+    state :events, :turn_finished, :dead, :psy, :in_misty_things
 
     event :movement_done do
       transitions :from => :move, :to => :events
@@ -26,7 +26,7 @@ class IInvestigator < ApplicationRecord
     end
 
     event :events_done do
-      transitions :from => [:events], :to => :turn_finished
+      transitions :from => :events, :to => :turn_finished
     end
 
     event :new_turn do
@@ -34,7 +34,15 @@ class IInvestigator < ApplicationRecord
     end
 
     event :die do
-      transitions :from => [:move, :events], :to => :dead
+      transitions :from => [:move, :events, :in_misty_things], :to => :dead
+    end
+
+    event :enter_misty_things do
+      transitions :from => :events, :to => :in_misty_things
+    end
+
+    event :exit_misty_things do
+      transitions :from => :in_misty_things, :to => :events
     end
 
   end

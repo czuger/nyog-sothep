@@ -9,6 +9,7 @@ class GGameBoard < ApplicationRecord
   has_many :alive_investigators, -> { where.not( 'i_investigators.aasm_state' => :dead ) }, class_name: 'IInvestigator'
   has_many :ready_to_move_investigators, -> { where( 'i_investigators.aasm_state' => :move ).order( 'i_investigators.id' ) }, class_name: 'IInvestigator'
   has_many :ready_for_events_investigators, -> { where( 'i_investigators.aasm_state' => :events ).order( 'i_investigators.id' ) }, class_name: 'IInvestigator'
+  has_many :investigators_in_misty_things, -> { where( 'i_investigators.aasm_state' => :in_misty_things ).order( 'i_investigators.id' ) }, class_name: 'IInvestigator'
 
   has_many :m_monsters, dependent: :destroy
   has_many :p_monster_positions, dependent: :destroy
@@ -64,7 +65,7 @@ class GGameBoard < ApplicationRecord
   end
 
   def professor_pick_start_monsters
-    1.upto( 4 ).each do
+    1.upto( 5 ).each do
       p_professor.pick_one_monster
     end
   end

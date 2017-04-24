@@ -5,21 +5,17 @@ module GameCore
     include GameCore::Movement
 
     MONSTERS_ROLL_MAP = {
-      3 => :horreur_volante,
       2 => :goules,
-      4 => :goules,
+      3 => :goules,
+      4 => :profonds,
       5 => :profonds,
-      6 => :profonds,
-      7 => :chose_brume,
-      8 => :habitants,
+      6 => :choses_brume,
+      7 => :reves,
+      8 => :reves,
       9 => :reves,
-      10 => :reves,
-      11 => :reves,
-      12 => :teleportation,
-      13 => :fanatiques,
-      14 => :tempete,
-      15 => :fanatiques,
-      16 => :fanatiques }
+      10 => :fanatiques,
+      11 => :fanatiques,
+      12 => :fanatiques }
 
     # Professor pick monsters
     def pick_one_monster
@@ -27,7 +23,7 @@ module GameCore
 
       try_counter = 0
       begin
-        dice_rolled = GameCore::Dices.d8( 2 )
+        dice_rolled = GameCore::Dices.d6( 2 )
         monster_choosed = MONSTERS_ROLL_MAP[ dice_rolled ]
         raise "#{dice_rolled} correspond to no monster" unless monster_choosed
 

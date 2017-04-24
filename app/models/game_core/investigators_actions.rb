@@ -18,6 +18,12 @@ module GameCore
               end
               @game_board.inv_movement_done!
             when 'inv_events'
+
+              # Unlock delayed investigators
+              @game_board.investigators_in_misty_things.each do |i|
+                i.exit_misty_things!
+              end
+
               # Events for investigators
               @game_board.ready_for_events_investigators.each do |i|
                 i.ia_play_events( @game_board, @prof )
@@ -29,6 +35,7 @@ module GameCore
               end
               # Break out of the while
               break if @game_board.prof_asked_for_fake_cities?
+
             else
               raise "Bad aasm_state : #{@game_board.aasm_state}"
           end

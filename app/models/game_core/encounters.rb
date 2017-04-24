@@ -10,6 +10,13 @@ module GameCore
 
     private
 
+    def resolve_encounter_choses_brume( investigator, encounter )
+      EEventLog.log( self, investigator,I18n.t( 'encounter.choses_brume', investigator_name: investigator.translated_name ) )
+      investigator.loose_san( self, 2 )
+      investigator.enter_misty_things!
+      replace_encounter_in_monsters_stack( encounter )
+    end
+
     def resolve_encounter_fanatiques( investigator, encounter )
       log = I18n.t( 'encounter.fanatiques.common', investigator_name: investigator.translated_name )
       unless investigator.weapon

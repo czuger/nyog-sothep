@@ -57,8 +57,8 @@ class ProfessorActionsControllerTest < ActionDispatch::IntegrationTest
     end
 
     # Expects are stacked and played in inverse order
-    Kernel.expects(:rand).returns(5)
-    Kernel.expects(:rand).returns(1)
+    IInvestigator.any_instance.stubs(:choose_table ).returns(1)
+    IInvestigator.any_instance.stubs(:event_dices ).returns(5)
     # IInvestigator.expects(:event_dices).returns(5)
 
     get move_g_game_board_professor_actions_url( g_game_board_id: @gb.id, zone_id: @dest.id, zone_class: @dest.class )
@@ -69,8 +69,8 @@ class ProfessorActionsControllerTest < ActionDispatch::IntegrationTest
     @gb.update( aasm_state: 'prof_move' )
 
     # Expects are stacked and played in inverse order
-    Kernel.expects(:rand).returns(5)
-    Kernel.expects(:rand).returns(1)
+    IInvestigator.any_instance.stubs(:choose_table ).returns(1)
+    IInvestigator.any_instance.stubs(:event_dices ).returns(5)
     # IInvestigator.expects(:event_dices).returns(5)
 
     get move_g_game_board_professor_actions_url( g_game_board_id: @gb.id, zone_id: @dest.id, zone_class: @dest.class )
@@ -86,8 +86,8 @@ class ProfessorActionsControllerTest < ActionDispatch::IntegrationTest
 
   test 'professor should move, then give 2 fake positions, then move again' do
     @gb.update( aasm_state: 'prof_move' )
-    Kernel.expects(:rand).returns(5)
-    Kernel.expects(:rand).returns(1)
+    IInvestigator.any_instance.stubs(:choose_table ).returns(1)
+    IInvestigator.any_instance.stubs(:event_dices ).returns(5)
 
     src = CCity.find_by_code_name( :oxford )
     dest = CCity.find_by_code_name( :plainfield )
@@ -95,7 +95,9 @@ class ProfessorActionsControllerTest < ActionDispatch::IntegrationTest
 
     get move_g_game_board_professor_actions_url( g_game_board_id: @gb.id, zone_id: dest.id, zone_class: dest.class )
 
-    Kernel.stubs(:rand).returns(1)
+    IInvestigator.any_instance.stubs(:choose_table ).returns(1)
+    IInvestigator.any_instance.stubs(:event_dices ).returns(1)
+
     cities_ids = [ src, third_city ]
     post g_game_board_prof_fake_pos_url( g_game_board_id: @gb.id, cities_ids: cities_ids )
 

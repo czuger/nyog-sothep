@@ -31,7 +31,7 @@ class ProfessorActionsController < ApplicationController
       @prof.check_for_investigators_to_fight_in_city( @game_board )
 
       # Prof get a monster if count less than 4
-      if @game_board.p_monsters.count < 4
+      if @game_board.p_monsters.count < 5
         @prof.pick_one_monster
       end
 

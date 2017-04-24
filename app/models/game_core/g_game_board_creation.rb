@@ -33,9 +33,9 @@ module GameCore
       # monsters_counts = [ 8, 8, 10, 3, 4, 6, 2, 1, 2 ]
 
       monsters = {
-        goules: 8, profonds: 8, fanatiques: 10, chose_brume: 3, habitants: 4, reves: 6, tempete: 2, horreur_volante: 1 }
+        goules: 8, profonds: 8, fanatiques: 10, choses_brume: 3, habitants: 4, reves: 6, tempete: 2, horreur_volante: 1 }
       # implemented_monsters = [ :reves, :goules ]
-      implemented_monsters = [ :goules, :reves, :profonds, :fanatiques ]
+      implemented_monsters = [ :goules, :reves, :profonds, :fanatiques, :choses_brume ]
 
       gb.m_monsters.delete_all
       gb.p_monsters.delete_all

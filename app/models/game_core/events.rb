@@ -8,7 +8,7 @@ module GameCore
     def roll_event( game_board, professor )
       if current_location.city? && last_location.city?
 
-        table = Kernel.rand( 1 ..2 )
+        table = choose_table
         roll = event_dices
 
         #  For dev
@@ -28,7 +28,9 @@ module GameCore
       EEventLog.log( args.first, self, "event non implementé : #{method_name}" )
     end
 
-    private
+    def choose_table
+      Kernel.rand( 1 ..2 )
+    end
 
     def event_dices
       roll = GameCore::Dices.d6
@@ -36,6 +38,8 @@ module GameCore
       roll += GameCore::Dices.d6 if sign && medaillon
       roll
     end
+
+    private
 
     def ask_prof_for_fake_cities( game_board, nb_cities )
       game_board.update( asked_fake_cities_count: nb_cities, asked_fake_cities_investigator: self )
