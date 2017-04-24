@@ -10,13 +10,19 @@ class MapController < ApplicationController
     check_prof_asked_for_fake_cities{}
 
     @investigators = @game_board.alive_investigators
-    @events = @game_board.e_event_logs.all.limit( 50 ).order( 'id DESC' )
 
-    @prof_location = @prof.current_location
+    @events = @game_board.e_event_logs.all.limit( 50 ).order( 'id DESC' )
+    @groupped_events = {}
+
+    @events.each do |e|
+      @groupped_events[ e.turn ] ||= []
+      @groupped_events[ e.turn ] << e.message
+    end
 
     @nyog_sothep_location = @game_board.nyog_sothep_invocation_position
     @nyog_sothep_location_rotation = @game_board.nyog_sothep_invocation_position_rotation
 
+    @prof_location = @prof.current_location
     @prof_in_port = @prof_location.port
 
     @prof_monsters = @game_board.p_monsters

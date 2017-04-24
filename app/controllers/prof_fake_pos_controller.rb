@@ -40,7 +40,7 @@ class ProfFakePosController < ApplicationController
 
     # The we need to finish the Investigators IA play
     # At the end of the professor move, investigators play
-    GameCore::InvestigatorsActions.new( @game_board ).investigators_ia_play
+    GameCore::InvestigatorsActions.new( @game_board, @prof ).investigators_ia_play
 
     redirect_to g_game_board_play_url( @game_board )
   end

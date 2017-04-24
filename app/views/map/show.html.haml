@@ -9,11 +9,10 @@
   %hr
   #events-area
     %ul
-      - @events.each do |event|
-        - if event.message == '*'
-          %hr.event_separator
-        - else
-          %li= event.message
+      - @groupped_events.keys.each do |event_turn|
+        %hr.event_separator
+        - @groupped_events[ event_turn ].each do |message|
+          %li= message
 
 = hidden_field_tag :game_board_id, @game_board.id
 = hidden_field_tag :investigator_id, @current_investigator&.id

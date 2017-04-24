@@ -44,7 +44,7 @@ class ProfessorActionsController < ApplicationController
     @game_board.prof_movement_done!
 
     # At the end of the professor move, investigators play
-    GameCore::InvestigatorsActions.new( @game_board ).investigators_ia_play
+    GameCore::InvestigatorsActions.new( @game_board, @prof ).investigators_ia_play
 
     check_prof_asked_for_fake_cities{ redirect_to g_game_board_play_url( @game_board ) }
   end
