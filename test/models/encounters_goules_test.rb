@@ -27,7 +27,7 @@ class EncountersGoulesTest < ActiveSupport::TestCase
     assert_equal @current_location, @investigator.current_location
     assert PMonsterPosition.exists?( @goules.id )
     assert @inv_san-4, @investigator.san
-    assert @investigator.reload.dead
+    assert @investigator.reload.dead?
     assert @goules.reload.discovered
   end
 

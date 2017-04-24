@@ -27,7 +27,7 @@ class EncountersProfondsTest < ActiveSupport::TestCase
     assert @inv_san-3, @investigator.san
     assert @profonds.reload.discovered
     assert_equal @current_location, @profonds.location
-    assert @investigator.reload.dead
+    assert @investigator.reload.dead?
   end
 
   def test_profonds_with_sign

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170421101648) do
+ActiveRecord::Schema.define(version: 20170424120258) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -80,7 +80,6 @@ ActiveRecord::Schema.define(version: 20170421101648) do
     t.integer  "g_game_board_id",                                      null: false
     t.string   "last_location_type",                                   null: false
     t.integer  "last_location_id",                                     null: false
-    t.boolean  "dead",                                 default: false, null: false
     t.string   "ia_target_destination_type"
     t.integer  "ia_target_destination_id"
     t.integer  "token_rotation",                                       null: false

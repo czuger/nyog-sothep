@@ -48,6 +48,9 @@ Selectionnez 2 villes ou le professeur pourrait être. Votre position actuelle s
     cities_ids = [ CCity.second ]
     @gb.ask_prof_for_fake_cities!
     @gb.update( asked_fake_cities_count: 1 )
+    @le_capitaine.movement_done!
+    @gb.p_professor.update( current_location: CCity.find_by( code_name: :providence ) )
+    Kernel.stubs(:rand).returns(1)
 
     assert_difference 'IInvTargetPosition.count', 2 do
       post g_game_board_prof_fake_pos_url( g_game_board_id: @gb.id, cities_ids: cities_ids )

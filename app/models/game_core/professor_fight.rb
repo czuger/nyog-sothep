@@ -4,8 +4,6 @@ module GameCore
     def check_for_investigators_to_fight_in_city( game_board )
       investigators = game_board.alive_investigators.order( :id ).select{ |i| i.current_location == current_location }
 
-      p investigators
-
       unless investigators.empty?
         fight_occurs = false
         investigators.each do |i|

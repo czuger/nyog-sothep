@@ -6,9 +6,9 @@ class GGameBoard < ApplicationRecord
   has_many :e_event_logs, dependent: :destroy
 
   has_many :i_investigators, dependent: :destroy
-  has_many :alive_investigators, -> { where( dead: false ) }, class_name: 'IInvestigator'
-  has_many :ready_to_move_investigators, -> { where( dead: false, 'i_investigators.aasm_state' => :move ).order( 'i_investigators.id' ) }, class_name: 'IInvestigator'
-  has_many :ready_for_events_investigators, -> { where( dead: false, 'i_investigators.aasm_state' => :events ).order( 'i_investigators.id' ) }, class_name: 'IInvestigator'
+  has_many :alive_investigators, -> { where.not( 'i_investigators.aasm_state' => :dead ) }, class_name: 'IInvestigator'
+  has_many :ready_to_move_investigators, -> { where( 'i_investigators.aasm_state' => :move ).order( 'i_investigators.id' ) }, class_name: 'IInvestigator'
+  has_many :ready_for_events_investigators, -> { where( 'i_investigators.aasm_state' => :events ).order( 'i_investigators.id' ) }, class_name: 'IInvestigator'
 
   has_many :m_monsters, dependent: :destroy
   has_many :p_monster_positions, dependent: :destroy
