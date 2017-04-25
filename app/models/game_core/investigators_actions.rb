@@ -9,36 +9,36 @@ module GameCore
     def investigators_ia_play
       ActiveRecord::Base.transaction do
 
-        while some_investigator_is_ready_to_play?
-          case @game_board.aasm_state
-            when 'inv_move'
-              # Investigators move
-              @game_board.ready_to_move_investigators.each do |i|
-                i.ia_play_movements( @game_board, @prof )
-              end
-              @game_board.inv_movement_done!
-            when 'inv_events'
+        case @game_board.aasm_state
+          when 'inv_move'
+            # Investigators move
+            @game_board.ready_to_move_investigators.each do |i|
+              i.ia_play_movements( @game_board, @prof )
+            end
+            @game_board.inv_movement_done!
+          when 'inv_events'
 
-              # Unlock delayed investigators
-              @game_board.investigators_in_misty_things.each do |i|
-                i.exit_misty_things!
-              end
+            pp @game_board.investigators_in_misty_things.reload
 
-              # Events for investigators
-              @game_board.ready_for_events_investigators.each do |i|
-                i.ia_play_events( @game_board, @prof )
-                # Break out of the investigators loop
-                break if @game_board.prof_asked_for_fake_cities?
+            # Unlock delayed investigators
+            @game_board.investigators_in_misty_things.each do |i|
+              i.exit_misty_things!
+            end
 
-                # When the turn of the investigator is finished we need to check for a prof fight
-                i.check_for_prof_to_fight_in_city( @game_board, @prof )
-              end
-              # Break out of the while
+            # Events for investigators
+            @game_board.ready_for_events_investigators.each do |i|
+              i.ia_play_events( @game_board, @prof )
+              # Break out of the investigators loop
               break if @game_board.prof_asked_for_fake_cities?
 
-            else
-              raise "Bad aasm_state : #{@game_board.aasm_state}"
-          end
+              # When the turn of the investigator is finished we need to check for a prof fight
+              i.check_for_prof_to_fight_in_city( @game_board, @prof )
+            end
+            # Break out of the while
+            break if @game_board.prof_asked_for_fake_cities?
+
+          else
+            raise "Bad aasm_state : #{@game_board.aasm_state}"
         end
 
         # Once all investigators have played, we goes to next turn

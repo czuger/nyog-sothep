@@ -12,5 +12,9 @@ FactoryGirl.define do
     factory :goules do
       code_name 'goules'
     end
+    factory :choses_brume do
+      code_name 'choses_brume'
+    end
+
   end
 end

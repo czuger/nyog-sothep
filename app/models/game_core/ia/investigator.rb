@@ -21,7 +21,7 @@ module GameCore
 
         # Investigator event check
         roll_event( game_board, prof )
-        events_done! unless dead?
+        events_done! unless dead? || in_misty_things?
       end
 
       private

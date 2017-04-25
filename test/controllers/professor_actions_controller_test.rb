@@ -52,10 +52,6 @@ class ProfessorActionsControllerTest < ActionDispatch::IntegrationTest
   test 'professor should move then be asked for fake cities - test with only one investigators' do
     @gb.update( aasm_state: 'prof_move' )
 
-    1.upto(3) do
-      @gb.i_investigators.first.destroy
-    end
-
     # Expects are stacked and played in inverse order
     IInvestigator.any_instance.stubs(:choose_table ).returns(1)
     IInvestigator.any_instance.stubs(:event_dices ).returns(5)

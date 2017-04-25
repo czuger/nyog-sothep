@@ -36,9 +36,10 @@ FactoryGirl.define do
 
     after(:create) do |gb|
       road = RRoad.first
-      1.upto(4).each do
-        create( :i_investigator, g_game_board_id: gb.id, current_location: road.src_city, last_location: road.src_city )
-      end
+      # 1.upto(4).each do
+      #   create( :i_investigator, g_game_board_id: gb.id, current_location: road.src_city, last_location: road.src_city )
+      # end
+      create( :le_capitaine, g_game_board_id: gb.id, current_location: road.src_city, last_location: road.src_city )
     end
 
     factory :g_game_board_ready_for_ia_play do
@@ -60,9 +61,7 @@ FactoryGirl.define do
         road = RRoad.first
         gb.i_investigators.destroy_all
         gb.reload
-        1.upto( 4 ).each do
-          create( :has_moved_investigator, g_game_board_id: gb.id, current_location: road.src_city, last_location: road.src_city )
-        end
+        create( :has_moved_investigator, g_game_board_id: gb.id, current_location: road.src_city, last_location: road.src_city )
       end
     end
 
