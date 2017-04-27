@@ -24,9 +24,6 @@ class GGameBoardsController < ApplicationController
     @g_game_board = GGameBoard.new(g_game_board_params)
 
     @g_game_board.players_count = 1
-
-    @g_game_board.prof_security_code = rand.to_s
-
     @g_game_board.turn = 1
 
     @prof_start_position = params[ 'prof_position' ].empty? ? CCity.all.sample : CCity.find( params[ 'prof_position' ] )

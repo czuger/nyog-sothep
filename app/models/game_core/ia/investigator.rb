@@ -17,11 +17,8 @@ module GameCore
       end
 
       def ia_play_events( game_board, prof )
-        game_board.resolve_encounter( self )
-
         # Investigator event check
         roll_event( game_board, prof )
-        events_done! unless dead? || in_misty_things?
       end
 
       private

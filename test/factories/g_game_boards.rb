@@ -3,7 +3,6 @@ FactoryGirl.define do
 
     turn 1
     players_count 2
-    prof_security_code 123456
 
     nyog_sothep_invocation_position { CCity.find_by( code_name: :oxford ) || create( :oxford ) }
     nyog_sothep_invocation_position_rotation 5
