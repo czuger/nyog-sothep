@@ -9,6 +9,7 @@ class IInvestigator < ApplicationRecord
   validates :event_table, inclusion: { in: [ 1, 2 ] }
   validates :gender, inclusion: { in: %w( m f ) }
 
+  belongs_to :g_game_board
   belongs_to :current_location, polymorphic: true
   belongs_to :last_location, polymorphic: true
   belongs_to :ia_target_destination, polymorphic: true, optional: true
@@ -42,7 +43,7 @@ class IInvestigator < ApplicationRecord
     end
 
     event :exit_misty_things do
-      transitions :from => :in_misty_things, :to => :events
+      transitions :from => :in_misty_things, :to => :turn_finished, after: :exit_misty_things_san_loss
     end
 
   end
@@ -75,6 +76,10 @@ class IInvestigator < ApplicationRecord
     game_board.p_monster_positions.create!(
       location: current_location, code_name: 'fanatiques', discovered: true, token_rotation: rand( -15 .. 15 ) )
     die!
+  end
+
+  def exit_misty_things_san_loss
+    loose_san( g_game_board, 2 )
   end
   
 end

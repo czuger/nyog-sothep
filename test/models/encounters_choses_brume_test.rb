@@ -27,14 +27,15 @@ class EncountersChosesBrumeTest < ActiveSupport::TestCase
     @gb.prof_movement_done!
     @gb.inv_movement_done!
     assert @gb.inv_events?
+    assert_equal @inv_san, @investigator.san
 
     # Investigtor should exit the mists
     GameCore::InvestigatorsActions.new( @gb, @gb.p_professor ).investigators_ia_play
 
-    assert @investigator.turn_finished?
+    assert @investigator.reload.move?
     assert_equal @current_location, @investigator.current_location
 
-    assert @inv_san-2, @investigator.san
+    assert_equal @inv_san-2, @investigator.san
   end
 
 end
