@@ -39,6 +39,10 @@ module GameCore
       roll
     end
 
+    def loose_turn_and_gain_san( turns, san = nil )
+      update( skip_turns: turns, san_gain_after_lost_turns: san )
+    end
+
     private
 
     def ask_prof_for_fake_cities( game_board, nb_cities )

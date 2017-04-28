@@ -16,7 +16,7 @@ class IInvestigator < ApplicationRecord
 
   aasm do
     state :move, :initial => true
-    state :events, :turn_finished, :dead, :psy, :in_misty_things
+    state :events, :turn_finished, :dead, :psy
 
     event :movement_done do
       transitions :from => :move, :to => :events
@@ -35,15 +35,7 @@ class IInvestigator < ApplicationRecord
     end
 
     event :die do
-      transitions :from => [:move, :events, :in_misty_things], :to => :dead
-    end
-
-    event :enter_misty_things do
-      transitions :from => :events, :to => :in_misty_things
-    end
-
-    event :exit_misty_things do
-      transitions :from => :in_misty_things, :to => :turn_finished, after: :exit_misty_things_san_loss
+      transitions :from => [:move, :events], :to => :dead
     end
 
   end
@@ -69,6 +61,10 @@ class IInvestigator < ApplicationRecord
     true
   end
 
+  def gain_san( game_board, san_amount )
+    loose_san( game_board, -san_amount )
+  end
+
   private
 
   def die( game_board )
@@ -78,8 +74,4 @@ class IInvestigator < ApplicationRecord
     die!
   end
 
-  def exit_misty_things_san_loss
-    loose_san( g_game_board, 2 )
-  end
-  
 end

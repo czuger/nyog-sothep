@@ -5,7 +5,25 @@ class EEventGroundTest < ActiveSupport::TestCase
   def setup
     @gb = create( :g_game_board_with_event_ready_for_events_investigators )
     @investigator = @gb.reload.i_investigators.first
+    @inv_san = @investigator.san
     @professor = @gb.p_professor
+  end
+
+  def test_great_psy_encounter
+    IInvestigator.any_instance.stubs(:choose_table ).returns(1)
+    IInvestigator.any_instance.stubs(:event_dices ).returns(4)
+    @professor.update( current_location: CCity.find_by( code_name: :providence ) )
+
+    assert @gb.reload.inv_events?
+    GameCore::InvestigatorsActions.new( @gb, @gb.p_professor ).investigators_ia_play
+    assert_equal @inv_san, @investigator.reload.san
+
+    @gb.prof_movement_done!
+    @gb.inv_movement_done!
+
+    assert @gb.reload.inv_events?
+    GameCore::InvestigatorsActions.new( @gb, @gb.p_professor ).investigators_ia_play
+    assert_equal @inv_san+5, @investigator.reload.san
   end
 
   # def test_events_on_table_2

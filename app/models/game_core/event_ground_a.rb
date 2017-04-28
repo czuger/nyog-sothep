@@ -3,10 +3,10 @@ module GameCore
 
     private
 
-    # def table1_e1( game_board, self, professor )
-    #   EEventLog.log( game_board, self, ( I18n.t( "events.#{__method__.to_s.gsub('_','.')}", investigator_name: translated_name ) ) )
-    #   goes_back( game_board )
-    # end
+    def table1_e1( game_board, _ )
+      EEventLog.log( game_board, self, ( I18n.t( "events.#{__method__.to_s.gsub('_','.')}", investigator_name: translated_name ) ) )
+      goes_back( game_board )
+    end
 
     def table1_e2( game_board, _ )
       EEventLog.log( game_board, self, ( I18n.t( "events.#{__method__.to_s.gsub('_','.')}", investigator_name: translated_name ) ) )
@@ -18,11 +18,10 @@ module GameCore
       update_attribute( :sign, true ) if loose_san( game_board,  2 )
     end
 
-    # def table1_e4( game_board, self, professor )
-    #   EEventLog.log( game_board, self, ( I18n.t( "events.#{__method__.to_s.gsub('_','.')}", investigator_name: translated_name ) ) )
-    #   # TODO : add san bonus on next turn, not implemented currently
-    #   skip_next_turn!
-    # end
+    def table1_e4( game_board, _ )
+      EEventLog.log( game_board, self, ( I18n.t( "events.#{__method__.to_s.gsub('_','.')}", investigator_name: translated_name ) ) )
+      loose_turn_and_gain_san( 1, 5 )
+    end
 
     def table1_e5( game_board, _ )
       EEventLog.log( game_board, self, ( I18n.t( "events.#{__method__.to_s.gsub('_','.')}", investigator_name: translated_name ) ) )

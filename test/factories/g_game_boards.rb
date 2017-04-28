@@ -27,11 +27,12 @@ FactoryGirl.define do
       end
     end
 
-    after(:create) do |gb|
-      1.upto( 4 ).each do
-        create( :p_monster, g_game_board_id: gb.id )
-      end
-    end
+    # Monsters on board should be created at demand
+    # after(:create) do |gb|
+    #   1.upto( 4 ).each do
+    #     create( :p_monster, g_game_board_id: gb.id )
+    #   end
+    # end
 
     after(:create) do |gb|
       road = RRoad.first

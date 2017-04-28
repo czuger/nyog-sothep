@@ -51,7 +51,7 @@ class GGameBoard < ApplicationRecord
       increment!( :turn )
 
       alive_investigators.each do |i|
-        i.new_turn! unless i.in_misty_things?
+        i.new_turn!
       end
 
       # Prof positions are forgotten over time

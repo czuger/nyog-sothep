@@ -39,12 +39,11 @@ module GameCore
       # Events for investigators
       @game_board.alive_investigators.each do |i|
 
-        if i.in_misty_things?
-          i.exit_misty_things!
-        elsif i.psy?
-          # nothing
-        elsif i.dead?
-          raise 'WTF ???'
+        if i.skip_turns && i.skip_turns > 0
+          i.decrement!( :skip_turns )
+          if i.skip_turns <= 0
+            i.gain_san( @game_board, i.san_gain_after_lost_turns ) if i.san_gain_after_lost_turns
+          end
         else
           @game_board.resolve_encounter( i )
 

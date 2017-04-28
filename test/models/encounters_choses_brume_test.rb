@@ -20,14 +20,13 @@ class EncountersChosesBrumeTest < ActiveSupport::TestCase
 
     # Investigtor should be catched in the mists
     GameCore::InvestigatorsActions.new( @gb, @gb.p_professor ).investigators_ia_play
-    assert @investigator.reload.in_misty_things?
     assert_equal @current_location, @investigator.current_location
     refute PMonsterPosition.exists?( @choses_brume.id )
 
     @gb.prof_movement_done!
     @gb.inv_movement_done!
     assert @gb.inv_events?
-    assert_equal @inv_san, @investigator.san
+    assert_equal @inv_san-2, @investigator.reload.san
 
     # Investigtor should exit the mists
     GameCore::InvestigatorsActions.new( @gb, @gb.p_professor ).investigators_ia_play
@@ -35,7 +34,7 @@ class EncountersChosesBrumeTest < ActiveSupport::TestCase
     assert @investigator.reload.move?
     assert_equal @current_location, @investigator.current_location
 
-    assert_equal @inv_san-2, @investigator.san
+    assert_equal @inv_san-4, @investigator.reload.san
   end
 
 end
