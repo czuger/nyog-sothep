@@ -106,6 +106,11 @@ class ProfessorActionsControllerTest < ActionDispatch::IntegrationTest
     @gb.update( aasm_state: 'prof_move' )
     Kernel.stubs(:rand).returns(1)
 
+    1.upto( 6 ).each do
+      create( :i_investigator, g_game_board_id: @gb.id, current_location: @investigator.current_location,
+                             last_location: @investigator.last_location )
+    end
+
     src = CCity.find_by_code_name( :oxford )
     dest = CCity.find_by_code_name( :plainfield )
 
