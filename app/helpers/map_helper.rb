@@ -1,7 +1,15 @@
 module MapHelper
 
   def token_style( position, token_rotation = 0 )
-    "top:#{position.y-17}px;left:#{position.x-17}px;transform:rotate(#{token_rotation}deg);"
+
+    if @position_x_decal.has_key?( position.code_name )
+      @position_x_decal[ position.code_name ] += @x_decal
+    else
+      @position_x_decal[ position.code_name ] = 0
+    end
+    x_decal = @position_x_decal[ position.code_name ]
+
+    "top:#{position.y-17}px;left:#{position.x-17 + x_decal}px;transform:rotate(#{token_rotation}deg);"
   end
 
   def can_breed_monster( monster )

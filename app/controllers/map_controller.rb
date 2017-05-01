@@ -32,6 +32,10 @@ class MapController < ApplicationController
 
     @monster_at_prof_location = PMonsterPosition.where(
       g_game_board_id: @game_board.id, location_type: @prof_location.class.to_s, location_id: @prof_location.id ).exists?
+
+    @x_decal = 15
+    @position_x_decal = {}
+
   end
 
 end

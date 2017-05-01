@@ -4,6 +4,7 @@ module GameCore
     module Investigator
 
       include GameCore::Ia::InvestigatorMovement
+      include GameCore::Ia::InvestigatorActions
 
       def ia_play_movements( game_board, prof )
         if san < 5 && current_location.city?

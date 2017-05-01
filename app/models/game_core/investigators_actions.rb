@@ -35,33 +35,10 @@ module GameCore
     private
 
     def investigators_actions
-
       # Events for investigators
       @game_board.alive_investigators.each do |i|
-
-        if i.skip_turns && i.skip_turns > 0
-          i.decrement!( :skip_turns )
-          if i.skip_turns <= 0
-            i.gain_san( @game_board, i.san_gain_after_lost_turns ) if i.san_gain_after_lost_turns
-          end
-        else
-          @game_board.resolve_encounter( i )
-
-          if i.events?
-            i.ia_play_events( @game_board, @prof )
-
-            # Break out of the investigators loop
-            if @game_board.prof_asked_for_fake_cities?
-              # If investigator is still alive
-              i.events_done! if i.events?
-              break
-            else
-              # When the turn of the investigator is finished we need to check for a prof fight
-              i.check_for_prof_to_fight_in_city( @game_board, @prof )
-              i.events_done! if i.events?
-            end
-          end
-        end
+        result = i.ia_actions( @game_board, @prof )
+        break if result == :break
       end
     end
 
