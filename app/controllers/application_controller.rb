@@ -8,6 +8,11 @@ class ApplicationController < ActionController::Base
     @prof = @game_board.p_professor
   end
 
+  def set_position_x_decal
+    @x_decal = 15
+    @position_x_decal = {}
+  end
+
   def assert( assertion, message = nil )
     raise "Assertion failed : #{message}" unless assertion
   end

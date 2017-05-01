@@ -16,6 +16,8 @@ class GGameBoardsController < ApplicationController
   def new
     @g_game_board = GGameBoard.new
     @cities = CCity.all
+
+    set_position_x_decal
   end
 
   # POST /g_game_boards
