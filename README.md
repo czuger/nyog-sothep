@@ -1,4 +1,6 @@
 [![Build Status](https://travis-ci.org/czuger/nyog-sothep.svg?branch=master)](https://travis-ci.org/czuger/nyog-sothep)
+[![Code Climate](https://codeclimate.com/github/czuger/nyog-sothep/badges/gpa.svg)](https://codeclimate.com/github/czuger/nyog-sothep)
+[![Test Coverage](https://codeclimate.com/github/czuger/nyog-sothep/badges/coverage.svg)](https://codeclimate.com/github/czuger/nyog-sothep/coverage
 
 #Implementing Nyog'Sothep
  
