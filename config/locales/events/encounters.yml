@@ -2,6 +2,8 @@ fr:
   encounter:
     reves: "%{investigator_name} rencontre un pion rêve et perds 2 points de SAN."
 
+    habitants: "Les vilageois prennent %{investigator_name} pour un fanatique et le chassent du village. Il perd son médaillon et ne pourra plus passer par ce village au prochain tour."
+
     choses_brume: "%{investigator_name} rencontre un pion choses de la brume. Il passe son prochain tour et perds 1 points de SAN."
 
     goules:

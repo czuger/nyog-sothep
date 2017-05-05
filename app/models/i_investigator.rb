@@ -13,6 +13,7 @@ class IInvestigator < ApplicationRecord
   belongs_to :current_location, polymorphic: true
   belongs_to :last_location, polymorphic: true
   belongs_to :ia_target_destination, polymorphic: true, optional: true
+  belongs_to :forbidden_city, class_name: 'CCity', optional: true
 
   aasm do
     state :move, :initial => true

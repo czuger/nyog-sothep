@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170428103016) do
+ActiveRecord::Schema.define(version: 20170505100650) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -84,6 +84,7 @@ ActiveRecord::Schema.define(version: 20170428103016) do
     t.integer  "token_rotation",                                       null: false
     t.integer  "skip_turns"
     t.integer  "san_gain_after_lost_turns"
+    t.integer  "forbidden_city_id"
     t.index ["g_game_board_id"], name: "index_i_investigators_on_g_game_board_id", using: :btree
   end
 
@@ -159,6 +160,7 @@ ActiveRecord::Schema.define(version: 20170428103016) do
   add_foreign_key "c_cities", "w_water_areas"
   add_foreign_key "e_event_logs", "g_game_boards"
   add_foreign_key "g_game_boards", "c_cities", column: "nyog_sothep_invocation_position_id"
+  add_foreign_key "i_investigators", "c_cities", column: "forbidden_city_id"
   add_foreign_key "i_investigators", "g_game_boards"
   add_foreign_key "m_monsters", "g_game_boards"
   add_foreign_key "p_monster_positions", "g_game_boards"

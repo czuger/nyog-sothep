@@ -1,4 +1,5 @@
 module GameCore
+  # Included in GGameBoard
   module Encounters
 
     def resolve_encounter( investigator )
@@ -9,6 +10,16 @@ module GameCore
     end
 
     private
+
+    def resolve_encounter_habitants( investigator, encounter )
+      if investigator.medaillon
+        EEventLog.log( self, investigator,I18n.t( 'encounter.habitants', investigator_name: investigator.translated_name ) )
+        investigator.update( medaillon: false )
+        investigator.forbidden_city = investigator.current_location
+        investigator.goes_back( self )
+        replace_encounter_in_monsters_stack( encounter )
+      end
+    end
 
     def resolve_encounter_choses_brume( investigator, encounter )
       EEventLog.log( self, investigator,I18n.t( 'encounter.choses_brume', investigator_name: investigator.translated_name ) )
@@ -35,10 +46,12 @@ module GameCore
           log << I18n.t( 'encounter.fanatiques.weapon_success' )
           EEventLog.log( self, investigator,log )
           investigator.loose_san( self, 2 )
+          investigator.update( medaillon: true )
           encounter_destroyed( encounter )
         else
           log << I18n.t( 'encounter.fanatiques.weapon_critical' )
           EEventLog.log( self, investigator,log )
+          investigator.update( medaillon: true )
           encounter_destroyed( encounter )
         end
       end

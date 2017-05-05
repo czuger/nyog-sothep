@@ -15,6 +15,9 @@ FactoryGirl.define do
     factory :choses_brume do
       code_name 'choses_brume'
     end
+    factory :habitants do
+      code_name 'habitants'
+    end
 
   end
 end
