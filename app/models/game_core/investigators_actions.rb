@@ -44,7 +44,11 @@ module GameCore
 
     def investigators_move
       @game_board.ready_to_move_investigators.each do |i|
-        i.ia_play_movements( @game_board, @prof )
+
+        unless i.skip_turns || 0 < ( i.skip_turns || 0 )
+          i.ia_play_movements( @game_board, @prof )
+        end
+
       end
       @game_board.inv_movement_done!
     end

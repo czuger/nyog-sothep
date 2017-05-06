@@ -18,8 +18,8 @@ fr:
         f: "Un psychanalyste de renom s'intéresse aux troubles de %{investigator_name}. Elle passe son prochain tour, mais gagnerea 5 points de SAN."
 
       e5:
-        m: "Le professeur doit citer trois villes dont une est son actuelle position."
-        f: "Le professeur doit citer trois villes dont une est son actuelle position."
+        m: "Des voyageurs parlent à %{investigator_name} du professeur. Ce dernier doit citer trois villes dont une est son actuelle position."
+        f: "Des voyageurs parlent à %{investigator_name} du professeur. Ce dernier doit citer trois villes dont une est son actuelle position."
 
       e6:
         m: "%{investigator_name} trouve le sort de renvoi et perds 2 points de SAN"
