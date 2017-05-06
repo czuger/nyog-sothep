@@ -155,7 +155,7 @@ module GameCore
                     'nantucket_sound'=>'WWaterArea',
                     'cape_cod_bay'=>'WWaterArea'}
 
-      def self.find_next_dest_to_goal( current_position, goal )
+      def self.find_next_dest_to_goal( current_position, goal, forbidden_city: nil )
 
         raise "Current position and goal are the same" if current_position == goal
 
@@ -174,6 +174,7 @@ module GameCore
           end
 
           DESTINATIONS[ current_name ].each do |next_location|
+            next if next_location == forbidden_city&.code_name
             unless came_from.has_key?( next_location )
               frontier << next_location
               came_from[ next_location ] = current_name

@@ -12,6 +12,7 @@ class EEventGroundTest < ActiveSupport::TestCase
   def test_great_psy_encounter
     IInvestigator.any_instance.stubs(:choose_table ).returns(1)
     IInvestigator.any_instance.stubs(:event_dices ).returns(4)
+
     @professor.update( current_location: CCity.find_by( code_name: :providence ) )
 
     assert @gb.reload.inv_events?

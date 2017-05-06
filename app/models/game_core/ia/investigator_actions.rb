@@ -1,6 +1,6 @@
 module GameCore
   module Ia
-    # Inclued in investigator
+    # Included in investigator
     module InvestigatorActions
 
       def ia_actions( game_board, prof )
@@ -11,9 +11,13 @@ module GameCore
             gain_san( game_board, san_gain_after_lost_turns ) if san_gain_after_lost_turns
           end
         else
-          game_board.resolve_encounter( self )
+          # We resolve an encounter only if investigator is in event mode
+          # IE if not at psy or dead
+          game_board.resolve_encounter( self ) if events?
 
+          # If he is still in events (if he is not dead)
           if events?
+
             ia_play_events( game_board, prof )
 
             # Break out of the investigators loop

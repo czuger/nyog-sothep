@@ -27,6 +27,8 @@ FactoryGirl.define do
       end
     end
 
+    # No automatic game board population
+
     # Monsters on board should be created at demand
     # after(:create) do |gb|
     #   1.upto( 4 ).each do
@@ -34,13 +36,13 @@ FactoryGirl.define do
     #   end
     # end
 
-    after(:create) do |gb|
-      road = RRoad.first
-      # 1.upto(4).each do
-      #   create( :i_investigator, g_game_board_id: gb.id, current_location: road.src_city, last_location: road.src_city )
-      # end
-      create( :le_capitaine, g_game_board_id: gb.id, current_location: road.src_city, last_location: road.src_city )
-    end
+    # after(:create) do |gb|
+    #   road = RRoad.first
+    #   # 1.upto(4).each do
+    #   #   create( :i_investigator, g_game_board_id: gb.id, current_location: road.src_city, last_location: road.src_city )
+    #   # end
+    #   # create( :le_capitaine, g_game_board_id: gb.id, current_location: road.src_city, last_location: road.src_city )
+    # end
 
     factory :g_game_board_ready_for_ia_play do
       aasm_state 'prof_move'

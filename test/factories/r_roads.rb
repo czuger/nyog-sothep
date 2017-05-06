@@ -27,5 +27,20 @@ FactoryGirl.define do
       src_city { CCity.find_by( code_name: :providence ) || create( :providence ) }
     end
 
+    factory :oxford_pascoag do
+      src_city { CCity.find_by( code_name: :oxford ) || create( :oxford ) }
+      dest_city { CCity.find_by( code_name: :pascoag ) || create( :pascoag ) }
+    end
+
+    factory :pascoag_woonsocket do
+      src_city { CCity.find_by( code_name: :pascoag ) || create( :pascoag ) }
+      dest_city { CCity.find_by( code_name: :woonsocket ) || create( :woonsocket ) }
+    end
+
+    factory :woonsocket_providence do
+      src_city { CCity.find_by( code_name: :woonsocket ) || create( :woonsocket ) }
+      dest_city { CCity.find_by( code_name: :providence ) || create( :providence ) }
+    end
+
   end
 end

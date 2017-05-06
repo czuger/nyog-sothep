@@ -6,7 +6,7 @@ class ProfessorActionsControllerTest < ActionDispatch::IntegrationTest
     @gb = create( :g_game_board_ready_for_fight )
     @professor = @gb.p_professor
     @dest = @professor.current_location.destinations.first
-    @investigator = @gb.i_investigators.first
+    @investigator = create( :i_investigator, g_game_board_id: @gb.id )
     @investigator.update( weapon: true )
   end
 

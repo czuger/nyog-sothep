@@ -17,7 +17,7 @@ module MapHelper
   end
 
   def investigator_info_string( investigator )
-    "SAN : #{investigator.san}, weapon: #{investigator.weapon}, sign: #{investigator.sign}, medaillon: #{investigator.medaillon}, spell: #{investigator.spell}"
+    "#{investigator.translated_name}, SAN : #{investigator.san}, weapon: #{investigator.weapon}, sign: #{investigator.sign}, medaillon: #{investigator.medaillon}, spell: #{investigator.spell}"
   end
 
 end

@@ -50,7 +50,8 @@ class GGameBoard < ApplicationRecord
 
       increment!( :turn )
 
-      alive_investigators.each do |i|
+      # Reload is required for some tests
+      alive_investigators.reload.each do |i|
         i.new_turn!
       end
 

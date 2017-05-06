@@ -15,5 +15,13 @@ FactoryGirl.define do
       code_name 'providence'
     end
 
+    factory :pascoag do
+      code_name 'pascoag'
+    end
+
+    factory :woonsocket do
+      code_name 'woonsocket'
+    end
+
   end
 end

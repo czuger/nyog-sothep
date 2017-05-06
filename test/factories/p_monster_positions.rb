@@ -18,6 +18,9 @@ FactoryGirl.define do
     factory :habitants do
       code_name 'habitants'
     end
+    factory :reves do
+      code_name 'reves'
+    end
 
   end
 end
