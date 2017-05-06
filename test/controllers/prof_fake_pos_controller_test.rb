@@ -39,6 +39,8 @@ Selectionnez 2 villes ou le professeur pourrait être. Votre position actuelle s
     @gb.ask_prof_for_fake_cities!
     @gb.update( asked_fake_cities_count: 1 )
 
+    @gb.p_professor.update( current_location: CCity.first )
+
     assert_raise do
       post g_game_board_prof_fake_pos_url( g_game_board_id: @gb.id, cities_ids: cities_ids )
     end

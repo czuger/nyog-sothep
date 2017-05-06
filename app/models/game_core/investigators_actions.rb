@@ -45,6 +45,7 @@ module GameCore
     def investigators_move
       @game_board.ready_to_move_investigators.each do |i|
 
+        # TODO : redundant ?
         unless i.skip_turns || 0 < ( i.skip_turns || 0 )
           i.ia_play_movements( @game_board, @prof )
         end

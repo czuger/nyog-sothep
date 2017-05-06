@@ -10,6 +10,8 @@ module GameCore
           if skip_turns <= 0
             gain_san( game_board, san_gain_after_lost_turns ) if san_gain_after_lost_turns
           end
+          movement_done!
+          events_done!
         else
           # We resolve an encounter only if investigator is in event mode
           # IE if not at psy or dead

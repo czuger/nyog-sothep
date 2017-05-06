@@ -13,18 +13,26 @@ class EEventGroundTest < ActiveSupport::TestCase
     IInvestigator.any_instance.stubs(:choose_table ).returns(1)
     IInvestigator.any_instance.stubs(:event_dices ).returns(4)
 
-    @professor.update( current_location: CCity.find_by( code_name: :providence ) )
-
     assert @gb.reload.inv_events?
     GameCore::InvestigatorsActions.new( @gb, @gb.p_professor ).investigators_ia_play
     assert_equal @inv_san, @investigator.reload.san
+    assert_equal 'move', @investigator.reload.aasm_state
 
     @gb.prof_movement_done!
-    @gb.inv_movement_done!
 
-    assert @gb.reload.inv_events?
     GameCore::InvestigatorsActions.new( @gb, @gb.p_professor ).investigators_ia_play
     assert_equal @inv_san+5, @investigator.reload.san
+
+    assert_equal 'prof_move', @gb.aasm_state
+    assert_equal 'move', @investigator.reload.aasm_state
+
+    @gb.prof_movement_done!
+
+    GameCore::InvestigatorsActions.new( @gb, @gb.p_professor ).investigators_ia_play
+    assert_equal @inv_san+5, @investigator.reload.san
+
+    assert_equal 'prof_move', @gb.aasm_state
+    assert_equal 'move', @investigator.reload.aasm_state
   end
 
   # def test_events_on_table_2
