@@ -14,7 +14,7 @@ fr:
     profonds:
       common: "%{investigator_name} rencontre un pion profonds."
       sign: "Il les renvoie a l'aide de son signe protecteur, mais perds 1 point de SAN et son signe."
-      no_sign: "Il s'enfuie et perds 3 points de SAN."
+      no_sign: "Il s'enfuit et perds 3 points de SAN."
 
     fanatiques:
       common: "%{investigator_name} rencontre un pion fanatiques."
