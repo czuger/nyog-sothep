@@ -26,7 +26,9 @@ module GameCore
 
         # p ia_target_destination
 
-        next_step = GameCore::Ia::BfsAlgo.find_next_dest_to_goal( current_location, ia_target_destination )
+        next_step = GameCore::Ia::BfsAlgo.find_next_dest_to_goal( current_location, ia_target_destination, forbidden_city: forbidden_city )
+
+        raise "Next movement is forbidden. Forbidden_city = #{forbidden_city.code_name}, next_step = #{next_step.code_name}" if next_step.code_name == forbidden_city&.code_name
 
         regular_move_token( game_board, self, next_step  )
       end
