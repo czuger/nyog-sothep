@@ -1,6 +1,6 @@
 %h1 Log
 
-%table{ border: true }
+%table.table.table-striped
   %thead
     %tr
       %td
@@ -23,3 +23,5 @@
           = e.actor.translated_name
         %td
           = e.message
+
+= will_paginate @events, renderer: BootstrapPagination::Rails

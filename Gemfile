@@ -44,7 +44,6 @@ group :test do
   gem "simplecov"
   gem "codeclimate-test-reporter", "~> 1.0.0"
   gem 'factory_girl_rails'
-  gem 'simplecov'
   gem 'mocha'
 end
 
@@ -65,3 +64,7 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'font-awesome-rails'
 
 gem 'rubocop', '~> 0.48.1', require: false
+
+gem "twitter-bootstrap-rails"
+gem 'will_paginate', '~> 3.1.0'
+gem 'will_paginate-bootstrap'
