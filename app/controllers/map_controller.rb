@@ -11,14 +11,6 @@ class MapController < ApplicationController
 
     @investigators = @game_board.alive_investigators
 
-    @events = @game_board.e_event_logs.all.limit( 50 ).order( 'id DESC' )
-    @groupped_events = {}
-
-    @events.each do |e|
-      @groupped_events[ e.turn ] ||= []
-      @groupped_events[ e.turn ] << e.message
-    end
-
     @nyog_sothep_location = @game_board.nyog_sothep_invocation_position
     @nyog_sothep_location_rotation = @game_board.nyog_sothep_invocation_position_rotation
 

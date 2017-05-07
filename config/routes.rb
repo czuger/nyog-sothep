@@ -2,6 +2,8 @@ Rails.application.routes.draw do
 
   resources :g_game_boards, only: [ :create, :new, :index, :destroy ] do
 
+    get 'log/list'
+
     resource :prof_fake_pos, only: [ :create, :new ]
 
     resource :professor_actions, only: [] do

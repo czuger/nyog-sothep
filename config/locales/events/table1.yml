@@ -14,8 +14,8 @@ fr:
         f: "%{investigator_name} rencontre un vieillard qui lui parle des créatures de l'au dela et lui donne un signe protecteur. Elle perds 2 points de SAN."
 
       e4:
-        m: "Un psychanalyste de renom s'intéresse aux troubles de %{investigator_name}. Il passe son prochain tour, mais gagnerea 5 points de SAN."
-        f: "Un psychanalyste de renom s'intéresse aux troubles de %{investigator_name}. Elle passe son prochain tour, mais gagnerea 5 points de SAN."
+        m: "Un psychanalyste de renom s'intéresse a ses troubles. Il passe son prochain tour, mais gagnerea 5 points de SAN."
+        f: "Un psychanalyste de renom s'intéress a ses troubles. Elle passe son prochain tour, mais gagnerea 5 points de SAN."
 
       e5:
         m: "Des voyageurs parlent à %{investigator_name} du professeur. Ce dernier doit citer trois villes dont une est son actuelle position."

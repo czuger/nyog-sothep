@@ -1,0 +1,7 @@
+.menu
+  = link_to 'GameBoard', g_game_boards_url
+  - if @game_board
+    |
+    = link_to 'Map', g_game_board_play_url( @game_board )
+    |
+    = link_to 'Log', g_game_board_log_list_url( @game_board )

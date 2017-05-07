@@ -26,8 +26,8 @@ fr:
         f: "Le professeur doit citer trois villes dont une est son actuelle position."
 
       e7:
-        m: "%{investigator_name} retourne d'ou il vient"
-        f: "%{investigator_name} retourne d'ou elle vient"
+        m: "se perd dans le labyrinthe des rues et retourne d'ou il vient"
+        f: "se perd dans le labyrinthe des rues et retourne d'ou elle vient"
 
       e8:
         m: "%{investigator_name} trouve un médaillon mais perds 3 SAN"

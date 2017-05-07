@@ -1,0 +1,25 @@
+%h1 Log
+
+%table{ border: true }
+  %thead
+    %tr
+      %td
+        Tour
+      %td
+        State
+      %td
+        Investigateur
+      %td
+        Message
+
+  %tbody
+    - @events.each do |e|
+      %tr
+        %td
+          = e.turn
+        %td
+          = e.actor_aasm_state
+        %td
+          = e.actor.translated_name
+        %td
+          = e.message
