@@ -2,8 +2,8 @@ fr:
   events:
     table1:
       e1:
-        m: "%{investigator_name} se perd sur de petites routes. Il retourne d'ou il vient"
-        f: "%{investigator_name} se perd sur de petites routes. Elle retourne d'ou elle vient"
+        m: "Il se perd sur de petites routes et retourne d'ou il vient."
+        f: "Elle se perd sur de petites routes et retourne d'ou elle vient."
 
       e2:
         m: "%{investigator_name} découvre un repaire de profonds. Il perds 2 points de SAN, mais trouve arme."
