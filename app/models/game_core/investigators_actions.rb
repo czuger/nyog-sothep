@@ -12,11 +12,15 @@ module GameCore
         case @game_board.aasm_state
           when 'inv_move'
             # The regular case, we move then we play events
+            skip_investigators_turn
+
             investigators_move
             investigators_actions
 
             # This is where we go after a break (user asked for options)
           when 'inv_events'
+            skip_investigators_turn
+
             investigators_actions
 
           else
@@ -34,22 +38,26 @@ module GameCore
 
     private
 
+    def skip_investigators_turn
+      # TODO skip investigators turn that required it
+      @game_board.skip_turns_investigators.reload.each do |i|
+        i.decrement!( :skip_turns )
+        i.gain_san( @game_board, i.san_gain_after_lost_turns ) if i.san_gain_after_lost_turns && i.skip_turns <= 0
+        i.skip_turn!
+      end
+    end
+
     def investigators_actions
       # Events for investigators
-      @game_board.alive_investigators.each do |i|
+      @game_board.ready_for_events_investigators.reload.each do |i|
         result = i.ia_actions( @game_board, @prof )
         break if result == :break
       end
     end
 
     def investigators_move
-      @game_board.ready_to_move_investigators.each do |i|
-
-        # TODO : redundant ?
-        unless i.skip_turns || 0 < ( i.skip_turns || 0 )
+      @game_board.ready_to_move_investigators.reload.each do |i|
           i.ia_play_movements( @game_board, @prof )
-        end
-
       end
       @game_board.inv_movement_done!
     end

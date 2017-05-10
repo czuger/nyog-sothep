@@ -39,6 +39,10 @@ class IInvestigator < ApplicationRecord
       transitions :from => [:move, :events], :to => :dead
     end
 
+    event :skip_turn do
+      transitions :from => :move, :to => :turn_finished
+    end
+
   end
 
   def translated_name

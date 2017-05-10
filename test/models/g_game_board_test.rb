@@ -15,22 +15,72 @@ class GGameBoardTest < ActiveSupport::TestCase
     assert_equal [ i1 ], @gb.alive_investigators.reload
   end
 
-  # def test_game_board_end_turn
-  #   @gb = create( :g_game_board_with_event_ready_for_events_investigators )
-  #   @gb.prof_move!
-  #   assert @gb.prof_move?
-  # end
-  #
-  # def test_professor_pick_start_monster
-  #   @gb = create( :g_game_board_with_event_ready_for_events_investigators )
-  #   @gb.prof_move!
-  #   EEventLog.start_event_block( @gb )
-  #   1.upto(20).each do
-  #     create( :m_monster, g_game_board_id: @gb.id )
-  #   end
-  #   assert_difference '@gb.p_monsters.count', 4 do
-  #     @gb.professor_pick_start_monsters
-  #   end
-  # end
+  def test_ready_to_move_investigators_should_select_right_aasm_state
+    i1 = create( :i_investigator, g_game_board_id: @gb.id )
+    i1.update( skip_turns: nil )
+    i2 = create( :i_investigator, g_game_board_id: @gb.id )
+    i2.movement_done!
+
+    assert_equal 1, @gb.ready_to_move_investigators.reload.count
+    assert_equal [ i1 ], @gb.ready_to_move_investigators.reload
+  end
+
+  def test_ready_to_move_investigators_should_be_ok_withskip_turn_equal_zero
+    i1 = create( :i_investigator, g_game_board_id: @gb.id )
+    i1.update( skip_turns: 0 )
+    i2 = create( :i_investigator, g_game_board_id: @gb.id )
+    i2.movement_done!
+
+    assert_equal 1, @gb.ready_to_move_investigators.reload.count
+    assert_equal [ i1 ], @gb.ready_to_move_investigators.reload
+  end
+
+  def test_ready_to_move_investigators_should_skip_turn_if_skip_turns_superior_to_zero
+    i1 = create( :i_investigator, g_game_board_id: @gb.id )
+    i1.update( skip_turns: 1 )
+    i2 = create( :i_investigator, g_game_board_id: @gb.id )
+    i2.movement_done!
+
+    assert_equal 0, @gb.ready_to_move_investigators.reload.count
+    assert_equal [], @gb.ready_to_move_investigators.reload
+  end
+
+  def test_ready_for_events_investigators_should_select_right_aasm_state
+    i1 = create( :i_investigator, g_game_board_id: @gb.id )
+    i2 = create( :i_investigator, g_game_board_id: @gb.id )
+    i2.movement_done!
+    i2.update( skip_turns: nil )
+
+    assert_equal 1, @gb.ready_for_events_investigators.reload.count
+    assert_equal [ i2 ], @gb.ready_for_events_investigators.reload
+  end
+
+  def test_ready_for_events_investigators_should_be_ok_withskip_turn_equal_zero
+    i1 = create( :i_investigator, g_game_board_id: @gb.id )
+    i2 = create( :i_investigator, g_game_board_id: @gb.id )
+    i2.movement_done!
+    i2.update( skip_turns: 0 )
+
+    assert_equal 1, @gb.ready_for_events_investigators.reload.count
+    assert_equal [ i2 ], @gb.ready_for_events_investigators.reload
+  end
+
+  def test_ready_for_events_investigators_should_skip_turn_if_skip_turns_superior_to_zero
+    i1 = create( :i_investigator, g_game_board_id: @gb.id )
+    i2 = create( :i_investigator, g_game_board_id: @gb.id )
+    i2.movement_done!
+    i2.update( skip_turns: 1 )
+
+    assert_equal 0, @gb.ready_for_events_investigators.reload.count
+    assert_equal [], @gb.ready_for_events_investigators.reload
+  end
+
+  def test_ready_for_events_investigators_should_not_return_investigator_in_turn_finished_state
+    i1 = create( :i_investigator, g_game_board_id: @gb.id )
+    i1.update( aasm_state: :turn_finished )
+
+    assert_equal 0, @gb.ready_for_events_investigators.reload.count
+    assert_equal [], @gb.ready_for_events_investigators.reload
+  end
 
 end
