@@ -2,44 +2,44 @@ fr:
   events:
     table1:
       e1:
-        m: "Il se perd sur de petites routes et retourne d'ou il vient."
-        f: "Elle se perd sur de petites routes et retourne d'ou elle vient."
+        m: "Se perd sur de petites routes et retourne d'ou il vient."
+        f: "Se perd sur de petites routes et retourne d'ou elle vient."
 
       e2:
-        m: "%{investigator_name} découvre un repaire de profonds. Il perds 2 points de SAN, mais trouve arme."
-        f: "%{investigator_name} découvre un repaire de profonds. Elle perds 2 points de SAN, mais trouve arme."
+        m: "Découvre un repaire de profonds. Il perds 2 points de SAN, mais trouve arme."
+        f: "Ddécouvre un repaire de profonds. Elle perds 2 points de SAN, mais trouve arme."
 
       e3:
-        m: "%{investigator_name} rencontre un vieillard qui lui parle des créatures de l'au dela et lui donne un signe protecteur. Il perds 2 points de SAN."
-        f: "%{investigator_name} rencontre un vieillard qui lui parle des créatures de l'au dela et lui donne un signe protecteur. Elle perds 2 points de SAN."
+        m: "Rencontre un vieillard qui lui parle des créatures de l'au dela et lui donne un signe protecteur. Il perds 2 points de SAN."
+        f: "Rencontre un vieillard qui lui parle des créatures de l'au dela et lui donne un signe protecteur. Elle perds 2 points de SAN."
 
       e4:
         m: "Un psychanalyste de renom s'intéresse a ses troubles. Il passe son prochain tour, mais gagnerea 5 points de SAN."
         f: "Un psychanalyste de renom s'intéress a ses troubles. Elle passe son prochain tour, mais gagnerea 5 points de SAN."
 
       e5:
-        m: "Des voyageurs parlent à %{investigator_name} du professeur. Ce dernier doit citer trois villes dont une est son actuelle position."
-        f: "Des voyageurs parlent à %{investigator_name} du professeur. Ce dernier doit citer trois villes dont une est son actuelle position."
+        m: "Des voyageurs lui parlent du professeur. Ce dernier doit citer trois villes dont une est son actuelle position."
+        f: "Des voyageurs lui parlent du professeur. Ce dernier doit citer trois villes dont une est son actuelle position."
 
       e6:
-        m: "%{investigator_name} trouve le sort de renvoi et perds 2 points de SAN"
-        f: "%{investigator_name} trouve le sort de renvoi et perds 2 points de SAN"
+        m: "Dans le grenier d'une vieille maison, il trouve le sort de renvoi mais perds 2 points de SAN"
+        f: "Dans le grenier d'une vieille maison, elle trouve le sort de renvoi mais perds 2 points de SAN"
 
       e7:
-        m: "%{investigator_name} perds 2 points de SAN et son arme (s'il en avait une)"
-        f: "%{investigator_name} perds 2 points de SAN et son arme (s'elle en avait une)"
+        m: "Ere dans un cimetière plein de goules. Il perds 2 points de SAN et son arme (s'il en avait une)"
+        f: "Ere dans un cimetière plein de goules. Elle perds 2 points de SAN et son arme (s'elle en avait une)"
 
       e8:
-        m: "%{investigator_name} passe le tour suivant, sauf s'il prends la mer."
-        f: "%{investigator_name} passe le tour suivant, sauf s'elle prends la mer."
+        m: "Sa voiture refuse d'avancer. Il passe le tour suivant, sauf s'il prends la mer."
+        f: "Sa voiture refuse d'avancer. Elle passe le tour suivant, sauf s'elle prends la mer."
 
       e9:
-        m: "%{investigator_name} trouve un médaillon et rejoue immédiatement."
-        f: "%{investigator_name} trouve un médaillon et rejoue immédiatement."
+        m: "Trouve des traces du professeur et un médaillon. Il rejoue immédiatement."
+        f: "Trouve des traces du professeur et un médaillon. Elle rejoue immédiatement."
 
       e10:
-        m: "Le professeur doit citer deux villes dont une est son actuelle position."
-        f: "Le professeur doit citer deux villes dont une est son actuelle position."
+        m: "Le professeur fait parler de lui. Il doit citer deux villes dont une est son actuelle position."
+        f: "Le professeur fait parler de lui. Il doit citer deux villes dont une est son actuelle position."
 
       e11:
         m: "%{investigator_name} perds 2 points de SAN, mais trouve une arme."
