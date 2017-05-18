@@ -42,8 +42,8 @@ fr:
         f: "Le professeur fait parler de lui. Il doit citer deux villes dont une est son actuelle position."
 
       e11:
-        m: "%{investigator_name} perds 2 points de SAN, mais trouve une arme."
-        f: "%{investigator_name} perds 2 points de SAN, mais trouve une arme."
+        m: "Est aggressé par des adorateurs déments. Il perd 2 points de SAN, mais trouve une arme."
+        f: "Est aggressé par des adorateurs déments. Elle perd 2 points de SAN, mais trouve une arme."
 
       e12:
         m: "%{investigator_name} trouve le sort de renvoi et perds 3 points de SAN"
