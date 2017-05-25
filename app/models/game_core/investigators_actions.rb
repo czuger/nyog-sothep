@@ -39,7 +39,6 @@ module GameCore
     private
 
     def skip_investigators_turn
-      # TODO skip investigators turn that required it
       @game_board.skip_turns_investigators.reload.each do |i|
         i.decrement!( :skip_turns )
         i.gain_san( @game_board, i.san_gain_after_lost_turns ) if i.san_gain_after_lost_turns && i.skip_turns <= 0
