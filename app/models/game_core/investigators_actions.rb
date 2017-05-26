@@ -40,6 +40,7 @@ module GameCore
 
     def skip_investigators_turn
       @game_board.skip_turns_investigators.reload.each do |i|
+        print "Investigator state : #{i.code_name} : #{i.aasm_state}"
         i.decrement!( :skip_turns )
         i.gain_san( @game_board, i.san_gain_after_lost_turns ) if i.san_gain_after_lost_turns && i.skip_turns <= 0
         i.skip_turn!

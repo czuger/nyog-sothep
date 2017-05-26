@@ -10,7 +10,7 @@ module GameCore
         if san < 5 && current_location.city?
           # If san is below 5 and investigator is in city, then he/she goes to the psy
           go_psy( game_board )
-          psy!
+          go_to_psy!
         else
           ia_invest_random_move( game_board )
           movement_done!

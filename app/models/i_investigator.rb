@@ -17,14 +17,22 @@ class IInvestigator < ApplicationRecord
 
   aasm do
     state :move, :initial => true
-    state :events, :turn_finished, :dead, :psy
+    state :events, :turn_finished, :dead, :psy, :in_a_great_psy
 
     event :movement_done do
       transitions :from => :move, :to => :events
     end
 
-    event :psy do
+    event :aasm_psy do
       transitions :from => :move, :to => :psy
+    end
+
+    event :encounter_great_psy do
+      transitions :from => :events, :to => :in_a_great_psy
+    end
+
+    event :back_from_great_psy do
+      transitions :from => :in_a_great_psy, :to => :turn_finished
     end
 
     event :events_done do
@@ -35,13 +43,13 @@ class IInvestigator < ApplicationRecord
       transitions :from => [:turn_finished, :psy], :to => :move
     end
 
-    event :die do
+    event :aasm_die do
       transitions :from => [:move, :events], :to => :dead
     end
 
-    event :skip_turn do
-      transitions :from => :move, :to => :turn_finished
-    end
+    # event :skip_turn do
+    #   transitions :from => :move, :to => :turn_finished
+    # end
 
   end
 
@@ -76,7 +84,7 @@ class IInvestigator < ApplicationRecord
     EEventLog.log( game_board, self,I18n.t( "actions.result.crazy.#{gender}", investigator_name: translated_name ) )
     game_board.p_monster_positions.create!(
       location: current_location, code_name: 'fanatiques', discovered: true, token_rotation: rand( -15 .. 15 ) )
-    die!
+    aasm_die!
   end
 
 end
