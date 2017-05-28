@@ -18,28 +18,35 @@ task :print_investigator_graph => :environment do
     end
   end
 
-  states = IInvestigator.aasm.states.map(&:name)
-  i = IInvestigator.new
+  def create_graphviz_file( states, _object, filename )
+    transitions = []
+    events = []
+    out_file = File.open( "graphs/#{filename}.gviz", 'w' )
 
-  transitions = []
-  events = []
-  out_file = File.open( 'out.gviz', 'w' )
+    out_file.puts 'digraph G {'
 
-  out_file.puts 'digraph G {'
+    print_current_state_transitions_and_deep( _object,  states, transitions, events )
 
-  print_current_state_transitions_and_deep( i,  states, transitions, events )
+    transitions.uniq!
+    events.uniq!
 
-  transitions.uniq!
-  events.uniq!
+    events.each do |state|
+      out_file.puts "#{state} [shape=box];"
+    end
 
-  events.each do |state|
-    out_file.puts "#{state} [shape=box];"
+    out_file.puts transitions.join( "\n" )
+
+    out_file.puts '}'
   end
 
-  out_file.puts transitions.join( "\n" )
+  states = IInvestigator.aasm.states.map(&:name)
+  i = IInvestigator.new
+  create_graphviz_file( states, i, 'inv' )
 
-  out_file.puts '}'
+  states = GGameBoard.aasm.states.map(&:name)
+  g = GGameBoard.new
+  create_graphviz_file( states, g, 'board' )
 
-  p system( '/usr/bin/dot out.gviz -Tpng -o out.png' )
+  # p system( '/usr/bin/dot out.gviz -Tpng -o out.png' )
 
 end

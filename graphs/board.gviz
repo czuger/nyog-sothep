@@ -1,0 +1,17 @@
+digraph G {
+prof_movement_done [shape=box];
+return_to_move_status [shape=box];
+inv_movement_done [shape=box];
+inv_events_done [shape=box];
+ask_prof_for_fake_cities [shape=box];
+prof_move -> prof_movement_done
+prof_movement_done -> inv_move
+prof_asked_for_fake_cities -> return_to_move_status
+return_to_move_status -> inv_events
+inv_move -> inv_movement_done
+inv_movement_done -> inv_events
+inv_events -> inv_events_done
+inv_events_done -> prof_move
+inv_events -> ask_prof_for_fake_cities
+ask_prof_for_fake_cities -> prof_asked_for_fake_cities
+}
