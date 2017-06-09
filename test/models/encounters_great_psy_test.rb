@@ -26,6 +26,7 @@ class EncountersGreatPsyTest < ActiveSupport::TestCase
     GameCore::InvestigatorsActions.new( @gb, @gb.p_professor ).investigators_ia_play
 
     assert @investigator.reload.move?
+    assert_equal @inv_san + 5, @investigator.reload.san
 
   end
 

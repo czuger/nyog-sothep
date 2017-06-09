@@ -37,7 +37,7 @@ class IInvestigator < ApplicationRecord
     end
 
     event :back_from_great_psy do
-      transitions :from => :in_a_great_psy, :to => :move
+      transitions :from => :in_a_great_psy, :to => :move, :after => Proc.new { |_| gain_san_from_great_psy() }
     end
 
     event :events_done do
@@ -81,6 +81,10 @@ class IInvestigator < ApplicationRecord
 
   def gain_san( game_board, san_amount )
     loose_san( game_board, -san_amount )
+  end
+
+  def gain_san_from_great_psy()
+    increment!( :san, 5 )
   end
 
   private
