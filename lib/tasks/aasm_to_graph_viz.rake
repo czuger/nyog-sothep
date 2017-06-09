@@ -47,6 +47,9 @@ task :print_investigator_graph => :environment do
   g = GGameBoard.new
   create_graphviz_file( states, g, 'board' )
 
-  # p system( '/usr/bin/dot out.gviz -Tpng -o out.png' )
+  command = '/usr/bin/dot graphs/inv.gviz -Tpng -o graphs/inv.png'
+  puts command
+
+  p system( command )
 
 end

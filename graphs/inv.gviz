@@ -6,6 +6,7 @@ encounter_great_psy [shape=box];
 events_done [shape=box];
 new_turn [shape=box];
 back_from_great_psy [shape=box];
+finishing_turn_in_great_psy [shape=box];
 move -> movement_done
 movement_done -> events
 move -> aasm_psy
@@ -13,7 +14,7 @@ aasm_psy -> psy
 move -> aasm_die
 aasm_die -> dead
 events -> encounter_great_psy
-encounter_great_psy -> in_a_great_psy
+encounter_great_psy -> going_to_great_psy
 events -> events_done
 events_done -> turn_finished
 events -> aasm_die
@@ -22,4 +23,6 @@ new_turn -> move
 psy -> new_turn
 in_a_great_psy -> back_from_great_psy
 back_from_great_psy -> turn_finished
+going_to_great_psy -> finishing_turn_in_great_psy
+finishing_turn_in_great_psy -> in_a_great_psy
 }

@@ -12,14 +12,15 @@ module GameCore
         case @game_board.aasm_state
           when 'inv_move'
             # The regular case, we move then we play events
-            skip_investigators_turn
+            # skip_investigators_turn
 
             investigators_move
             investigators_actions
 
             # This is where we go after a break (user asked for options)
           when 'inv_events'
-            skip_investigators_turn
+            # TODO : remove this for the big bug
+            # skip_investigators_turn
 
             investigators_actions
 

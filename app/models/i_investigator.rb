@@ -17,7 +17,8 @@ class IInvestigator < ApplicationRecord
 
   aasm do
     state :move, :initial => true
-    state :events, :turn_finished, :dead, :psy, :in_a_great_psy
+    state :events, :turn_finished, :dead
+    state :psy, :in_a_great_psy, :going_to_great_psy
 
     event :movement_done do
       transitions :from => :move, :to => :events
@@ -28,11 +29,15 @@ class IInvestigator < ApplicationRecord
     end
 
     event :encounter_great_psy do
-      transitions :from => :events, :to => :in_a_great_psy
+      transitions :from => :events, :to => :going_to_great_psy
+    end
+
+    event :finishing_turn_in_great_psy do
+      transitions :from => :going_to_great_psy, :to => :in_a_great_psy
     end
 
     event :back_from_great_psy do
-      transitions :from => :in_a_great_psy, :to => :turn_finished
+      transitions :from => :in_a_great_psy, :to => :move
     end
 
     event :events_done do

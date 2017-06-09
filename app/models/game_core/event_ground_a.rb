@@ -20,7 +20,7 @@ module GameCore
 
     def table1_e4( game_board, _ )
       EEventLog.log( game_board, self, ( I18n.t( "events.#{__method__.to_s.gsub('_','.')}.#{gender}", investigator_name: translated_name ) ) )
-      loose_turn_and_gain_san( 1, 5 )
+      encounter_great_psy!
     end
 
     def table1_e5( game_board, _ )

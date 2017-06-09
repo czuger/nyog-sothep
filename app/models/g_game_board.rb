@@ -53,7 +53,13 @@ class GGameBoard < ApplicationRecord
 
       # Reload is required for some tests
       alive_investigators.reload.each do |i|
-        i.new_turn!
+        if i.going_to_great_psy?
+          i.finishing_turn_in_great_psy!
+        elsif i.in_a_great_psy?
+          i.back_from_great_psy!
+        else
+          i.new_turn!
+        end
       end
 
       # Prof positions are forgotten over time
