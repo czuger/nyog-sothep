@@ -12,6 +12,9 @@ module GameCore
         @@locations.keys
       end
 
+      def self.random_city_code_name
+        all_codes_names.sample
+      end
 
       def city?
         true

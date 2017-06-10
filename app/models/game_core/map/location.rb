@@ -34,8 +34,7 @@ module GameCore
       end
 
       def self.destinations_codes_names_from_code_name( code_name )
-        load_data
-        assert_location( code_name )
+        code_name = load_data_and_convert_location( code_name )
         @@destinations[ code_name ]
       end
 
@@ -44,9 +43,7 @@ module GameCore
       end
 
       def self.get_location( location )
-        self.load_data
-        location = location.to_sym
-        assert_location( location )
+        location = load_data_and_convert_location( location )
         @@locations[ location ][ :klass ].constantize.new( location, @@locations[ location ] )
       end
 
@@ -54,6 +51,14 @@ module GameCore
 
       def self.assert_location( location )
         raise "Map::Location : Location not found #{location.inspect}" unless @@locations.has_key?( location )
+      end
+
+      # TODO : find another name for this method
+      def self.load_data_and_convert_location( location )
+        load_data
+        location = location.to_sym
+        assert_location( location )
+        location
       end
 
       def self.load_data

@@ -22,6 +22,10 @@ class PProfessor < ApplicationRecord
     end
   end
 
+  def current_location
+    GameCore::Map::Location.get_location( current_location_code_name )
+  end
+
   private
 
   def loose_life( gb, investigator, amount )

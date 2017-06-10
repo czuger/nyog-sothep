@@ -92,7 +92,7 @@ class ProfessorActionsControllerTest < ActionDispatch::IntegrationTest
     dest = :plainfield
     third_city = :providence
 
-    get move_g_game_board_professor_actions_url( g_game_board_id: @gb.id, zone_id: dest.id, zone_class: dest.class )
+    get move_g_game_board_professor_actions_url( g_game_board_id: @gb.id, zone_id: dest )
 
     IInvestigator.any_instance.stubs(:choose_table ).returns(1)
     IInvestigator.any_instance.stubs(:event_dices ).returns(1)
@@ -100,7 +100,7 @@ class ProfessorActionsControllerTest < ActionDispatch::IntegrationTest
     cities_ids = [ src, third_city ]
     post g_game_board_prof_fake_pos_url( g_game_board_id: @gb.id, cities_ids: cities_ids )
 
-    get move_g_game_board_professor_actions_url( g_game_board_id: @gb.id, zone_id: src.id, zone_class: src.class )
+    get move_g_game_board_professor_actions_url( g_game_board_id: @gb.id, zone_id: src )
 
     assert_redirected_to g_game_board_play_url
   end
@@ -114,12 +114,12 @@ class ProfessorActionsControllerTest < ActionDispatch::IntegrationTest
                              last_location_code_name: @investigator.last_location_code_name )
     end
 
-    src = CCity.find_by_code_name( :oxford )
-    dest = CCity.find_by_code_name( :plainfield )
+    src = :oxford
+    dest = :plainfield
 
     1.upto(10) do
 
-      get move_g_game_board_professor_actions_url( g_game_board_id: @gb.id, zone_id: dest.id, zone_class: dest.class )
+      get move_g_game_board_professor_actions_url( g_game_board_id: @gb.id, zone_id: dest )
       tmp = dest
       dest = src
       src = tmp

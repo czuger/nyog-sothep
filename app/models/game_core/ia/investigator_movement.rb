@@ -20,27 +20,27 @@ module GameCore
       def ia_invest_random_move( game_board )
 
         # If we does not have a destination or we are at destination, then we chose one
-        if !ia_target_destination || ia_target_destination.code_name == current_location.code_name
+        if !ia_target_destination_code_name || ia_target_destination_code_name == current_location_code_name
 
           # We chase the professor only if we have a weapon. Otherwise, we walk randomly
           if weapon && game_board.i_inv_target_positions.count > 0
-            position = game_board.i_inv_target_positions.reject{ |e| e.position.code_name == current_location.code_name}.sample&.position
+            position_code_name = game_board.i_inv_target_positions.reject{ |e| e.position_code_name == current_location_code_name}.sample&.position_code_name
           end
 
-          unless position
-            position = CCity.all.reject{ |e| e.code_name == current_location.code_name}.sample # Random first
+          unless position_code_name
+            position_code_name = GameCore::Map::City.random_city_code_name
           end
 
-          self.ia_target_destination = position
+          self.ia_target_destination_code_name = position_code_name
         end
 
         # p ia_target_destination
 
-        next_step = GameCore::Ia::BfsAlgo.find_next_dest_to_goal( current_location, ia_target_destination, forbidden_city: forbidden_city )
+        next_step_code_name = GameCore::Ia::BfsAlgo.find_next_dest_to_goal( current_location_code_name, ia_target_destination_code_name, forbidden_city_code_name )
 
-        raise "Next movement is forbidden. Forbidden_city = #{forbidden_city.code_name}, next_step = #{next_step.code_name}" if next_step.code_name == forbidden_city&.code_name
+        raise "Next movement is forbidden. Forbidden_city = #{forbidden_city_code_name.inspect}, next_step_code_name = #{next_step_code_name.inspect}" if next_step_code_name == forbidden_city_code_name
 
-        regular_move_token( game_board, self, next_step  )
+        regular_move_token( game_board, self, next_step_code_name  )
       end
 
     end

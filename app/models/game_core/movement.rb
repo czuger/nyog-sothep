@@ -4,7 +4,7 @@ module GameCore::Movement
 
   def regular_move_token( gb, token, dest_loc )
 
-    assert_regular_movement_allowed( token.current_location_code_name, dest_loc )
+    assert_regular_movement_allowed( token.current_location, dest_loc )
 
     # p token
 
@@ -12,7 +12,7 @@ module GameCore::Movement
 
       token.last_location = token.current_location unless token.class == PProfessor
 
-      token.current_location = dest_loc
+      token.current_location_code_name = dest_loc
       token.save!
 
       unless token.class == PProfessor
@@ -51,9 +51,8 @@ module GameCore::Movement
 
 
   def assert_regular_movement_allowed( src, dest )
-    unless src.destinations.include?( dest )
-      src_dest_names = src.destinations.map{ |e| e.code_name }
-      raise "Illegal move attempt : token.current_location = #{src.code_name}, src_dest_names = #{src_dest_names}, dest = #{dest.code_name}"
+    unless src.destinations_codes_names.include?( dest.code_name )
+      raise "Illegal move attempt : #{dest.code_name.inspect} not in #{src.destinations_codes_names}"
     end
   end
 
