@@ -10,8 +10,9 @@ FactoryGirl.define do
     spell false
 
     gender 'm'
-    current_location { CCity.find_by( code_name: :oxford ) || create( :oxford ) }
-    last_location { CCity.find_by( code_name: :oxford ) || create( :oxford ) }
+    current_location_code_name :oxford
+    last_location_code_name :oxford
+    ia_target_destination_code_name :oxford
 
     token_rotation 5
 

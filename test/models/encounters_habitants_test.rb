@@ -6,7 +6,7 @@ class EncountersHabitantsTest < ActiveSupport::TestCase
     @gb = create( :g_game_board_with_event_ready_for_events_investigators )
     @investigator = @gb.reload.i_investigators.first
     @last_location = @investigator.last_location
-    @current_location = CCity.find_by( code_name: :oxford ) || create( :oxford )
+    @current_location = :oxford
     @investigator.current_location = @current_location
     @investigator.save!
     @habitants = create( :habitants, g_game_board_id: @gb.id, location: @investigator.current_location )

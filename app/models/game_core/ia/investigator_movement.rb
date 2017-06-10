@@ -5,7 +5,7 @@ module GameCore
 
       include GameCore::Movement
 
-      def ia_play_movements( game_board, prof )
+      def ia_play_movements( game_board, _ )
         if san < 5 && current_location.city?
           # If san is below 5 and investigator is in city, then he/she goes to the psy
           go_to_psy(game_board )

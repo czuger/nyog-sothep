@@ -3,7 +3,7 @@ module GameCore
   module Encounters
 
     def resolve_encounter( investigator )
-      encounter = p_monster_positions.find_by_location_id( investigator.current_location_id )
+      encounter = p_monster_positions.find_by_location_code_name( investigator.current_location_code_name )
       if encounter
         send( "resolve_encounter_#{encounter.code_name}", investigator, encounter )
       end

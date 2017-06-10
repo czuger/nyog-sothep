@@ -1,7 +1,6 @@
 class PProfessor < ApplicationRecord
 
   belongs_to :g_game_board
-  belongs_to :current_location, polymorphic: true
 
   include GameCore::ProfessorActions
   include GameCore::ProfessorFight

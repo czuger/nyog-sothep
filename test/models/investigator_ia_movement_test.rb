@@ -15,8 +15,8 @@ class InvestigatorIAMovementTest < ActiveSupport::TestCase
 
     Kernel.stubs( :rand ).returns( 6 )
 
-    @monster = create( :reves, location: @investigator.current_location, g_game_board_id: @gb.id )
-    @professor.current_location = CCity.find_by( code_name: :plainfield )
+    @monster = create( :reves, location_code_name: @investigator.current_location_code_name, g_game_board_id: @gb.id )
+    @professor.current_location_code_name = :plainfield
 
     # Investigator should go to psy because he has less than 5 SAN, then he should not encounter dreams.
     @gb.investigators_ia_play( @professor )

@@ -5,7 +5,10 @@ class ProfessorActionsControllerTest < ActionDispatch::IntegrationTest
   def setup
     @gb = create( :g_game_board_ready_for_fight )
     @professor = @gb.p_professor
-    @dest = @professor.current_location.destinations.first
+
+    prof_location = GameCore::Map::Location.get_location( @professor.current_location )
+    @dest = prof_location.destinations.first
+
     @investigator = create( :i_investigator, g_game_board_id: @gb.id )
     @investigator.update( weapon: true )
   end

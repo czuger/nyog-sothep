@@ -35,11 +35,12 @@ Selectionnez 2 villes ou le professeur pourrait être. Votre position actuelle s
   end
 
   test 'should fail because we give the same location as the prof location' do
-    cities_ids = [ CCity.first ]
+    city = GameCore::Map::Location.get_location( :oxford )
+    cities_ids = [ city ]
     @gb.ask_prof_for_fake_cities!
     @gb.update( asked_fake_cities_count: 1 )
 
-    @gb.p_professor.update( current_location: CCity.first )
+    @gb.p_professor.update( current_location_code_name: :oxford )
 
     assert_raise do
       post g_game_board_prof_fake_pos_url( g_game_board_id: @gb.id, cities_ids: cities_ids )
@@ -47,11 +48,12 @@ Selectionnez 2 villes ou le professeur pourrait être. Votre position actuelle s
   end
 
   test 'should set city' do
-    cities_ids = [ CCity.second ]
+    city = GameCore::Map::Location.get_location( :providence )
+    cities_ids = [ city ]
     @gb.ask_prof_for_fake_cities!
     @gb.update( asked_fake_cities_count: 1 )
     @le_capitaine.movement_done!
-    @gb.p_professor.update( current_location: CCity.find_by( code_name: :providence ) )
+    @gb.p_professor.update( current_location_code_name: :providence )
     Kernel.stubs(:rand).returns(1)
 
     assert_difference 'IInvTargetPosition.count', 2 do

@@ -59,7 +59,7 @@ module GameCore
     def die( game_board )
       EEventLog.log( game_board, self,I18n.t( "actions.result.crazy.#{gender}", investigator_name: translated_name ) )
       game_board.p_monster_positions.create!(
-        location: current_location, code_name: 'fanatiques', discovered: true, token_rotation: rand( -15 .. 15 ) )
+        location_code_name: current_location_code_name, code_name: 'fanatiques', discovered: true, token_rotation: rand( -15 .. 15 ) )
       aasm_die!
     end
 

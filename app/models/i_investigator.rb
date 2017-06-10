@@ -11,10 +11,6 @@ class IInvestigator < ApplicationRecord
   validates :gender, inclusion: { in: %w( m f ) }
 
   belongs_to :g_game_board
-  belongs_to :current_location, polymorphic: true
-  belongs_to :last_location, polymorphic: true
-  belongs_to :ia_target_destination, polymorphic: true, optional: true
-  belongs_to :forbidden_city, class_name: 'CCity', optional: true
 
   aasm do
     state :move, :initial => true
@@ -83,6 +79,10 @@ class IInvestigator < ApplicationRecord
 
   def translated_name
     I18n.t( "investigators.#{code_name}" )
+  end
+
+  def current_location
+    GameCore::Map::Location.get_location( current_location_code_name )
   end
 
 end

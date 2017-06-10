@@ -3,6 +3,6 @@ FactoryGirl.define do
     hp 1
     token_rotation 5
 
-    current_location { CCity.find_by( code_name: :providence ) || create( :providence ) }
+    current_location_code_name :providence
   end
 end

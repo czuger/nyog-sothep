@@ -4,14 +4,14 @@ class ProfFakePosController < ApplicationController
     set_game_board
 
     @investigators = @game_board.alive_investigators
-    @prof_location = @prof.current_location
+    @prof_location_code_name = @prof.current_location_code_name
     @monsters_positions = @game_board.p_monster_positions.all
     @nb_cities = @game_board.asked_fake_cities_count
 
-    @nyog_sothep_location = @game_board.nyog_sothep_invocation_position
+    @nyog_sothep_location = @game_board.nyog_sothep_invocation_position_code_name
     @nyog_sothep_location_rotation = @game_board.nyog_sothep_invocation_position_rotation
 
-    @cities = CCity.all.reject{ |e| e == @prof_location }
+    @cities = GameCore::Map::City.all.reject{ |e| e.code_name == @prof_location_code_name }
 
     set_position_x_decal
   end

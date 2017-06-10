@@ -15,7 +15,7 @@ class GGameBoardsController < ApplicationController
   # GET /g_game_boards/new
   def new
     @g_game_board = GGameBoard.new
-    @cities = CCity.all
+    @cities = GameCore::Map::City.all
 
     set_position_x_decal
   end
@@ -28,19 +28,17 @@ class GGameBoardsController < ApplicationController
     @g_game_board.players_count = 1
     @g_game_board.turn = 1
 
-    @prof_start_position = params[ 'prof_position' ].empty? ? CCity.all.sample : CCity.find( params[ 'prof_position' ] )
-    assert( @prof_start_position, "Prof start position is nil : #{params[ 'prof_position' ]}" )
+    # This will check that params are valid
+    GameCore::Map::City.get_location( params[ 'prof_position_code_name' ] )
+    GameCore::Map::City.get_location( params[ 'nyog_sothep_position_code_name' ] )
 
-    @nyog_start_position = params[ 'nyog_sothep_position' ].empty? ? CCity.all.sample : CCity.find( params[ 'nyog_sothep_position' ] )
-    assert( @nyog_start_position, "Nyog start position is nil : #{params[ 'nyog_sothep_position' ]}" )
-
-    @g_game_board.nyog_sothep_invocation_position = @nyog_start_position
+    @g_game_board.nyog_sothep_invocation_position_code_name = params[ 'nyog_sothep_position_code_name' ]
     @g_game_board.nyog_sothep_invocation_position_rotation = rand( -15 .. 15 )
 
     respond_to do |format|
       if @g_game_board.save
 
-        GameCore::GGameBoardCreation.populate_game_board( @g_game_board, @prof_start_position )
+        GameCore::GGameBoardCreation.populate_game_board( @g_game_board, params[ 'prof_position_code_name' ] )
 
         format.html { redirect_to g_game_board_play_url( @g_game_board ) }
         format.json { render :show, status: :created, location: @g_game_board }

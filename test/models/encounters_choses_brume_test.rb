@@ -5,10 +5,10 @@ class EncountersChosesBrumeTest < ActiveSupport::TestCase
   def setup
     @gb = create( :g_game_board_with_event_ready_for_events_investigators )
     @investigator = @gb.reload.i_investigators.first
-    @current_location = @investigator.current_location
+    @current_location_code_name = @investigator.current_location_code_name
     @prof = @gb.p_professor
 
-    @choses_brume = create( :choses_brume, g_game_board_id: @gb.id, location: @investigator.current_location )
+    @choses_brume = create( :choses_brume, g_game_board_id: @gb.id, location_code_name: @investigator.current_location_code_name )
     @inv_san = @investigator.san
 
     IInvestigator.any_instance.stubs(:choose_table ).returns(1)
@@ -21,7 +21,7 @@ class EncountersChosesBrumeTest < ActiveSupport::TestCase
 
     # Investigtor should be catched in the mists
     @gb.investigators_ia_play( @prof )
-    assert_equal @current_location, @investigator.current_location
+    assert_equal @current_location_code_name, @investigator.current_location_code_name
     refute PMonsterPosition.exists?( @choses_brume.id )
 
     @gb.prof_movement_done!
@@ -33,7 +33,7 @@ class EncountersChosesBrumeTest < ActiveSupport::TestCase
     assert_equal @inv_san-1, @investigator.reload.san
 
     assert @investigator.reload.move?
-    assert_equal @current_location, @investigator.current_location
+    assert_equal @current_location_code_name, @investigator.current_location_code_name
   end
 
 end

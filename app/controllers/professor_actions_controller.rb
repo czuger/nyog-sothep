@@ -18,11 +18,14 @@ class ProfessorActionsController < ApplicationController
 
     raise "Game board not in 'prof_move' state. Current state : : '#{@game_board.aasm_state}'" unless @game_board.aasm_state == 'prof_move'
 
-    if params['zone_id'] && params['zone_class'] && (params['zone_class'] == 'CCity' || params['zone_class'] == 'WWaterArea')
-      dest_loc = params['zone_class'].constantize.find( params['zone_id'] )
-    else
-      raise "Zone error : #{params.inspect}"
-    end
+    # TODO : remove zone_class from parameters (awfull)
+    # if params['zone_id'] && params['zone_class'] && (params['zone_class'] == 'CCity' || params['zone_class'] == 'WWaterArea')
+    #   dest_loc = params['zone_class'].constantize.find( params['zone_id'] )
+    # else
+    #   raise "Zone error : #{params.inspect}"
+    # end
+
+    dest_loc = GameCore::Map.Location.get_location( params['zone_id'] )
 
     ActiveRecord::Base.transaction do
       # Prof move

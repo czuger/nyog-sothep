@@ -1,6 +1,5 @@
 FactoryGirl.define do
   factory :p_monster_position do
-    location nil
     token_rotation 5
 
     factory :fanatiques do

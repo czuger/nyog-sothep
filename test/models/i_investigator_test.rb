@@ -16,7 +16,7 @@ class IInvestigatorTest < ActiveSupport::TestCase
   test 'cross border allowed' do
     Kernel.stubs(:rand).returns(1 )
 
-    @investigator.ia_target_destination = RRoad.first.dest_city
+    @investigator.ia_target_destination = :providence
 
     @investigator.reload.ia_play_movements( @gb, nil )
 
@@ -26,7 +26,7 @@ class IInvestigatorTest < ActiveSupport::TestCase
   test 'cross border not allowed' do
     Kernel.stubs(:rand).returns(6 )
 
-    @investigator.ia_target_destination = RRoad.first.dest_city
+    @investigator.ia_target_destination = :providence
 
     @investigator.reload.ia_play_movements( @gb, nil )
 
