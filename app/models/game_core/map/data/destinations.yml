@@ -1,0 +1,262 @@
+---
+:plainfield:
+- :providence
+- :oxford
+- :westerly
+:providence:
+- :plainfield
+- :woonsocket
+- :attleboro
+- :apponaug
+- :bristol
+- :taunton
+- :fall_river
+:oxford:
+- :plainfield
+- :pascoag
+- :worcester
+:westerly:
+- :plainfield
+- :narragansett_pier
+- :atlantic_ocean
+:pascoag:
+- :woonsocket
+- :oxford
+:woonsocket:
+- :pascoag
+- :providence
+- :attleboro
+- :dedham
+- :milford
+- :fall_river
+- :taunton
+:attleboro:
+- :woonsocket
+- :providence
+- :foxboro
+- :taunton
+- :bristol
+- :fall_river
+:dedham:
+- :woonsocket
+- :stoughton
+- :boston
+:milford:
+- :woonsocket
+- :worcester
+- :ashland
+:fall_river:
+- :woonsocket
+- :providence
+- :attleboro
+- :taunton
+- :bristol
+- :newport
+- :new_bedford
+- :atlantic_ocean
+:taunton:
+- :woonsocket
+- :providence
+- :foxboro
+- :attleboro
+- :middleboro
+- :stoughton
+- :fall_river
+- :bristol
+:apponaug:
+- :providence
+- :narragansett_pier
+- :atlantic_ocean
+:bristol:
+- :providence
+- :attleboro
+- :taunton
+- :fall_river
+- :atlantic_ocean
+:foxboro:
+- :attleboro
+- :taunton
+- :stoughton
+:stoughton:
+- :foxboro
+- :taunton
+- :dedham
+:middleboro:
+- :taunton
+- :bridgewater_junction
+- :tremont
+- :new_bedford
+- :plymouth
+:rockland:
+- :bridgewater_junction
+- :greenbush
+- :boston
+:bridgewater_junction:
+- :rockland
+- :middleboro
+- :boston
+:greenbush:
+- :rockland
+- :plymouth
+- :boston
+:boston:
+- :rockland
+- :bridgewater_junction
+- :ashland
+- :dedham
+- :sudbury
+- :concord
+- :lynn
+- :greenbush
+- :massachusetts_bay
+:tremont:
+- :middleboro
+- :falmouth
+- :barnstable
+- :plymouth
+:new_bedford:
+- :middleboro
+- :fall_river
+- :buzzards_bay
+:plymouth:
+- :middleboro
+- :greenbush
+- :tremont
+- :cape_cod_bay
+:falmouth:
+- :tremont
+- :barnstable
+:barnstable:
+- :tremont
+- :falmouth
+- :chatham
+- :provincetown
+:chatham:
+- :barnstable
+- :provincetown
+- :nantucket_sound
+:provincetown:
+- :barnstable
+- :chatham
+- :cape_cod_bay
+:worcester:
+- :oxford
+- :westboro
+- :milford
+- :oakdale
+:westboro:
+- :worcester
+- :ashland
+:oakdale:
+- :worcester
+- :sudbury
+- :fitchburg
+:ashland:
+- :westboro
+- :milford
+- :sudbury
+- :boston
+:sudbury:
+- :ashland
+- :oakdale
+- :concord
+- :boston
+:concord:
+- :sudbury
+- :dunwich
+- :lowel
+- :fitchburg
+- :boston
+:nashua:
+- :dunwich
+- :lowel
+:dunwich:
+- :nashua
+- :lowel
+- :fitchburg
+- :concord
+:lowel:
+- :nashua
+- :dunwich
+- :fitchburg
+- :concord
+- :lawrence
+:fitchburg:
+- :dunwich
+- :lowel
+- :oakdale
+- :concord
+:lawrence:
+- :lowel
+- :newburyport
+- :arkham
+:newburyport:
+- :lawrence
+- :innsmouth
+- :arkham
+- :gulf_of_maine
+:arkham:
+- :lawrence
+- :newburyport
+- :innsmouth
+- :lynn
+- :massachusetts_bay
+:innsmouth:
+- :newburyport
+- :arkham
+- :gulf_of_maine
+:gulf_of_maine:
+- :newburyport
+- :innsmouth
+- :gloucester
+- :massachusetts_bay
+- :nantucket_sound
+- :cape_cod_bay
+:gloucester:
+- :gulf_of_maine
+:lynn:
+- :arkham
+- :boston
+- :massachusetts_bay
+:massachusetts_bay:
+- :arkham
+- :lynn
+- :boston
+- :gulf_of_maine
+- :cape_cod_bay
+:narragansett_pier:
+- :westerly
+- :apponaug
+- :atlantic_ocean
+:atlantic_ocean:
+- :westerly
+- :narragansett_pier
+- :apponaug
+- :bristol
+- :newport
+- :fall_river
+- :buzzards_bay
+- :nantucket_sound
+:newport:
+- :fall_river
+- :atlantic_ocean
+:buzzards_bay:
+- :new_bedford
+- :atlantic_ocean
+- :nantucket_sound
+:edgartown:
+- :nantucket_sound
+:nantucket_sound:
+- :edgartown
+- :nantucket
+- :chatham
+- :gulf_of_maine
+- :atlantic_ocean
+- :buzzards_bay
+:nantucket:
+- :nantucket_sound
+:cape_cod_bay:
+- :plymouth
+- :provincetown
+- :gulf_of_maine
+- :massachusetts_bay

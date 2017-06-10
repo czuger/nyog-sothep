@@ -19,7 +19,7 @@ module GameCore
         else
           # Sinon il est a l'endroit d'un des investigateurs
           investigators.each do |i|
-            IInvTargetPosition.find_or_create_by!( g_game_board_id: game_board.id, position: i.current_location, memory_counter: 5 )
+            IInvTargetPosition.find_or_create_by!( g_game_board_id: game_board.id, position_code_name: i.current_location_code_name, memory_counter: 5 )
           end
         end
       end

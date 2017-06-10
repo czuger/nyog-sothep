@@ -50,7 +50,7 @@ module GameCore
 
         assert_breed_validity( monster_loc )
 
-        gb.p_monster_positions.create!( location_code_name: monster_loc, code_name: monster.code_name, token_rotation: rand(-15 .. 15 ) )
+        gb.p_monster_positions.create!( location_code_name: monster_loc.code_name, code_name: monster.code_name, token_rotation: rand(-15 .. 15 ) )
         monster.destroy!
         # gb.inv_move!
         #

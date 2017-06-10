@@ -26,6 +26,30 @@ namespace :process_data do
     end
   end
 
+  desc 'Create destinations yaml file'
+  task :destinations => :environment do
+
+    destinations = File.open( 'work/destinations.json').read
+    destinations = JSON.parse( destinations )
+
+    final_destinations_hash = {}
+
+    destinations.each do |k, v|
+      final_destinations_hash[ k.to_sym ] ||= []
+      final_destinations_hash[ k.to_sym ] += v.map{ |e| e.to_sym }
+      final_destinations_hash[ k.to_sym ].uniq!
+      v.each do |dest|
+        final_destinations_hash[ dest.to_sym ] ||= []
+        final_destinations_hash[ dest.to_sym ] << k.to_sym
+        final_destinations_hash[ dest.to_sym ].uniq!
+      end
+    end
+
+    File.open( 'app/models/game_core/map/data/destinations.yml', 'w' ) do |f|
+      f.puts( final_destinations_hash.to_yaml )
+    end
+
+  end
 
   desc 'Print locations as yaml file'
   task :locations => :environment do

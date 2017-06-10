@@ -10,7 +10,7 @@ prof_and_nyog_drag_n_drop = ->
   nyog_sothep_position = null
 
   $( '#game-board-creation-button' ).click ->
-    $.post "/g_game_boards", prof_position: prof_position, nyog_sothep_position: nyog_sothep_position
+    $.post "/g_game_boards", prof_position_code_name: prof_position, nyog_sothep_position_code_name: nyog_sothep_position
 
   $( ".drag-drop-icons" ).draggable()
 

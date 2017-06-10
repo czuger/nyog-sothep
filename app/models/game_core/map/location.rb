@@ -22,6 +22,7 @@ module GameCore
       end
 
       def destinations
+        Location.load_destinations
         result = []
         @@destinations[ @code_name ].each do |dest_code_name|
           result << Location.get_location( dest_code_name )
@@ -30,11 +31,12 @@ module GameCore
       end
 
       def destinations_codes_names
+        Location.load_destinations
         @@destinations[ @code_name ]
       end
 
       def self.destinations_codes_names_from_code_name( code_name )
-        code_name = load_data_and_convert_location( code_name )
+        code_name = load_destinations( code_name )
         @@destinations[ code_name ]
       end
 
@@ -42,8 +44,8 @@ module GameCore
         @code_name
       end
 
-      def self.get_location( location )
-        location = load_data_and_convert_location( location )
+      def self.get_location( location= nil )
+        location = load_locations( location )
         @@locations[ location ][ :klass ].constantize.new( location, @@locations[ location ] )
       end
 
@@ -61,29 +63,30 @@ module GameCore
         raise "Map::Location : Location not found #{location.inspect}" unless @@locations.has_key?( location )
       end
 
-      # TODO : find another name for this method
-      def self.load_data_and_convert_location( location )
-        load_data
-        location = location.to_sym
-        assert_location( location )
+      def self.convert_location( location )
+        if location
+          location = location.to_sym
+          assert_location( location )
+        end
         location
       end
 
-      def self.load_data
+      def self.load_locations( location = nil )
         unless @@locations
           @@locations = YAML.load_file('app/models/game_core/map/data/locations.yml')
           @@locations.each_value do |v|
             v[ :klass ] = v[ :klass ] == :c ? CITY_CLASS_NAME : WATER_CLASS_NAME
           end
         end
+        convert_location( location )
+      end
+
+      def self.load_destinations( location = nil )
+        # Switch to yaml (from json)
         unless @@destinations
-          file = File.read('app/models/game_core/map/data/destinations.json')
-          @@destinations = JSON.parse(file)
-          @@destinations.symbolize_keys!
-          @@destinations.each_key do |k|
-            @@destinations[ k ] = @@destinations[ k ].map{ |e| e.to_sym }
-          end
+          @@destinations = YAML.load_file('app/models/game_core/map/data/destinations.yml')
         end
+        load_locations( location )
       end
 
     end

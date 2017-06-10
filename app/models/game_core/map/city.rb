@@ -3,12 +3,12 @@ module GameCore
     class City < GameCore::Map::Location
 
       def self.all
-        load_data
+        load_locations
         @@locations.keys.map{ |k| Location.get_location( k ) }
       end
 
       def self.all_codes_names
-        load_data
+        load_locations
         @@locations.keys
       end
 

@@ -50,4 +50,10 @@ class MapControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test 'should show monsters' do
+    create :fanatiques, g_game_board_id: @gb.id, location_code_name: :oxford
+    get g_game_board_play_url( g_game_board_id: @gb.id )
+    assert_response :success
+  end
+
 end
