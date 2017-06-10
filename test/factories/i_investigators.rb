@@ -29,8 +29,6 @@ FactoryGirl.define do
     factory :poirot do
       code_name 'poirot'
       aasm_state :turn_finished
-      skip_turns 1
-      san_gain_after_lost_turns 5
     end
 
     factory :low_san_investigator do

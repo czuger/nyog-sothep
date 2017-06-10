@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170505100650) do
+ActiveRecord::Schema.define(version: 20170610082836) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -82,8 +82,6 @@ ActiveRecord::Schema.define(version: 20170505100650) do
     t.string   "ia_target_destination_type"
     t.integer  "ia_target_destination_id"
     t.integer  "token_rotation",                                       null: false
-    t.integer  "skip_turns"
-    t.integer  "san_gain_after_lost_turns"
     t.integer  "forbidden_city_id"
     t.index ["g_game_board_id"], name: "index_i_investigators_on_g_game_board_id", using: :btree
   end

@@ -2,13 +2,14 @@ class GGameBoard < ApplicationRecord
   include AASM
 
   include GameCore::Encounters
+  include GameCore::GGameBoardInvestigatorsActions
 
   has_many :e_event_logs, dependent: :destroy
 
   has_many :i_investigators, dependent: :destroy
   has_many :alive_investigators, -> { where.not( 'i_investigators.aasm_state' => :dead ) }, class_name: 'IInvestigator'
-  has_many :ready_to_move_investigators, -> { where( 'i_investigators.aasm_state' => :move ).where( 'i_investigators.skip_turns IS NULL OR i_investigators.skip_turns <= 0' ).order( 'i_investigators.id' ) }, class_name: 'IInvestigator'
-  has_many :ready_for_events_investigators, -> { where( 'i_investigators.aasm_state' => :events ).where( 'i_investigators.skip_turns IS NULL OR i_investigators.skip_turns <= 0' ).order( 'i_investigators.id' ) }, class_name: 'IInvestigator'
+  has_many :ready_to_move_investigators, -> { where( 'i_investigators.aasm_state' => :move ).order( 'i_investigators.id' ) }, class_name: 'IInvestigator'
+  has_many :ready_for_events_investigators, -> { where( 'i_investigators.aasm_state' => :events ).order( 'i_investigators.id' ) }, class_name: 'IInvestigator'
   has_many :skip_turns_investigators, -> { where( 'i_investigators.skip_turns > 0' ).order( 'i_investigators.id' ) }, class_name: 'IInvestigator'
 
   has_many :m_monsters, dependent: :destroy
@@ -49,25 +50,18 @@ class GGameBoard < ApplicationRecord
   def next_turn
     ActiveRecord::Base.transaction do
 
-      increment!( :turn )
-
       # Reload is required for some tests
       alive_investigators.reload.each do |i|
-        if i.going_to_great_psy?
-          i.finishing_turn_in_great_psy!
-        elsif i.in_a_great_psy?
-          i.back_from_great_psy!
-        else
-          i.new_turn!
-        end
+        i.next_turn
       end
 
       # Prof positions are forgotten over time
       IInvTargetPosition.where( g_game_board_id: id ).update_all( 'memory_counter = memory_counter - 1' )
       IInvTargetPosition.where( g_game_board_id: id ).where( 'memory_counter <= 0' ).delete_all
 
-      inv_events_done!
+      increment!( :turn )
 
+      inv_events_done!
     end
   end
 

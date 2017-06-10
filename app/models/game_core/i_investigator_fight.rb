@@ -1,7 +1,7 @@
 module GameCore
 
   # Included in Investigator
-  module InvestigatorFight
+  module IInvestigatorFight
 
     def check_for_prof_to_fight_in_city( game_board, prof )
 

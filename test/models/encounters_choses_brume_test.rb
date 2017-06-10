@@ -6,6 +6,7 @@ class EncountersChosesBrumeTest < ActiveSupport::TestCase
     @gb = create( :g_game_board_with_event_ready_for_events_investigators )
     @investigator = @gb.reload.i_investigators.first
     @current_location = @investigator.current_location
+    @prof = @gb.p_professor
 
     @choses_brume = create( :choses_brume, g_game_board_id: @gb.id, location: @investigator.current_location )
     @inv_san = @investigator.san
@@ -19,22 +20,20 @@ class EncountersChosesBrumeTest < ActiveSupport::TestCase
     assert @gb.reload.inv_events?
 
     # Investigtor should be catched in the mists
-    GameCore::InvestigatorsActions.new( @gb, @gb.p_professor ).investigators_ia_play
+    @gb.investigators_ia_play( @prof )
     assert_equal @current_location, @investigator.current_location
     refute PMonsterPosition.exists?( @choses_brume.id )
 
     @gb.prof_movement_done!
     @gb.inv_movement_done!
     assert @gb.inv_events?
-    assert_equal @inv_san-2, @investigator.reload.san
 
     # Investigtor should exit the mists
-    GameCore::InvestigatorsActions.new( @gb, @gb.p_professor ).investigators_ia_play
+    @gb.investigators_ia_play( @prof )
+    assert_equal @inv_san-1, @investigator.reload.san
 
     assert @investigator.reload.move?
     assert_equal @current_location, @investigator.current_location
-
-    assert_equal @inv_san-4, @investigator.reload.san
   end
 
 end

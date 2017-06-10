@@ -6,29 +6,22 @@ module GameCore
       include GameCore::Ia::InvestigatorMovement
       include GameCore::Ia::InvestigatorActions
 
-      def ia_play_movements( game_board, prof )
-        if san < 5 && current_location.city?
-          # If san is below 5 and investigator is in city, then he/she goes to the psy
-          go_psy( game_board )
-          go_to_psy!
-        else
-          ia_invest_random_move( game_board )
-          movement_done!
-        end
-      end
+      private
 
       def ia_play_events( game_board, prof )
         # Investigator event check
         roll_event( game_board, prof )
       end
 
-      private
+      def go_to_psy(game_board )
 
-      def go_psy( game_board )
         san = GameCore::Dices.d6
         self.increment!( :san, san )
+        going_to_psy!
+
         # EEventLog.log( game_board, I18n.t( "actions.psy.#{gender}", san: san,
-        #                                    investigator_name: I18n.t( "investigators.#{code_name}" ) ) )
+        #                                    investigator_name: I18n.t( "investigators.#{code_name}
+
         EEventLog.log( game_board, self, I18n.t( 'actions.psy', san: san, investigator_name: I18n.t( "investigators.#{code_name}" ) ) )
       end
     end

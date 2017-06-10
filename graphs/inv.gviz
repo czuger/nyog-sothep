@@ -1,28 +1,39 @@
 digraph G {
-movement_done [shape=box];
-aasm_psy [shape=box];
-aasm_die [shape=box];
-encounter_great_psy [shape=box];
-events_done [shape=box];
-new_turn [shape=box];
-back_from_great_psy [shape=box];
-finishing_turn_in_great_psy [shape=box];
+movement_done [shape=plaintext];
+going_to_psy [shape=plaintext];
+aasm_die [shape=plaintext];
+encounter_great_psy [shape=plaintext];
+entering_misty_things [shape=plaintext];
+events_done [shape=plaintext];
+new_turn [shape=plaintext];
+back_from_psy [shape=plaintext];
+back_from_great_psy [shape=plaintext];
+finishing_turn_at_a_great_psy [shape=plaintext];
+back_from_misty_things [shape=plaintext];
+finishing_turn_in_misty_things [shape=plaintext];
 move -> movement_done
 movement_done -> events
-move -> aasm_psy
-aasm_psy -> psy
+move -> going_to_psy
+going_to_psy -> at_a_psy
 move -> aasm_die
 aasm_die -> dead
 events -> encounter_great_psy
 encounter_great_psy -> going_to_great_psy
+events -> entering_misty_things
+entering_misty_things -> to_misty_things
 events -> events_done
 events_done -> turn_finished
 events -> aasm_die
 turn_finished -> new_turn
 new_turn -> move
-psy -> new_turn
-in_a_great_psy -> back_from_great_psy
-back_from_great_psy -> turn_finished
-going_to_great_psy -> finishing_turn_in_great_psy
-finishing_turn_in_great_psy -> in_a_great_psy
+at_a_psy -> back_from_psy
+back_from_psy -> move
+at_a_great_psy -> back_from_great_psy
+back_from_great_psy -> move
+going_to_great_psy -> finishing_turn_at_a_great_psy
+finishing_turn_at_a_great_psy -> at_a_great_psy
+at_misty_things -> back_from_misty_things
+back_from_misty_things -> move
+to_misty_things -> finishing_turn_in_misty_things
+finishing_turn_in_misty_things -> at_misty_things
 }

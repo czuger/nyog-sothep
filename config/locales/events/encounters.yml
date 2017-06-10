@@ -4,7 +4,10 @@ fr:
 
     habitants: "Les vilageois prennent %{investigator_name} pour un fanatique et le chassent du village. Il perd son médaillon et ne pourra plus passer par ce village au prochain tour."
 
-    choses_brume: "%{investigator_name} rencontre un pion choses de la brume. Il passe son prochain tour et perds 1 points de SAN."
+    choses_brume: "%{investigator_name} rencontre un pion choses de la brume. Il y passe son prochain tour."
+    back_from_misty_things:
+      m: "Il sort de la brume et perds 1 points de SAN."
+      f: "Elle  sort de la brume et perds 1 points de SAN."
 
     goules:
       common: "%{investigator_name} rencontre un pion goules."

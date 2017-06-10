@@ -23,7 +23,7 @@ module GameCore
 
     def resolve_encounter_choses_brume( investigator, encounter )
       EEventLog.log( self, investigator,I18n.t( 'encounter.choses_brume', investigator_name: investigator.translated_name ) )
-      investigator.loose_turn_and_gain_san( 1, -2 )
+      investigator.entering_misty_things!
       replace_encounter_in_monsters_stack( encounter )
     end
 

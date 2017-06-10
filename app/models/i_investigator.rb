@@ -4,7 +4,8 @@ class IInvestigator < ApplicationRecord
 
   include GameCore::Events
   include GameCore::Ia::Investigator
-  include GameCore::InvestigatorFight
+  include GameCore::IInvestigatorFight
+  include GameCore::IInvestigatorTurn
 
   validates :event_table, inclusion: { in: [ 1, 2 ] }
   validates :gender, inclusion: { in: %w( m f ) }
@@ -18,28 +19,49 @@ class IInvestigator < ApplicationRecord
   aasm do
     state :move, :initial => true
     state :events, :turn_finished, :dead
-    state :psy, :in_a_great_psy, :going_to_great_psy
+    state :at_a_psy, :at_a_great_psy, :going_to_great_psy
+    state :at_misty_things, :to_misty_things
 
     event :movement_done do
       transitions :from => :move, :to => :events
     end
 
-    event :aasm_psy do
-      transitions :from => :move, :to => :psy
+    # Psy events
+    event :going_to_psy do
+      transitions :from => :move, :to => :at_a_psy
     end
 
+    event :back_from_psy do
+      transitions :from => :at_a_psy, :to => :move
+    end
+
+    # Great psy events
     event :encounter_great_psy do
       transitions :from => :events, :to => :going_to_great_psy
     end
 
-    event :finishing_turn_in_great_psy do
-      transitions :from => :going_to_great_psy, :to => :in_a_great_psy
+    event :finishing_turn_at_a_great_psy do
+      transitions :from => :going_to_great_psy, :to => :at_a_great_psy
     end
 
     event :back_from_great_psy do
-      transitions :from => :in_a_great_psy, :to => :move, :after => Proc.new { |_| gain_san_from_great_psy() }
+      transitions :from => :at_a_great_psy, :to => :move, :after => Proc.new { |_| gain_san_from_great_psy() }
     end
 
+    # Misty things event
+    event :entering_misty_things do
+      transitions :from => :events, :to => :to_misty_things
+    end
+
+    event :finishing_turn_in_misty_things do
+      transitions :from => :to_misty_things, :to => :at_misty_things
+    end
+
+    event :back_from_misty_things do
+      transitions :from => :at_misty_things, :to => :move, :after => Proc.new { |_| loose_san_from_misty_things( g_game_board ) }
+    end
+
+    # Other events
     event :events_done do
       transitions :from => :events, :to => :turn_finished
     end
@@ -48,6 +70,7 @@ class IInvestigator < ApplicationRecord
       transitions :from => [:turn_finished, :psy], :to => :move
     end
 
+    # We already have a method called die, so we call it aasm_die to avoid confusion
     event :aasm_die do
       transitions :from => [:move, :events], :to => :dead
     end
@@ -60,40 +83,6 @@ class IInvestigator < ApplicationRecord
 
   def translated_name
     I18n.t( "investigators.#{code_name}" )
-  end
-
-  def goes_back( game_board )
-    ll = last_location
-    self.current_location = ll
-    # save!
-    EEventLog.log_investigator_movement( game_board, self, ll, direction: :return )
-  end
-
-  def loose_san( game_board, san_amount )
-    decrement!( :san, san_amount )
-    # EEventLog.log( game_board, self,I18n.t( 'actions.result.perte_san', san: san_amount,  investigator_name: translated_name, final_san: san ) )
-    if san <= 0
-      die( game_board )
-      return false
-    end
-    true
-  end
-
-  def gain_san( game_board, san_amount )
-    loose_san( game_board, -san_amount )
-  end
-
-  def gain_san_from_great_psy()
-    increment!( :san, 5 )
-  end
-
-  private
-
-  def die( game_board )
-    EEventLog.log( game_board, self,I18n.t( "actions.result.crazy.#{gender}", investigator_name: translated_name ) )
-    game_board.p_monster_positions.create!(
-      location: current_location, code_name: 'fanatiques', discovered: true, token_rotation: rand( -15 .. 15 ) )
-    aasm_die!
   end
 
 end

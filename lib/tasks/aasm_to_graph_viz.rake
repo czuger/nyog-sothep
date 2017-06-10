@@ -31,7 +31,8 @@ task :print_investigator_graph => :environment do
     events.uniq!
 
     events.each do |state|
-      out_file.puts "#{state} [shape=box];"
+      out_file.puts "#{state} [shape=plaintext];"
+      # out_file.puts "#{state} [style=\"rounded,filled\", shape=diamond]"
     end
 
     out_file.puts transitions.join( "\n" )

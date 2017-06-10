@@ -9,32 +9,6 @@ class EEventGroundTest < ActiveSupport::TestCase
     @professor = @gb.p_professor
   end
 
-  def test_great_psy_encounter
-    IInvestigator.any_instance.stubs(:choose_table ).returns(1)
-    IInvestigator.any_instance.stubs(:event_dices ).returns(4)
-
-    assert @gb.reload.inv_events?
-    GameCore::InvestigatorsActions.new( @gb, @gb.p_professor ).investigators_ia_play
-    assert_equal @inv_san, @investigator.reload.san
-    assert_equal 'move', @investigator.reload.aasm_state
-
-    @gb.prof_movement_done!
-
-    GameCore::InvestigatorsActions.new( @gb, @gb.p_professor ).investigators_ia_play
-    assert_equal @inv_san+5, @investigator.reload.san
-
-    assert_equal 'prof_move', @gb.aasm_state
-    assert_equal 'move', @investigator.reload.aasm_state
-
-    @gb.prof_movement_done!
-
-    GameCore::InvestigatorsActions.new( @gb, @gb.p_professor ).investigators_ia_play
-    assert_equal @inv_san+5, @investigator.reload.san
-
-    assert_equal 'prof_move', @gb.aasm_state
-    assert_equal 'move', @investigator.reload.aasm_state
-  end
-
   # def test_events_on_table_2
   #   @investigator.update( event_table: 2 )
   #   Kernel.stubs(:rand).returns(3)

@@ -19,7 +19,7 @@ class InvestigatorIAMovementTest < ActiveSupport::TestCase
     @professor.current_location = CCity.find_by( code_name: :plainfield )
 
     # Investigator should go to psy because he has less than 5 SAN, then he should not encounter dreams.
-    GameCore::InvestigatorsActions.new( @gb, @gb.p_professor ).investigators_ia_play
+    @gb.investigators_ia_play( @professor )
 
     assert_equal 1, @investigator.reload.san
   end
