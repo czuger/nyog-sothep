@@ -20,7 +20,7 @@ class IInvestigatorTest < ActiveSupport::TestCase
 
     @investigator.reload.ia_play_movements( @gb, nil )
 
-    assert_not_equal @investigator.last_location, @investigator.current_location
+    assert_not_equal @investigator.last_location_code_name, @investigator.current_location_code_name
   end
 
   test 'cross border not allowed' do
@@ -30,7 +30,7 @@ class IInvestigatorTest < ActiveSupport::TestCase
 
     @investigator.reload.ia_play_movements( @gb, nil )
 
-    assert_equal @investigator.last_location, @investigator.current_location
+    assert_equal @investigator.last_location_code_name, @investigator.current_location_code_name
   end
 
 end

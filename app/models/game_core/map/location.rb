@@ -71,13 +71,13 @@ module GameCore
 
       def self.load_data
         unless @@locations
-          @@locations = YAML.load_file('app/models/game_core/map/locations.yml')
+          @@locations = YAML.load_file('app/models/game_core/map/data/locations.yml')
           @@locations.each_value do |v|
             v[ :klass ] = v[ :klass ] == :c ? CITY_CLASS_NAME : WATER_CLASS_NAME
           end
         end
         unless @@destinations
-          file = File.read('app/models/game_core/map/destinations.json')
+          file = File.read('app/models/game_core/map/data/destinations.json')
           @@destinations = JSON.parse(file)
           @@destinations.symbolize_keys!
           @@destinations.each_key do |k|

@@ -10,13 +10,13 @@ module GameCore::Movement
 
     if token.class == PProfessor || cross_border_allowed( gb, token, dest_loc )
 
-      token.last_location = token.current_location unless token.class == PProfessor
+      token.last_location_code_name = token.current_location_code_name unless token.class == PProfessor
 
-      token.current_location_code_name = dest_loc
+      token.current_location_code_name = dest_loc.code_name
       token.save!
 
       unless token.class == PProfessor
-        EEventLog.log_investigator_movement( gb, token, dest_loc )
+        EEventLog.log_investigator_movement( gb, token, dest_loc.code_name )
       end
 
       return true
@@ -30,12 +30,7 @@ module GameCore::Movement
     border_allowed = true
 
     if dest_loc.city? && token.current_location.city?
-      road = token.current_location.outgoing_r_roads.where( dest_city_id: dest_loc.id )
-      raise "More than one road : #{road.inspect}" if road.count > 1
-
-      road = road.first
-
-      if road.border
+      if GameCore::Map::BordersCrossings.check?( token.current_location_code_name, dest_loc.code_name )
         dice = GameCore::Dices.d6
         if dice >= 5
           inv_name = I18n.t( "investigators.#{token.code_name}" )

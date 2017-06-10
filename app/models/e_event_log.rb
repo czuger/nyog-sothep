@@ -7,9 +7,9 @@ class EEventLog < ApplicationRecord
     game_board.e_event_logs.create!( turn: game_board.turn, actor: actor, actor_aasm_state: actor.aasm_state, message: event )
   end
 
-  def self.log_investigator_movement( game_board, investigator, dest_loc, direction: :goes )
+  def self.log_investigator_movement( game_board, investigator, dest_loc_code_name, direction: :goes )
 
-    translated_dest_loc = I18n.t( "locations.#{dest_loc}", :default => "à #{dest_loc.humanize}" )
+    translated_dest_loc = I18n.t( "locations.#{dest_loc_code_name}", :default => "à #{dest_loc_code_name.to_s.humanize}" )
     investigator_name = I18n.t( "investigators.#{investigator.code_name}" )
 
     event = case direction

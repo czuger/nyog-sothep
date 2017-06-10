@@ -23,4 +23,10 @@ class MapTest < ActiveSupport::TestCase
     refute oxford.water_area?
   end
 
+  def test_borders_crossings
+    assert GameCore::Map::BordersCrossings.check?( :dunwich, :nashua )
+    assert GameCore::Map::BordersCrossings.check?( :providence, 'taunton' )
+    refute GameCore::Map::BordersCrossings.check?( :middleboro, 'tremont' )
+  end
+
 end

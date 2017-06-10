@@ -21,7 +21,7 @@ namespace :process_data do
       borders_crossings_hash[ border.last ] << border.first
     end
 
-    File.open( 'app/models/game_core/map/borders_crossings.yml', 'w' ) do |f|
+    File.open( 'app/models/game_core/map/data/borders_crossings.yml', 'w' ) do |f|
       f.print borders_crossings_hash.to_yaml
     end
   end
@@ -49,7 +49,7 @@ namespace :process_data do
       klass = :w
     end
 
-    File.open( 'app/models/game_core/map/locations.yml', 'w' ) do |f|
+    File.open( 'app/models/game_core/map/data/locations.yml', 'w' ) do |f|
       f.print locations.to_yaml
     end
   end
