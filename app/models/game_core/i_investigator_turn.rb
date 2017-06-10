@@ -39,8 +39,8 @@ module GameCore
     end
 
     def goes_back( game_board )
-      ll = last_location
-      self.current_location = ll
+      ll = last_location_code_name
+      self.current_location_code_name = ll
       # save!
       EEventLog.log_investigator_movement( game_board, self, ll, direction: :return )
     end

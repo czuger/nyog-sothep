@@ -46,7 +46,7 @@ module GameCore
       # raise "Prof breed called while g_game_board not in prof_breed state : #{gb.inspect}" unless gb.prof_breed?
 
       ActiveRecord::Base.transaction do
-        monster_loc = gb.p_professor.current_location
+        monster_loc = GameCore::Map::Location.get_location(gb.p_professor.current_location_code_name )
 
         assert_breed_validity( monster_loc )
 

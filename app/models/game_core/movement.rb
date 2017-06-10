@@ -4,7 +4,7 @@ module GameCore::Movement
 
   def regular_move_token( gb, token, dest_loc )
 
-    assert_regular_movement_allowed( token.current_location, dest_loc )
+    assert_regular_movement_allowed( token.current_location_code_name, dest_loc )
 
     # p token
 

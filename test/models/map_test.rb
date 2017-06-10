@@ -12,5 +12,11 @@ class MapTest < ActiveSupport::TestCase
     assert_equal 53, cities.count
   end
 
+  def test_destinations
+    oxford = GameCore::Map::Location.get_location( :oxford )
+    destinations_code_names = oxford.destinations.map{ |e| e.id }
+    assert_equal [:plainfield, :pascoag, :worcester], destinations_code_names
+  end
+
 
 end

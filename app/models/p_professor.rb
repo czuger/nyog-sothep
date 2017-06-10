@@ -5,8 +5,8 @@ class PProfessor < ApplicationRecord
   include GameCore::ProfessorActions
   include GameCore::ProfessorFight
 
-  def can_breed_in_city?( position )
-    !g_game_board.p_monster_positions.exists?( location_id: position.id )
+  def can_breed_in_city?( position_code_name )
+    !g_game_board.p_monster_positions.exists?( location_code_name: position_code_name )
   end
 
   def spotted( game_board )
@@ -34,7 +34,7 @@ class PProfessor < ApplicationRecord
 
   def assert_breed_validity( position )
     raise "Can only breed in city : #{position.inspect}" unless position.city?
-    raise "Can't breed in occupied city : #{position.inspect}" unless can_breed_in_city?( position )
+    raise "Can't breed in occupied city : #{position.inspect}" unless can_breed_in_city?( position.code_name )
     raise "Deep one can only be breed in port : #{position.inspect}" unless position.city?
   end
 

@@ -25,7 +25,7 @@ class ProfessorActionsController < ApplicationController
     #   raise "Zone error : #{params.inspect}"
     # end
 
-    dest_loc = GameCore::Map.Location.get_location( params['zone_id'] )
+    dest_loc = GameCore::Map::Location.get_location( params['zone_id'] )
 
     ActiveRecord::Base.transaction do
       # Prof move

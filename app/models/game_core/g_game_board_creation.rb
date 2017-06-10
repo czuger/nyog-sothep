@@ -6,17 +6,17 @@ module GameCore
       populate_monsters( gb )
     end
 
-    def self.create_investigators( gb, prof_position )
+    def self.create_investigators( gb, prof_position_code_name )
       investigators = %w( poirot hercule hastings le_capitaine sandy lemon )
       gender = %w( m m m m f f )
 
       investigators.each_with_index do |investigator, index|
         # puts 'Creating / updating ' + investigator.humanize
         i = gb.i_investigators.where( code_name: investigator ).first_or_initialize
-        c = CCity.find_by( code_name: :nantucket )
-        last_loc = CCity.find_by( code_name: :nantucket )
-        i.current_location = c
-        i.last_location = last_loc
+
+        i.current_location_code_name = :nantucket
+        i.last_location_code_name = :nantucket
+        i.ia_target_destination_code_name = :nantucket
 
         i.gender = gender[index]
         i.san = GameCore::Dices.d6( 3 )
@@ -25,7 +25,7 @@ module GameCore
       end
       # gb.i_investigators.first.update_attribute( :current, true )
 
-      gb.create_p_professor!( hp: 14, current_location: prof_position, token_rotation: rand( -15 .. 15 ) )
+      gb.create_p_professor!( hp: 14, current_location_code_name: prof_position_code_name, token_rotation: rand( -15 .. 15 ) )
     end
 
     def self.populate_monsters( gb )

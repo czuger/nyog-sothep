@@ -22,7 +22,7 @@ namespace :process_data do
       klass = :w
     end
 
-    File.open( 'app/models/game_core/map/locations.yaml', 'w' ) do |f|
+    File.open( 'app/models/game_core/map/locations.yml', 'w' ) do |f|
       f.print locations.to_yaml
     end
   end

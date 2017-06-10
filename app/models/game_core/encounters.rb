@@ -14,8 +14,7 @@ module GameCore
     def resolve_encounter_habitants( investigator, encounter )
       if investigator.medaillon
         EEventLog.log( self, investigator,I18n.t( 'encounter.habitants', investigator_name: investigator.translated_name ) )
-        investigator.update( medaillon: false )
-        investigator.forbidden_city = investigator.current_location
+        investigator.update( medaillon: false, forbidden_city_code_name: investigator.current_location_code_name )
         investigator.goes_back( self )
         replace_encounter_in_monsters_stack( encounter )
       end

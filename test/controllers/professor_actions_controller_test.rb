@@ -6,7 +6,7 @@ class ProfessorActionsControllerTest < ActionDispatch::IntegrationTest
     @gb = create( :g_game_board_ready_for_fight )
     @professor = @gb.p_professor
 
-    prof_location = GameCore::Map::Location.get_location( @professor.current_location )
+    prof_location = GameCore::Map::Location.get_location( @professor.current_location_code_name )
     @dest = prof_location.destinations.first
 
     @investigator = create( :i_investigator, g_game_board_id: @gb.id )
@@ -88,9 +88,9 @@ class ProfessorActionsControllerTest < ActionDispatch::IntegrationTest
     IInvestigator.any_instance.stubs(:choose_table ).returns(1)
     IInvestigator.any_instance.stubs(:event_dices ).returns(5)
 
-    src = CCity.find_by_code_name( :oxford )
-    dest = CCity.find_by_code_name( :plainfield )
-    third_city = CCity.find_by_code_name( :providence )
+    src = :oxford
+    dest = :plainfield
+    third_city = :providence
 
     get move_g_game_board_professor_actions_url( g_game_board_id: @gb.id, zone_id: dest.id, zone_class: dest.class )
 
@@ -110,8 +110,8 @@ class ProfessorActionsControllerTest < ActionDispatch::IntegrationTest
     Kernel.stubs(:rand).returns(1)
 
     1.upto( 6 ).each do
-      create( :i_investigator, g_game_board_id: @gb.id, current_location: @investigator.current_location,
-                             last_location: @investigator.last_location )
+      create( :i_investigator, g_game_board_id: @gb.id, current_location_code_name: @investigator.current_location_code_name,
+                             last_location_code_name: @investigator.last_location_code_name )
     end
 
     src = CCity.find_by_code_name( :oxford )
