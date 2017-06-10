@@ -61,17 +61,4 @@ Selectionnez 2 villes ou le professeur pourrait être. Votre position actuelle s
     assert_redirected_to g_game_board_play_url( @gb )
   end
 
-
-  test 'great_psy_encounter_with_prof_spotted' do
-    create( :poirot, g_game_board_id: @gb.id )
-
-    @gb.update( aasm_state: :prof_asked_for_fake_cities, asked_fake_cities_count: 2 )
-
-    cities_ids = [ CCity.find_by( code_name: :oxford ), CCity.find_by( code_name: :plainfield ) ]
-
-    post g_game_board_prof_fake_pos_url( g_game_board_id: @gb.id, cities_ids: cities_ids )
-
-  end
-
-
 end
