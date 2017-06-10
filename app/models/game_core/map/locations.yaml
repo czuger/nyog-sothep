@@ -1,0 +1,266 @@
+---
+:westerly:
+  :klass: :c
+  :port: false
+  :x: 191
+  :y: 1141
+:plainfield:
+  :klass: :c
+  :port: false
+  :x: 136
+  :y: 943
+:pascoag:
+  :klass: :c
+  :port: false
+  :x: 223
+  :y: 758
+:woonsocket:
+  :klass: :c
+  :port: false
+  :x: 312
+  :y: 724
+:providence:
+  :klass: :c
+  :port: false
+  :x: 359
+  :y: 830
+:apponaug:
+  :klass: :c
+  :port: true
+  :x: 349
+  :y: 920
+:narragansett_pier:
+  :klass: :c
+  :port: true
+  :x: 358
+  :y: 1094
+:foxboro:
+  :klass: :c
+  :port: false
+  :x: 428
+  :y: 687
+:attleboro:
+  :klass: :c
+  :port: false
+  :x: 418
+  :y: 762
+:bristol:
+  :klass: :c
+  :port: true
+  :x: 430
+  :y: 939
+:newport:
+  :klass: :c
+  :port: true
+  :x: 425
+  :y: 1054
+:taunton:
+  :klass: :c
+  :port: false
+  :x: 508
+  :y: 780
+:fall_river:
+  :klass: :c
+  :port: true
+  :x: 490
+  :y: 915
+:rockland:
+  :klass: :c
+  :port: false
+  :x: 582
+  :y: 637
+:bridgewater_junction:
+  :klass: :c
+  :port: false
+  :x: 561
+  :y: 728
+:middleboro:
+  :klass: :c
+  :port: false
+  :x: 586
+  :y: 793
+:new_bedford:
+  :klass: :c
+  :port: true
+  :x: 586
+  :y: 962
+:greenbush:
+  :klass: :c
+  :port: false
+  :x: 662
+  :y: 600
+:plymouth:
+  :klass: :c
+  :port: true
+  :x: 693
+  :y: 738
+:tremont:
+  :klass: :c
+  :port: false
+  :x: 657
+  :y: 863
+:falmouth:
+  :klass: :c
+  :port: false
+  :x: 728
+  :y: 1003
+:barnstable:
+  :klass: :c
+  :port: false
+  :x: 869
+  :y: 911
+:provincetown:
+  :klass: :c
+  :port: true
+  :x: 922
+  :y: 666
+:chatham:
+  :klass: :c
+  :port: true
+  :x: 1037
+  :y: 914
+:edgartown:
+  :klass: :c
+  :port: true
+  :x: 775
+  :y: 1117
+:nantucket:
+  :klass: :c
+  :port: true
+  :x: 965
+  :y: 1189
+:worcester:
+  :klass: :c
+  :port: false
+  :x: 189
+  :y: 550
+:oxford:
+  :klass: :c
+  :port: false
+  :x: 155
+  :y: 653
+:westboro:
+  :klass: :c
+  :port: false
+  :x: 267
+  :y: 549
+:ashland:
+  :klass: :c
+  :port: false
+  :x: 351
+  :y: 552
+:dedham:
+  :klass: :c
+  :port: false
+  :x: 473
+  :y: 544
+:milford:
+  :klass: :c
+  :port: false
+  :x: 311
+  :y: 628
+:stoughton:
+  :klass: :c
+  :port: false
+  :x: 498
+  :y: 642
+:gloucester:
+  :klass: :c
+  :port: false
+  :x: 704
+  :y: 315
+:sudbury:
+  :klass: :c
+  :port: false
+  :x: 365
+  :y: 488
+:newburyport:
+  :klass: :c
+  :port: true
+  :x: 590
+  :y: 179
+:innsmouth:
+  :klass: :c
+  :port: true
+  :x: 623
+  :y: 262
+:arkham:
+  :klass: :c
+  :port: true
+  :x: 573
+  :y: 373
+:lynn:
+  :klass: :c
+  :port: true
+  :x: 564
+  :y: 410
+:boston:
+  :klass: :c
+  :port: true
+  :x: 524
+  :y: 464
+:nashua:
+  :klass: :c
+  :port: false
+  :x: 331
+  :y: 216
+:dunwich:
+  :klass: :c
+  :port: false
+  :x: 274
+  :y: 274
+:lowel:
+  :klass: :c
+  :port: false
+  :x: 413
+  :y: 297
+:fitchburg:
+  :klass: :c
+  :port: false
+  :x: 184
+  :y: 333
+:oakdale:
+  :klass: :c
+  :port: false
+  :x: 197
+  :y: 448
+:concord:
+  :klass: :c
+  :port: false
+  :x: 377
+  :y: 424
+:lawrence:
+  :klass: :c
+  :port: false
+  :x: 470
+  :y: 262
+:gulf_of_maine:
+  :klass: :w
+  :port: false
+  :x: 922
+  :y: 213
+:massachusetts_bay:
+  :klass: :w
+  :port: false
+  :x: 719
+  :y: 528
+:atlantic_ocean:
+  :klass: :w
+  :port: false
+  :x: 449
+  :y: 1217
+:buzzards_bay:
+  :klass: :w
+  :port: false
+  :x: 618
+  :y: 1030
+:nantucket_sound:
+  :klass: :w
+  :port: false
+  :x: 924
+  :y: 1043
+:cape_cod_bay:
+  :klass: :w
+  :port: false
+  :x: 863
+  :y: 741
