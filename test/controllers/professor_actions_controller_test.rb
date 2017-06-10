@@ -48,7 +48,7 @@ class ProfessorActionsControllerTest < ActionDispatch::IntegrationTest
     @gb.update( aasm_state: 'prof_move' )
     Kernel.stubs(:rand).returns(1)
 
-    get move_g_game_board_professor_actions_url( g_game_board_id: @gb.id, zone_id: @dest.id, zone_class: @dest.class )
+    get move_g_game_board_professor_actions_url( g_game_board_id: @gb.id, zone_id: @dest.code_name )
     assert_redirected_to g_game_board_play_url
   end
 
@@ -60,7 +60,7 @@ class ProfessorActionsControllerTest < ActionDispatch::IntegrationTest
     IInvestigator.any_instance.stubs(:event_dices ).returns(5)
     # IInvestigator.expects(:event_dices).returns(5)
 
-    get move_g_game_board_professor_actions_url( g_game_board_id: @gb.id, zone_id: @dest.id, zone_class: @dest.class )
+    get move_g_game_board_professor_actions_url( g_game_board_id: @gb.id, zone_id: @dest.code_name )
     assert_redirected_to new_g_game_board_prof_fake_pos_url
   end
 
@@ -72,7 +72,7 @@ class ProfessorActionsControllerTest < ActionDispatch::IntegrationTest
     IInvestigator.any_instance.stubs(:event_dices ).returns(5)
     # IInvestigator.expects(:event_dices).returns(5)
 
-    get move_g_game_board_professor_actions_url( g_game_board_id: @gb.id, zone_id: @dest.id, zone_class: @dest.class )
+    get move_g_game_board_professor_actions_url( g_game_board_id: @gb.id, zone_id: @dest.code_name )
     assert_redirected_to new_g_game_board_prof_fake_pos_url
   end
 

@@ -16,6 +16,11 @@ class BfsAlgoTest < ActiveSupport::TestCase
     assert_equal :plainfield, result
   end
 
+  test 'oxford -> innsmouth' do
+    result = GameCore::Ia::BfsAlgo.find_next_dest_to_goal( :oxford, :innsmouth )
+    assert_equal :plainfield, result
+  end
+
   test 'algo should avoid plainfield to go to providence. Then next step should be pascoag' do
     src_city = :oxford
     dest_city = :providence

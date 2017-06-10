@@ -5,17 +5,17 @@ class EncountersFanatiquesTest < ActiveSupport::TestCase
   def setup
     @gb = create( :g_game_board_with_event_ready_for_events_investigators )
     @investigator = @gb.reload.i_investigators.first
-    @last_location = @investigator.last_location
-    current_location = :oxford
-    @investigator.current_location = current_location
+    @last_location_code_name = @investigator.last_location_code_name
+    current_location_code_name = :oxford
+    @investigator.current_location_code_name = current_location_code_name
     @investigator.save!
-    @fanatiques = create( :fanatiques, g_game_board_id: @gb.id, location: @investigator.current_location )
+    @fanatiques = create( :fanatiques, g_game_board_id: @gb.id, location_code_name: @investigator.current_location_code_name )
     @inv_san = @investigator.san
   end
 
   def test_fanatiques_no_weapons
     @gb.resolve_encounter( @investigator )
-    assert_equal @last_location, @investigator.current_location
+    assert_equal @last_location_code_name, @investigator.current_location_code_name
     assert PMonsterPosition.exists?( @fanatiques.id )
     assert @inv_san, @investigator.san
     assert @fanatiques.reload.discovered
@@ -25,7 +25,7 @@ class EncountersFanatiquesTest < ActiveSupport::TestCase
     @investigator.update_attribute( :weapon, true )
     Kernel.stubs( :rand ).returns( 1 )
     @gb.resolve_encounter( @investigator )
-    assert_equal @last_location, @investigator.current_location
+    assert_equal @last_location_code_name, @investigator.current_location_code_name
     assert PMonsterPosition.exists?( @fanatiques.id )
     assert @inv_san, @investigator.san
     assert @fanatiques.reload.discovered
@@ -35,7 +35,7 @@ class EncountersFanatiquesTest < ActiveSupport::TestCase
     @investigator.update_attribute( :weapon, true )
     Kernel.stubs( :rand ).returns( 6 )
     @gb.resolve_encounter( @investigator )
-    # refute_equal @last_location, @investigator.current_location
+    # refute_equal @last_location_code_name, @investigator.current_location_code_name
     refute PMonsterPosition.exists?( @fanatiques.id )
     assert @inv_san - 2, @investigator.san
   end
@@ -45,7 +45,7 @@ class EncountersFanatiquesTest < ActiveSupport::TestCase
     @investigator.update_attribute( :medaillon, true )
     Kernel.stubs( :rand ).returns( 6 )
     @gb.resolve_encounter( @investigator )
-    # refute_equal @last_location, @investigator.current_location
+    # refute_equal @last_location_code_name, @investigator.current_location_code_name
     refute PMonsterPosition.exists?( @fanatiques.id )
     assert @inv_san, @investigator.san
   end

@@ -7,6 +7,9 @@ module GameCore
 
         raise "Current position and goal are the same" if current_position_code_name == goal_code_name
 
+        current_position_code_name = current_position_code_name.to_sym
+        goal_code_name = goal_code_name.to_sym
+
         frontier = []
         frontier << current_position_code_name
         came_from = {}
@@ -31,8 +34,11 @@ module GameCore
         back_token = goal_code_name
         next_step = nil
 
+        # pp came_from
+
         while back_token != current_position_code_name
           next_step = back_token
+          # p next_step
           back_token = came_from[ back_token ]
           break if next_step == nil
         end

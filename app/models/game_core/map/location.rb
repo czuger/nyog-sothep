@@ -47,6 +47,14 @@ module GameCore
         @@locations[ location ][ :klass ].constantize.new( location, @@locations[ location ] )
       end
 
+      def city?
+        false
+      end
+
+      def water_area?
+        false
+      end
+
       private
 
       def self.assert_location( location )

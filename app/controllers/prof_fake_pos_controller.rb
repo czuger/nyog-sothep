@@ -4,14 +4,14 @@ class ProfFakePosController < ApplicationController
     set_game_board
 
     @investigators = @game_board.alive_investigators
-    @prof_location_code_name = @prof.current_location_code_name
+    @prof_location = @prof.current_location
     @monsters_positions = @game_board.p_monster_positions.all
     @nb_cities = @game_board.asked_fake_cities_count
 
-    @nyog_sothep_location = @game_board.nyog_sothep_invocation_position_code_name
+    @nyog_sothep_location = @game_board.nyog_sothep_invocation_position
     @nyog_sothep_location_rotation = @game_board.nyog_sothep_invocation_position_rotation
 
-    @cities = GameCore::Map::City.all.reject{ |e| e.code_name == @prof_location_code_name }
+    @cities = GameCore::Map::City.all.reject{ |c| c.code_name == @prof_location.code_name }
 
     set_position_x_decal
   end
@@ -24,8 +24,8 @@ class ProfFakePosController < ApplicationController
     assert( @game_board.asked_fake_cities_count == cities_ids.count,
             "Bad city count#{@game_board.asked_fake_cities_count} != #{cities_ids.count}" )
 
-    cities = CCity.find( cities_ids )
-    cities << @game_board.p_professor.current_location
+    cities = cities_ids
+    cities << @game_board.p_professor.current_location_code_name.to_s
     cities.uniq!
 
     # This case mean that somebody tried to send the prof location into the city_ids
@@ -34,7 +34,7 @@ class ProfFakePosController < ApplicationController
 
     ActiveRecord::Base.transaction do
       cities.each do |city|
-        IInvTargetPosition.find_or_create_by!( g_game_board_id: @game_board.id, position: city, memory_counter: 5 )
+        IInvTargetPosition.find_or_create_by!( g_game_board_id: @game_board.id, position_code_name: city, memory_counter: 5 )
       end
 
       @game_board.return_to_move_status!

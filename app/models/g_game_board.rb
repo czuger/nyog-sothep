@@ -70,5 +70,9 @@ class GGameBoard < ApplicationRecord
     end
   end
 
+  def nyog_sothep_invocation_position
+    GameCore::Map::Location.get_location( nyog_sothep_invocation_position_code_name )
+  end
+
 
 end

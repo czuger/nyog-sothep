@@ -18,5 +18,9 @@ class MapTest < ActiveSupport::TestCase
     assert_equal [:plainfield, :pascoag, :worcester], destinations_code_names
   end
 
+  def test_city_should_not_fail_if_requeted_for_water_area
+    oxford = GameCore::Map::Location.get_location( :oxford )
+    refute oxford.water_area?
+  end
 
 end

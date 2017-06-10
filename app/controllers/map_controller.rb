@@ -14,7 +14,7 @@ class MapController < ApplicationController
     @nyog_sothep_location = @game_board.nyog_sothep_invocation_position
     @nyog_sothep_location_rotation = @game_board.nyog_sothep_invocation_position_rotation
 
-    @prof_location = Location.get_location( @prof.current_location )
+    @prof_location = GameCore::Map::Location.get_location( @prof.current_location_code_name )
     @prof_in_port = @prof_location.port?
 
     @prof_monsters = @game_board.p_monsters
@@ -23,7 +23,7 @@ class MapController < ApplicationController
     @aval_destinations = @prof_location.destinations
 
     @monster_at_prof_location = PMonsterPosition.where(
-      g_game_board_id: @game_board.id, location_type: @prof_location.class.to_s, location_id: @prof_location.id ).exists?
+      g_game_board_id: @game_board.id, location_code_name: @prof_location.code_name ).exists?
 
     set_position_x_decal
 

@@ -85,4 +85,8 @@ class IInvestigator < ApplicationRecord
     GameCore::Map::Location.get_location( current_location_code_name )
   end
 
+  def last_location
+    GameCore::Map::Location.get_location( last_location_code_name )
+  end
+
 end

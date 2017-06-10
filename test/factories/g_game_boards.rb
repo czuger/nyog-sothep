@@ -61,7 +61,7 @@ FactoryGirl.define do
         gb.i_investigators.destroy_all
         gb.reload
         1.upto( 4 ).each do
-          create( :i_investigator, g_game_board_id: gb.id, current_location_code_name: :oxford, last_location_code_name: :oxford, ia_target_destination: :plainfield )
+          create( :i_investigator, g_game_board_id: gb.id, current_location_code_name: :oxford, last_location_code_name: :oxford, ia_target_destination_code_name: :plainfield )
         end
       end
     end
@@ -71,7 +71,7 @@ FactoryGirl.define do
         gb.i_investigators.destroy_all
         gb.reload
         1.upto( 4 ).each do
-          create( :i_investigator, g_game_board_id: gb.id, current_location_code_name: :oxford, last_location_code_name: :oxford, ia_target_destination: :plainfield )
+          create( :i_investigator, g_game_board_id: gb.id, current_location_code_name: :oxford, last_location_code_name: :oxford, ia_target_destination_code_name: :plainfield )
         end
       end
     end

@@ -14,9 +14,9 @@ class PProfessor < ApplicationRecord
     ActiveRecord::Base.transaction do
       city = current_location
       # Le prof n'est jamais repéré dans l'eau
-      unless city.kind_of?( WWaterArea )
+      unless city.water_area?
         1.upto( 5 ).each do
-          IInvTargetPosition.create!( g_game_board_id: game_board.id, position: city, memory_counter: 5 )
+          IInvTargetPosition.create!( g_game_board_id: game_board.id, position_code_name: city.code_name, memory_counter: 5 )
         end
       end
     end

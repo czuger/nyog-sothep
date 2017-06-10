@@ -40,12 +40,11 @@ module GameCore
 
         raise "Next movement is forbidden. Forbidden_city = #{forbidden_city_code_name.inspect}, next_step_code_name = #{next_step_code_name.inspect}" if next_step_code_name == forbidden_city_code_name
 
-        regular_move_token( game_board, self, next_step_code_name  )
+        if next_step_code_name
+          next_step_code_name = GameCore::Map::Location.get_location( next_step_code_name )
+          regular_move_token( game_board, self, next_step_code_name  )
+        end
       end
-
     end
-
-
-
   end
 end

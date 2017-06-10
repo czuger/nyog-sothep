@@ -1,0 +1,46 @@
+---
+:nashua:
+- :dunwich
+- :lowell
+:dunwich:
+- :nashua
+:lowell:
+- :nashua
+:plainfield:
+- :oxford
+- :providence
+- :westerly
+:oxford:
+- :plainfield
+:providence:
+- :plainfield
+- :attleboro
+- :fall_river
+- :taunton
+:westerly:
+- :plainfield
+:woonsocket:
+- :milford
+- :dedham
+- :attleboro
+- :fall_river
+- :taunton
+:milford:
+- :woonsocket
+:dedham:
+- :woonsocket
+:attleboro:
+- :woonsocket
+- :providence
+:fall_river:
+- :woonsocket
+- :providence
+- :bristol
+- :newport
+:taunton:
+- :woonsocket
+- :providence
+:bristol:
+- :fall_river
+:newport:
+- :fall_river

@@ -35,7 +35,7 @@ Selectionnez 2 villes ou le professeur pourrait être. Votre position actuelle s
   end
 
   test 'should fail because we give the same location as the prof location' do
-    city = GameCore::Map::Location.get_location( :oxford )
+    city = :oxford
     cities_ids = [ city ]
     @gb.ask_prof_for_fake_cities!
     @gb.update( asked_fake_cities_count: 1 )
@@ -48,8 +48,7 @@ Selectionnez 2 villes ou le professeur pourrait être. Votre position actuelle s
   end
 
   test 'should set city' do
-    city = GameCore::Map::Location.get_location( :providence )
-    cities_ids = [ city ]
+    cities_ids = [ :oxford ]
     @gb.ask_prof_for_fake_cities!
     @gb.update( asked_fake_cities_count: 1 )
     @le_capitaine.movement_done!
