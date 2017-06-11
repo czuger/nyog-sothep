@@ -46,6 +46,10 @@ module GameCore
       game_board.ask_prof_for_fake_cities!
     end
 
+    def log_event( game_board, method )
+      EEventLog.log( game_board, self, ( I18n.t( "events.#{method.to_s.gsub('_','.')}.#{gender}", investigator_name: translated_name ) ) )
+    end
+
   end
 
 end
