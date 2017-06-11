@@ -28,7 +28,7 @@ module GameCore
           end
 
           unless position_code_name
-            position_code_name = GameCore::Map::City.random_city_code_name
+            position_code_name = GameCore::Map::City.random_city_code_name( [ current_location_code_name ] )
           end
 
           self.ia_target_destination_code_name = position_code_name
@@ -36,7 +36,7 @@ module GameCore
 
         # p ia_target_destination
 
-        next_step_code_name = GameCore::Ia::BfsAlgo.find_next_dest_to_goal( current_location_code_name, ia_target_destination_code_name, forbidden_city_code_name )
+        next_step_code_name, _ = GameCore::Ia::BfsAlgo.find_next_dest_to_goal( current_location_code_name, ia_target_destination_code_name, forbidden_city_code_name )
 
         raise "Next movement is forbidden. Forbidden_city = #{forbidden_city_code_name.inspect}, next_step_code_name = #{next_step_code_name.inspect}" if next_step_code_name == forbidden_city_code_name
 

@@ -164,18 +164,18 @@
 :concord:
 - :sudbury
 - :dunwich
-- :lowel
+- :lowell
 - :fitchburg
 - :boston
 :nashua:
 - :dunwich
-- :lowel
+- :lowell
 :dunwich:
 - :nashua
-- :lowel
+- :lowell
 - :fitchburg
 - :concord
-:lowel:
+:lowell:
 - :nashua
 - :dunwich
 - :fitchburg
@@ -183,11 +183,11 @@
 - :lawrence
 :fitchburg:
 - :dunwich
-- :lowel
+- :lowell
 - :oakdale
 - :concord
 :lawrence:
-- :lowel
+- :lowell
 - :newburyport
 - :arkham
 :newburyport:

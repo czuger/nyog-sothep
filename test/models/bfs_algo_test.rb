@@ -12,12 +12,12 @@ class BfsAlgoTest < ActiveSupport::TestCase
   end
 
   test 'one step' do
-    result = GameCore::Ia::BfsAlgo.find_next_dest_to_goal( :oxford, :providence )
+    result, _ = GameCore::Ia::BfsAlgo.find_next_dest_to_goal( :oxford, :providence )
     assert_equal :plainfield, result
   end
 
   test 'oxford -> innsmouth' do
-    result = GameCore::Ia::BfsAlgo.find_next_dest_to_goal( :oxford, :innsmouth )
+    result, _ = GameCore::Ia::BfsAlgo.find_next_dest_to_goal( :oxford, :innsmouth )
     assert_equal :plainfield, result
   end
 
@@ -26,8 +26,18 @@ class BfsAlgoTest < ActiveSupport::TestCase
     dest_city = :providence
     forbidden_city = :plainfield
     should_go = :pascoag
-    result = GameCore::Ia::BfsAlgo.find_next_dest_to_goal( src_city, dest_city, forbidden_city )
+    result, _ = GameCore::Ia::BfsAlgo.find_next_dest_to_goal( src_city, dest_city, forbidden_city )
     assert_equal should_go, result
+  end
+
+  test 'distance between oxford and insmouth should be 7' do
+    _, distance = GameCore::Ia::BfsAlgo.find_next_dest_to_goal( :oxford, :innsmouth )
+    assert_equal 7, distance
+  end
+
+  test 'distance between worcester and lowell should be 4' do
+    _, distance = GameCore::Ia::BfsAlgo.find_next_dest_to_goal( :worcester, :lowell )
+    assert_equal 4, distance
   end
 
 end

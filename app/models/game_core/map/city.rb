@@ -12,8 +12,8 @@ module GameCore
         @@locations.keys
       end
 
-      def self.random_city_code_name
-        all_codes_names.sample
+      def self.random_city_code_name( exclusion_list )
+        ( all_codes_names - exclusion_list ).sample
       end
 
       def city?

@@ -33,6 +33,7 @@ module GameCore
 
         back_token = goal_code_name
         next_step = nil
+        distance = 0
 
         # pp came_from
 
@@ -40,11 +41,12 @@ module GameCore
           next_step = back_token
           # p next_step
           back_token = came_from[ back_token ]
+          distance += 1
           break if next_step == nil
         end
 
         # DEST_KLASS[ next_step ].constantize.find_by( code_name: next_step )
-        next_step
+        [ next_step, distance+1 ]
       end
 
     end
