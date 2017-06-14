@@ -20,6 +20,7 @@ fr:
       dont_breed: 'Ne pas invoquer de monstres'
       prof_attack: "Attaquer %{investigator_name}"
       prof_dont_attack: "Ne pas attaquer l'investigateur"
+      invoke_nyog_sothep: "Invoquer Nyog'Sothep"
 
   errors:
     no_more_monsters: 'Le professeur ne peux plus prendre de monstre. Le stock est vide.'

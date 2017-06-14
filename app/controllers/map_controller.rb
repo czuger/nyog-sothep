@@ -25,6 +25,8 @@ class MapController < ApplicationController
     @monster_at_prof_location = PMonsterPosition.where(
       g_game_board_id: @game_board.id, location_code_name: @prof_location.code_name ).exists?
 
+    @nyog_sothep_invocation_possible = @prof.check_nyog_sothep_invocation
+
     set_position_x_decal
 
   end
