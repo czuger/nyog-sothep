@@ -11,6 +11,7 @@ Rails.application.routes.draw do
         get :move
         get ':investigator_id/attack', action: :attack, as: :attack
         get ':monster_id/breed', action: :breed, as: :monster_breed
+        get :invoke_nyog_sothep
       end
     end
 

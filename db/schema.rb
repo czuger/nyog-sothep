@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170610111126) do
+ActiveRecord::Schema.define(version: 20170615175033) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -38,6 +38,7 @@ ActiveRecord::Schema.define(version: 20170610111126) do
     t.integer  "asked_fake_cities_investigator_id"
     t.integer  "nyog_sothep_invocation_position_rotation",  null: false
     t.string   "nyog_sothep_invocation_position_code_name", null: false
+    t.boolean  "nyog_sothep_invoked",                       null: false
   end
 
   create_table "i_inv_target_positions", force: :cascade do |t|

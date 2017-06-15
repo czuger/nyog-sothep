@@ -8,7 +8,7 @@
 .token.prof_position{ style: token_style( @prof_location, @prof.token_rotation ) }
   = image_tag( 'tokens/professor.png' )
 
-.token.nyog-sothep-position{ style: token_style( @nyog_sothep_location, @nyog_sothep_location_rotation ) }
+.token{ style: token_style( @nyog_sothep_location, @nyog_sothep_location_rotation ), class: nyog_sothep_class }
   = image_tag( 'tokens/nyogsothep_s.jpg' )
 
 - @monsters_positions.each do |monster|

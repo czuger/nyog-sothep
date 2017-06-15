@@ -47,4 +47,12 @@ class ProfessorActionsController < ApplicationController
     check_prof_asked_for_fake_cities{ redirect_to g_game_board_play_url( @game_board ) }
   end
 
+  def invoke_nyog_sothep
+    set_game_board
+
+    @game_board.update( nyog_sothep_invoked: true )
+
+    redirect_to g_game_board_play_url( g_game_board_id: @game_board.id )
+  end
+
 end

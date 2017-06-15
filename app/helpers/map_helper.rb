@@ -20,4 +20,11 @@ module MapHelper
     "#{investigator.translated_name}, SAN : #{investigator.san}, weapon: #{investigator.weapon}, sign: #{investigator.sign}, medaillon: #{investigator.medaillon}, spell: #{investigator.spell}"
   end
 
+  def nyog_sothep_class()
+    unless @game_board.nyog_sothep_invoked
+      return 'nyog-sothep-hidden'
+    end
+    ''
+  end
+
 end
