@@ -29,16 +29,16 @@ ActiveRecord::Schema.define(version: 20170615175033) do
   end
 
   create_table "g_game_boards", force: :cascade do |t|
-    t.integer  "turn",                                      null: false
-    t.datetime "created_at",                                null: false
-    t.datetime "updated_at",                                null: false
-    t.string   "aasm_state",                                null: false
-    t.integer  "players_count",                             null: false
+    t.integer  "turn",                                                      null: false
+    t.datetime "created_at",                                                null: false
+    t.datetime "updated_at",                                                null: false
+    t.string   "aasm_state",                                                null: false
+    t.integer  "players_count",                                             null: false
     t.integer  "asked_fake_cities_count"
     t.integer  "asked_fake_cities_investigator_id"
-    t.integer  "nyog_sothep_invocation_position_rotation",  null: false
-    t.string   "nyog_sothep_invocation_position_code_name", null: false
-    t.boolean  "nyog_sothep_invoked",                       null: false
+    t.integer  "nyog_sothep_invocation_position_rotation",                  null: false
+    t.string   "nyog_sothep_invocation_position_code_name",                 null: false
+    t.boolean  "nyog_sothep_invoked",                       default: false, null: false
   end
 
   create_table "i_inv_target_positions", force: :cascade do |t|
