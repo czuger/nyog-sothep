@@ -2,6 +2,6 @@
   = link_to move_g_game_board_professor_actions_url( g_game_board_id: @game_board.id, zone_id: destination.id, zone_class: destination.class ) do
     - @position_x_decal[ destination.code_name ] = 0
     - unless destination.city?
-      .dest-water{ style:"top:#{destination.y-13}px;left:#{destination.x-17-9}px" }
+      .dest-water{ style:"top:#{destination.y-13+13}px;left:#{destination.x-17-9-4}px" }
     - else
-      .dest-road{ style:"top:#{destination.y-13}px;left:#{destination.x-17-9}px" }
+      .dest-road{ style:"top:#{destination.y-13+13}px;left:#{destination.x-17-9-4}px" }

@@ -1,3 +1,6 @@
+- @destroyed_cities.each do |city|
+  .token{ style: token_style( city.current_location, city.token_rotation ) }
+    = image_tag( 'tokens/destroyed_city.jpg' )
 
 - @investigators.each do |investigator|
   .token.investigator-token{ style: token_style( investigator.current_location, investigator.token_rotation ), inv_id: investigator.id }

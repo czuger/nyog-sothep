@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170615175033) do
+ActiveRecord::Schema.define(version: 20170616033052) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -26,6 +26,16 @@ ActiveRecord::Schema.define(version: 20170615175033) do
     t.string   "message",          null: false
     t.index ["g_game_board_id"], name: "index_e_event_logs_on_g_game_board_id", using: :btree
     t.index ["turn"], name: "index_e_event_logs_on_turn", using: :btree
+  end
+
+  create_table "g_destroyed_cities", force: :cascade do |t|
+    t.integer  "g_game_board_id", null: false
+    t.string   "city_code_name",  null: false
+    t.integer  "token_rotation",  null: false
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+    t.index ["city_code_name"], name: "index_g_destroyed_cities_on_city_code_name", unique: true, using: :btree
+    t.index ["g_game_board_id"], name: "index_g_destroyed_cities_on_g_game_board_id", using: :btree
   end
 
   create_table "g_game_boards", force: :cascade do |t|
@@ -109,6 +119,7 @@ ActiveRecord::Schema.define(version: 20170615175033) do
   end
 
   add_foreign_key "e_event_logs", "g_game_boards"
+  add_foreign_key "g_destroyed_cities", "g_game_boards"
   add_foreign_key "i_investigators", "g_game_boards"
   add_foreign_key "m_monsters", "g_game_boards"
   add_foreign_key "p_monster_positions", "g_game_boards"

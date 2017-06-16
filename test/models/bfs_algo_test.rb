@@ -32,12 +32,12 @@ class BfsAlgoTest < ActiveSupport::TestCase
 
   test 'distance between oxford and insmouth should be 7' do
     _, distance = GameCore::Ia::BfsAlgo.find_next_dest_to_goal( :oxford, :innsmouth )
-    assert_equal 7, distance
+    assert_equal 6, distance
   end
 
   test 'distance between worcester and lowell should be 4' do
     _, distance = GameCore::Ia::BfsAlgo.find_next_dest_to_goal( :worcester, :lowell )
-    assert_equal 4, distance
+    assert_equal 3, distance
   end
 
 end

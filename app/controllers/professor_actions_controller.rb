@@ -51,6 +51,8 @@ class ProfessorActionsController < ApplicationController
     set_game_board
 
     @game_board.update( nyog_sothep_invoked: true )
+    @game_board.g_destroyed_cities.create!(
+      city_code_name: @game_board.nyog_sothep_invocation_position_code_name, token_rotation: rand( -15 .. 15 ) )
 
     redirect_to g_game_board_play_url( g_game_board_id: @game_board.id )
   end

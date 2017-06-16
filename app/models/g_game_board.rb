@@ -11,6 +11,7 @@ class GGameBoard < ApplicationRecord
   has_many :ready_to_move_investigators, -> { where( 'i_investigators.aasm_state' => :move ).order( 'i_investigators.id' ) }, class_name: 'IInvestigator'
   has_many :ready_for_events_investigators, -> { where( 'i_investigators.aasm_state' => :events ).order( 'i_investigators.id' ) }, class_name: 'IInvestigator'
   has_many :skip_turns_investigators, -> { where( 'i_investigators.skip_turns > 0' ).order( 'i_investigators.id' ) }, class_name: 'IInvestigator'
+  has_many :g_destroyed_cities, dependent: :destroy
 
   has_many :m_monsters, dependent: :destroy
   has_many :p_monster_positions, dependent: :destroy

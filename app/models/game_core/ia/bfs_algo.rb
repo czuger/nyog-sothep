@@ -45,8 +45,7 @@ module GameCore
           break if next_step == nil
         end
 
-        # DEST_KLASS[ next_step ].constantize.find_by( code_name: next_step )
-        [ next_step, distance+1 ]
+        [ next_step, distance ]
       end
 
     end

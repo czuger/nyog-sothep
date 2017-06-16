@@ -65,11 +65,13 @@ module GameCore
     def check_nyog_sothep_invocation
       gb = g_game_board
 
-      nb_fanatiques = gb.p_monster_positions.where( code_name: 'fanatiques' ).count()
-      if nb_fanatiques >= 5
-        _, dist_to_nyog = GameCore::Ia::BfsAlgo.find_next_dest_to_goal(
-          current_location_code_name, gb.nyog_sothep_invocation_position_code_name )
-        return true if dist_to_nyog <= 3
+      unless gb.nyog_sothep_invoked
+        nb_fanatiques = gb.p_monster_positions.where( code_name: 'fanatiques' ).count()
+        if nb_fanatiques >= 5
+          _, dist_to_nyog = GameCore::Ia::BfsAlgo.find_next_dest_to_goal(
+            current_location_code_name, gb.nyog_sothep_invocation_position_code_name )
+          return true if dist_to_nyog <= 3
+        end
       end
 
       false
