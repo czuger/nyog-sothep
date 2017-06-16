@@ -22,6 +22,10 @@ fr:
       prof_dont_attack: "Ne pas attaquer l'investigateur"
       invoke_nyog_sothep: "Invoquer Nyog'Sothep"
 
+  map:
+    event_log_summaries:
+      loose_san: "Tour %{tour_no} : %{investigator_name} perds %{san_amount} SAN -> %{current_san} SAN"
+
   errors:
     no_more_monsters: 'Le professeur ne peux plus prendre de monstre. Le stock est vide.'
 

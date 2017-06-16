@@ -27,4 +27,11 @@ module MapHelper
     ''
   end
 
+  def event_log_summary_translation_param( log_summary )
+    base_hash = log_summary.event_translation_data
+    base_hash[ :investigator_name ] = log_summary.actor.translated_name
+    base_hash[ :tour_no ] = log_summary.turn
+    base_hash
+  end
+
 end

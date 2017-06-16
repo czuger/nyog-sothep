@@ -4,7 +4,8 @@ class GGameBoard < ApplicationRecord
   include GameCore::Encounters
   include GameCore::GGameBoardInvestigatorsActions
 
-  has_many :e_event_logs, dependent: :destroy
+  has_many :e_event_logs, -> { includes( :actor ).order( 'id DESC' ) }, dependent: :destroy
+  has_many :e_event_log_summaries, -> { includes( :actor ).order( 'id DESC' ) }, dependent: :destroy
 
   has_many :i_investigators, dependent: :destroy
   has_many :alive_investigators, -> { where.not( 'i_investigators.aasm_state' => :dead ) }, class_name: 'IInvestigator'

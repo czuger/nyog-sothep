@@ -2,7 +2,7 @@ Rails.application.routes.draw do
 
   resources :g_game_boards, only: [ :create, :new, :index, :destroy ] do
 
-    get 'log/list'
+    resources :log, only:[ :index, :show ]
 
     resource :prof_fake_pos, only: [ :create, :new ]
 

@@ -50,14 +50,14 @@ module GameCore
           # gb.prof_fall_back!
 
         elsif investigator.sign
-          EEventLog.log( gb, investigator, I18n.t( 'prof_fight.sign_protect', investigator_name: investigator.translated_name ) )
-          investigator.loose_san( gb, 2 )
+          event_log = EEventLog.log( gb, investigator, I18n.t( 'prof_fight.sign_protect', investigator_name: investigator.translated_name ) )
+          investigator.loose_san( gb, 2, event_log )
           investigator.update( sign: false )
           # gb.inv_repelled!
 
         else
-          EEventLog.log( gb, investigator, I18n.t( 'prof_fight.no_protection', investigator_name: investigator.translated_name ) )
-          investigator.loose_san( gb, 4 )
+          event_log = EEventLog.log( gb, investigator, I18n.t( 'prof_fight.no_protection', investigator_name: investigator.translated_name ) )
+          investigator.loose_san( gb, 4, event_log )
           # gb.inv_repelled!
 
         end

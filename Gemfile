@@ -38,12 +38,12 @@ group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platform: :mri
   gem 'rails-controller-testing'
+  gem 'factory_girl_rails'  # Must also be in dev environment otherwise model generation create fixtures
 end
 
 group :test do
   gem "simplecov"
   gem "codeclimate-test-reporter", "~> 1.0.0"
-  gem 'factory_girl_rails'
   gem 'mocha'
 end
 

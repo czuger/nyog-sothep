@@ -24,18 +24,20 @@ module GameCore
       end
     end
 
-    def loose_san( game_board, san_amount )
+    def loose_san( game_board, san_amount, loose_san_event )
       decrement!( :san, san_amount )
-      # EEventLog.log( game_board, self,I18n.t( 'actions.result.perte_san', san: san_amount,  investigator_name: translated_name, final_san: san ) )
+      EEventLogSummary.log( game_board, self,:loose_san, { san_amount: san_amount, current_san: san }, loose_san_event )
       if san <= 0
         die( game_board )
+        EEventLogSummary.log( game_board, self,:die, {}, loose_san_event )
         return false
       end
       true
     end
 
     def gain_san( game_board, san_amount )
-      loose_san( game_board, -san_amount )
+      increment!( :san, san_amount )
+      # EEventLogSummary.log( game_board, self,:gain_san, { san_amount: san_amount } ) )
     end
 
     def goes_back( game_board )

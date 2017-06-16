@@ -10,10 +10,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170616033052) do
+ActiveRecord::Schema.define(version: 20170616075736) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "e_event_log_summaries", force: :cascade do |t|
+    t.integer  "g_game_board_id",                    null: false
+    t.string   "actor_type",                         null: false
+    t.integer  "actor_id",                           null: false
+    t.integer  "turn",                   default: 1, null: false
+    t.string   "event_translation_code",             null: false
+    t.string   "event_translation_data",             null: false
+    t.integer  "e_event_log_id",                     null: false
+    t.datetime "created_at",                         null: false
+    t.datetime "updated_at",                         null: false
+    t.index ["g_game_board_id"], name: "index_e_event_log_summaries_on_g_game_board_id", using: :btree
+  end
 
   create_table "e_event_logs", force: :cascade do |t|
     t.datetime "created_at",       null: false
@@ -118,6 +131,8 @@ ActiveRecord::Schema.define(version: 20170616033052) do
     t.index ["g_game_board_id"], name: "index_p_professors_on_g_game_board_id", using: :btree
   end
 
+  add_foreign_key "e_event_log_summaries", "e_event_logs"
+  add_foreign_key "e_event_log_summaries", "g_game_boards"
   add_foreign_key "e_event_logs", "g_game_boards"
   add_foreign_key "g_destroyed_cities", "g_game_boards"
   add_foreign_key "i_investigators", "g_game_boards"
