@@ -9,7 +9,7 @@ module MapHelper
     end
     x_decal = @position_x_decal[ position.code_name ]
 
-    "top:#{position.y-17+13}px;left:#{position.x-17 + x_decal}px;transform:rotate(#{token_rotation}deg);"
+    "top:#{position.y-17+13}px;left:#{position.x-17 + x_decal}px;transform:rotate(#{token_rotation}deg);z-index:#{x_decal}"
   end
 
   def can_breed_monster( monster )

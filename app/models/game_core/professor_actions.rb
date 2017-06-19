@@ -106,7 +106,7 @@ module GameCore
           if rand( 1 .. 6 ) <= 2
             # Nyog sothep and the professor are forbidden to move
             event_log = EEventLog.log( gb, prof, I18n.t( 'map.event_log_summaries.nyog_cant_move' ) )
-            EEventLogSummary( gb, prof, :nyog_cant_move, {}, event_log )
+            EEventLogSummary.log( gb, prof, :nyog_cant_move, {}, event_log )
             return false
           end
 
