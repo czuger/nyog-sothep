@@ -72,12 +72,10 @@ class GGameBoard < ApplicationRecord
     end
   end
 
-  def nyog_sothep_invocation_position
+  def nyog_sothep_position
+    return GameCore::Map::Location.get_location( nyog_sothep_current_location_code_name ) if nyog_sothep_current_location_code_name
     GameCore::Map::Location.get_location( nyog_sothep_invocation_position_code_name )
   end
 
-  def nyog_sothep_invocation_position
-    GameCore::Map::Location.get_location( nyog_sothep_invocation_position_code_name )
-  end
 
 end

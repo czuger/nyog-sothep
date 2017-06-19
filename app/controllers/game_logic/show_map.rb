@@ -6,7 +6,7 @@ module GameLogic
 
       @investigators = @game_board.alive_investigators
 
-      @nyog_sothep_location = @game_board.nyog_sothep_invocation_position
+      @nyog_sothep_location = @game_board.nyog_sothep_position
       @nyog_sothep_location_rotation = @game_board.nyog_sothep_invocation_position_rotation
 
       @prof_location = @prof.current_location
