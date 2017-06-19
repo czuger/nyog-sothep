@@ -4,7 +4,7 @@ class EEventLog < ApplicationRecord
   belongs_to :actor, polymorphic: true
 
   def self.log( game_board, actor, event )
-    game_board.e_event_logs.create!( turn: game_board.turn, actor: actor, actor_aasm_state: actor.aasm_state, message: event )
+    game_board.e_event_logs.create!( turn: game_board.turn, actor: actor, actor_aasm_state: actor&.aasm_state, message: event )
   end
 
   def self.log_investigator_movement( game_board, investigator, dest_loc_code_name, direction: :goes )

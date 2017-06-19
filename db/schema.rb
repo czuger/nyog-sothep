@@ -62,7 +62,7 @@ ActiveRecord::Schema.define(version: 20170618092942) do
     t.integer  "nyog_sothep_invocation_position_rotation",                  null: false
     t.string   "nyog_sothep_invocation_position_code_name",                 null: false
     t.boolean  "nyog_sothep_invoked",                       default: false, null: false
-    t.boolean  "nyog_sothep_prof_linked",                   default: false, null: false
+    t.string   "nyog_sothep_current_location_code_name"
   end
 
   create_table "i_inv_target_positions", force: :cascade do |t|

@@ -80,16 +80,28 @@ module GameCore
     def move( dest_loc )
 
       gb = g_game_board
+      prof = gb.p_professor
       
       ActiveRecord::Base.transaction do
-        regular_move_token( gb, gb.p_professor, dest_loc )
 
-        # gb.prof_attack! if gb.prof_move?
-        # gb.prof_attack_after_fall_back! if gb.prof_fall_back?
+        if gb.nyog_sothep_invoked && (
+          gb.nyog_sothep_current_location_code_name == prof.current_location_code_name ||
+          ( gb.nyog_sothep_current_location_code_name.nil? &&
+            gb.nyog_sothep_invocation_position_code_name == prof.current_location_code_name ) )
 
+          if rand( 1 .. 6 ) > 2
+            regular_move_token( gb, gb.p_professor, dest_loc )
+            gb.nyog_sothep_current_location_code_name = dest_loc
+            gb.save!
+          else
+            event_log = EEventLog.log( gb, prof, I18n.t( 'map.event_log_summaries.loose_san' ) )
+            EEventLogSummary( gb, prof, :loose_san, {}, event_log )
+          end
+        else
+          regular_move_token( gb, gb.p_professor, dest_loc )
+        end
       end
     end
-
   end
 end
 
