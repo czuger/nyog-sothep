@@ -3,7 +3,7 @@ module GameCore
 
     class BfsAlgo
 
-      def self.find_next_dest_to_goal( current_position_code_name, goal_code_name, forbidden_city_code_name= nil )
+      def self.find_next_dest_to_goal( current_position_code_name, goal_code_name, forbidden_city_code_name= nil, destroyed_cities_codes_names= [] )
 
         raise "Current position and goal are the same" if current_position_code_name == goal_code_name
 
@@ -24,6 +24,7 @@ module GameCore
 
           GameCore::Map::Location.destinations_codes_names_from_code_name( current_name ).each do |next_location|
             next if next_location == forbidden_city_code_name
+            next if destroyed_cities_codes_names.include?( next_location )
             unless came_from.has_key?( next_location )
               frontier << next_location
               came_from[ next_location ] = current_name

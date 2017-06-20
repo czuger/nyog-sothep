@@ -36,7 +36,12 @@ module GameCore
 
         # p ia_target_destination
 
-        next_step_code_name, _ = GameCore::Ia::BfsAlgo.find_next_dest_to_goal( current_location_code_name, ia_target_destination_code_name, forbidden_city_code_name )
+        destroyed_cities_codes_names = game_board.g_destroyed_cities.pluck( :city_code_name )
+        destroyed_cities_codes_names.map! &:to_sym
+
+        next_step_code_name, _ = GameCore::Ia::BfsAlgo.find_next_dest_to_goal(
+          current_location_code_name, ia_target_destination_code_name,
+          forbidden_city_code_name, destroyed_cities_codes_names )
 
         raise "Next movement is forbidden. Forbidden_city = #{forbidden_city_code_name.inspect}, next_step_code_name = #{next_step_code_name.inspect}" if next_step_code_name == forbidden_city_code_name
 
