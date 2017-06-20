@@ -12,7 +12,8 @@ module GameCore
         # If he is still in events (if he is not dead)
         if events?
 
-          ia_play_events( game_board, prof )
+          # Once nyog sothep invoked, we skip events.
+          ia_play_events( game_board, prof ) unless game_board.nyog_sothep_invoked
 
           # Break out of the investigators loop
           if game_board.prof_asked_for_fake_cities?
