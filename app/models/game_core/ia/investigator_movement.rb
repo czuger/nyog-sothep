@@ -23,7 +23,22 @@ module GameCore
         destroyed_cities_codes_names.map! &:to_sym
 
         if game_board.nyog_sothep_invoked
-          self.ia_target_destination_code_name = select_meeting_destination( game_board, destroyed_cities_codes_names )
+
+          # We check a city for investigators to met
+          unless game_board.nyog_sothep_repelling_city_code_name
+
+            final_city_code_name = GameCore::Ia::InvestigatorChooseBestCityToMeet.new( game_board ).get_best_city
+            if final_city_code_name
+              game_board.nyog_sothep_repelling_city_code_name = final_city_code_name
+            else
+              raise 'No city avaliable to summon Nyog Sothep'
+            end
+          end
+
+          if self.ia_target_destination_code_name != game_board.nyog_sothep_repelling_city_code_name
+            self.ia_target_destination_code_name = game_board.nyog_sothep_repelling_city_code_name
+          end
+
         else
           # If we does not have a destination or we are at destination or our destination has been destroyed, then we chose one
           if self.ia_target_destination_code_name.nil? ||
@@ -64,24 +79,6 @@ module GameCore
           EEventLogSummary.log( game_board, self, :inv_cant_move, { investigator_name: translated_name }, event_log )
         end
 
-      end
-
-      def select_meeting_destination(  game_board, destroyed_cities_codes_names )
-        # Once nyog sothep is invoked, investigators try to meet
-        investigator_target_position_codes_names = game_board.alive_investigators.pluck( :current_location_code_name )
-        investigator_target_position = investigator_target_position_codes_names.map{ |code| GameCore::Map::Location.get_location( code ) }
-        investigator_target_position.reject!{ |loc| loc.water_area? }
-        investigator_target_position.reject!{ |loc| destroyed_cities_codes_names.include?( loc ) }
-
-        target = investigator_target_position.sample
-        if target
-          target_position_code_name = target.code_name
-          puts "#{translated_name} now will meet at #{target_position_code_name}"
-        else
-          raise "No city avalaiable to meet : #{investigator_target_position.inspect}"
-        end
-
-        target_position_code_name
       end
 
       def select_new_target( game_board, destroyed_cities_codes_names )

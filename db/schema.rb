@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170618092942) do
+ActiveRecord::Schema.define(version: 20170624214045) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -63,6 +63,7 @@ ActiveRecord::Schema.define(version: 20170618092942) do
     t.string   "nyog_sothep_invocation_position_code_name",                 null: false
     t.boolean  "nyog_sothep_invoked",                       default: false, null: false
     t.string   "nyog_sothep_current_location_code_name"
+    t.string   "nyog_sothep_repelling_city_code_name"
   end
 
   create_table "i_inv_target_positions", force: :cascade do |t|

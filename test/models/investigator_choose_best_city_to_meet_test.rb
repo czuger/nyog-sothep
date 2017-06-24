@@ -4,8 +4,8 @@ class InvestigatorChooseBestCityToMeetTest < ActiveSupport::TestCase
 
   def setup
     @gb = create( :g_game_board )
-    create( :i_investigator, g_game_board_id: @gb.id, current_location_code_name: :plainfield )
-    create( :i_investigator, g_game_board_id: @gb.id, current_location_code_name: :plainfield  )
+    create( :i_investigator, g_game_board_id: @gb.id, current_location_code_name: :plainfield, spell: true )
+    create( :i_investigator, g_game_board_id: @gb.id, current_location_code_name: :plainfield, spell: true  )
     create( :g_destroyed_city, g_game_board_id: @gb.id, city_code_name: :worcester )
     create( :g_destroyed_city, g_game_board_id: @gb.id, city_code_name: :pascoag )
     create( :g_destroyed_city, g_game_board_id: @gb.id, city_code_name: :providence )

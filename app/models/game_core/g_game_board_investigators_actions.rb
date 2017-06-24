@@ -19,6 +19,8 @@ module GameCore
             raise "Bad aasm_state : #{aasm_state}"
         end
 
+        self.save!
+
         # Once all investigators have played, we goes to next turn
         # TODO : is this working with misty_step caus based on events ... maybe could lead to infinite loop
         unless prof_asked_for_fake_cities? || some_investigator_is_ready_to_play?
