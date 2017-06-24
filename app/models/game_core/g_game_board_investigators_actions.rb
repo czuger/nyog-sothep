@@ -50,6 +50,7 @@ module GameCore
     def investigators_move( prof )
       ready_to_move_investigators.reload.each do |i|
           i.ia_play_movements( self, prof )
+          i.save!
       end
       inv_movement_done!
     end

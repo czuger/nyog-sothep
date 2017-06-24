@@ -25,7 +25,8 @@ fr:
   map:
     event_log_summaries:
       loose_san: "Tour %{tour_no} : %{investigator_name} perds %{san_amount} SAN -> %{current_san} SAN"
-      nyog_cant_move: "Le professeur et nyog sothep ne peuvent pas bouger ce tour"
+      nyog_cant_move: "Tour %{tour_no} : Le professeur et nyog sothep ne peuvent pas bouger ce tour"
+      inv_cant_move: "Tour %{tour_no} : %{investigator_name} ne peut pas bouger"
 
   errors:
     no_more_monsters: 'Le professeur ne peux plus prendre de monstre. Le stock est vide.'

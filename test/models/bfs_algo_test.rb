@@ -5,11 +5,11 @@ class BfsAlgoTest < ActiveSupport::TestCase
   def setup
   end
 
-  test 'same location' do
-    assert_raise do
-      GameCore::Ia::BfsAlgo.find_next_dest_to_goal( :oxford, :oxford )
-    end
-  end
+  # test 'same location' do
+  #   assert_raise do
+  #     GameCore::Ia::BfsAlgo.find_next_dest_to_goal( :oxford, :oxford )
+  #   end
+  # end
 
   test 'one step' do
     result, _ = GameCore::Ia::BfsAlgo.find_next_dest_to_goal( :oxford, :providence )

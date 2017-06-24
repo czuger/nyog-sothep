@@ -105,7 +105,7 @@ class ProfessorActionsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to g_game_board_play_url
   end
 
-  test 'professor should move 5 times' do
+  test 'professor should move n times' do
     @gb.update( aasm_state: 'prof_move' )
     Kernel.stubs(:rand).returns(1)
 
@@ -117,7 +117,8 @@ class ProfessorActionsControllerTest < ActionDispatch::IntegrationTest
     src = :oxford
     dest = :plainfield
 
-    1.upto(10) do
+    tests_amount = 3
+    1.upto(tests_amount) do
 
       get move_g_game_board_professor_actions_url( g_game_board_id: @gb.id, zone_id: dest )
       tmp = dest
