@@ -47,7 +47,7 @@ module GameCore
         puts "#{translated_name} is at #{current_location_code_name} and is heading to #{self.ia_target_destination_code_name}"
         next_step_code_name, _ = GameCore::Ia::BfsAlgo.find_next_dest_to_goal(
           current_location_code_name, self.ia_target_destination_code_name,
-          forbidden_city_code_name, destroyed_cities_codes_names )
+          forbidden_city_code_name: forbidden_city_code_name, destroyed_cities_codes_names: destroyed_cities_codes_names )
 
         if next_step_code_name
           raise "Next movement is forbidden. Forbidden_city = #{forbidden_city_code_name.inspect}, next_step_code_name = #{next_step_code_name.inspect}" if next_step_code_name == forbidden_city_code_name

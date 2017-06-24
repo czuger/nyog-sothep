@@ -11,6 +11,13 @@ class BfsAlgoTest < ActiveSupport::TestCase
   #   end
   # end
 
+  test 'should return nil if destination unreachable' do
+    destroyed_cities_codes_names = [ :oxford, :woonsocket ]
+    result, _ = GameCore::Ia::BfsAlgo.find_next_dest_to_goal( :pascoag, :milford,
+                                                              destroyed_cities_codes_names: destroyed_cities_codes_names )
+    refute result
+  end
+
   test 'one step' do
     result, _ = GameCore::Ia::BfsAlgo.find_next_dest_to_goal( :oxford, :providence )
     assert_equal :plainfield, result
@@ -26,7 +33,7 @@ class BfsAlgoTest < ActiveSupport::TestCase
     dest_city = :providence
     forbidden_city = :plainfield
     should_go = :pascoag
-    result, _ = GameCore::Ia::BfsAlgo.find_next_dest_to_goal( src_city, dest_city, forbidden_city )
+    result, _ = GameCore::Ia::BfsAlgo.find_next_dest_to_goal( src_city, dest_city, forbidden_city_code_name: forbidden_city )
     assert_equal should_go, result
   end
 

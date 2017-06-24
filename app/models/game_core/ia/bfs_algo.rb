@@ -3,7 +3,7 @@ module GameCore
 
     class BfsAlgo
 
-      def self.find_next_dest_to_goal( current_position_code_name, goal_code_name, forbidden_city_code_name= nil, destroyed_cities_codes_names= [] )
+      def self.find_next_dest_to_goal( current_position_code_name, goal_code_name, forbidden_city_code_name: nil, destroyed_cities_codes_names: [] )
 
         raise 'Goal is nil' unless goal_code_name
 
