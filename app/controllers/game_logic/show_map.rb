@@ -15,7 +15,7 @@ module GameLogic
 
       @destroyed_cities = @game_board.g_destroyed_cities
 
-      @log_summaries = @game_board.e_event_log_summaries
+      @log_summaries = @game_board.e_event_log_summaries.limit( 30 )
 
       set_position_x_decal
     end
