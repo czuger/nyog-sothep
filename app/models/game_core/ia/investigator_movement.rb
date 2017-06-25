@@ -6,8 +6,7 @@ module GameCore
       include GameCore::Assertions
 
       def ia_play_movements( game_board, _ )
-        if san < 5 && current_location.city?
-          # If san is below 5 and investigator is in city, then he/she goes to the psy
+        if got_to_psy_check( game_board )
           go_to_psy(game_board )
         else
           ia_invest_random_move( game_board )
@@ -135,6 +134,22 @@ module GameCore
         border_allowed
       end
 
+      def got_to_psy_check( game_board )
+
+        # If nyog sothep has been invoked
+        if game_board.nyog_sothep_invoked
+          # If we are at the place to repel it, then we go to the psy
+          if current_location_code_name == game_board.nyog_sothep_repelling_city_code_name
+            return true
+          end
+        # If san is below 5 and investigator is in city, then he/she goes to the psy
+        elsif san < 5 && current_location.city?
+          return true
+        end
+
+        false
+
+      end
     end
   end
 end
