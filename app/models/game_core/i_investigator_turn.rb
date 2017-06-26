@@ -1,4 +1,5 @@
 module GameCore
+  # Included in IInvestigator
   module IInvestigatorTurn
 
     def next_turn

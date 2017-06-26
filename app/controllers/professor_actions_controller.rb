@@ -42,6 +42,7 @@ class ProfessorActionsController < ApplicationController
 
       # At the end of the professor move, investigators play
       @game_board.investigators_ia_play( @prof )
+      @game_board.save!
     end
 
     check_prof_asked_for_fake_cities{ redirect_to g_game_board_play_url( @game_board ) }

@@ -3,6 +3,7 @@ class GGameBoard < ApplicationRecord
 
   include GameCore::Encounters
   include GameCore::GGameBoardInvestigatorsActions
+  include GameCore::NyogSothep
 
   has_many :e_event_logs, -> { includes( :actor ).order( 'id DESC' ) }, dependent: :destroy
   has_many :e_event_log_summaries, -> { includes( :actor, :e_event_log ).order( 'id DESC' ) }, dependent: :destroy

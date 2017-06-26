@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170624214045) do
+ActiveRecord::Schema.define(version: 20170626203521) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -93,6 +93,7 @@ ActiveRecord::Schema.define(version: 20170624214045) do
     t.string   "last_location_code_name",                                   null: false
     t.string   "ia_target_destination_code_name",                           null: false
     t.string   "forbidden_city_code_name"
+    t.boolean  "nyog_sothep_already_seen",                  default: false, null: false
     t.index ["g_game_board_id"], name: "index_i_investigators_on_g_game_board_id", using: :btree
   end
 

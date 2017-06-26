@@ -62,24 +62,6 @@ module GameCore
       end
     end
 
-    def check_nyog_sothep_invocation
-      gb = g_game_board
-
-      unless gb.nyog_sothep_invoked
-        nb_fanatiques = gb.p_monster_positions.where( code_name: 'fanatiques' ).count()
-        if nb_fanatiques >= 5
-
-          return true if current_location_code_name == gb.nyog_sothep_invocation_position_code_name
-
-          _, dist_to_nyog = GameCore::Ia::BfsAlgo.find_next_dest_to_goal(
-            current_location_code_name, gb.nyog_sothep_invocation_position_code_name )
-          return true if dist_to_nyog <= 3
-        end
-      end
-
-      false
-    end
-
     def move( dest_loc )
 
       gb = g_game_board
@@ -88,7 +70,7 @@ module GameCore
       assert_regular_movement_allowed( prof.current_location, dest_loc )
       ActiveRecord::Base.transaction do
 
-        if move_nyog_sothep( gb, prof, dest_loc )
+        if gb.move_nyog_sothep( prof, dest_loc )
           prof.current_location_code_name = dest_loc.code_name
           prof.save!
         end
@@ -96,28 +78,6 @@ module GameCore
       end
     end
 
-    # Return true if nyog sothep not invoked, nyog sothep not with prof or nyog sothep allowed to move
-    def move_nyog_sothep( gb, prof, dest_loc )
-      if gb.nyog_sothep_invoked
-        raise "Nyog Sothep current location should not be nil" unless gb.nyog_sothep_current_location_code_name
-
-        if gb.nyog_sothep_current_location_code_name == prof.current_location_code_name
-
-          if rand( 1 .. 6 ) <= 2
-            # Nyog sothep and the professor are forbidden to move
-            event_log = EEventLog.log( gb, prof, I18n.t( 'map.event_log_summaries.nyog_cant_move' ) )
-            EEventLogSummary.log( gb, prof, :nyog_cant_move, {}, event_log )
-            return false
-          end
-
-          gb.nyog_sothep_current_location_code_name = dest_loc.code_name
-          gb.save!
-
-          GDestroyedCity.destroy_city( gb, dest_loc.code_name )
-        end
-      end
-      true
-    end
   end
 end
 
