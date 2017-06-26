@@ -9,9 +9,8 @@ module GameCore
         # Do we have 3 investigators with the spell at this place ?
         investigators_count = investigators_on_nyog_sothep_city.count
         if investigators_count >= 3
-          repelling_roll = rand( 1 .. 6 ) - investigators_count
           san_loss = nil
-          case repelling_roll
+          case repelling_roll( investigators_count )
             when 3
               san_loss = 4
             when 2
@@ -75,6 +74,11 @@ module GameCore
     end
 
     private
+
+    # Separate this will be usefull for the tests
+    def repelling_roll( investigators_count )
+      rand( 1 .. 6 ) - investigators_count
+    end
 
     def nyog_sothep_encounter
       investigators_on_nyog_sothep_city = alive_investigators.where( spell: true ).where( current_location_code_name: nyog_sothep_current_location_code_name )
