@@ -36,5 +36,11 @@ FactoryGirl.define do
       san 1
     end
 
+    factory :repelling_investigator do
+      san 30
+      spell true
+      current_location_code_name :oxford
+    end
+
   end
 end
