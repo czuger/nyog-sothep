@@ -47,4 +47,9 @@ class BfsAlgoTest < ActiveSupport::TestCase
     assert_equal 3, distance
   end
 
+  test 'one step distance city' do
+    cities = GameCore::Ia::BfsAlgo.find_cities_around_city( :taunton, 2 )
+    p cities
+  end
+
 end

@@ -49,6 +49,34 @@ module GameCore
         [ next_step, distance ]
       end
 
+      def self.find_cities_around_city( current_position_code_name, distance )
+
+        current_position_code_name = current_position_code_name.to_sym
+
+        cities_to_check_cn = [ current_position_code_name ]
+        processed_cities = Set.new( [ current_position_code_name ] )
+        near_cities_cn = {}
+
+        step = 1
+        while step <= distance
+
+          for city_cn in cities_to_check_cn
+            neighbour_cities_cn = GameCore::Map::Location.get_location( city_cn ).destinations
+            neighbour_cities_cn.reject!{ |e| e.water_area? || processed_cities.include?( e.code_name ) }
+            neighbour_cities_cn.map!{ |e| e.code_name }
+
+            near_cities_cn[ step ] ||= []
+            near_cities_cn[ step ] += neighbour_cities_cn
+            processed_cities += neighbour_cities_cn
+            cities_to_check_cn = neighbour_cities_cn
+
+          end
+
+          step += 1
+        end
+        near_cities_cn
+      end
+
     end
   end
 end
