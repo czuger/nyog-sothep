@@ -28,6 +28,7 @@ fr:
       gain_san: "Tour %{tour_no} : %{investigator_name} gagne %{san_amount} SAN -> %{current_san} SAN"
       nyog_cant_move: "Tour %{tour_no} : Le professeur et nyog sothep ne peuvent pas bouger ce tour"
       inv_cant_move: "Tour %{tour_no} : %{investigator_name} ne peut pas bouger"
+      nyog_sothep_repelled: "Tour %{tour_no} : Les investigateurs ont renvoyé Nyog Sothep avec succès. Vous avez perdu la partie."
 
   errors:
     no_more_monsters: 'Le professeur ne peux plus prendre de monstre. Le stock est vide.'

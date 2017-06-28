@@ -10,6 +10,12 @@ class NyogSothepTest < ActiveSupport::TestCase
     @i3 = create( :repelling_investigator, g_game_board: @gb, nyog_sothep_already_seen: true )
   end
 
+  test 'loose_game' do
+    @gb.stubs( :repelling_roll ).returns( -2 )
+    @gb.nyog_sothep_repelled_test
+    assert @gb.game_lost?
+  end
+
   def test_worst_repelling_test
     @gb.stubs( :repelling_roll ).returns( 3 )
     @gb.nyog_sothep_repelled_test

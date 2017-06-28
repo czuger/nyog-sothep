@@ -25,6 +25,11 @@ module GameCore
 
     def method_missing( method_name, *args )
       super unless method_name =~ /table.*/
+
+      unless args.first
+        raise "Bad arguements : method_name = #{method_name}, args = #{args.inspect}"
+      end
+
       EEventLog.log( args.first, self, "event non implementé : #{method_name}" )
     end
 

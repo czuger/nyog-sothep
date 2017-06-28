@@ -16,6 +16,7 @@ Rails.application.routes.draw do
     end
 
     get 'play', action: :show, controller: :map
+    get 'game_lost', action: :game_lost, controller: :map
 
   end
 

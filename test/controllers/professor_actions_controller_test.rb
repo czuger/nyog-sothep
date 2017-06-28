@@ -13,6 +13,23 @@ class ProfessorActionsControllerTest < ActionDispatch::IntegrationTest
     @investigator.update( weapon: true )
   end
 
+  test 'nyog sothep repelling is successfull' do
+
+    @gb.destroy
+    @gb = create( :g_game_board, nyog_sothep_current_location_code_name: :oxford, nyog_sothep_repelling_city_code_name: :oxford )
+    @i1 = create( :repelling_investigator, g_game_board: @gb )
+    @i2 = create( :repelling_investigator, g_game_board: @gb )
+    @i3 = create( :repelling_investigator, g_game_board: @gb, nyog_sothep_already_seen: true )
+    @prof = @gb.p_professor
+    @prof.update( current_location_code_name: :plainfield )
+
+    GGameBoard.any_instance.stubs( :repelling_roll ).returns( -2 )
+
+    get move_g_game_board_professor_actions_url( g_game_board_id: @gb.id, zone_id: :oxford )
+    assert_redirected_to g_game_board_game_lost_url
+  end
+
+
   # TODO : replace this tests as unit tests
   # test 'professor should fight and loose hard' do
   #   Kernel.stubs(:rand).returns(6)

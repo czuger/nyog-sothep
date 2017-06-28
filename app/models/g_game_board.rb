@@ -26,6 +26,7 @@ class GGameBoard < ApplicationRecord
   aasm do
     state :prof_move, :initial => true
     state :prof_asked_for_fake_cities, :inv_move, :inv_events
+    state :game_won, :game_lost
 
     event :prof_movement_done do
       transitions :from => :prof_move, :to => :inv_move
@@ -45,6 +46,14 @@ class GGameBoard < ApplicationRecord
 
     event :return_to_move_status do
       transitions :from => :prof_asked_for_fake_cities, :to => :inv_events
+    end
+
+    event :win_game do
+      transitions :from => :prof_move, :to => :game_won
+    end
+
+    event :loose_game do
+      transitions :from => :prof_move, :to => :game_lost
     end
 
   end

@@ -31,21 +31,31 @@ class ProfessorActionsController < ApplicationController
       # Prof move
       @prof.move( dest_loc )
 
-      @prof.check_for_investigators_to_fight_in_city( @game_board )
+      # Nyog Sothep attack first
+      @game_board.nyog_sothep_repelled_test
 
-      # Prof get a monster if count less than 4
-      if @game_board.p_monsters.count < 5
-        @prof.pick_one_monster
+      unless @game_board.game_lost?
+        @prof.check_for_investigators_to_fight_in_city( @game_board )
+
+        # Prof get a monster if count less than 4
+        if @game_board.p_monsters.count < 5
+          @prof.pick_one_monster
+        end
+
+        @game_board.prof_movement_done!
+
+        # At the end of the professor move, investigators play
+        @game_board.investigators_ia_play( @prof )
+        @game_board.save!
+
+        check_prof_asked_for_fake_cities{ redirect_to g_game_board_play_url( @game_board ) }
+      else
+        @game_board.save!
+        redirect_to g_game_board_game_lost_url
       end
 
-      @game_board.prof_movement_done!
-
-      # At the end of the professor move, investigators play
-      @game_board.investigators_ia_play( @prof )
-      @game_board.save!
     end
 
-    check_prof_asked_for_fake_cities{ redirect_to g_game_board_play_url( @game_board ) }
   end
 
   def invoke_nyog_sothep

@@ -25,7 +25,7 @@ module GameCore
 
     def table1_e5( game_board, _ )
       event_log = log_event( game_board, __method__ )
-      ask_prof_for_fake_cities( game_board, 2 ) unless game_board.p_professor.current_location.kind_of?( WWaterArea )
+      ask_prof_for_fake_cities( game_board, 2 ) unless game_board.p_professor.current_location.water_area?
     end
 
     def table1_e6( game_board, _ )
@@ -51,7 +51,7 @@ module GameCore
 
     def table1_e10( game_board, _ )
       event_log = log_event( game_board, __method__ )
-      ask_prof_for_fake_cities( game_board, 1 ) unless game_board.p_professor.current_location.kind_of?( WWaterArea )
+      ask_prof_for_fake_cities( game_board, 1 ) unless game_board.p_professor.current_location.water_area?
     end
 
     def table1_e11( game_board, _ )

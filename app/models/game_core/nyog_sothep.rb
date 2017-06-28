@@ -10,7 +10,10 @@ module GameCore
         investigators_count = investigators_on_nyog_sothep_city.count
         if investigators_count >= 3
           san_loss = nil
-          case repelling_roll( investigators_count )
+
+          rr = repelling_roll( investigators_count )
+
+          case rr
             when 3
               san_loss = 4
             when 2
@@ -20,7 +23,7 @@ module GameCore
             when -1
               # TODO : Move Nyog Sothep randomly
             else
-              # TODO : implement victory
+              loose_game!
           end
 
           if san_loss
