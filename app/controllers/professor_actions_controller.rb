@@ -13,6 +13,12 @@ class ProfessorActionsController < ApplicationController
     redirect_to g_game_board_play_url( g_game_board_id: @game_board.id )
   end
 
+  def dont_move
+    set_game_board
+
+    prof_actions( nil )
+  end
+
   def move
     set_game_board
 
@@ -27,9 +33,26 @@ class ProfessorActionsController < ApplicationController
 
     dest_loc = GameCore::Map::Location.get_location( params['zone_id'] )
 
+    prof_actions( dest_loc )
+
+  end
+
+  def invoke_nyog_sothep
+    set_game_board
+
+    @game_board.update( nyog_sothep_invoked: true, nyog_sothep_current_location_code_name: @game_board.nyog_sothep_invocation_position_code_name )
+    GDestroyedCity.destroy_city( @game_board, @game_board.nyog_sothep_invocation_position_code_name )
+
+    redirect_to g_game_board_play_url( g_game_board_id: @game_board.id )
+  end
+
+  private
+
+  def prof_actions( dest_loc )
+
     ActiveRecord::Base.transaction do
       # Prof move
-      @prof.move( dest_loc )
+      @prof.move( dest_loc ) if dest_loc
 
       # Nyog Sothep attack first
       @game_board.nyog_sothep_repelled_test
@@ -55,16 +78,6 @@ class ProfessorActionsController < ApplicationController
       end
 
     end
-
-  end
-
-  def invoke_nyog_sothep
-    set_game_board
-
-    @game_board.update( nyog_sothep_invoked: true, nyog_sothep_current_location_code_name: @game_board.nyog_sothep_invocation_position_code_name )
-    GDestroyedCity.destroy_city( @game_board, @game_board.nyog_sothep_invocation_position_code_name )
-
-    redirect_to g_game_board_play_url( g_game_board_id: @game_board.id )
   end
 
 end

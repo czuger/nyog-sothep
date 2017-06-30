@@ -8,6 +8,7 @@ module GameCore
       if current_location == prof.current_location
         prof.spotted( game_board )
 
+
         if weapon
           # If we have a weapon : we fight (even if we have the medaillon)
           prof.fight( game_board, self )

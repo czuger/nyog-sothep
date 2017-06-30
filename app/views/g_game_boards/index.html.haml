@@ -1,11 +1,10 @@
 %h1 Listing g_game_boards
 
-%table
+%table.table
   %thead
     %tr
       %th Game board id
-      %th Players count
-      %th Ia side
+      %th Status
       %th
       %th
 
@@ -13,7 +12,7 @@
     - @g_game_boards.each do |g_game_board|
       %tr
         %td= g_game_board.id
-        %td= g_game_board.players_count
+        %td= g_game_board.aasm_state
         %td= link_to 'Play', g_game_board_play_url( g_game_board_id: g_game_board.id )
         %td= link_to 'Destroy', g_game_board, :method => :delete, :data => { :confirm => 'Are you sure?' }
 

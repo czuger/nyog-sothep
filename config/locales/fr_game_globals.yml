@@ -20,7 +20,7 @@ fr:
       dont_breed: 'Ne pas invoquer de monstres'
       prof_attack: "Attaquer %{investigator_name}"
       prof_dont_attack: "Ne pas attaquer l'investigateur"
-      invoke_nyog_sothep: "Invoquer Nyog'Sothep"
+
 
   map:
     event_log_summaries:
@@ -29,6 +29,10 @@ fr:
       nyog_cant_move: "Tour %{tour_no} : Le professeur et nyog sothep ne peuvent pas bouger ce tour"
       inv_cant_move: "Tour %{tour_no} : %{investigator_name} ne peut pas bouger"
       nyog_sothep_repelled: "Tour %{tour_no} : Les investigateurs ont renvoyé Nyog Sothep avec succès. Vous avez perdu la partie."
+
+    prof_info:
+      invoke_nyog_sothep: "Invoquer Nyog'Sothep"
+      dont_move: "Rester sur place"
 
   errors:
     no_more_monsters: 'Le professeur ne peux plus prendre de monstre. Le stock est vide.'

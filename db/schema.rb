@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170626203521) do
+ActiveRecord::Schema.define(version: 20170630053347) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -47,7 +47,6 @@ ActiveRecord::Schema.define(version: 20170626203521) do
     t.integer  "token_rotation",  null: false
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
-    t.index ["city_code_name"], name: "index_g_destroyed_cities_on_city_code_name", unique: true, using: :btree
     t.index ["g_game_board_id"], name: "index_g_destroyed_cities_on_g_game_board_id", using: :btree
   end
 
