@@ -4,10 +4,30 @@ class NyogSothepTest < ActiveSupport::TestCase
 
   def setup
     @gb = create( :g_game_board, nyog_sothep_current_location_code_name: :oxford, nyog_sothep_repelling_city_code_name: :oxford )
+
     @san = 30
     @i1 = create( :repelling_investigator, g_game_board: @gb )
     @i2 = create( :repelling_investigator, g_game_board: @gb )
     @i3 = create( :repelling_investigator, g_game_board: @gb, nyog_sothep_already_seen: true )
+
+    [ :oxford, :providence, :milford, :tremont ].each do |city_cn|
+      create( :fanatiques, g_game_board: @gb, location_code_name: city_cn )
+    end
+  end
+
+  test 'nyog sothep can t be invoked because we does not have enough fanatiques' do
+    refute @gb.check_nyog_sothep_invocation( @gb.p_professor )
+  end
+
+  test 'nyog sothep can be invoked because we does not have enough fanatiques' do
+    create( :fanatiques, g_game_board: @gb, location_code_name: :lowell )
+    assert @gb.check_nyog_sothep_invocation( @gb.p_professor )
+  end
+
+  test 'nyog sothep can t be invoked because prof too far' do
+    create( :fanatiques, g_game_board: @gb, location_code_name: :lowell )
+    @gb.p_professor.update( current_location_code_name: :nantucket )
+    refute @gb.check_nyog_sothep_invocation( @gb.p_professor )
   end
 
   test 'loose_game' do
