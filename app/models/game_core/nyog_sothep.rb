@@ -61,7 +61,7 @@ module GameCore
 
         if self.nyog_sothep_current_location_code_name == prof.current_location_code_name
 
-          if rand( 1 .. 6 ) <= 2
+          if nyiog_sothep_can_move?
             # Nyog sothep and the professor are forbidden to move
             event_log = EEventLog.log( self, prof, I18n.t( 'map.event_log_summaries.nyog_cant_move' ) )
             EEventLogSummary.log( self, prof, :nyog_cant_move, {}, event_log )
@@ -77,6 +77,10 @@ module GameCore
     end
 
     private
+
+    def nyiog_sothep_can_move?
+      rand( 1 .. 6 ) <= 2
+    end
 
     # Separate this will be usefull for the tests
     def repelling_roll( investigators_count )

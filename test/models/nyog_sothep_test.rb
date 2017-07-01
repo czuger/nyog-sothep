@@ -13,6 +13,17 @@ class NyogSothepTest < ActiveSupport::TestCase
     [ :oxford, :providence, :milford, :tremont ].each do |city_cn|
       create( :fanatiques, g_game_board: @gb, location_code_name: city_cn )
     end
+
+    @prof = @gb.p_professor
+  end
+
+  test 'nyog_sothep_move_and_destroy_city' do
+    @gb.update( nyog_sothep_invoked: true, nyog_sothep_invocation_position_code_name: :oxford,
+                nyog_sothep_current_location_code_name: :oxford )
+    @prof.update( current_location_code_name: :oxford )
+    assert_difference 'GDestroyedCity.count' do
+      @gb.move_nyog_sothep( @prof, GameCore::Map::Location.get_location( :providence ) )
+    end
   end
 
   test 'nyog sothep can t be invoked because we does not have enough fanatiques' do
@@ -26,7 +37,7 @@ class NyogSothepTest < ActiveSupport::TestCase
 
   test 'nyog sothep can t be invoked because prof too far' do
     create( :fanatiques, g_game_board: @gb, location_code_name: :lowell )
-    @gb.p_professor.update( current_location_code_name: :nantucket )
+    @prof.update( current_location_code_name: :nantucket )
     refute @gb.check_nyog_sothep_invocation( @gb.p_professor )
   end
 
