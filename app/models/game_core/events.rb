@@ -15,11 +15,11 @@ module GameCore
         # table = 1
         # roll = 18
 
-        # EEventLog.log( game_board, self, "table#{table}_e#{roll}" )
+        # LLog.log( game_board, self, "table#{table}_e#{roll}" )
 
         send( "table#{table}_e#{roll}", game_board, professor )
       else
-        EEventLog.log( game_board, self, I18n.t( 'events.no_water_events', investigator_name: translated_name ) )
+        LLog.log( game_board, self, 'events.no_water_events', {} )
       end
     end
 
@@ -30,7 +30,7 @@ module GameCore
         raise "Bad arguements : method_name = #{method_name}, args = #{args.inspect}"
       end
 
-      EEventLog.log( args.first, self, "event non implementé : #{method_name}" )
+      LLog.log( args.first, self, "event non implementé : #{method_name}", {} )
     end
 
     def choose_table
@@ -51,10 +51,12 @@ module GameCore
       game_board.ask_prof_for_fake_cities!
     end
 
-    def log_event( game_board, method )
-      EEventLog.log( game_board, self, ( I18n.t( "events.#{method.to_s.gsub('_','.')}.#{gender}", investigator_name: translated_name ) ) )
+    def log_event( game_board, method, san_hash = {} )
+
+      summary = san_hash.has_key?( :san_loss ) || san_hash.has_key?( :san_gain )
+
+      LLog.log( game_board, self, method.to_s.gsub('_','.'),
+                san_hash, summary )
     end
-
   end
-
 end

@@ -2,6 +2,39 @@
 
 fr:
 
+  log:
+    loose_san: "Tour %{tour_no} : %{investigator_name} perds %{san_amount} SAN -> %{current_san} SAN"
+    gain_san: "Tour %{tour_no} : %{investigator_name} gagne %{san_amount} SAN -> %{current_san} SAN"
+    nyog_cant_move: "Tour %{tour_no} : Le professeur et nyog sothep ne peuvent pas bouger ce tour"
+    inv_cant_move: "Tour %{tour_no} : %{investigator_name} ne peut pas bouger"
+
+    nyog_sothep_first_encounter:
+      m: '%{investigator_name} rencontre Nyog Sothep pour la première fois et perds %{san} SAN -> %{cur_san} SAN.'
+      f: '%{investigator_name} rencontre Nyog Sothep pour la première fois et perds %{san} SAN -> %{cur_san} SAN.'
+    nyog_sothep_regular_encounter:
+      m: '%{investigator_name} rencontre Nyog Sothep et perds %{san} SAN -> %{cur_san} SAN.'
+      f: '%{investigator_name} rencontre Nyog Sothep et perds %{san} SAN -> %{cur_san} SAN.'
+
+    nyog_sothep_repelling_failed_bad: 'Le renvoi de Nyog Sothep échoue et les investigateurs perdent %{san} SAN.'
+    nyog_sothep_repelling_failed_bad_inv_loss:
+      m: "%{investigator_name} perds %{san} -> %{cur_san} SAN suite à l'échec du renvoi de Nyog Sothep."
+      f: "%{investigator_name} perds %{san} -> %{cur_san} SAN suite à l'échec du renvoi de Nyog Sothep."
+
+    nyog_sothep_repelling_failed: 'Le renvoi de Nyog Sothep échoue.'
+    nyog_sothep_sent_to_a_city: 'Nyog Sothep est envoyé dans une autre ville (non implémenté).'
+    nyog_sothep_repelled: 'Nyog Sothep est renvoyé. La partie est terminée.'
+
+    nyog_sothep_first_encounter:
+      m: '%{investigator_name} rencontre Nyog Sothep pour la première fois et perds %{san} SAN -> %{cur_san} SAN.'
+      f: '%{investigator_name} rencontre Nyog Sothep pour la première fois et perds %{san} SAN -> %{cur_san} SAN.'
+    nyog_sothep_regular_encounter:
+      m: '%{investigator_name} rencontre Nyog Sothep et perds %{san} SAN -> %{cur_san} SAN.'
+      f: '%{investigator_name} rencontre Nyog Sothep et perds %{san} SAN -> %{cur_san} SAN.'
+
+    go_psy:
+      m: "%{investigator_name} va voir un psychanalyste. Il gagne %{san} points de SAN mais passe son prochain tour."
+      f: "%{investigator_name} va voir un psychanalyste. Elle gagne %{san} points de SAN mais passe son prochain tour."
+
   g_game_boards:
     new:
       info: Selectionnez une position de départ du professeur et une position ou vous invoquerez nyog sothep.
@@ -20,15 +53,6 @@ fr:
       dont_breed: 'Ne pas invoquer de monstres'
       prof_attack: "Attaquer %{investigator_name}"
       prof_dont_attack: "Ne pas attaquer l'investigateur"
-
-
-  map:
-    event_log_summaries:
-      loose_san: "Tour %{tour_no} : %{investigator_name} perds %{san_amount} SAN -> %{current_san} SAN"
-      gain_san: "Tour %{tour_no} : %{investigator_name} gagne %{san_amount} SAN -> %{current_san} SAN"
-      nyog_cant_move: "Tour %{tour_no} : Le professeur et nyog sothep ne peuvent pas bouger ce tour"
-      inv_cant_move: "Tour %{tour_no} : %{investigator_name} ne peut pas bouger"
-      nyog_sothep_repelled: "Tour %{tour_no} : Les investigateurs ont renvoyé Nyog Sothep avec succès. Vous avez perdu la partie."
 
     prof_info:
       invoke_nyog_sothep: "Invoquer Nyog'Sothep"
@@ -50,9 +74,7 @@ fr:
       prof_pick_monsters: 'Le professeur pioche un monstre.'
       pass: 'Vous passez votre tour'
       psy_rep: "%{investigator_name} gagne 5 points de SAN"
-      psy:
-       m: "%{investigator_name} va voir un psychanalyste. Il gagne %{san} points de SAN mais passe son prochain tour."
-       f: "%{investigator_name} va voir un psychanalyste. Elle gagne %{san} points de SAN mais passe son prochain tour."
+
       crazy:
        m: "%{investigator_name} devient fou et devient fanatique."
        f: "%{investigator_name} devient folle et devient fanatique."

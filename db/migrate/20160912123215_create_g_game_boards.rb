@@ -6,10 +6,6 @@ class CreateGGameBoards < ActiveRecord::Migration[5.0]
       t.timestamps
     end
 
-    add_column :e_event_logs, :g_game_board_id, :integer, null: false
-    add_foreign_key :e_event_logs, :g_game_boards
-    add_index :e_event_logs, :g_game_board_id
-
     add_column :i_investigators, :g_game_board_id, :integer, null: false
     add_foreign_key :i_investigators, :g_game_boards
     add_index :i_investigators, :g_game_board_id

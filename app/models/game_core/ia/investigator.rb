@@ -19,9 +19,8 @@ module GameCore
         self.increment!( :san, san )
         going_to_psy!
 
-        event_log = EEventLog.log( game_board, self, I18n.t( 'actions.psy', san: san, investigator_name: I18n.t( "investigators.#{code_name}" ) ) )
-        EEventLogSummary.log( game_board, self, :gain_san,
-                              { investigator_name: translated_name, san_amount: san, current_san: self.san }, event_log )
+        LLog.log( game_board, self, :go_psy, { san_gain: san, cur_san: self.san }, true )
+
       end
     end
   end

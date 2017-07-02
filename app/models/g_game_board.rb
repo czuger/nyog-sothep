@@ -5,8 +5,8 @@ class GGameBoard < ApplicationRecord
   include GameCore::GGameBoardInvestigatorsActions
   include GameCore::NyogSothep
 
-  has_many :e_event_logs, -> { includes( :actor ).order( 'id DESC' ) }, dependent: :destroy
-  has_many :e_event_log_summaries, -> { includes( :actor, :e_event_log ).order( 'id DESC' ) }, dependent: :destroy
+  has_many :l_logs, -> { includes( :actor ).order( 'id DESC' ) }, dependent: :destroy
+  has_many :l_logs_summaries, -> { includes( :actor ).where( summary: true ).order( 'id DESC' ) }, class_name: 'LLog'
 
   has_many :i_investigators, dependent: :destroy
   has_many :alive_investigators, -> { where.not( 'i_investigators.aasm_state' => :dead ) }, class_name: 'IInvestigator'

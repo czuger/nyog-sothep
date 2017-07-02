@@ -10,12 +10,12 @@ module GameCore
 
     def table1_e2( game_board, _ )
       event_log = log_event( game_board, __method__ )
-      update_attribute( :weapon, true ) if loose_san( game_board,  2, event_log )
+      update_attribute( :weapon, true ) if loose_san( game_board,  2 )
     end
 
     def table1_e3( game_board, _ )
       event_log = log_event( game_board, __method__ )
-      update_attribute( :sign, true ) if loose_san( game_board,  2, event_log )
+      update_attribute( :sign, true ) if loose_san( game_board,  2 )
     end
 
     def table1_e4( game_board, _ )
@@ -30,12 +30,12 @@ module GameCore
 
     def table1_e6( game_board, _ )
       event_log = log_event( game_board, __method__ )
-      update_attribute( :spell, true ) if loose_san( game_board,  2, event_log )
+      update_attribute( :spell, true ) if loose_san( game_board,  2 )
     end
 
     def table1_e7( game_board, _ )
       event_log = log_event( game_board, __method__ )
-      update_attribute( :weapon, false ) if loose_san( game_board,  2, event_log )
+      update_attribute( :weapon, false ) if loose_san( game_board,  2 )
     end
 
     # def table1_e8( game_board, self, professor )
@@ -56,12 +56,12 @@ module GameCore
 
     def table1_e11( game_board, _ )
       event_log = log_event( game_board, __method__ )
-      update_attribute( :weapon, true ) if loose_san( game_board,  2, event_log )
+      update_attribute( :weapon, true ) if loose_san( game_board,  2 )
     end
 
     def table1_e12( game_board, _ )
       event_log = log_event( game_board, __method__ )
-      update_attribute( :spell, true ) if loose_san( game_board,  3, event_log )
+      update_attribute( :spell, true ) if loose_san( game_board,  3 )
     end
 
     def table1_e13( game_board, professor )

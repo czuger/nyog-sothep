@@ -33,9 +33,9 @@ module GameCore
       if monster
         gb.p_monsters.create!( code_name: monster.code_name )
         monster.destroy!
-        # EEventLog.log( gb, I18n.t( 'actions.result.prof_pick_monsters' ) )
+        # LLog.log( gb, I18n.t( 'actions.result.prof_pick_monsters' ) )
       else
-        # EEventLog.log( gb, I18n.t( 'errors.no_more_monsters' ) )
+        # LLog.log( gb, I18n.t( 'errors.no_more_monsters' ) )
       end
     end
 
@@ -54,7 +54,7 @@ module GameCore
         monster.destroy!
         # gb.inv_move!
         #
-        # EEventLog.start_event_block( gb )
+        # LLog.start_event_block( gb )
         # gb.p_professor.pick_one_monster
 
         # TODO : need to check that prof has no more than 5 monsters.

@@ -10,36 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170630053347) do
+ActiveRecord::Schema.define(version: 20170702071915) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-
-  create_table "e_event_log_summaries", force: :cascade do |t|
-    t.integer  "g_game_board_id",                    null: false
-    t.string   "actor_type",                         null: false
-    t.integer  "actor_id",                           null: false
-    t.integer  "turn",                   default: 1, null: false
-    t.string   "event_translation_code",             null: false
-    t.string   "event_translation_data",             null: false
-    t.integer  "e_event_log_id",                     null: false
-    t.datetime "created_at",                         null: false
-    t.datetime "updated_at",                         null: false
-    t.index ["g_game_board_id"], name: "index_e_event_log_summaries_on_g_game_board_id", using: :btree
-  end
-
-  create_table "e_event_logs", force: :cascade do |t|
-    t.datetime "created_at",       null: false
-    t.datetime "updated_at",       null: false
-    t.integer  "g_game_board_id",  null: false
-    t.integer  "turn"
-    t.string   "actor_type",       null: false
-    t.integer  "actor_id",         null: false
-    t.string   "actor_aasm_state", null: false
-    t.string   "message",          null: false
-    t.index ["g_game_board_id"], name: "index_e_event_logs_on_g_game_board_id", using: :btree
-    t.index ["turn"], name: "index_e_event_logs_on_turn", using: :btree
-  end
 
   create_table "g_destroyed_cities", force: :cascade do |t|
     t.integer  "g_game_board_id", null: false
@@ -96,6 +70,21 @@ ActiveRecord::Schema.define(version: 20170630053347) do
     t.index ["g_game_board_id"], name: "index_i_investigators_on_g_game_board_id", using: :btree
   end
 
+  create_table "l_logs", force: :cascade do |t|
+    t.integer  "g_game_board_id",        null: false
+    t.integer  "turn",                   null: false
+    t.string   "actor_type"
+    t.integer  "actor_id"
+    t.string   "actor_aasm_state"
+    t.boolean  "summary"
+    t.string   "event_translation_code", null: false
+    t.string   "event_translation_data", null: false
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+    t.index ["actor_type", "actor_id"], name: "index_l_logs_on_actor_type_and_actor_id", using: :btree
+    t.index ["g_game_board_id"], name: "index_l_logs_on_g_game_board_id", using: :btree
+  end
+
   create_table "m_monsters", force: :cascade do |t|
     t.string   "code_name",       null: false
     t.datetime "created_at",      null: false
@@ -133,11 +122,9 @@ ActiveRecord::Schema.define(version: 20170630053347) do
     t.index ["g_game_board_id"], name: "index_p_professors_on_g_game_board_id", using: :btree
   end
 
-  add_foreign_key "e_event_log_summaries", "e_event_logs"
-  add_foreign_key "e_event_log_summaries", "g_game_boards"
-  add_foreign_key "e_event_logs", "g_game_boards"
   add_foreign_key "g_destroyed_cities", "g_game_boards"
   add_foreign_key "i_investigators", "g_game_boards"
+  add_foreign_key "l_logs", "g_game_boards"
   add_foreign_key "m_monsters", "g_game_boards"
   add_foreign_key "p_monster_positions", "g_game_boards"
   add_foreign_key "p_monsters", "g_game_boards"

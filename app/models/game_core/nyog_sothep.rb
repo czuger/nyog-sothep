@@ -16,20 +16,25 @@ module GameCore
           case rr
             when 3
               san_loss = 4
+              LLog.log( self, nil, :nyog_sothep_repelling_failed_bad, { san_loss: 4 } )
             when 2
               san_loss = 2
+              LLog.log( self, nil, :nyog_sothep_repelling_failed_bad, { san_loss: 2 } )
             when 0, 1
               # Nothing happens
+              LLog.log( self, nil, :nyog_sothep_repelling_failed, {} )
             when -1
               # TODO : Move Nyog Sothep randomly
+              LLog.log( self, nil, :nyog_sothep_sent_to_a_city, {} )
             else
+              LLog.log( self, nil, :nyog_sothep_repelled, {} )
               loose_game!
           end
 
           if san_loss
             investigators_on_nyog_sothep_city.each do |i|
-              event_log = EEventLog.log( self, i, 'Le renvoi de Nyog Sothep échoue' )
-              i.loose_san( self, san_loss, event_log )
+              i.loose_san( self, san_loss )
+              LLog.log( self, i, :nyog_sothep_repelling_failed_bad_inv_loss, { san_loss: san_loss, cur_san: i.san } )
             end
           end
 
@@ -61,10 +66,10 @@ module GameCore
 
         if self.nyog_sothep_current_location_code_name == prof.current_location_code_name
 
-          if nyiog_sothep_can_move?
+          if nyog_and_prof_sothep_can_not_move?
             # Nyog sothep and the professor are forbidden to move
-            event_log = EEventLog.log( self, prof, I18n.t( 'map.event_log_summaries.nyog_cant_move' ) )
-            EEventLogSummary.log( self, prof, :nyog_cant_move, {}, event_log )
+            event_log = LLog.log( self, prof, 'nyog_cant_move', {} )
+            LLogSummary.log( self, prof, :nyog_cant_move, {}, event_log )
             return false
           end
 
@@ -78,7 +83,7 @@ module GameCore
 
     private
 
-    def nyiog_sothep_can_move?
+    def nyog_and_prof_sothep_can_not_move?
       rand( 1 .. 6 ) <= 2
     end
 
@@ -91,12 +96,14 @@ module GameCore
       investigators_on_nyog_sothep_city = alive_investigators.where( spell: true ).where( current_location_code_name: nyog_sothep_current_location_code_name )
       investigators_on_nyog_sothep_city.each do |i|
         if i.nyog_sothep_already_seen
-          event_log = EEventLog.log( self, i, 'Nyog sothep est vu pour la première fois' )
-          i.loose_san( self, 2, event_log )
+          LLog.log( self, i, :nyog_sothep_first_encounter,
+                                { san_loss: 2, cur_san: i.san }, true )
+          i.loose_san( self, 2 )
         else
-          event_log = EEventLog.log( self, i, 'Nyog sothep est vu à nouveau' )
+          LLog.log( self, i, :nyog_sothep_regular_encounter,
+                                { san_loss: 4, cur_san: i.san }, true )
           i.nyog_sothep_already_seen = true
-          i.loose_san( self, 4, event_log )
+          i.loose_san( self, 4 )
         end
       end
       investigators_on_nyog_sothep_city

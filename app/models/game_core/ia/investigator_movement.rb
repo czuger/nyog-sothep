@@ -74,8 +74,8 @@ module GameCore
           end
         else
           # TODO : translate event
-          event_log = EEventLog.log( game_board, self, "#{translated_name} ne trouve pas de chemin de #{current_location_code_name} vers #{self.ia_target_destination_code_name}" )
-          EEventLogSummary.log( game_board, self, :inv_cant_move, { investigator_name: translated_name }, event_log )
+          event_log = LLog.log( game_board, self, "#{translated_name} ne trouve pas de chemin de #{current_location_code_name} vers #{self.ia_target_destination_code_name}" )
+          LLogSummary.log( game_board, self, :inv_cant_move, { investigator_name: translated_name }, event_log )
         end
 
       end
@@ -107,7 +107,7 @@ module GameCore
           token.last_location_code_name = token.current_location_code_name
           token.current_location_code_name = dest_loc.code_name
 
-          EEventLog.log_investigator_movement( gb, token, dest_loc.code_name )
+          LLog.log_investigator_movement( gb, token, dest_loc.code_name )
 
           return true
         end
@@ -123,9 +123,8 @@ module GameCore
           if GameCore::Map::BordersCrossings.check?( token.current_location_code_name, dest_loc.code_name )
             dice = GameCore::Dices.d6
             if dice >= 5
-              inv_name = I18n.t( "investigators.#{token.code_name}" )
-              event = I18n.t( "border_control.#{token.gender}", investigator_name: inv_name )
-              EEventLog.log( gb, self, event )
+              event = 'border_control'
+              LLog.log( gb, self, event, {} )
               border_allowed = false
             end
           end
