@@ -68,8 +68,7 @@ module GameCore
 
           if nyog_and_prof_sothep_can_not_move?
             # Nyog sothep and the professor are forbidden to move
-            event_log = LLog.log( self, prof, 'nyog_cant_move', {} )
-            LLogSummary.log( self, prof, :nyog_cant_move, {}, event_log )
+            LLog.log( self, prof, 'nyog_cant_move', {} )
             return false
           end
 

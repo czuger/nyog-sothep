@@ -74,8 +74,7 @@ module GameCore
           end
         else
           # TODO : translate event
-          event_log = LLog.log( game_board, self, "#{translated_name} ne trouve pas de chemin de #{current_location_code_name} vers #{self.ia_target_destination_code_name}" )
-          LLogSummary.log( game_board, self, :inv_cant_move, { investigator_name: translated_name }, event_log )
+          LLog.log( game_board, self, :cant_move, {} )
         end
 
       end

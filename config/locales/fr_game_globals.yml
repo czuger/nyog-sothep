@@ -81,13 +81,18 @@ fr:
     psy: "%{investigator_name} va voir un psychanalyste et gagne %{san} points de SAN."
 
   movement:
-    goes: '%{who} se déplace %{where}'
-    return: '%{who} retourne %{where}'
-    default_to: 'à %{destination_name}'
+    goes:
+      m: '%{investigator_name} se déplace %{dest_cn}'
+      f: '%{investigator_name} se déplace %{dest_cn}'
+    return:
+      m: '%{investigator_name} retourne %{dest_cn}'
+      f: '%{investigator_name} retourne %{dest_cn}'
     prof_move: 'Le professeur se déplace'
 
   events:
-    no_water_events: '%{investigator_name} continue son chemin.'
+    no_water_events:
+      m: '%{investigator_name} continue son chemin.'
+      f: '%{investigator_name} continue son chemin.'
 
   log:
     incarn: "Vous incarnez %{investigator_name}"

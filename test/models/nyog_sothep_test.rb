@@ -21,6 +21,7 @@ class NyogSothepTest < ActiveSupport::TestCase
     @gb.update( nyog_sothep_invoked: true, nyog_sothep_invocation_position_code_name: :oxford,
                 nyog_sothep_current_location_code_name: :oxford )
     @prof.update( current_location_code_name: :oxford )
+    @gb.stubs( 'nyog_and_prof_sothep_can_not_move?' ).returns( false )
     assert_difference 'GDestroyedCity.count' do
       @gb.move_nyog_sothep( @prof, GameCore::Map::Location.get_location( :providence ) )
     end

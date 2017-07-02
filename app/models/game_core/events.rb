@@ -55,7 +55,7 @@ module GameCore
 
       summary = san_hash.has_key?( :san_loss ) || san_hash.has_key?( :san_gain )
 
-      LLog.log( game_board, self, method.to_s.gsub('_','.'),
+      LLog.log( game_board, self, 'events.' + method.to_s.gsub('_','.'),
                 san_hash, summary )
     end
   end

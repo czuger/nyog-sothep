@@ -6,10 +6,6 @@
       %td
         Tour
       %td
-        State
-      %td
-        Investigateur
-      %td
         Message
 
   %tbody
@@ -18,10 +14,6 @@
         %td
           = e.turn
         %td
-          = e.actor_aasm_state
-        %td
-          = e.actor.translated_name
-        %td
-          = e.message
+          = log_message( e )
 
 = will_paginate @events, renderer: BootstrapPagination::Rails
