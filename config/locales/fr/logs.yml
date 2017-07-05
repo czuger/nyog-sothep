@@ -1,0 +1,36 @@
+fr:
+
+  log_summary:
+      loose_san: "%{investigator_name} perds %{san_loss} SAN -> %{cur_san} SAN"
+      gain_san: "%{investigator_name} gagne %{san_gain} SAN -> %{cur_san} SAN"
+      nyog_cant_move: "Tour %{tour_no} : Le professeur et nyog sothep ne peuvent pas bouger ce tour"
+      inv_cant_move: "Tour %{tour_no} : %{investigator_name} ne peut pas bouger"
+
+  log:
+
+    nyog_sothep_first_encounter:
+      m: '%{investigator_name} rencontre Nyog Sothep pour la première fois et perds %{san} SAN -> %{cur_san} SAN.'
+      f: '%{investigator_name} rencontre Nyog Sothep pour la première fois et perds %{san} SAN -> %{cur_san} SAN.'
+    nyog_sothep_regular_encounter:
+      m: '%{investigator_name} rencontre Nyog Sothep et perds %{san_loss} SAN -> %{cur_san} SAN.'
+      f: '%{investigator_name} rencontre Nyog Sothep et perds %{san_loss} SAN -> %{cur_san} SAN.'
+
+    nyog_sothep_repelling_failed_bad: 'Le renvoi de Nyog Sothep échoue et les investigateurs perdent %{san_loss} SAN.'
+    nyog_sothep_repelling_failed_bad_inv_loss:
+      m: "%{investigator_name} perds %{san_loss} -> %{cur_san} SAN suite à l'échec du renvoi de Nyog Sothep."
+      f: "%{investigator_name} perds %{san_loss} -> %{cur_san} SAN suite à l'échec du renvoi de Nyog Sothep."
+
+    nyog_sothep_repelling_failed: 'Le renvoi de Nyog Sothep échoue.'
+    nyog_sothep_sent_to_a_city: 'Nyog Sothep est envoyé dans une autre ville (non implémenté).'
+    nyog_sothep_repelled: 'Nyog Sothep est renvoyé. La partie est terminée.'
+
+    nyog_sothep_first_encounter:
+      m: '%{investigator_name} rencontre Nyog Sothep pour la première fois et perds %{san_loss} SAN -> %{cur_san} SAN.'
+      f: '%{investigator_name} rencontre Nyog Sothep pour la première fois et perds %{san_loss} SAN -> %{cur_san} SAN.'
+    nyog_sothep_regular_encounter:
+      m: '%{investigator_name} rencontre Nyog Sothep et perds %{san_loss} SAN -> %{cur_san} SAN.'
+      f: '%{investigator_name} rencontre Nyog Sothep et perds %{san_loss} SAN -> %{cur_san} SAN.'
+
+    go_psy:
+      m: "%{investigator_name} va voir un psychanalyste. Il gagne %{san_gain} points de SAN mais passe son prochain tour."
+      f: "%{investigator_name} va voir un psychanalyste. Elle gagne %{san_gain} points de SAN mais passe son prochain tour."

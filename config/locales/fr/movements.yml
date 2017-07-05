@@ -1,0 +1,9 @@
+fr:
+  movement:
+    goes:
+      m: '%{investigator_name} se déplace %{dest_cn}'
+      f: '%{investigator_name} se déplace %{dest_cn}'
+    return:
+      m: '%{investigator_name} retourne %{dest_cn}'
+      f: '%{investigator_name} retourne %{dest_cn}'
+    prof_move: 'Le professeur se déplace'

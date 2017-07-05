@@ -1,0 +1,48 @@
+# Caution, in case of missing translation, think about quoting strings
+
+fr:
+
+  g_game_boards:
+    new:
+      info: Selectionnez une position de départ du professeur et une position ou vous invoquerez nyog sothep.
+
+  prof_fake_pos:
+    new:
+      inv_turn: 'Investigateur actuel : %{inv_name}'
+      info:
+        one: Selectionnez une ville ou le professeur pourrait être. Votre position actuelle sera ajoutée a la liste.
+        other: Selectionnez %{count} villes ou le professeur pourrait être. Votre position actuelle sera ajoutée a la liste.
+
+  errors:
+    no_more_monsters: 'Le professeur ne peux plus prendre de monstre. Le stock est vide.'
+
+  prof_fight:
+    gun_shot: "%{investigator_name} rencontre le professeur et l'attaque avec son arme. Il lui cause %{hit} points de dégâts -> %{final_hp}."
+    gun_miss: "%{investigator_name} rencontre le professeur et l'attaque avec son arme mais le rate."
+    sign_protect: "%{investigator_name} rencontre le professeur. Il se protège avec son signe mais perds 2 points de SAN et son signe."
+    no_protection: "%{investigator_name} rencontre le professeur et perds 4 points de SAN."
+
+  events:
+    no_water_events:
+      m: '%{investigator_name} continue son chemin.'
+      f: '%{investigator_name} continue son chemin.'
+
+  investigators:
+    lemon: 'Miss Lemon'
+    hercule: 'Hercule'
+    poirot: 'Mr Poirot'
+    hastings: 'Hastings'
+    le_capitaine: 'Le capitaine'
+    sandy: 'Sandy'
+
+  locations:
+    atlantic_ocean: "dans l'océan Atlantique"
+    buzzards_bay: 'dans la baie des busards'
+    cape_cod_bay: 'dans la baie du cap Cod'
+    gulf_of_maine: 'dans le golfe du Maine'
+    massachusetts_bay: 'dans la baie du Massachusetts'
+    nantucket_sound: 'à Nantucket Sound'
+
+  border_control:
+    m: "%{investigator_name} a été empêché de passer la frontière par une patrouille."
+    f: "%{investigator_name} a été empêchée de passer la frontière par une patrouille."

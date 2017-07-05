@@ -1,0 +1,13 @@
+fr:
+
+  map:
+    show:
+      go_psy: 'Voir un psychanalyste'
+      professeur: 'Le professeur'
+      dont_breed: 'Ne pas invoquer de monstres'
+      prof_attack: "Attaquer %{investigator_name}"
+      prof_dont_attack: "Ne pas attaquer l'investigateur"
+
+    prof_info:
+      invoke_nyog_sothep: "Invoquer Nyog'Sothep"
+      dont_move: "Rester sur place"

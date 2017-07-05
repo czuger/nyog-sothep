@@ -43,9 +43,10 @@ module GameCore
           monster_spotted( encounter )
         elsif roll == 6
           log << 'encounter.fanatiques.weapon_success'
-          LLog.log( self, investigator,log, {} )
           investigator.loose_san( self, 2 )
           investigator.update( medaillon: true )
+          LLog.log( self, investigator,log,
+                    { san_loss: 2, cur_san: investigator.san }, true )
           encounter_destroyed( encounter )
         else
           log << 'encounter.fanatiques.weapon_critical'
@@ -69,8 +70,9 @@ module GameCore
         log << 'encounter.profonds.no_sign'
       end
       # TODO : créer les logs pour chaque partie de if. Faire la distinction entre ce qui soit avoir un résumé ou non.
-      LLog.log( self, investigator,log, {} )
       investigator.loose_san( self, san_loss )
+      LLog.log( self, investigator,log,
+                { san_loss: san_loss, cur_san: investigator.san }, true  )
     end
 
     def resolve_encounter_goules( investigator, encounter )
@@ -86,14 +88,16 @@ module GameCore
         monster_spotted( encounter )
         log << 'encounter.goules.no_weapon'
       end
-      LLog.log( self, investigator,log, {} )
       investigator.loose_san( self, san_loss )
+      LLog.log( self, investigator,log,
+                { san_loss: san_loss, cur_san: investigator.san }, true )
 
     end
 
     def resolve_encounter_reves( investigator, encounter )
-      event_log = LLog.log( self, investigator,'encounter.reves', {} )
-      investigator.loose_san( self, 2, event_log )
+      investigator.loose_san( self, 2 )
+      LLog.log( self, investigator,'encounter.reves',
+                { san_loss: 2, cur_san: investigator.san }, true )
       replace_encounter_in_monsters_stack( encounter )
     end
 

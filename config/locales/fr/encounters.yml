@@ -1,10 +1,17 @@
 fr:
   encounter:
-    reves: "%{investigator_name} rencontre un pion rêve et perds 2 points de SAN."
+    reves:
+      m: "%{investigator_name} rencontre un pion rêve et perds 2 points de SAN."
+      f: "%{investigator_name} rencontre un pion rêve et perds 2 points de SAN."
 
-    habitants: "Les vilageois prennent %{investigator_name} pour un fanatique et le chassent du village. Il perd son médaillon et ne pourra plus passer par ce village au prochain tour."
+    habitants:
+      m: "Les vilageois prennent %{investigator_name} pour un fanatique et le chassent du village. Il perd son médaillon et ne pourra plus passer par ce village au prochain tour."
+      f: "Les vilageois prennent %{investigator_name} pour un fanatique et la chassent du village. Elle perd son médaillon et ne pourra plus passer par ce village au prochain tour."
 
-    choses_brume: "%{investigator_name} rencontre un pion choses de la brume. Il y passe son prochain tour."
+    choses_brume:
+      m: "%{investigator_name} rencontre un pion choses de la brume. Il y passe son prochain tour."
+      f: "%{investigator_name} rencontre un pion choses de la brume. Elle y passe son prochain tour."
+
     back_from_misty_things:
       m: "Il sort de la brume et perds 1 points de SAN."
       f: "Elle  sort de la brume et perds 1 points de SAN."
