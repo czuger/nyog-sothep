@@ -1,8 +1,11 @@
-- @log_summaries.each do |log_summary|
-  = link_to t( '.' + log_summary.event_translation_code, event_log_summary_translation_param( log_summary ) ),
-    g_game_board_log_url( @game_board.id, log_summary.e_event_log_id ), class: 'log-summary-detail-hoover', log_id: log_summary.id
-  .log-summary-detail{ id: "log-summary-detail-#{log_summary.id}" }
-    = log_summary.e_event_log.message
-  %br
+- @log_summaries_hashes.each do |_, log_summaries|
+  - log_summaries.each do |log_summary|
+
+    = link_to event_log_summary( log_summary ),
+      g_game_board_log_url( @game_board.id, log_summary.id ), class: 'log-summary-detail-hoover', log_id: log_summary.id
+    .log-summary-detail{ id: "log-summary-detail-#{log_summary.id}" }
+      = log_message( log_summary )
+    %br
+  %hr.log_summary_separation
 
   -#= t( '.' + log_summary.event_translation_code,ZZ san_amount: 3, current_san: 10 )

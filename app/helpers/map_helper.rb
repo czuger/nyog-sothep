@@ -27,11 +27,21 @@ module MapHelper
     ''
   end
 
-  def event_log_summary_translation_param( log_summary )
-    base_hash = log_summary.event_translation_data
-    base_hash[ :investigator_name ] = log_summary.actor.translated_name
-    base_hash[ :tour_no ] = log_summary.turn
-    base_hash
+  def event_log_summary( log_summary )
+
+    name = log_summary.actor.translated_name
+    params = log_summary.event_translation_data
+    params[ :investigator_name ] = name
+
+    result = 'Not implemented'
+
+    if params.has_key?( :san_loss )
+      result = I18n.t( 'log_summary.loose_san', params )
+    elsif params.has_key?( :san_gain )
+      result = I18n.t( 'log_summary.gain_san', params )
+    end
+
+    result
   end
 
 end

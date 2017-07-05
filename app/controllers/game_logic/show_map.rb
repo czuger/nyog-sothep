@@ -15,7 +15,12 @@ module GameLogic
 
       @destroyed_cities = @game_board.g_destroyed_cities
 
-      @log_summaries = @game_board.l_logs_summaries.limit( 30 )
+      log_summaries = @game_board.l_logs_summaries.limit( 30 )
+      @log_summaries_hashes = {}
+      log_summaries.each do |l|
+        @log_summaries_hashes[ l.turn ] ||= []
+        @log_summaries_hashes[ l.turn ] << l
+      end
 
       set_position_x_decal
     end
