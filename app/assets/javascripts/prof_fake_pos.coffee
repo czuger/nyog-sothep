@@ -2,6 +2,8 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
+selected_cities_cnt = 0
+
 cities_validation = ->
 
   $( '#prof-fake-position-submit-button' ).click ->
@@ -14,9 +16,38 @@ cities_validation = ->
     gb_id = $( '#game_board_id' ).val()
     $.post "/g_game_boards/#{gb_id}/prof_fake_pos", cities_ids: cities_ids
 
-city_selection = ->
+enable_disable_submit_button = (max_selected_cities_cnt) ->
 
-  selected_cities_cnt = 0
+  if selected_cities_cnt == max_selected_cities_cnt
+    $( '#prof-fake-position-submit-button' ).prop('disabled', false)
+  else
+    $( '#prof-fake-position-submit-button' ).prop('disabled', true)
+
+
+city_selection_init = ->
+  max_selected_cities_cnt = parseInt( $( '#nb_cities' ).val() )
+#  console.log( max_selected_cities_cnt )
+
+  if $( '#last_fake_positions_codes_names' ).length != 0
+    selected_cities_cnt = 0
+    selected_cities = JSON.parse( $( '#last_fake_positions_codes_names' ).val() )
+
+    for city in selected_cities
+  #    console.log( city )
+      cities = $.find("[city_id='" + city + "']")
+      for city in cities
+        city = $(city)
+        city.css( 'border', 'solid black' )
+        city.attr( 'selk', 'true' )
+        selected_cities_cnt += 1
+
+        break if selected_cities_cnt >= max_selected_cities_cnt
+      break if selected_cities_cnt >= max_selected_cities_cnt
+
+#    console.log( selected_cities_cnt )
+    enable_disable_submit_button(max_selected_cities_cnt)
+
+city_selection = ->
   max_selected_cities_cnt = parseInt( $( '#nb_cities' ).val() )
 
   $( '.prof-fake-position' ).click ->
@@ -33,10 +64,11 @@ city_selection = ->
         $(this).attr( 'selk', 'true' )
         selected_cities_cnt += 1
 
-    if selected_cities_cnt == max_selected_cities_cnt
-      $( '#prof-fake-position-submit-button' ).prop('disabled', false)
-    else
-      $( '#prof-fake-position-submit-button' ).prop('disabled', true)
+    enable_disable_submit_button(max_selected_cities_cnt)
 
+#  console.log( selected_cities_cnt )
+
+
+$(document).on('turbolinks:load', city_selection_init)
 $(document).on('turbolinks:load', city_selection)
 $(document).on('turbolinks:load', cities_validation)

@@ -15,3 +15,5 @@
 
 = hidden_field_tag :game_board_id, @game_board.id
 = hidden_field_tag :nb_cities, @nb_cities
+
+= hidden_field_tag :last_fake_positions_codes_names, [ @prof.last_fake_position_1_code_name, @prof.last_fake_position_2_code_name ].compact.to_json

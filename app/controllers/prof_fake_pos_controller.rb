@@ -18,7 +18,10 @@ class ProfFakePosController < ApplicationController
             "Bad city count#{@game_board.asked_fake_cities_count} != #{cities_ids.count}" )
 
     cities = cities_ids
-    cities << @game_board.p_professor.current_location_code_name.to_s
+    @prof.update( last_fake_position_1_code_name: cities.first ) if cities.first
+    @prof.update( last_fake_position_2_code_name: cities.second ) if cities.second
+
+    cities << @prof.current_location_code_name.to_s
     cities.uniq!
 
     # This case mean that somebody tried to send the prof location into the city_ids
