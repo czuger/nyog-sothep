@@ -25,7 +25,7 @@
 ## $(document).ready(scroll_screen_to_lowest_elem)
 #$(document).on('turbolinks:load', scroll_screen_to_lowest_elem)
 
-summary_hoovering = ->
+log_summary_hoovering = ->
   $('.log-summary-detail-hoover').hover (->
     log_id = $(this).attr( 'log_id' )
     $( "#log-summary-detail-#{log_id}" ).show()
@@ -36,7 +36,7 @@ summary_hoovering = ->
       $( "#log-summary-detail-#{log_id}" ).hide()
 #
 
-investigator_informations = ->
+investigator_informations_hoovering = ->
   $('.investigator-token').hover (->
       inv_id = $(this).attr( 'inv_id' )
       $( "#investigator-#{inv_id}-info" ).show()
@@ -47,5 +47,5 @@ investigator_informations = ->
       $( "#investigator-#{inv_id}-info" ).hide()
 #      console.log( 'unhoover' )
 
-$(document).on('turbolinks:load', investigator_informations)
-$(document).on('turbolinks:load', summary_hoovering)
+$(document).on('turbolinks:load', investigator_informations_hoovering)
+$(document).on('turbolinks:load', log_summary_hoovering)

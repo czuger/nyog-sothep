@@ -26,14 +26,12 @@ enable_disable_submit_button = (max_selected_cities_cnt) ->
 
 city_selection_init = ->
   max_selected_cities_cnt = parseInt( $( '#nb_cities' ).val() )
-#  console.log( max_selected_cities_cnt )
 
   if $( '#last_fake_positions_codes_names' ).length != 0
     selected_cities_cnt = 0
     selected_cities = JSON.parse( $( '#last_fake_positions_codes_names' ).val() )
 
     for city in selected_cities
-  #    console.log( city )
       cities = $.find("[city_id='" + city + "']")
       for city in cities
         city = $(city)
@@ -44,7 +42,6 @@ city_selection_init = ->
         break if selected_cities_cnt >= max_selected_cities_cnt
       break if selected_cities_cnt >= max_selected_cities_cnt
 
-#    console.log( selected_cities_cnt )
     enable_disable_submit_button(max_selected_cities_cnt)
 
 city_selection = ->
@@ -65,8 +62,6 @@ city_selection = ->
         selected_cities_cnt += 1
 
     enable_disable_submit_button(max_selected_cities_cnt)
-
-#  console.log( selected_cities_cnt )
 
 
 $(document).on('turbolinks:load', city_selection_init)
