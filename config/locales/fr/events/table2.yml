@@ -6,12 +6,12 @@ fr:
         f: "%{investigator_name} séjourne chez un psychanalyste de renom. Elle passe son prochain tour puis gagnera 5 points de SAN."
 
       e2:
-        m: "%{investigator_name} perds 3 points de SAN, mais trouvez une arme."
-        f: "%{investigator_name} perds 3 points de SAN, mais trouvez une arme."
+        m: "%{investigator_name} observe des Goules près d'une vieille crypte. Il perds 3 points de SAN, mais trouve une arme."
+        f: "%{investigator_name} observe des Goules près d'une vieille crypte. Elle perds 3 points de SAN, mais trouve une arme."
 
       e3:
-        m: "%{investigator_name} trouve le sort de renvoi et perds 3 points de SAN"
-        f: "%{investigator_name} trouve le sort de renvoi et perds 3 points de SAN"
+        m: "Dans une malle, %{investigator_name} trouve de vieux manuscritsqui montrent comment renvoyer l'immonde. Il trouve le sort de renvoi et perds 3 points de SAN"
+        f: "Dans une malle, %{investigator_name}  trouve de vieux manuscritsqui montrent comment renvoyer l'immonde. Elle trouve le sort de renvoi et perds 3 points de SAN"
 
       e4:
         m: "%{investigator_name} rejoue immédiatement."
