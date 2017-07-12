@@ -15,5 +15,7 @@
   = image_tag( 'tokens/nyogsothep_s.jpg' )
 
 - @monsters_positions.each do |monster|
-  .token{ style: token_style( monster.current_location, monster.token_rotation ) }
+  .token.monster-token{ style: token_style( monster.current_location, monster.token_rotation ), m_id: monster.id }
     = image_tag( "tokens/#{monster.code_name}.jpg" )
+  .monster-info{ id: "monster-#{monster.id}-info", style: investigator_info_style( monster.current_location ) }
+    = 'Foo bar'
