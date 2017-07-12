@@ -14,8 +14,8 @@ fr:
         f: "Dans une malle, %{investigator_name}  trouve de vieux manuscritsqui montrent comment renvoyer l'immonde. Elle trouve le sort de renvoi et perds 3 points de SAN"
 
       e4:
-        m: "%{investigator_name} rejoue immédiatement."
-        f: "%{investigator_name} rejoue immédiatement."
+        m: "Grâce à de bonnes informations %{investigator_name} est lancé sur une piste qui lui semble intéressante. Il rejoue immédiatement."
+        f: "Grâce à de bonnes informations %{investigator_name} est lancée sur une piste qui lui semble intéressante. Elle rejoue immédiatement."
 
       e5:
         m: "%{investigator_name} trouve un signe protecteur et perds 2 points de SAN."
