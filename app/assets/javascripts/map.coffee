@@ -29,7 +29,6 @@ log_summary_hoovering = ->
   $('.log-summary-detail-hoover').hover (->
     log_id = $(this).attr( 'log_id' )
     $( "#log-summary-detail-#{log_id}" ).show()
-#      console.log( "hoover : #{inv_id}" )
   ),
     ->
       log_id = $(this).attr( 'log_id' )
@@ -40,12 +39,20 @@ investigator_informations_hoovering = ->
   $('.investigator-token').hover (->
       inv_id = $(this).attr( 'inv_id' )
       $( "#investigator-#{inv_id}-info" ).show()
-#      console.log( "hoover : #{inv_id}" )
     ),
     ->
       inv_id = $(this).attr( 'inv_id' )
       $( "#investigator-#{inv_id}-info" ).hide()
-#      console.log( 'unhoover' )
+
+monster_informations_hoovering = ->
+  $('.monster-token').hover (->
+    m_id = $(this).attr( 'm_id' )
+    $( "#monster-#{m_id}-info" ).show()
+  ),
+    ->
+      m_id = $(this).attr( 'm_id' )
+      $( "#monster-#{m_id}-info" ).hide()
 
 $(document).on('turbolinks:load', investigator_informations_hoovering)
 $(document).on('turbolinks:load', log_summary_hoovering)
+$(document).on('turbolinks:load', monster_informations_hoovering)
