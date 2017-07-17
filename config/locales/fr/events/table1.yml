@@ -2,12 +2,12 @@ fr:
   events:
     table1:
       e1:
-        m: "Se perd sur de petites routes et retourne d'ou il vient."
-        f: "Se perd sur de petites routes et retourne d'ou elle vient."
+        m: "%{investigator_name} se perd sur de petites routes et retourne d'ou il vient."
+        f: "%{investigator_name} se perd sur de petites routes et retourne d'ou elle vient."
 
       e2:
-        m: "Découvre un repaire de profonds. Il perds 2 points de SAN, mais trouve arme."
-        f: "Ddécouvre un repaire de profonds. Elle perds 2 points de SAN, mais trouve arme."
+        m: "%{investigator_name} découvre un repaire de profonds. Il perds 2 points de SAN, mais trouve arme."
+        f: "%{investigator_name} découvre un repaire de profonds. Elle perds 2 points de SAN, mais trouve arme."
 
       e3:
         m: "Rencontre un vieillard qui lui parle des créatures de l'au dela et lui donne un signe protecteur. Il perds 2 points de SAN."
