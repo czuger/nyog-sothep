@@ -2,36 +2,42 @@ fr:
   events:
     table1:
       e1:
+        name_translation: 'regular'
         m: "%{investigator_name} se perd sur de petites routes et retourne d'ou il vient."
         f: "%{investigator_name} se perd sur de petites routes et retourne d'ou elle vient."
 
       e2:
+        name_translation: 'regular'
         m: "%{investigator_name} découvre un repaire de profonds. Il perds 2 points de SAN, mais trouve arme."
         f: "%{investigator_name} découvre un repaire de profonds. Elle perds 2 points de SAN, mais trouve arme."
 
       e3:
-        m: "Rencontre un vieillard qui lui parle des créatures de l'au dela et lui donne un signe protecteur. Il perds 2 points de SAN."
-        f: "Rencontre un vieillard qui lui parle des créatures de l'au dela et lui donne un signe protecteur. Elle perds 2 points de SAN."
+        name_translation: 'regular'
+        m: "%{investigator_name} rencontre un vieillard qui lui parle des créatures de l'au dela et lui donne un signe protecteur. Il perds 2 points de SAN."
+        f: "%{investigator_name} rencontre un vieillard qui lui parle des créatures de l'au dela et lui donne un signe protecteur. Elle perds 2 points de SAN."
 
       e4:
-        m: "Un psychanalyste de renom s'intéresse a ses troubles. Il passe son prochain tour, mais gagnerea 5 points de SAN."
-        f: "Un psychanalyste de renom s'intéress a ses troubles. Elle passe son prochain tour, mais gagnerea 5 points de SAN."
+        name_translation: 'preposition_1'
+        m: "Un psychanalyste de renom s'intéresse aux troubles %{investigator_name}. Il passe son prochain tour, mais gagnerea 5 points de SAN."
+        f: "Un psychanalyste de renom s'intéresse aux troubles %{investigator_name}. Elle passe son prochain tour, mais gagnerea 5 points de SAN."
 
       e5:
-        m: "Des voyageurs lui parlent du professeur. Ce dernier doit citer trois villes dont une est son actuelle position."
-        f: "Des voyageurs lui parlent du professeur. Ce dernier doit citer trois villes dont une est son actuelle position."
+        name_translation: 'preposition_2'
+        m: "Des voyageurs parlent du professeur %{investigator_name}. Ce dernier doit citer trois villes dont une est son actuelle position."
+        f: "Des voyageurs parlent du professeur %{investigator_name}. Ce dernier doit citer trois villes dont une est son actuelle position."
 
       e6:
-        m: "Dans le grenier d'une vieille maison, il trouve le sort de renvoi mais perds 2 points de SAN"
-        f: "Dans le grenier d'une vieille maison, elle trouve le sort de renvoi mais perds 2 points de SAN"
+        name_translation: 'regular'
+        m: "Dans le grenier d'une vieille maison %{investigator_name} trouve le sort de renvoi mais perds 2 points de SAN"
+        f: "Dans le grenier d'une vieille maison %{investigator_name} trouve le sort de renvoi mais perds 2 points de SAN"
 
       e7:
-        m: "Ere dans un cimetière plein de goules. Il perds 2 points de SAN et son arme (s'il en avait une)"
-        f: "Ere dans un cimetière plein de goules. Elle perds 2 points de SAN et son arme (s'elle en avait une)"
+        m: "%{investigator_name} ere dans un cimetière plein de goules. Il perds 2 points de SAN et son arme (s'il en avait une)"
+        f: "%{investigator_name} ere dans un cimetière plein de goules. Elle perds 2 points de SAN et son arme (si elle en avait une)"
 
       e8:
-        m: "Sa voiture refuse d'avancer. Il passe le tour suivant, sauf s'il prends la mer."
-        f: "Sa voiture refuse d'avancer. Elle passe le tour suivant, sauf s'elle prends la mer."
+        m: "La voiture de %{investigator_name} refuse d'avancer. Il passe le tour suivant, sauf s'il prends la mer."
+        f: "La voiture de %{investigator_name} refuse d'avancer. Elle passe le tour suivant, sauf s'elle prends la mer."
 
       e9:
         m: "Trouve des traces du professeur et un médaillon. Il rejoue immédiatement."
