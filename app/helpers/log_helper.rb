@@ -7,11 +7,11 @@ module LogHelper
 
     if log.actor.is_a?( IInvestigator )
       act = log.actor
-      params[ :investigator_name ] = act.translated_name
+      params[ :investigator_name ] = ( log.name_translation_method ? act.translated_name( log.name_translation_method ) : act.translated_name )
       translation_code += '.' + act.gender
     end
 
-    I18n.t( translation_code, params )
+    I18n.t( translation_code, params ).capitalize
 
   end
 

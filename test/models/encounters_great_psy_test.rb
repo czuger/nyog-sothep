@@ -16,11 +16,11 @@ class EncountersGreatPsyTest < ActiveSupport::TestCase
 
   def test_encounter_great_psy
 
-    p @gb.aasm_state
+    # p @gb.aasm_state
 
     @gb.investigators_ia_play( @prof )
 
-    p @investigator.aasm_state
+    # p @investigator.aasm_state
 
     assert @investigator.reload.at_a_great_psy?
 

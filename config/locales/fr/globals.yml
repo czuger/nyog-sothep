@@ -27,14 +27,6 @@ fr:
       m: '%{investigator_name} continue son chemin.'
       f: '%{investigator_name} continue son chemin.'
 
-  investigators:
-    lemon: 'Miss Lemon'
-    hercule: 'Hercule'
-    poirot: 'Mr Poirot'
-    hastings: 'Hastings'
-    le_capitaine: 'Le capitaine'
-    sandy: 'Sandy'
-
   locations:
     atlantic_ocean: "dans l'océan Atlantique"
     buzzards_bay: 'dans la baie des busards'

@@ -53,9 +53,9 @@ module MapHelper
     result = 'Not implemented'
 
     if params.has_key?( :san_loss )
-      result = I18n.t( 'log_summary.loose_san', params )
+      result = I18n.t( 'log_summary.loose_san', params ).capitalize
     elsif params.has_key?( :san_gain )
-      result = I18n.t( 'log_summary.gain_san', params )
+      result = I18n.t( 'log_summary.gain_san', params ).capitalize
     end
 
     result

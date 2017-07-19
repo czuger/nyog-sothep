@@ -60,8 +60,11 @@ module GameCore
 
       summary = san_hash.has_key?( :san_loss ) || san_hash.has_key?( :san_gain )
 
-      LLog.log( game_board, self, 'events.' + method.to_s.gsub('_','.'),
-                san_hash, summary )
+      log_event_code = 'events.' + method.to_s.gsub('_','.')
+      name_translation_method = I18n.t( log_event_code + '.name_translation' )
+
+      LLog.log( game_board, self, log_event_code,
+                san_hash, summary, name_translation_method: name_translation_method )
     end
   end
 end

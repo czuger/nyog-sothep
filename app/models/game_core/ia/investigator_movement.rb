@@ -58,7 +58,7 @@ module GameCore
 
       def move_to_target( game_board, destroyed_cities_codes_names )
 
-        puts "#{translated_name} is at #{current_location_code_name} and is heading to #{self.ia_target_destination_code_name}"
+        puts "#{translated_name} is at #{current_location_code_name} and is heading to #{self.ia_target_destination_code_name}" if IInvestigator::DEBUG_MOVEMENTS
         next_step_code_name, _ = GameCore::Ia::BfsAlgo.find_next_dest_to_goal(
           current_location_code_name, self.ia_target_destination_code_name,
           forbidden_city_code_name: forbidden_city_code_name, destroyed_cities_codes_names: destroyed_cities_codes_names )
@@ -83,7 +83,7 @@ module GameCore
         # We chase the professor only if we have a weapon. Otherwise, we walk randomly
         if weapon && game_board.i_inv_target_positions.count > 0
           target_position_code_name = game_board.i_inv_target_positions.reject{ |e| e.position_code_name == current_location_code_name}.sample&.position_code_name
-          puts "#{translated_name} now change target to chase the professor at #{target_position_code_name}"
+          puts "#{translated_name} now change target to chase the professor at #{target_position_code_name}" if IInvestigator::DEBUG_MOVEMENTS
         end
 
         # If Ia didn't find an interesant target, then we choose one randomly
@@ -91,7 +91,7 @@ module GameCore
           exclusion_list = destroyed_cities_codes_names + [ current_location_code_name.to_sym ]
           target_position_code_name = GameCore::Map::City.random_city_code_name( exclusion_list )
           raise "Can't find a random position : exclusion_list = #{exclusion_list.inspect}" unless target_position_code_name
-          puts "#{translated_name} now change target randomly at #{target_position_code_name}"
+          puts "#{translated_name} now change target randomly at #{target_position_code_name}" if IInvestigator::DEBUG_MOVEMENTS
         end
 
         target_position_code_name

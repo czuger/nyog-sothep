@@ -12,6 +12,8 @@ class IInvestigator < ApplicationRecord
 
   belongs_to :g_game_board
 
+  DEBUG_MOVEMENTS = false
+
   aasm do
     state :move, :initial => true
     state :events, :turn_finished, :dead
@@ -77,8 +79,8 @@ class IInvestigator < ApplicationRecord
 
   end
 
-  def translated_name
-    I18n.t( "investigators.#{code_name}" )
+  def translated_name( translation_type= :regular )
+    I18n.t( "investigators.#{code_name}.#{translation_type}" )
   end
 
   def current_location
