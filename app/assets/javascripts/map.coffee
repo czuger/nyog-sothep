@@ -44,15 +44,31 @@ investigator_informations_hoovering = ->
       inv_id = $(this).attr( 'inv_id' )
       $( "#investigator-#{inv_id}-info" ).hide()
 
-monster_informations_hoovering = ->
+monster_token_on_map_hoovering = ->
   $('.monster-token').hover (->
-    m_id = $(this).attr( 'm_id' )
+    m_id = $(this).attr( 'monster_id' )
     $( "#monster-#{m_id}-info" ).show()
   ),
     ->
-      m_id = $(this).attr( 'm_id' )
+      m_id = $(this).attr( 'monster_id' )
       $( "#monster-#{m_id}-info" ).hide()
+
+monster_selector_hoovering = ->
+  $('.monster-picture').hover (->
+    m_id = $(this).attr( 'monster_id' )
+    console.log('monster_selector_hoovering', m_id)
+
+    position = $(this).position()
+    $( "#monster-selector-#{m_id}-info" ).css('top',position.top-70)
+    $( "#monster-selector-#{m_id}-info" ).css('left',position.left-25)
+    $( "#monster-selector-#{m_id}-info" ).css('z-index',50)
+    $( "#monster-selector-#{m_id}-info" ).show()
+  ),
+    ->
+      m_id = $(this).attr( 'monster_id' )
+      $( "#monster-selector-#{m_id}-info" ).hide()
 
 $(document).on('turbolinks:load', investigator_informations_hoovering)
 $(document).on('turbolinks:load', log_summary_hoovering)
-$(document).on('turbolinks:load', monster_informations_hoovering)
+$(document).on('turbolinks:load', monster_token_on_map_hoovering)
+$(document).on('turbolinks:load', monster_selector_hoovering)
