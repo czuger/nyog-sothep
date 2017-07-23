@@ -32,6 +32,7 @@ fr:
       weapon_fail: "Il les menace de son arme mais leur détermination est plus forte. Il revient d'ou il vient."
       weapon_success: "Il disperse les fanatiques. Mais l'action l'éprouve : il perds 2 points de SAN."
       weapon_critical: "Il disperse les fanatiques."
+      helper: "5 fanatiques sont nécessaires pour invoquer Nyog'Sothep. Si un investigateur possède une arme, il a une chance de disperser les fanatiques. Sinon ceux-ci lui bloquent le passage."
 
 
 

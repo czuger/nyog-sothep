@@ -16,7 +16,7 @@
         - else
           = image_tag( "tokens/#{monster.code_name}.jpg" )
         .monster-info{ id: "monster-selector-#{monster.id}-info" }
-          = 'Foo bar'
+          = t( 'encounter.' + monster.code_name + '.helper' )
 
 - if @prof_choose_attack
   %br
