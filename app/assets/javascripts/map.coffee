@@ -60,7 +60,7 @@ monster_selector_hoovering = ->
 
     position = $(this).position()
     $( "#monster-selector-#{m_id}-info" ).css('top',position.top-70)
-    $( "#monster-selector-#{m_id}-info" ).css('left',position.left-25)
+    $( "#monster-selector-#{m_id}-info" ).css('left',position.left-100)
     $( "#monster-selector-#{m_id}-info" ).css('z-index',50)
     $( "#monster-selector-#{m_id}-info" ).show()
   ),
