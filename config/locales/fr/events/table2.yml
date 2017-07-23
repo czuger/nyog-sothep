@@ -2,73 +2,91 @@ fr:
   events:
     table2:
       e1:
+        name_translation: 'regular'
         m: "%{investigator_name} séjourne chez un psychanalyste de renom. Il passe son prochain tour puis gagnera 5 points de SAN."
         f: "%{investigator_name} séjourne chez un psychanalyste de renom. Elle passe son prochain tour puis gagnera 5 points de SAN."
 
       e2:
+        name_translation: 'regular'
         m: "%{investigator_name} observe des Goules près d'une vieille crypte. Il perds 3 points de SAN, mais trouve une arme."
         f: "%{investigator_name} observe des Goules près d'une vieille crypte. Elle perds 3 points de SAN, mais trouve une arme."
 
       e3:
+        name_translation: 'regular'
         m: "Dans une malle, %{investigator_name} trouve de vieux manuscritsqui montrent comment renvoyer l'immonde. Il trouve le sort de renvoi et perds 3 points de SAN"
         f: "Dans une malle, %{investigator_name} trouve de vieux manuscritsqui montrent comment renvoyer l'immonde. Elle trouve le sort de renvoi et perds 3 points de SAN"
 
       e4:
+        name_translation: 'regular'
         m: "Grâce à de bonnes informations %{investigator_name} est lancé sur une piste qui lui semble intéressante. Il rejoue immédiatement."
         f: "Grâce à de bonnes informations %{investigator_name} est lancée sur une piste qui lui semble intéressante. Elle rejoue immédiatement."
 
       e5:
+        name_translation: 'regular'
         m: "Un ermite a l'esprit un peu dérangé donne %{investigator_name} un signe protecteur et lui parle de créatures insensées. Il perds 2 points de SAN."
         f: "Un ermite a l'esprit un peu dérangé donne %{investigator_name} un signe protecteur et lui parle de créatures insensées. Elle perds 2 points de SAN."
 
       e6:
+        name_translation: 'regular'
         m: "Le professeur doit citer trois villes dont une est son actuelle position."
         f: "Le professeur doit citer trois villes dont une est son actuelle position."
 
       e7:
+        name_translation: 'regular'
         m: "se perd dans le labyrinthe des rues et retourne d'ou il vient"
         f: "se perd dans le labyrinthe des rues et retourne d'ou elle vient"
 
       e8:
+        name_translation: 'regular'
         m: "%{investigator_name} trouve un médaillon mais perds 3 SAN"
         f: "%{investigator_name} trouve un médaillon mais perds 3 SAN"
 
       e9:
+        name_translation: 'regular'
         m: "Le professeur doit citer deux villes dont une est son actuelle position."
         f: "Le professeur doit citer deux villes dont une est son actuelle position."
 
       e10:
+        name_translation: 'regular'
         m: "%{investigator_name} trouve le sort de renvoi et perds 2 points de SAN mais rejoue immédiatement."
         f: "%{investigator_name} trouve le sort de renvoi et perds 2 points de SAN mais rejoue immédiatement."
 
       e11:
+        name_translation: 'regular'
         m: "%{investigator_name} gagne une arme et rejoue."
         f: "%{investigator_name} gagne une arme et rejoue."
 
       e12:
+        name_translation: 'regular'
         m: "%{investigator_name} perds 2 points de SAN."
         f: "%{investigator_name} perds 2 points de SAN."
 
       e13:
+        name_translation: 'regular'
         m: "Le Professeur révèle son actuelle position."
         f: "Le Professeur révèle son actuelle position."
 
       e14:
+        name_translation: 'regular'
         m: "Un prêtre vous parle de ces Fanatiques qui infestent la région: le Professeur doit vous citer deux villes dont une contient des Fanatiques."
         f: "Un prêtre vous parle de ces Fanatiques qui infestent la région: le Professeur doit vous citer deux villes dont une contient des Fanatiques."
 
       e15:
+        name_translation: 'regular'
         m: "Dans la bibliothèque, un vieux livre qui parle des légendes locales: certaines créatures brumeuses y sont citées. Vous perdez 2 points de SAN, mais vous pouvez citer deux villes au Professeur: it vous dit si Nyog'Sothep doit y apparaître."
         f: "Dans la bibliothèque, un vieux livre qui parle des légendes locales: certaines créatures brumeuses y sont citées. Vous perdez 2 points de SAN, mais vous pouvez citer deux villes au Professeur: it vous dit si Nyog'Sothep doit y apparaître."
 
       e16:
+        name_translation: 'regular'
         m: "Les plans du Professeur vous paraissent de plus en plus clairs : citez-lui une ville. S'il y a une rencontre dan celle-ci, il doit vous la préciser."
         f: "Les plans du Professeur vous paraissent de plus en plus clairs : citez-lui une ville. S'il y a une rencontre dan celle-ci, il doit vous la préciser."
 
       e17:
+        name_translation: 'regular'
         m: "%{investigator_name} rejoue."
         f: "%{investigator_name} rejoue."
 
       e18:
+        name_translation: 'regular'
         m: "%{investigator_name} perdes son arme (si il en avait une) et 2 points de SAN."
         f: "%{investigator_name} perdes son arme (si elle en avait une) et 2 points de SAN."
