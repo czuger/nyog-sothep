@@ -30,6 +30,7 @@ city_selection_init = ->
   if $( '#last_fake_positions_codes_names' ).length != 0
     selected_cities_cnt = 0
     selected_cities = JSON.parse( $( '#last_fake_positions_codes_names' ).val() )
+    console.log('selected_cities',selected_cities)
 
     for city in selected_cities
       cities = $.find("[city_id='" + city + "']")

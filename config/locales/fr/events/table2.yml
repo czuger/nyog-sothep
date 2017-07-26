@@ -33,13 +33,13 @@ fr:
 
       e7:
         name_translation: 'regular'
-        m: "se perd dans le labyrinthe des rues et retourne d'ou il vient"
-        f: "se perd dans le labyrinthe des rues et retourne d'ou elle vient"
+        m: "%{investigator_name} ne s'y retrouve plus dans le labyrinthe des rues secondaires. Il retourne à la ville d'ou il vient pour s'informer."
+        f: "%{investigator_name} ne s'y retrouve plus dans le labyrinthe des rues secondaires. Elle retourne à la ville d'ou elle vient pour s'informer."
 
       e8:
         name_translation: 'regular'
-        m: "%{investigator_name} trouve un médaillon mais perds 3 SAN"
-        f: "%{investigator_name} trouve un médaillon mais perds 3 SAN"
+        m: "Près d'une sortie d'égout, un cadavre de profond. Auprès de lui %{investigator_name} trouve un médaillon mais perds 3 SAN."
+        f: "Près d'une sortie d'égout, un cadavre de profond. Auprès de lui %{investigator_name} trouve un médaillon mais perds 3 SAN."
 
       e9:
         name_translation: 'regular'
