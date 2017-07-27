@@ -47,9 +47,9 @@ fr:
         f: "Le professeur doit citer deux villes dont une est son actuelle position."
 
       e10:
-        name_translation: 'regular'
-        m: "%{investigator_name} trouve le sort de renvoi et perds 2 points de SAN mais rejoue immédiatement."
-        f: "%{investigator_name} trouve le sort de renvoi et perds 2 points de SAN mais rejoue immédiatement."
+        name_translation: 'preposition_2'
+        m: "La lecture d'un gros livre d'ocultisme apprend %{investigator_name} le sort de renvoi. Il perds 2 points de SAN mais rejoue immédiatement."
+        f: "La lecture d'un gros livre d'ocultisme apprend %{investigator_name} le sort de renvoi. Elle perds 2 points de SAN mais rejoue immédiatement."
 
       e11:
         name_translation: 'regular'
