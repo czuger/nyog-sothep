@@ -12,24 +12,24 @@ class ProfFakePosController < ApplicationController
   def create
     set_game_board
 
-    cities_ids = params[ :cities_ids ]
+    cities_codes_names = params[ :cities_ids ]
     assert( @game_board.prof_asked_for_fake_cities?, "@game_board.aasm_state = #{@game_board.aasm_state}, should be prof_asked_for_fake_cities" )
-    assert( @game_board.asked_fake_cities_count == cities_ids.count,
-            "Bad city count#{@game_board.asked_fake_cities_count} != #{cities_ids.count}" )
+    assert( @game_board.asked_fake_cities_count == cities_codes_names.count,
+            "Bad city count#{@game_board.asked_fake_cities_count} != #{cities_codes_names.count}" )
 
-    cities = cities_ids
-    @prof.update( last_fake_position_1_code_name: cities.first ) if cities.first
-    @prof.update( last_fake_position_2_code_name: cities.second ) if cities.second
+    cities_codes_names.each.with_index(1) do |city_code_name, idx|
+      update_last_fake_position_code_name(idx, city_code_name)
+    end
 
-    cities << @prof.current_location_code_name.to_s
-    cities.uniq!
+    cities_codes_names << @prof.current_location_code_name.to_s
+    cities_codes_names.uniq!
 
     # This case mean that somebody tried to send the prof location into the city_ids
-    assert( @game_board.asked_fake_cities_count + 1 == cities.count,
-            "#{@game_board.asked_fake_cities_count + 1} != #{cities.count}" )
+    assert( @game_board.asked_fake_cities_count + 1 == cities_codes_names.count,
+            "#{@game_board.asked_fake_cities_count + 1} != #{cities_codes_names.count}" )
 
     ActiveRecord::Base.transaction do
-      cities.each do |city|
+      cities_codes_names.each do |city|
         IInvTargetPosition.find_or_create_by!( g_game_board_id: @game_board.id, position_code_name: city, memory_counter: 5 )
       end
 
@@ -38,8 +38,19 @@ class ProfFakePosController < ApplicationController
       # The we need to finish the Investigators IA play
       # At the end of the professor move, investigators play
       @game_board.investigators_ia_play( @prof )
+      @prof.save!
     end
 
     redirect_to g_game_board_play_url( @game_board )
   end
+
+  private
+
+  def update_last_fake_position_code_name( idx, city_code_name )
+    if @prof.last_fake_position_1_code_name != city_code_name && @prof.last_fake_position_2_code_name != city_code_name
+      save_location = "last_fake_position_#{idx+1}_code_name"
+      @prof.update_attribute( save_location, city_code_name )
+    end
+  end
+
 end
