@@ -1,0 +1,15 @@
+fr:
+
+  prof_fight:
+    gun_shot:
+      m: "%{investigator_name} rencontre le professeur et l'attaque avec son arme. Il lui cause %{hit} points de dégâts -> %{final_hp}."
+      f: "%{investigator_name} rencontre le professeur et l'attaque avec son arme. Elle lui cause %{hit} points de dégâts -> %{final_hp}."
+    gun_miss:
+      m: "%{investigator_name} rencontre le professeur et l'attaque avec son arme mais le rate."
+      f: "%{investigator_name} rencontre le professeur et l'attaque avec son arme mais le rate."
+    sign_protect:
+      m: "%{investigator_name} rencontre le professeur. Il se protège avec son signe mais perds 2 points de SAN et son signe."
+      f: "%{investigator_name} rencontre le professeur. Elle se protège avec son signe mais perds 2 points de SAN et son signe."
+    no_protection:
+      m: "%{investigator_name} rencontre le professeur et perds 4 points de SAN."
+      f: "%{investigator_name} rencontre le professeur et perds 4 points de SAN."

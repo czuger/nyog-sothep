@@ -48,7 +48,7 @@ class ProfFakePosController < ApplicationController
 
   def update_last_fake_position_code_name( idx, city_code_name )
     if @prof.last_fake_position_1_code_name != city_code_name && @prof.last_fake_position_2_code_name != city_code_name
-      save_location = "last_fake_position_#{idx+1}_code_name"
+      save_location = "last_fake_position_#{idx}_code_name"
       @prof.update_attribute( save_location, city_code_name )
     end
   end

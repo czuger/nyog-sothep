@@ -16,12 +16,6 @@ fr:
   errors:
     no_more_monsters: 'Le professeur ne peux plus prendre de monstre. Le stock est vide.'
 
-  prof_fight:
-    gun_shot: "%{investigator_name} rencontre le professeur et l'attaque avec son arme. Il lui cause %{hit} points de dégâts -> %{final_hp}."
-    gun_miss: "%{investigator_name} rencontre le professeur et l'attaque avec son arme mais le rate."
-    sign_protect: "%{investigator_name} rencontre le professeur. Il se protège avec son signe mais perds 2 points de SAN et son signe."
-    no_protection: "%{investigator_name} rencontre le professeur et perds 4 points de SAN."
-
   events:
     no_water_events:
       m: '%{investigator_name} continue son chemin.'
