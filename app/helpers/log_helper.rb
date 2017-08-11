@@ -11,8 +11,7 @@ module LogHelper
       translation_code += '.' + act.gender
     end
 
-    I18n.t( translation_code, params ).capitalize
+    I18n.t( translation_code, params )
 
   end
-
 end

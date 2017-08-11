@@ -27,7 +27,7 @@ module GameCore
     end
 
     def resolve_encounter_fanatiques( investigator, encounter )
-      log = 'encounter.fanatiques.common'
+      log = ''
       unless investigator.weapon
         log << 'encounter.fanatiques.no_weapon'
         LLog.log( self, investigator,log, {} )
@@ -76,7 +76,7 @@ module GameCore
     end
 
     def resolve_encounter_goules( investigator, encounter )
-      log = 'encounter.goules.common'
+      log = ''
       if investigator.weapon
         san_loss = 3
         san_loss = 2 if GameCore::Dices.d6 >= 5
