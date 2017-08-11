@@ -13,7 +13,8 @@ module GameCore
 
     def resolve_encounter_habitants( investigator, encounter )
       if investigator.medaillon
-        LLog.log( self, investigator,'encounter.habitants', {} )
+
+        log_encounter( investigator,'habitants' )
         investigator.update( medaillon: false, forbidden_city_code_name: investigator.current_location_code_name )
         investigator.goes_back( self )
         replace_encounter_in_monsters_stack( encounter )
@@ -21,36 +22,30 @@ module GameCore
     end
 
     def resolve_encounter_choses_brume( investigator, encounter )
-      LLog.log( self, investigator,'encounter.choses_brume', {} )
+      log_encounter( investigator,'choses_brume' )
       investigator.entering_misty_things!
       replace_encounter_in_monsters_stack( encounter )
     end
 
     def resolve_encounter_fanatiques( investigator, encounter )
-      log = ''
       unless investigator.weapon
-        log << 'encounter.fanatiques.no_weapon'
-        LLog.log( self, investigator,log, {} )
+        log_encounter(  investigator,'fanatiques.no_weapon' )
         investigator.goes_back( self )
         monster_spotted( encounter )
       else
         roll = GameCore::Dices.d6
         roll += 1 if investigator.medaillon
         if roll <= 5
-          log << 'encounter.fanatiques.weapon_fail'
-          LLog.log( self, investigator,log, {} )
+          log_encounter(  investigator,'fanatiques.weapon_fail' )
           investigator.goes_back( self )
           monster_spotted( encounter )
         elsif roll == 6
-          log << 'encounter.fanatiques.weapon_success'
           investigator.loose_san( self, 2 )
           investigator.update( medaillon: true )
-          LLog.log( self, investigator,log,
-                    { san_loss: 2, cur_san: investigator.san }, true )
+          log_encounter(  investigator,'fanatiques.weapon_success', 2, investigator.san )
           encounter_destroyed( encounter )
         else
-          log << 'encounter.fanatiques.weapon_critical'
-          LLog.log( self, investigator,log, {} )
+          log_encounter(  investigator,'fanatiques.weapon_critical' )
           investigator.update( medaillon: true )
           encounter_destroyed( encounter )
         end
@@ -58,47 +53,41 @@ module GameCore
     end
 
     def resolve_encounter_profonds( investigator, encounter )
-      log = 'encounter.profonds.common'
       if investigator.sign
         san_loss = 1
-        replace_encounter_in_monsters_stack( encounter )
         investigator.update_attribute( :sign, false )
-        log << 'encounter.profonds.sign'
+        investigator.loose_san( self, san_loss )
+        replace_encounter_in_monsters_stack( encounter )
+        log_encounter(  investigator,'profonds.sign', san_loss, investigator.san )
       else
         san_loss = 3
+        investigator.loose_san( self, san_loss )
         monster_spotted( encounter )
-        log << 'encounter.profonds.no_sign'
+        log_encounter(  investigator,'profonds.no_sign', san_loss, investigator.san )
       end
-      # TODO : créer les logs pour chaque partie de if. Faire la distinction entre ce qui soit avoir un résumé ou non.
-      investigator.loose_san( self, san_loss )
-      LLog.log( self, investigator,log,
-                { san_loss: san_loss, cur_san: investigator.san }, true  )
     end
 
     def resolve_encounter_goules( investigator, encounter )
-      log = ''
       if investigator.weapon
         san_loss = 3
         san_loss = 2 if GameCore::Dices.d6 >= 5
         san_loss -= 1 if investigator.sign
+        investigator.loose_san( self, san_loss )
         replace_encounter_in_monsters_stack( encounter )
-        log << 'encounter.goules.weapon'
+        log_encounter(  investigator,'goules.weapon', san_loss, investigator.san )
       else
         san_loss = 4
+        investigator.loose_san( self, san_loss )
         monster_spotted( encounter )
-        log << 'encounter.goules.no_weapon'
+        log_encounter(  investigator,'goules.no_weapon', san_loss, investigator.san )
       end
-      investigator.loose_san( self, san_loss )
-      LLog.log( self, investigator,log,
-                { san_loss: san_loss, cur_san: investigator.san }, true )
-
     end
 
     def resolve_encounter_reves( investigator, encounter )
-      investigator.loose_san( self, 2 )
-      LLog.log( self, investigator,'encounter.reves',
-                { san_loss: 2, cur_san: investigator.san }, true )
+      san_loss = 2
+      investigator.loose_san( self, san_loss )
       replace_encounter_in_monsters_stack( encounter )
+      log_encounter(  investigator,'reves', san_loss, investigator.san )
     end
 
     # Common methods
@@ -116,6 +105,17 @@ module GameCore
       encounter.destroy!
     end
 
+    def log_encounter( investigator, code, san_loss = nil, cur_san = nil )
+      data = {}
+      data['san_loss'] = san_loss if san_loss
+      data['san_loss'] = cur_san if cur_san
+
+      code = 'encounter.' + code
+      name_translation_method = I18n.t( code + '.name_translation' )
+
+      LLog.log( self, investigator,'encounter.' + code, {},
+                true, name_translation_method: name_translation_method )
+    end
 
   end
 end
