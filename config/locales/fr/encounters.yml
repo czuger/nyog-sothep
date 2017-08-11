@@ -20,23 +20,36 @@ fr:
       f: "Elle  sort de la brume et perds 1 points de SAN."
 
     goules:
-      common: "%{investigator_name} rencontre un pion goules."
-      weapon: "Il les élimine gràce à son arme mais perds #{san} points de SAN."
-      no_weapon: "Desarmé il s'enfuit et perds 4 points de SAN."
+      weapon:
+        m: "%{investigator_name} rencontre des goules. Il les élimine gràce à son arme mais perds #{san} points de SAN."
+        f: "%{investigator_name} rencontre des goules. Elle les élimine gràce à son arme mais perds #{san} points de SAN."
+      no_weapon:
+        m: "%{investigator_name} rencontre des goules. Desarmé il s'enfuit et perds 4 points de SAN."
+        f: "%{investigator_name} rencontre des goules. Desarmée elle s'enfuit et perds 4 points de SAN."
       helper: "Les goules font perdre 4 SAN a l'investigateur qui les rencontre. S'il a une arme les goules sont éliminées et l'investigateur perd un nombre aléatoire de SAN."
 
     profonds:
-      common: "%{investigator_name} rencontre un pion profonds."
-      sign: "Il les renvoie a l'aide de son signe protecteur, mais perds 1 point de SAN et son signe."
-      no_sign: "Il s'enfuit et perds 3 points de SAN."
+      sign:
+        m: "%{investigator_name} rencontre des profonds. Il les renvoie a l'aide de son signe protecteur, mais perds 1 point de SAN et son signe."
+        f: "%{investigator_name} rencontre des profonds. Il les renvoie a l'aide de son signe protecteur, mais perds 1 point de SAN et son signe."
+      no_sign:
+        m: "%{investigator_name} rencontre des profonds. Il s'enfuit et perds 3 points de SAN."
+        f: "%{investigator_name} rencontre des profonds. Il s'enfuit et perds 3 points de SAN."
       helper: "Les profonds font perdre 3 SAN a l'investigateur qui les rencontre. 1 SAN s'il possède un signe protecteur. Les profonds ne peuvent êtres placés que dans un port."
 
     fanatiques:
-      common: "%{investigator_name} rencontre un pion fanatiques."
-      no_weapon: "Sans armes, il s'en retourne d'ou il vient."
-      weapon_fail: "Il les menace de son arme mais leur détermination est plus forte. Il revient d'ou il vient."
-      weapon_success: "Il disperse les fanatiques. Mais l'action l'éprouve : il perds 2 points de SAN."
-      weapon_critical: "Il disperse les fanatiques."
+      no_weapon:
+        m: "%{investigator_name} rencontre des fanatiques. Sans armes, il s'en retourne d'ou il vient."
+        f: "%{investigator_name} rencontre des fanatiques. Sans armes, elle s'en retourne d'ou elle vient."
+      weapon_fail:
+        m: "%{investigator_name} rencontre des fanatiques. Il les menace de son arme mais leur détermination est plus forte. Il revient d'ou il vient."
+        f: "%{investigator_name} rencontre des fanatiques. Elle les menace de son arme mais leur détermination est plus forte. Elle revient d'ou elle vient."
+      weapon_success:
+        m: "%{investigator_name} rencontre des fanatiques. Il les disperse en les menaçants de son arme. Mais l'action l'éprouve : il perds 2 points de SAN."
+        f: "%{investigator_name} rencontre des fanatiques. Elle les disperse en les menaçants de son arme. Mais l'action l'éprouve : elle perds 2 points de SAN."
+      weapon_critical:
+        m: "%{investigator_name} rencontre des fanatiques. Il les disperse en les menaçants de son arme."
+        f: "%{investigator_name} rencontre des fanatiques. Elle les disperse en les menaçants de son arme."
       helper: "5 fanatiques sont nécessaires pour invoquer Nyog'Sothep. Si un investigateur possède une arme, il a une chance de disperser les fanatiques. Sinon ceux-ci lui bloquent le passage."
 
 
