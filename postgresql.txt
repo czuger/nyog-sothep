@@ -16,6 +16,8 @@ vim /etc/postgresql/9.4/main/pg_hba.conf
 
 # Ajouter la ligne
 local   all             nyog_sothep                             trust
+host    all             nyog_sothep     127.0.0.1/32            trust
+
 # Juste après
 # TYPE  DATABASE        USER            ADDRESS                 METHOD
 
