@@ -1,18 +1,24 @@
 fr:
   encounter:
     reves:
-      m: "%{investigator_name} rencontre un pion rêve et perds 2 points de SAN."
-      f: "%{investigator_name} rencontre un pion rêve et perds 2 points de SAN."
+      name_translation: 'preposition_1'
+      name_position_in_sentence: 'in'
+      m: "Les rêves %{investigator_name} sont perturbés par le professeur. Il perds 2 points de SAN."
+      f: "Les rêves %{investigator_name} sont perturbés par le professeur. Elle perds 2 points de SAN."
       helper: "Les rêves font perdre 2 points de SAN a l'investigateur qui les rencontre."
 
     habitants:
+      name_translation: 'regular'
+      name_position_in_sentence: 'in'
       m: "Les vilageois prennent %{investigator_name} pour un fanatique et le chassent du village. Il perd son médaillon et ne pourra plus passer par ce village au prochain tour."
       f: "Les vilageois prennent %{investigator_name} pour un fanatique et la chassent du village. Elle perd son médaillon et ne pourra plus passer par ce village au prochain tour."
       helper: "Les vialageois interdisent le passage a un investigateur s'il porte un médaillon."
 
     choses_brume:
-      m: "%{investigator_name} rencontre un pion choses de la brume. Il y passe son prochain tour."
-      f: "%{investigator_name} rencontre un pion choses de la brume. Elle y passe son prochain tour."
+      name_translation: 'regular'
+      name_position_in_sentence: 'start'
+      m: "%{investigator_name} passe son prochain tour à errer dans les brumes invoquées par le professeur."
+      f: "%{investigator_name} passe son prochain tour à errer dans les brumes invoquées par le professeur."
       helper: "Les choses de la brume font perdre un tour a l'investigateur qui les rencontre."
 
     back_from_misty_things:
@@ -21,33 +27,49 @@ fr:
 
     goules:
       weapon:
+        name_translation: 'regular'
+        name_position_in_sentence: 'start'
         m: "%{investigator_name} rencontre des goules. Il les élimine gràce à son arme mais perds #{san} points de SAN."
         f: "%{investigator_name} rencontre des goules. Elle les élimine gràce à son arme mais perds #{san} points de SAN."
       no_weapon:
+        name_translation: 'regular'
+        name_position_in_sentence: 'start'
         m: "%{investigator_name} rencontre des goules. Desarmé il s'enfuit et perds 4 points de SAN."
         f: "%{investigator_name} rencontre des goules. Desarmée elle s'enfuit et perds 4 points de SAN."
       helper: "Les goules font perdre 4 SAN a l'investigateur qui les rencontre. S'il a une arme les goules sont éliminées et l'investigateur perd un nombre aléatoire de SAN."
 
     profonds:
       sign:
+        name_translation: 'regular'
+        name_position_in_sentence: 'start'
         m: "%{investigator_name} rencontre des profonds. Il les renvoie a l'aide de son signe protecteur, mais perds 1 point de SAN et son signe."
         f: "%{investigator_name} rencontre des profonds. Il les renvoie a l'aide de son signe protecteur, mais perds 1 point de SAN et son signe."
       no_sign:
+        name_translation: 'regular'
+        name_position_in_sentence: 'start'
         m: "%{investigator_name} rencontre des profonds. Il s'enfuit et perds 3 points de SAN."
         f: "%{investigator_name} rencontre des profonds. Il s'enfuit et perds 3 points de SAN."
       helper: "Les profonds font perdre 3 SAN a l'investigateur qui les rencontre. 1 SAN s'il possède un signe protecteur. Les profonds ne peuvent êtres placés que dans un port."
 
     fanatiques:
       no_weapon:
+        name_translation: 'regular'
+        name_position_in_sentence: 'start'
         m: "%{investigator_name} rencontre des fanatiques. Sans armes, il s'en retourne d'ou il vient."
         f: "%{investigator_name} rencontre des fanatiques. Sans armes, elle s'en retourne d'ou elle vient."
       weapon_fail:
+        name_translation: 'regular'
+        name_position_in_sentence: 'start'
         m: "%{investigator_name} rencontre des fanatiques. Il les menace de son arme mais leur détermination est plus forte. Il revient d'ou il vient."
         f: "%{investigator_name} rencontre des fanatiques. Elle les menace de son arme mais leur détermination est plus forte. Elle revient d'ou elle vient."
       weapon_success:
+        name_translation: 'regular'
+        name_position_in_sentence: 'start'
         m: "%{investigator_name} rencontre des fanatiques. Il les disperse en les menaçants de son arme. Mais l'action l'éprouve : il perds 2 points de SAN."
         f: "%{investigator_name} rencontre des fanatiques. Elle les disperse en les menaçants de son arme. Mais l'action l'éprouve : elle perds 2 points de SAN."
       weapon_critical:
+        name_translation: 'regular'
+        name_position_in_sentence: 'start'
         m: "%{investigator_name} rencontre des fanatiques. Il les disperse en les menaçants de son arme."
         f: "%{investigator_name} rencontre des fanatiques. Elle les disperse en les menaçants de son arme."
       helper: "5 fanatiques sont nécessaires pour invoquer Nyog'Sothep. Si un investigateur possède une arme, il a une chance de disperser les fanatiques. Sinon ceux-ci lui bloquent le passage."

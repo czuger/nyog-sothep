@@ -2,16 +2,16 @@ fr:
   investigators:
     lemon:
       regular: 'Miss Lemon'
-      preposition_1: 'de Miss Lemon'
-      preposition_2: 'à Miss Lemon'
+      preposition_1: 'de miss Lemon'
+      preposition_2: 'à miss Lemon'
     hercule:
       regular: 'Hercule'
       preposition_1: "d'Hercule"
       preposition_2: 'à Hercule'
     poirot:
       regular: 'Mr Poirot'
-      preposition_1: 'de Mr Poirot'
-      preposition_2: 'à Mr Poirot'
+      preposition_1: 'de mr Poirot'
+      preposition_2: 'à mr Poirot'
     hastings:
       regular: 'Hastings'
       preposition_1: "d'Hastings"
