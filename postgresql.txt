@@ -1,0 +1,31 @@
+# Passer en utilisateur postgres
+sudo su postgres
+
+# Create nyog_sothep user
+createuser nyog_sothep
+
+# Run postgres
+psql
+
+# Dans postgres
+ALTER USER nyog_sothep CREATEDB;
+\q
+
+# Editer le pg_hba.conf
+vim /etc/postgresql/9.4/main/pg_hba.conf
+
+# Ajouter la ligne
+local   all             nyog_sothep                             trust
+# Juste après
+# TYPE  DATABASE        USER            ADDRESS                 METHOD
+
+# Quitter vim
+# Sortir de l'utilisateur pg
+
+# Redemarrer postgresql (commande specifique a debian, pg 9.4)
+sudo systemctl restart postgresql@9.4-main.service
+
+# Then
+rake db:create
+rake db:migrate
+
