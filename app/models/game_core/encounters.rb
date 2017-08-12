@@ -113,7 +113,7 @@ module GameCore
       code = 'encounter.' + code
       name_translation_method = I18n.t( code + '.name_translation' )
 
-      LLog.log( self, investigator,'encounter.' + code, {},
+      LLog.log( self, investigator,code, {},
                 true, name_translation_method: name_translation_method )
     end
 
