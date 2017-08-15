@@ -1,0 +1,31 @@
+%h1 Ia#show
+
+%table.table
+  %thead
+    %tr
+      %th Code name
+      %th Last location
+      %th Current location
+      %th Target destination
+      %th Forbidden city
+      %th San
+      %th Weapon
+      %th Medaillon
+      %th Sign
+      %th Spell
+      %th Aasm state
+
+  %tbody
+    - @game_board.i_investigators.order( 'code_name' ).each do |investigator|
+      %tr
+        %td= investigator.code_name
+        %td= investigator.last_location_code_name
+        %td= investigator.current_location_code_name
+        %td= investigator.ia_target_destination_code_name
+        %td= investigator.forbidden_city_code_name
+        %td= investigator.san
+        %td= investigator.weapon
+        %td= investigator.medaillon
+        %td= investigator.sign
+        %td= investigator.spell
+        %td= investigator.aasm_state

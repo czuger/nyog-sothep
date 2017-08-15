@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170719050852) do
+ActiveRecord::Schema.define(version: 20170815104920) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -58,7 +58,6 @@ ActiveRecord::Schema.define(version: 20170719050852) do
     t.datetime "created_at",                                                null: false
     t.datetime "updated_at",                                                null: false
     t.string   "gender",                          limit: 1,                 null: false
-    t.integer  "event_table",                               default: 1,     null: false
     t.string   "aasm_state",                                                null: false
     t.integer  "g_game_board_id",                                           null: false
     t.integer  "token_rotation",                                            null: false
