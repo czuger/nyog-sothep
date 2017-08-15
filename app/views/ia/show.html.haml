@@ -29,3 +29,17 @@
         %td= investigator.sign
         %td= investigator.spell
         %td= investigator.aasm_state
+
+%hr
+
+%table.table
+  %thead
+    %tr
+      %th Memory counter
+      %th Position
+
+  %tbody
+    - @game_board.i_inv_target_positions.order( 'memory_counter desc' ).each do |investigator|
+      %tr
+        %td= investigator.memory_counter
+        %td= investigator.position_code_name
