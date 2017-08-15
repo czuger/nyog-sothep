@@ -29,8 +29,9 @@ class ProfFakePosController < ApplicationController
             "#{@game_board.asked_fake_cities_count + 1} != #{cities_codes_names.count}" )
 
     ActiveRecord::Base.transaction do
+      trust_value = 1.0 / cities_codes_names.count
       cities_codes_names.each do |city|
-        IInvTargetPosition.find_or_create_by!( g_game_board_id: @game_board.id, position_code_name: city, memory_counter: 5 )
+        IInvTargetPosition.find_or_create_by!( g_game_board_id: @game_board.id, position_code_name: city, trust: trust_value )
       end
 
       @game_board.return_to_move_status!
