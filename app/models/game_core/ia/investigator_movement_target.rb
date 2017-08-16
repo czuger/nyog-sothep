@@ -39,9 +39,9 @@ module GameCore
       private
 
       def choose_random_location( investigator )
-        exclusion_list = exclusion_city_code_name +
+        exclusion_list = @exclusion_city_codes_names_list +
           [ investigator.current_location_code_name, investigator.last_location_code_name, investigator.ia_target_destination_code_name ]
-        target_position_code_name = GameCore::Map::City.random_city_code_name( exclusion_list.map( &:to_sym ) )
+        target_position_code_name = GameCore::Map::City.random_city_code_name( exclusion_list )
 
         raise "Can't find a random position : exclusion_list = #{exclusion_list.inspect}" unless target_position_code_name
         puts "#{translated_name} now change target randomly at #{target_position_code_name}" if IInvestigator::DEBUG_MOVEMENTS
@@ -83,7 +83,7 @@ module GameCore
 
         first_prof_position = @prof_positions.first
         # If we know where the prof is, every chasing investigator go there
-        @first_prof_position = first_prof_position[0] if first_prof_position[1] >= 0.9
+        @first_prof_position = first_prof_position[0] if first_prof_position && first_prof_position[1] >= 0.9
 
         @highest_trust = [ @prof_positions.map{ |e| e[1] } ].max
         @most_probable_prof_locations = []

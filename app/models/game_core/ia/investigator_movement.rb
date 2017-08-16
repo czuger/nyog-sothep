@@ -8,7 +8,7 @@ module GameCore
       # imt is the InvestigatorMovementTarget class
       def ia_play_movements( game_board, imt )
         if got_to_psy_check( game_board )
-          go_to_psy(game_board )
+          go_to_psy( game_board )
         else
           ia_invest_random_move( game_board, imt )
           movement_done!
@@ -44,7 +44,7 @@ module GameCore
              self.ia_target_destination_code_name == current_location_code_name ||
             imt.exclusion_city_codes_names_list.include?( self.ia_target_destination_code_name )
 
-            self.ia_target_destination_code_name = select_new_target( game_board, exclusion_city_codes_names_list )
+            self.ia_target_destination_code_name = imt.select_new_target( self )
           end
           # Otherwise, we continue the same way
         end
@@ -65,7 +65,7 @@ module GameCore
 
         if next_step_code_name
           raise "Next movement is forbidden. Forbidden_city = #{forbidden_city_code_name.inspect}, next_step_code_name = #{next_step_code_name.inspect}" if next_step_code_name == forbidden_city_code_name
-          raise "Next movement is destroyed city. next_step_code_name = #{next_step_code_name.inspect}" if destroyed_cities_codes_names.include?( next_step_code_name )
+          raise "Next movement is destroyed city. next_step_code_name = #{next_step_code_name.inspect}" if imt.exclusion_city_codes_names_list.include?( next_step_code_name )
 
           if next_step_code_name
             # When nyog sothep is invoked, investigators have to meet, so we don't move once we are at the good destination

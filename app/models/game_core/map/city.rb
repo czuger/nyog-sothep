@@ -12,8 +12,9 @@ module GameCore
         @@locations.keys
       end
 
+      # exclusion_list is an array of string
       def self.random_city_code_name( exclusion_list )
-        ( all_codes_names - exclusion_list ).sample
+        ( all_codes_names - exclusion_list.map( &:to_sym ) ).sample
       end
 
       def city?

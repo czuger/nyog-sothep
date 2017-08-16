@@ -52,7 +52,7 @@ module GameCore
     def investigators_move( prof )
       imt = GameCore::Ia::InvestigatorMovementTarget.new( self )
       ready_to_move_investigators.reload.each do |i|
-          i.ia_play_movements( self, prof, imt )
+          i.ia_play_movements( self, imt )
           i.save!
       end
       inv_movement_done!
