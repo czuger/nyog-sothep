@@ -30,8 +30,9 @@ class ProfFakePosController < ApplicationController
 
     ActiveRecord::Base.transaction do
       trust_value = 1.0 / cities_codes_names.count
+      @game_board.update_memory_counter
       cities_codes_names.each do |city|
-        IInvTargetPosition.find_or_create_by!( g_game_board_id: @game_board.id, position_code_name: city, trust: trust_value )
+        IInvTargetPosition.create!( g_game_board_id: @game_board.id, position_code_name: city, trust: trust_value )
       end
 
       @game_board.return_to_move_status!
