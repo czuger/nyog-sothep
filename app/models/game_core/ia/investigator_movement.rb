@@ -4,6 +4,7 @@ module GameCore
     module InvestigatorMovement
 
       include GameCore::Assertions
+      include GameCore::Ia::InvestigatorMovementTarget
 
       def ia_play_movements( game_board, _ )
         if got_to_psy_check( game_board )
@@ -77,24 +78,6 @@ module GameCore
           LLog.log( game_board, self, :cant_move, {} )
         end
 
-      end
-
-      def select_new_target( game_board, destroyed_cities_codes_names )
-        # We chase the professor only if we have a weapon. Otherwise, we walk randomly
-        if weapon && game_board.i_inv_target_positions.count > 0
-          target_position_code_name = game_board.i_inv_target_positions.reject{ |e| e.position_code_name == current_location_code_name}.sample&.position_code_name
-          puts "#{translated_name} now change target to chase the professor at #{target_position_code_name}" if IInvestigator::DEBUG_MOVEMENTS
-        end
-
-        # If Ia didn't find an interesant target, then we choose one randomly
-        unless target_position_code_name
-          exclusion_list = destroyed_cities_codes_names + [ current_location_code_name.to_sym ]
-          target_position_code_name = GameCore::Map::City.random_city_code_name( exclusion_list )
-          raise "Can't find a random position : exclusion_list = #{exclusion_list.inspect}" unless target_position_code_name
-          puts "#{translated_name} now change target randomly at #{target_position_code_name}" if IInvestigator::DEBUG_MOVEMENTS
-        end
-
-        target_position_code_name
       end
 
       def regular_move_token( gb, token, dest_loc )
