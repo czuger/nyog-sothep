@@ -7,7 +7,6 @@ class IInvestigator < ApplicationRecord
   include GameCore::IInvestigatorFight
   include GameCore::IInvestigatorTurn
 
-  validates :event_table, inclusion: { in: [ 1, 2 ] }
   validates :gender, inclusion: { in: %w( m f ) }
 
   belongs_to :g_game_board

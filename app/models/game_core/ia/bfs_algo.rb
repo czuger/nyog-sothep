@@ -24,7 +24,7 @@ module GameCore
 
           GameCore::Map::Location.destinations_codes_names_from_code_name( current_name ).each do |next_location|
             next if next_location == forbidden_city_code_name
-            next if destroyed_cities_codes_names.include?( next_location )
+            next if destroyed_cities_codes_names.include?( next_location.to_s )
             unless came_from.has_key?( next_location )
               frontier << next_location
               came_from[ next_location ] = current_name

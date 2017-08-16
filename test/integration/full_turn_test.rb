@@ -9,7 +9,6 @@ class FullTurnTest < ActionDispatch::IntegrationTest
 
     @gb = create( :g_game_board_with_event_ready_to_move_investigators )
     @gb.update_attribute( :aasm_state, 'prof_move' )
-    @gb.i_investigators.last.update( { event_table: 2 } )
     @avoidance_list = [ [ 17, 1 ], [ 14, 1 ], [ 10, 2 ], [ 11, 2 ], [ 4, 2 ], [ 9, 1 ] ]
 
     get '/'
@@ -45,11 +44,6 @@ class FullTurnTest < ActionDispatch::IntegrationTest
 
           inv = @gb.next_moving_investigator
           raise "No investigators : #{@gb.i_investigators.inspect}" unless inv
-
-          # puts [ dices_result, inv.event_table ].inspect
-          if @avoidance_list.include?( [ dices_result, inv.event_table ] )
-            dices_result = 1
-          end
 
           GameCore::Events.stubs( :event_dices ).returns( dices_result )
           MapController.any_instance.stubs( :event_dices ).returns( dices_result )

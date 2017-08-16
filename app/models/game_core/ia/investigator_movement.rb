@@ -4,23 +4,20 @@ module GameCore
     module InvestigatorMovement
 
       include GameCore::Assertions
-      include GameCore::Ia::InvestigatorMovementTarget
 
-      def ia_play_movements( game_board, _ )
+      # imt is the InvestigatorMovementTarget class
+      def ia_play_movements( game_board, imt )
         if got_to_psy_check( game_board )
           go_to_psy(game_board )
         else
-          ia_invest_random_move( game_board )
+          ia_invest_random_move( game_board, imt )
           movement_done!
         end
       end
 
       private
 
-      def ia_invest_random_move( game_board )
-
-        destroyed_cities_codes_names = game_board.g_destroyed_cities.pluck( :city_code_name )
-        destroyed_cities_codes_names.map! &:to_sym
+      def ia_invest_random_move( game_board, imt )
 
         if game_board.nyog_sothep_invoked
 
@@ -40,12 +37,14 @@ module GameCore
           end
 
         else
-          # If we does not have a destination or we are at destination or our destination has been destroyed, then we chose one
-          if self.ia_target_destination_code_name.nil? ||
+          # If does not have a destination or we are at destination or our destination has been destroyed, then we chose one
+          # Also if investigator has a weapon he recompute it's target in order to chase the prof
+          # (as the prof move each turn he need to recompute it's target each move)
+          if weapon || self.ia_target_destination_code_name.nil? ||
              self.ia_target_destination_code_name == current_location_code_name ||
-             destroyed_cities_codes_names.include?( self.ia_target_destination_code_name.to_sym )
+            imt.exclusion_city_codes_names_list.include?( self.ia_target_destination_code_name )
 
-            self.ia_target_destination_code_name = select_new_target( game_board, destroyed_cities_codes_names )
+            self.ia_target_destination_code_name = select_new_target( game_board, exclusion_city_codes_names_list )
           end
           # Otherwise, we continue the same way
         end
@@ -54,15 +53,15 @@ module GameCore
           raise "Current position should not be the same as target : #{current_position_code_name} == #{goal_code_name}"
         end
 
-        move_to_target( game_board, destroyed_cities_codes_names )
+        move_to_target( game_board, imt )
       end
 
-      def move_to_target( game_board, destroyed_cities_codes_names )
+      def move_to_target( game_board, imt )
 
         puts "#{translated_name} is at #{current_location_code_name} and is heading to #{self.ia_target_destination_code_name}" if IInvestigator::DEBUG_MOVEMENTS
         next_step_code_name, _ = GameCore::Ia::BfsAlgo.find_next_dest_to_goal(
           current_location_code_name, self.ia_target_destination_code_name,
-          forbidden_city_code_name: forbidden_city_code_name, destroyed_cities_codes_names: destroyed_cities_codes_names )
+          forbidden_city_code_name: forbidden_city_code_name, destroyed_cities_codes_names: imt.exclusion_city_codes_names_list )
 
         if next_step_code_name
           raise "Next movement is forbidden. Forbidden_city = #{forbidden_city_code_name.inspect}, next_step_code_name = #{next_step_code_name.inspect}" if next_step_code_name == forbidden_city_code_name

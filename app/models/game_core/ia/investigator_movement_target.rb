@@ -1,30 +1,36 @@
 module GameCore
   module Ia
-    module InvestigatorMovementTarget
+    class InvestigatorMovementTarget
+
+      attr_reader :exclusion_city_codes_names_list
+
+      def initialize( game_board, exclusion_city_codes_names_list = [] )
+        @game_board = game_board
+        @exclusion_city_codes_names_list = exclusion_city_codes_names_list + game_board.g_destroyed_cities.pluck( :city_code_name )
+
+        @prof_positions_covered_by_inv = Set.new
+
+        refresh_prof_positions
+      end
 
       # exclusion_city_code_name : a list of all unavaliable city (destroyed, forbiden, etc ...). An array of strings
-      def select_new_target( game_board, exclusion_city_code_name )
+      def select_new_target( investigator )
 
-        # prof_position is an array of [ [ 'oxford', 0.9 ], 'lowel', 0.8 ], etc ... ]
-        prof_positions = game_board.i_inv_target_positions.order( 'trust DESC' ).pluck( :position_code_name, :trust )
-        prof_positions.reject!{ |e| exclusion_city_code_name.include?( e[0] ) }
-
-        if weapon
+        if investigator.weapon
           # If we have a weapon, then we chase the prof
-          target_position_code_name = guess_prof_location( game_board, prof_positions )
+          target_position_code_name = guess_chasing_prof_location
           puts "#{translated_name} now change target to chase the professor at #{target_position_code_name}" if IInvestigator::DEBUG_MOVEMENTS
 
-          target_position_code_name = choose_random_location( exclusion_city_code_name ) unless target_position_code_name
+          # If we couldn't get the prof position, we pick one randomly
+          target_position_code_name = choose_random_location( investigator ) unless target_position_code_name
         else
           # Otherwise we flee from him
-          target_position_code_name = guess_prof_location( game_board, prof_positions )
-          if target_position_code_name
-            #
+          prof_position_code_name = guess_avoiding_prof_location
 
-          else
-            # In this case we don't know where the prof is, so we walk randomly
-            target_position_code_name = choose_random_location( exclusion_city_code_name )
-          end
+          # If we couldn't get the prof position, we pick one randomly
+          prof_position_code_name = choose_random_location( investigator ) unless target_position_code_name
+
+          # TODO : We need to find a city far away from the prof
         end
 
         target_position_code_name
@@ -32,30 +38,59 @@ module GameCore
 
       private
 
-      def choose_random_location( exclusion_city_code_name )
-        exclusion_list = exclusion_city_code_name + [ current_location_code_name, last_location_code_name, ia_target_destination_code_name ]
+      def choose_random_location( investigator )
+        exclusion_list = exclusion_city_code_name +
+          [ investigator.current_location_code_name, investigator.last_location_code_name, investigator.ia_target_destination_code_name ]
         target_position_code_name = GameCore::Map::City.random_city_code_name( exclusion_list.map( &:to_sym ) )
+
         raise "Can't find a random position : exclusion_list = #{exclusion_list.inspect}" unless target_position_code_name
         puts "#{translated_name} now change target randomly at #{target_position_code_name}" if IInvestigator::DEBUG_MOVEMENTS
+
         target_position_code_name
       end
 
-      def guess_prof_location( game_board, prof_positions )
-        first_prof_position = prof_positions.first
-        # If we know where the prof is, every chasing investigator go there
-        return first_prof_position[0] if first_prof_position[1] >= 0.9
+      def guess_avoiding_prof_location
+        return @first_prof_position if @first_prof_position
+
+        unless @most_probable_prof_locations.empty?
+          return @most_probable_prof_locations.sample
+        end
+      end
+
+      def guess_chasing_prof_location
+        return @first_prof_position if @first_prof_position
 
         # So here we don't have a sure prof position, we will guess it
-        investigators_targets = game_board.i_investigator.pluck( :ia_target_destination_code_name )
         # In fact we send investigators everywhere we have information
-        prof_positions.each do |pp|
-          # If nobody already chasing the prof on that pos, then we go there
-          return pp[0] unless investigators_targets.include?( pp[0] )
+        @prof_positions.each do |pp|
+          # If nobody is already chasing the prof on that pos, then we go there
+          unless @prof_positions_covered_by_inv.include?( pp[0] )
+            @prof_positions_covered_by_inv << pp[0]
+            return pp[0]
+          end
         end
 
         # If all slots are filled, then choose randomly
-        random_pp = prof_positions.sample
-        random_pp.first if random_pp
+        unless @prof_positions.empty?
+          return @prof_positions.sample[0]
+        end
+      end
+
+      def refresh_prof_positions
+        # @prof_positions is an array of [ [ 'oxford', 0.9 ], 'lowel', 0.8 ], etc ... ]
+        @prof_positions = @game_board.i_inv_target_positions.order( 'trust DESC' ).pluck( :position_code_name, :trust )
+        @prof_positions.reject!{ |e| @exclusion_city_codes_names_list.include?( e[0] ) }
+
+        first_prof_position = @prof_positions.first
+        # If we know where the prof is, every chasing investigator go there
+        @first_prof_position = first_prof_position[0] if first_prof_position[1] >= 0.9
+
+        @highest_trust = [ @prof_positions.map{ |e| e[1] } ].max
+        @most_probable_prof_locations = []
+        @prof_positions.each do |e|
+          @most_probable_prof_locations << e[0] if e[1] >= @highest_trust - 0.1
+        end
+
       end
 
     end
