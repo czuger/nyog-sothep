@@ -41,7 +41,7 @@ ActiveRecord::Schema.define(version: 20170815105922) do
 
   create_table "i_inv_target_positions", force: :cascade do |t|
     t.integer  "g_game_board_id"
-    t.integer  "memory_counter",                   null: false
+    t.integer  "memory_counter",     default: 0,   null: false
     t.datetime "created_at",                       null: false
     t.datetime "updated_at",                       null: false
     t.string   "position_code_name",               null: false

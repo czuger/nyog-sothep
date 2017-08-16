@@ -66,9 +66,11 @@ class GGameBoard < ApplicationRecord
         i.next_turn
       end
 
+      # Removing very low trusted positions
+      # IInvTargetPosition.where( g_game_board_id: id ).where( 'trust < 0.1' ).delete_all # Let's see examples
       # Prof positions are forgotten over time
-      IInvTargetPosition.where( g_game_board_id: id ).update_all( 'memory_counter = memory_counter - 1' )
-      IInvTargetPosition.where( g_game_board_id: id ).where( 'memory_counter <= 0' ).delete_all
+      IInvTargetPosition.where( g_game_board_id: id ).update_all( 'memory_counter = memory_counter + 1' )
+      IInvTargetPosition.where( g_game_board_id: id ).where( 'memory_counter >= 5' ).delete_all
 
       increment!( :turn )
 
