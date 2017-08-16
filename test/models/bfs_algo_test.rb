@@ -50,7 +50,25 @@ class BfsAlgoTest < ActiveSupport::TestCase
 
   test 'one step distance city' do
     cities = GameCore::Ia::BfsAlgo.find_cities_around_city( :taunton, 2 )
+    assert_includes cities[2], :milford
+  end
+
+  test '3 setp distance city from water area' do
+    cities = GameCore::Ia::BfsAlgo.find_cities_around_city( :nantucket_sound, 3 )
+    assert_includes cities[2], :barnstable
+    refute_includes cities[1], :buzzards_bay
+    refute_includes cities[2], :buzzards_bay
+    refute_includes cities[3], :buzzards_bay
+  end
+
+  test '3 setp distance city from nantucket' do
+    cities = GameCore::Ia::BfsAlgo.find_cities_around_city( :nantucket, 3 )
     # p cities
+    assert_empty cities[1]
+    refute_includes cities[2], :buzzards_bay
+    assert_includes cities[2], :chatham
+    refute_includes cities[3], :buzzards_bay
+    assert_includes cities[3], :innsmouth
   end
 
 end
