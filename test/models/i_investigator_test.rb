@@ -5,7 +5,7 @@ class IInvestigatorTest < ActiveSupport::TestCase
   def setup
     @gb = create( :g_game_board_with_cross_border )
     @investigator = @gb.i_investigators.first
-    @imt = GameCore::Ia::InvestigatorMovementTarget.new( self )
+    @imt = GameCore::Ia::InvestigatorMovementTarget.new( @gb )
   end
 
   test 'go to the psy if low SAN' do

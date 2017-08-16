@@ -50,7 +50,7 @@ module GameCore
         end
 
         if !game_board.nyog_sothep_invoked && self.ia_target_destination_code_name == current_location_code_name
-          raise "Current position should not be the same as target : #{current_position_code_name} == #{goal_code_name}"
+          raise "Current position should not be the same as target : #{current_location_code_name} == #{goal_code_name}"
         end
 
         move_to_target( game_board, imt )

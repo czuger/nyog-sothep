@@ -12,7 +12,7 @@ class BfsAlgoTest < ActiveSupport::TestCase
   # end
 
   test 'should return nil if destination unreachable' do
-    destroyed_cities_codes_names = [ :oxford, :woonsocket ]
+    destroyed_cities_codes_names = [ 'oxford', 'woonsocket' ]
     result, _ = GameCore::Ia::BfsAlgo.find_next_dest_to_goal( :pascoag, :milford,
                                                               destroyed_cities_codes_names: destroyed_cities_codes_names )
     refute result

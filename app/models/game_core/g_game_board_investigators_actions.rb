@@ -8,7 +8,7 @@ module GameCore
           when 'inv_move'
             # The regular case, we move then we play events
 
-            investigators_move( prof )
+            investigators_move
             investigators_actions( prof )
 
           # This is where we go after a break (user asked for options)
@@ -49,7 +49,7 @@ module GameCore
       end
     end
 
-    def investigators_move( prof )
+    def investigators_move
       imt = GameCore::Ia::InvestigatorMovementTarget.new( self )
       ready_to_move_investigators.reload.each do |i|
           i.ia_play_movements( self, imt )

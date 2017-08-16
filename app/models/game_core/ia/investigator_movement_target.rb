@@ -85,10 +85,10 @@ module GameCore
         # If we know where the prof is, every chasing investigator go there
         @first_prof_position = first_prof_position[0] if first_prof_position && first_prof_position[1] >= 0.9
 
-        @highest_trust = [ @prof_positions.map{ |e| e[1] } ].max
+        highest_trust = @prof_positions.map{ |e| e[1] }.max
         @most_probable_prof_locations = []
         @prof_positions.each do |e|
-          @most_probable_prof_locations << e[0] if e[1] >= @highest_trust - 0.1
+          @most_probable_prof_locations << e[0] if e[1] >= highest_trust - 0.1
         end
 
       end
