@@ -37,11 +37,11 @@
     %tr
       %th Trust
       %th Position
-      %th Memory counter
+      %th Turn
 
   %tbody
     - @game_board.i_inv_target_positions.order( 'trust desc' ).each do |investigator|
       %tr
         %td= investigator.trust
         %td= investigator.position_code_name
-        %td= investigator.memory_counter
+        %td= investigator.turn

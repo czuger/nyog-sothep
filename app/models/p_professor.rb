@@ -15,7 +15,7 @@ class PProfessor < ApplicationRecord
       city = current_location
       # Le prof n'est jamais repéré dans l'eau
       unless city.water_area?
-        IInvTargetPosition.create!( g_game_board_id: game_board.id, position_code_name: city.code_name, trust: 1 )
+        IInvTargetPosition.create!( g_game_board_id: game_board.id, position_code_name: city.code_name, trust: 1, turn: game_board.turn )
       end
     end
   end

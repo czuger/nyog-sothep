@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170815105922) do
+ActiveRecord::Schema.define(version: 20170816151555) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -41,11 +41,11 @@ ActiveRecord::Schema.define(version: 20170815105922) do
 
   create_table "i_inv_target_positions", force: :cascade do |t|
     t.integer  "g_game_board_id"
-    t.integer  "memory_counter",     default: 0,   null: false
     t.datetime "created_at",                       null: false
     t.datetime "updated_at",                       null: false
     t.string   "position_code_name",               null: false
     t.float    "trust",              default: 0.5, null: false
+    t.integer  "turn",                             null: false
     t.index ["g_game_board_id"], name: "index_i_inv_target_positions_on_g_game_board_id", using: :btree
   end
 

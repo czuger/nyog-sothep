@@ -66,19 +66,19 @@ class GGameBoard < ApplicationRecord
         i.next_turn
       end
 
-      update_memory_counter
+      update_i_inv_target_positions
       increment!( :turn )
 
       inv_events_done!
     end
   end
 
-  def update_memory_counter
+  def update_i_inv_target_positions
     # Removing very low trusted positions
     # IInvTargetPosition.where( g_game_board_id: id ).where( 'trust < 0.1' ).delete_all # Let's see examples
     # Prof positions are forgotten over time
-    IInvTargetPosition.where( g_game_board_id: id ).update_all( 'memory_counter = memory_counter + 1' )
-    IInvTargetPosition.where( g_game_board_id: id ).where( 'memory_counter >= 5' ).delete_all
+    IInvTargetPosition.where( g_game_board_id: id ).where( "turn < #{turn-5}" ).delete_all
+    IInvTargetPosition.where( g_game_board_id: id ).update_all( 'trust = trust - 0.1' )
   end
 
   def professor_pick_start_monsters
