@@ -49,8 +49,8 @@ module GameCore
           # Otherwise, we continue the same way
         end
 
-        if !game_board.nyog_sothep_invoked && self.ia_target_destination_code_name == current_location_code_name
-          raise "Current position should not be the same as target : #{current_location_code_name} == #{goal_code_name}"
+        if !game_board.nyog_sothep_invoked && !weapon && self.ia_target_destination_code_name == current_location_code_name
+          raise "Current position should not be the same as target : #{self.ia_target_destination_code_name} == #{current_location_code_name}"
         end
 
         move_to_target( game_board, imt )
@@ -61,7 +61,7 @@ module GameCore
         puts "#{translated_name} is at #{current_location_code_name} and is heading to #{self.ia_target_destination_code_name}" if IInvestigator::DEBUG_MOVEMENTS
         next_step_code_name, _ = GameCore::Ia::BfsAlgo.find_next_dest_to_goal(
           current_location_code_name, self.ia_target_destination_code_name,
-          forbidden_city_code_name: forbidden_city_code_name, destroyed_cities_codes_names: imt.exclusion_city_codes_names_list )
+          imt.exclusion_city_codes_names_list + [ forbidden_city_code_name ] )
 
         if next_step_code_name
           raise "Next movement is forbidden. Forbidden_city = #{forbidden_city_code_name.inspect}, next_step_code_name = #{next_step_code_name.inspect}" if next_step_code_name == forbidden_city_code_name

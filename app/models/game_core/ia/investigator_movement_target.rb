@@ -31,6 +31,9 @@ module GameCore
           prof_position_code_name = choose_random_location( investigator ) unless target_position_code_name
 
           # TODO : We need to find a city far away from the prof
+          far_cities_dict = GameCore::Ia::BfsAlgo.find_cities_around_city( investigator.current_location_code_name, 5, @exclusion_city_codes_names_list )
+          far_cities_codes_names_array = far_cities_dict[5]
+          target_position_code_name = far_cities_codes_names_array
         end
 
         target_position_code_name

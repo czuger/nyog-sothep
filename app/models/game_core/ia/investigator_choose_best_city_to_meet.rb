@@ -37,7 +37,7 @@ module GameCore
 
             next_step, _ = GameCore::Ia::BfsAlgo.find_next_dest_to_goal(
               investigator.current_location_code_name,
-              cn, destroyed_cities_codes_names: destroyed_cities_codes_names )
+              cn, destroyed_cities_codes_names )
 
             if next_step
               # We found a path to the city

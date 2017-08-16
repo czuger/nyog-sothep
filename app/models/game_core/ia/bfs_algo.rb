@@ -3,7 +3,7 @@ module GameCore
 
     class BfsAlgo
 
-      def self.find_next_dest_to_goal( current_position_code_name, goal_code_name, forbidden_city_code_name: nil, destroyed_cities_codes_names: [] )
+      def self.find_next_dest_to_goal( current_position_code_name, goal_code_name, exclusion_cities_codes_names = [] )
 
         raise 'Goal is nil' unless goal_code_name
 
@@ -23,8 +23,7 @@ module GameCore
           end
 
           GameCore::Map::Location.destinations_codes_names_from_code_name( current_name ).each do |next_location|
-            next if next_location == forbidden_city_code_name
-            next if destroyed_cities_codes_names.include?( next_location.to_s )
+            next if exclusion_cities_codes_names.include?( next_location.to_s )
             unless came_from.has_key?( next_location )
               frontier << next_location
               came_from[ next_location ] = current_name
@@ -49,7 +48,7 @@ module GameCore
         [ next_step, distance ]
       end
 
-      def self.find_cities_around_city( current_position_code_name, distance )
+      def self.find_cities_around_city( current_position_code_name, distance, exclusion_cities_codes_names = [] )
 
         current_position_code_name = current_position_code_name.to_sym
 
@@ -63,6 +62,7 @@ module GameCore
           for city_cn in cities_to_check_cn
             neighbour_cities_cn = GameCore::Map::Location.get_location( city_cn ).destinations
             neighbour_cities_cn.reject!{ |e| e.water_area? || processed_cities.include?( e.code_name ) }
+            neighbour_cities_cn.reject!{ |e| exclusion_cities_codes_names.include?( e.to_s ) }
             neighbour_cities_cn.map!{ |e| e.code_name }
 
             near_cities_cn[ step ] ||= []
