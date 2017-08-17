@@ -13,11 +13,14 @@ module GameCore
 
         @prof_positions_covered_by_inv = Set.new
 
+        @trust_evaluator = GameCore::Ia::ProfPositionTrust::Evaluator.new( @game_board )
         refresh_prof_positions
       end
 
       # exclusion_city_code_name : a list of all unavaliable city (destroyed, forbiden, etc ...). An array of strings
       def select_new_target( investigator )
+
+        @trust_evaluator.refresh_all
 
         if investigator.weapon
           # If we have a weapon, then we chase the prof

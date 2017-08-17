@@ -18,12 +18,13 @@ module GameCore
         private
 
         def eliminate_improbable_inputs_in_turn
-          current_target_positions = @target_positions.select{ |e| e.turn == @game_board.turn }
+          current_target_positions = @target_positions.select{ |e| e[0] == @game_board.turn }
 
           duplicates_current_positions = {}
           multi_positions_in_turn = []
           all_positions_in_turn = []
 
+          # We count the number of positions in a turn (in case we have more than one fake position during one turn)
           current_target_positions.each do |ctp|
             _, _, position_code_name = ctp
             duplicates_current_positions[ position_code_name ] ||= 0
@@ -50,9 +51,6 @@ module GameCore
               # If we found some, then they are bad positions.
               @game_board.i_inv_target_positions.where( turn: @game_board.turn, position_code_name: bad_positions ).update_all( trust: 0 )
             end
-          else
-            # Shouldn't happen
-            raise
           end
 
         end
