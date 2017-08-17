@@ -1,5 +1,8 @@
 module GameCore
   module Ia
+
+    # This class is used to evaluate the prof position and select a target for the investigator
+    # accordingly to he chasing the prof or not.
     class InvestigatorMovementTarget
 
       attr_reader :exclusion_city_codes_names_list
