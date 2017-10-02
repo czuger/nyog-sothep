@@ -15,5 +15,6 @@
 // This is required for CRFS management
 //= require jquery_ujs
 
-//= require jquery-ui.min.js
+//= require bin/jquery-ui.min.js
+
 //= require_tree .

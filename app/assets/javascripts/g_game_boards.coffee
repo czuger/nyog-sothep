@@ -34,5 +34,6 @@ prof_and_nyog_drag_n_drop = ->
       console.log( prof_position )
       console.log( nyog_sothep_position )
 
-# $(document).ready(scroll_screen_to_lowest_elem)
-$(document).on('turbolinks:load', prof_and_nyog_drag_n_drop)
+
+$(window).load ->
+  prof_and_nyog_drag_n_drop()

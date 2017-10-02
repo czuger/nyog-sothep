@@ -68,7 +68,8 @@ monster_selector_hoovering = ->
       m_id = $(this).attr( 'monster_id' )
       $( "#monster-selector-#{m_id}-info" ).hide()
 
-$(document).on('turbolinks:load', investigator_informations_hoovering)
-$(document).on('turbolinks:load', log_summary_hoovering)
-$(document).on('turbolinks:load', monster_token_on_map_hoovering)
-$(document).on('turbolinks:load', monster_selector_hoovering)
+$(window).load ->
+  investigator_informations_hoovering()
+  log_summary_hoovering()
+  monster_token_on_map_hoovering()
+  monster_selector_hoovering()
