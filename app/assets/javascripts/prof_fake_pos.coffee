@@ -65,6 +65,7 @@ city_selection = ->
     enable_disable_submit_button(max_selected_cities_cnt)
 
 
-$(document).on('turbolinks:load', city_selection_init)
-$(document).on('turbolinks:load', city_selection)
-$(document).on('turbolinks:load', cities_validation)
+$(window).load ->
+  city_selection_init()
+  city_selection()
+  cities_validation()
