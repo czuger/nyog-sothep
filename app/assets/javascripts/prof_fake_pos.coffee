@@ -14,7 +14,9 @@ cities_validation = ->
       cities_ids.push( $( d ).attr( 'city_id' ) )
 
     gb_id = $( '#game_board_id' ).val()
-    $.post "/g_game_boards/#{gb_id}/prof_fake_pos", cities_ids: cities_ids
+    $.post "/g_game_boards/#{gb_id}/prof_fake_pos", cities_ids: cities_ids,
+      # Without turbolinks we need to auto reload.
+      (data) -> window.location.reload()
 
 enable_disable_submit_button = (max_selected_cities_cnt) ->
 
