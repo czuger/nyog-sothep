@@ -16,7 +16,12 @@ cities_validation = ->
     gb_id = $( '#game_board_id' ).val()
     $.post "/g_game_boards/#{gb_id}/prof_fake_pos", cities_ids: cities_ids,
       # Without turbolinks we need to auto reload.
-      (data) -> window.location.reload()
+      # (data) -> window.location.reload()
+      (data) ->
+        document.open()
+        document.write(data)
+        document.close()
+
 
 enable_disable_submit_button = (max_selected_cities_cnt) ->
 
