@@ -5,7 +5,7 @@ class MapController < ApplicationController
   include GameLogic::GameBoardStatusRedirection
   include GameLogic::ShowMap
 
-  def show
+  def play
     set_show_map_common_variables
 
     unless @game_board.game_lost?

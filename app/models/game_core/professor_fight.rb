@@ -20,7 +20,7 @@ module GameCore
           # Sinon il est a l'endroit d'un des investigateurs
           trust_value = 1.0 / investigators.count
           investigators.each do |i|
-            IInvTargetPosition.find_or_create_by!( g_game_board_id: game_board.id, position_code_name: i.current_location_code_name, trust: trust_value )
+            IInvTargetPosition.find_or_create_by!( g_game_board_id: game_board.id, position_code_name: i.current_location_code_name, trust: trust_value, turn: game_board.turn )
           end
         end
       end
