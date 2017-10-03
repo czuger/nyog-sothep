@@ -1,7 +1,5 @@
 class ProfessorActionsController < ApplicationController
 
-  include GameLogic::GameBoardStatusRedirection
-
   def breed
     set_game_board
 
@@ -71,7 +69,7 @@ class ProfessorActionsController < ApplicationController
         @game_board.investigators_ia_play( @prof )
         @game_board.save!
 
-        check_prof_asked_for_fake_cities{ redirect_to g_game_board_play_url( @game_board ) }
+        redirect_to g_game_board_play_url( @game_board )
       else
         @game_board.save!
         redirect_to g_game_board_game_lost_url

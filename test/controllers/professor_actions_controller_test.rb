@@ -78,7 +78,7 @@ class ProfessorActionsControllerTest < ActionDispatch::IntegrationTest
     # IInvestigator.expects(:event_dices).returns(5)
 
     get move_g_game_board_professor_actions_url( g_game_board_id: @gb.id, zone_id: @dest.code_name )
-    assert_redirected_to new_g_game_board_prof_fake_pos_url
+    assert_redirected_to g_game_board_play_url
   end
 
   test 'professor should move then be asked for fake cities - test with all investigators' do
@@ -90,7 +90,7 @@ class ProfessorActionsControllerTest < ActionDispatch::IntegrationTest
     # IInvestigator.expects(:event_dices).returns(5)
 
     get move_g_game_board_professor_actions_url( g_game_board_id: @gb.id, zone_id: @dest.code_name )
-    assert_redirected_to new_g_game_board_prof_fake_pos_url
+    assert_redirected_to g_game_board_play_url
   end
 
   test 'professor should breed' do

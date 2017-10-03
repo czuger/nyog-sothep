@@ -11,7 +11,9 @@ class ProfFakePosControllerTest < ActionDispatch::IntegrationTest
     @gb.ask_prof_for_fake_cities!
     @gb.update( asked_fake_cities_count: 2, asked_fake_cities_investigator: @le_capitaine )
 
-    get new_g_game_board_prof_fake_pos_url( g_game_board_id: @gb.id)
+    @gb.reload
+
+    get g_game_board_play_path( g_game_board_id: @gb.id )
     assert_response :success
     assert_select '#investigator', 'Investigateur actuel : le capitaine
 

@@ -1,21 +1,7 @@
-#board
-  = render partial: 'prof_dest'
-  = render partial: 'prof_map'
+- if @game_board.game_lost?
+  = render partial: 'game_lost'
+- elsif @game_board.prof_asked_for_fake_cities?
+  = render partial: 'prof_fake_pos_asked'
+- else
+  = render partial: 'regular_prof_move'
 
-#infos
-  #investigator
-    = render partial: 'prof_info'
-
-#log_summary
-  = render partial: 'event_log_summaries'
-
-  -#%hr
-  -##events-area
-  -#  %ul
-  -#    - @groupped_events.keys.each do |event_turn|
-  -#      %hr.event_separator
-  -#      - @groupped_events[ event_turn ].each do |message|
-  -#        %li= message
-
-= hidden_field_tag :game_board_id, @game_board.id
-= hidden_field_tag :investigator_id, @current_investigator&.id

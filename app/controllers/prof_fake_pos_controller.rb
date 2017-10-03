@@ -2,13 +2,6 @@ class ProfFakePosController < ApplicationController
 
   include GameLogic::ShowMap
 
-  def new
-    set_show_map_common_variables
-
-    @nb_cities = @game_board.asked_fake_cities_count
-    @cities = GameCore::Map::City.all.reject{ |c| c.code_name == @prof_location.code_name }
-  end
-
   def create
     set_game_board
 

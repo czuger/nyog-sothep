@@ -1,12 +1,17 @@
 fr:
 
   map:
-    show:
+    play:
       go_psy: 'Voir un psychanalyste'
       professeur: 'Le professeur'
       dont_breed: 'Ne pas invoquer de monstres'
       prof_attack: "Attaquer %{investigator_name}"
       prof_dont_attack: "Ne pas attaquer l'investigateur"
+    prof_fake_pos_asked:
+      inv_turn: 'Investigateur actuel : %{inv_name}'
+      info:
+        one: Selectionnez une ville ou le professeur pourrait être. Votre position actuelle sera ajoutée a la liste.
+        other: Selectionnez %{count} villes ou le professeur pourrait être. Votre position actuelle sera ajoutée a la liste.
 
     prof_info:
       invoke_nyog_sothep: "Invoquer Nyog'Sothep"

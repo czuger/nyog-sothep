@@ -6,13 +6,6 @@ fr:
     new:
       info: Selectionnez une position de départ du professeur et une position ou vous invoquerez nyog sothep.
 
-  prof_fake_pos:
-    new:
-      inv_turn: 'Investigateur actuel : %{inv_name}'
-      info:
-        one: Selectionnez une ville ou le professeur pourrait être. Votre position actuelle sera ajoutée a la liste.
-        other: Selectionnez %{count} villes ou le professeur pourrait être. Votre position actuelle sera ajoutée a la liste.
-
   errors:
     no_more_monsters: 'Le professeur ne peux plus prendre de monstre. Le stock est vide.'
 

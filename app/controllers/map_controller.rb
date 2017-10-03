@@ -2,31 +2,38 @@ require 'pp'
 
 class MapController < ApplicationController
 
-  include GameLogic::GameBoardStatusRedirection
   include GameLogic::ShowMap
 
   def play
     set_show_map_common_variables
 
-    unless @game_board.game_lost?
-      check_prof_asked_for_fake_cities{}
+    if @game_board.game_lost?
 
-      @prof_in_port = @prof_location.port?
-      @prof_monsters = @game_board.p_monsters
+    elsif @game_board.prof_asked_for_fake_cities?
 
-      @aval_destinations = @prof_location.destinations
+      @nb_cities = @game_board.asked_fake_cities_count
+      @cities = GameCore::Map::City.all.reject{ |c| c.code_name == @prof_location.code_name }
 
-      @monster_at_prof_location = PMonsterPosition.where(
-        g_game_board_id: @game_board.id, location_code_name: @prof_location.code_name ).exists?
-
-      @nyog_sothep_invocation_possible = @game_board.check_nyog_sothep_invocation( @prof )
     else
-      redirect_to g_game_board_game_lost_url
+      # Regular prof play
+      prof_play
     end
 
   end
 
-  def game_lost
+  private
+
+  def prof_play
+    @prof_in_port = @prof_location.port?
+    @prof_monsters = @game_board.p_monsters
+
+    @aval_destinations = @prof_location.destinations
+
+    @monster_at_prof_location = PMonsterPosition.where(
+      g_game_board_id: @game_board.id, location_code_name: @prof_location.code_name ).exists?
+
+    @nyog_sothep_invocation_possible = @game_board.check_nyog_sothep_invocation( @prof )
   end
+
 
 end

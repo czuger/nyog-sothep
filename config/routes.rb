@@ -4,7 +4,7 @@ Rails.application.routes.draw do
 
     resources :log, only:[ :index, :show ]
 
-    resource :prof_fake_pos, only: [ :create, :new ]
+    resource :prof_fake_pos, only: [ :create ]
 
     resource :professor_actions, only: [] do
       member do
