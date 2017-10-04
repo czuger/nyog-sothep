@@ -83,6 +83,7 @@ ActiveRecord::Schema.define(version: 20171004085705) do
     t.string   "name_translation_method"
     t.string   "event_translation_summary_code"
     t.index ["actor_type", "actor_id"], name: "index_l_logs_on_actor_type_and_actor_id", using: :btree
+    t.index ["event_translation_summary_code"], name: "index_l_logs_on_event_translation_summary_code", using: :btree
     t.index ["g_game_board_id"], name: "index_l_logs_on_g_game_board_id", using: :btree
   end
 
