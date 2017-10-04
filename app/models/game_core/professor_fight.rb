@@ -7,7 +7,7 @@ module GameCore
       unless investigators.empty?
         fight_occurs = false
         investigators.each do |i|
-          unless i.weapon || i.medaillon
+          unless i.weapon ||
             fight( game_board, i )
             fight_occurs = true
           end
