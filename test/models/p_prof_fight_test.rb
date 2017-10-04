@@ -10,42 +10,64 @@ class PProfFightTest < ActiveSupport::TestCase
     @inv = create( :i_investigator, g_game_board: @gb, current_location_code_name: @prof.current_location_code_name )
   end
 
-  test 'professor should attack investigator and loose 3 pv' do
+  test 'Investigator should attack professor and harm im 3 pv' do
     Kernel.stubs(:rand).returns(6)
-    @inv.update_attribute( :weapon, true )
-    assert_no_difference '@inv.san' do
-      assert_difference '@prof.hp', -3 do
-        @prof.check_for_investigators_to_fight_in_city( @gb )
+    @inv.update( weapon: true )
+    assert_no_difference '@inv.reload.san' do
+      assert_difference '@prof.reload.hp', -3 do
+        @prof.check_for_investigators_to_fight_in_city( @gb, prof_move: false )
       end
     end
   end
 
-  test 'professor should attack investigator and loose 2 pv' do
+  test 'Investigator should attack professor and harm im 2 pv' do
     Kernel.stubs(:rand).returns(3)
-    @inv.update_attribute( weapon: true )
-    assert_difference '@prof.hp', -2 do
-      @prof.check_for_investigators_to_fight_in_city( @game_board )
+    @inv.update( weapon: true )
+    assert_no_difference '@inv.reload.san' do
+      assert_difference '@prof.reload.hp', -2 do
+        @prof.check_for_investigators_to_fight_in_city( @gb, prof_move: false )
+      end
     end
   end
 
-  test 'professor should attack investigator and miss him' do
+  test 'Investigator should attack professor and miss him' do
     Kernel.stubs(:rand).returns(1)
-    @inv.update_attribute( weapon: true )
-    assert_difference '@prof.hp', -2 do
-      @prof.check_for_investigators_to_fight_in_city( @game_board )
+    @inv.update( weapon: true )
+    assert_no_difference '@inv.reload.san' do
+      assert_no_difference '@prof.reload.hp' do
+        @prof.check_for_investigators_to_fight_in_city( @gb, prof_move: false )
+      end
+    end
+  end
+
+  test 'professor should not attack investigator' do
+    [ [true, true], [true, false], [false, true] ].each do |weapon_medaillon_status|
+      @inv.update( weapon: weapon_medaillon_status[0], medaillon: weapon_medaillon_status[1] )
+      assert_no_difference '@inv.reload.san' do
+        assert_no_difference '@prof.reload.hp' do
+          @prof.check_for_investigators_to_fight_in_city( @gb )
+        end
+      end
     end
   end
 
   test 'professor should fight and investigator is protected by sign' do
-    @investigator.update( weapon: false, sign: true )
-    @prof.check_for_investigators_to_fight_in_city( @game_board )
-    assert_redirected_to g_game_board_play_url( attacking_investigator_id: @investigator.id )
+    @inv.update( weapon: false, sign: true )
+    assert_difference '@inv.reload.san', -2 do
+      assert_no_difference '@prof.reload.hp' do
+        @prof.check_for_investigators_to_fight_in_city( @gb )
+      end
+    end
+    refute @inv.sign
   end
 
   test 'professor should fight and investigator is crushed' do
-    @investigator.update( weapon: false, sign: false )
-    @prof.check_for_investigators_to_fight_in_city( @game_board )
-    assert_redirected_to g_game_board_play_url( attacking_investigator_id: @investigator.id )
+    @inv.update( weapon: false, sign: false )
+    assert_difference '@inv.reload.san', -4 do
+      assert_no_difference '@prof.reload.hp' do
+        @prof.check_for_investigators_to_fight_in_city( @gb )
+      end
+    end
   end
 
 end

@@ -5,6 +5,7 @@ class LLog < ApplicationRecord
 
   serialize :event_translation_data
 
+  # TODO : turn summery to a named variable
   def self.log( game_board, actor, event_translation_code, event_translation_data, summary = false, name_translation_method: nil )
 
     aasm_state = actor.aasm_state if actor.kind_of?( IInvestigator )
