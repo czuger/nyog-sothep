@@ -16,25 +16,25 @@ module GameCore
           case rr
             when 3
               san_loss = 4
-              LLog.log( self, nil, :nyog_sothep_repelling_failed_bad, { san_loss: 4 } )
+              LLog.log( self, nil, :nyog_sothep_repelling_failed_bad, event_translation_data: { san_loss: 4 } )
             when 2
               san_loss = 2
-              LLog.log( self, nil, :nyog_sothep_repelling_failed_bad, { san_loss: 2 } )
+              LLog.log( self, nil, :nyog_sothep_repelling_failed_bad,  event_translation_data: { san_loss: 2 } )
             when 0, 1
               # Nothing happens
-              LLog.log( self, nil, :nyog_sothep_repelling_failed, {} )
+              LLog.log( self, nil, :nyog_sothep_repelling_failed )
             when -1
               # TODO : Move Nyog Sothep randomly
-              LLog.log( self, nil, :nyog_sothep_sent_to_a_city, {} )
+              LLog.log( self, nil, :nyog_sothep_sent_to_a_city )
             else
-              LLog.log( self, nil, :nyog_sothep_repelled, {} )
+              LLog.log( self, nil, :nyog_sothep_repelled )
               loose_game!
           end
 
           if san_loss
             investigators_on_nyog_sothep_city.each do |i|
               i.loose_san( self, san_loss )
-              LLog.log( self, i, :nyog_sothep_repelling_failed_bad_inv_loss, { san_loss: san_loss, cur_san: i.san } )
+              LLog.log( self, i, :nyog_sothep_repelling_failed_bad_inv_loss,  event_translation_data: { san_loss: san_loss, cur_san: i.san } )
             end
           end
 
@@ -96,11 +96,11 @@ module GameCore
       investigators_on_nyog_sothep_city.each do |i|
         if i.nyog_sothep_already_seen
           LLog.log( self, i, :nyog_sothep_first_encounter,
-                                { san_loss: 2, cur_san: i.san }, true )
+                    event_translation_data: { san_loss: 2, cur_san: i.san }, event_translation_summary_code: 'loose_san' )
           i.loose_san( self, 2 )
         else
           LLog.log( self, i, :nyog_sothep_regular_encounter,
-                                { san_loss: 4, cur_san: i.san }, true )
+                    event_translation_data: { san_loss: 4, cur_san: i.san }, event_translation_summary_code: 'loose_san' )
           i.nyog_sothep_already_seen = true
           i.loose_san( self, 4 )
         end

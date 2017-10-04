@@ -32,7 +32,8 @@ class PProfessor < ApplicationRecord
 
   def loose_life( gb, investigator, amount )
     decrement!( :hp, amount )
-    LLog.log( gb, investigator,'log.prof_hit', { life_loss: amount, cur_life: hp }, true )
+    LLog.log( gb, investigator,'log.prof_hit', event_translation_data: { life_loss: amount, cur_life: hp },
+              event_translation_summary_code: 'prof_fight.hit' )
 
     # TODO : implement gamover on professor death
   end

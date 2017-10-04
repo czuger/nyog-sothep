@@ -64,7 +64,8 @@ module GameCore
       name_translation_method = I18n.t( log_event_code + '.name_translation' )
 
       LLog.log( game_board, self, log_event_code,
-                san_hash, summary, name_translation_method: name_translation_method )
+                event_translation_data: san_hash, event_translation_summary_code: summary,
+                name_translation_method: name_translation_method )
     end
   end
 end

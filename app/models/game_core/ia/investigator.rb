@@ -19,7 +19,8 @@ module GameCore
         self.increment!( :san, san )
         going_to_psy!
 
-        LLog.log( game_board, self, 'log.go_psy', { san_gain: san, cur_san: self.san }, true )
+        LLog.log( game_board, self, 'log.go_psy',
+                  event_translation_data: { san_gain: san, cur_san: self.san }, event_translation_summary_code: 'gain_san' )
 
       end
     end

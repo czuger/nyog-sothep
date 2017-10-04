@@ -57,7 +57,7 @@ module GameCore
     end
 
     def die( game_board )
-      LLog.log( game_board, self,"actions.result.crazy", {}, true )
+      LLog.log( game_board, self,"actions.result.crazy", event_translation_summary_code: 'inv_crazy' )
       game_board.p_monster_positions.create!(
         location_code_name: current_location_code_name, code_name: 'fanatiques', discovered: true, token_rotation: rand( -15 .. 15 ) )
       aasm_die!
