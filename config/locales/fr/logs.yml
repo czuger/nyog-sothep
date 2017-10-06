@@ -1,5 +1,18 @@
 fr:
 
+  log_summary:
+    nyog_cant_move:
+      m: "Tour %{tour_no} : Le professeur et nyog sothep ne peuvent pas bouger ce tour."
+      f: "Tour %{tour_no} : Le professeur et nyog sothep ne peuvent pas bouger ce tour."
+
+    inv_cant_move:
+      m: "Tour %{tour_no} : %{investigator_name} ne peut pas bouger"
+      f: "Tour %{tour_no} : %{investigator_name} ne peut pas bouger"
+
+    inv_crazy:
+      m: '%{investigator_name} est éliminé.'
+      f: '%{investigator_name} est éliminée.'
+
   log:
 
     nyog_sothep_first_encounter:

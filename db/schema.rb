@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171004085705) do
+ActiveRecord::Schema.define(version: 20171006084129) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -71,20 +71,22 @@ ActiveRecord::Schema.define(version: 20171004085705) do
   end
 
   create_table "l_logs", force: :cascade do |t|
-    t.integer  "g_game_board_id",                null: false
-    t.integer  "turn",                           null: false
+    t.integer  "g_game_board_id",                         null: false
+    t.integer  "turn",                                    null: false
     t.string   "actor_type"
     t.integer  "actor_id"
     t.string   "actor_aasm_state"
-    t.string   "event_translation_code",         null: false
-    t.string   "event_translation_data",         null: false
-    t.datetime "created_at",                     null: false
-    t.datetime "updated_at",                     null: false
+    t.string   "event_translation_code",                  null: false
+    t.string   "event_translation_data",                  null: false
+    t.datetime "created_at",                              null: false
+    t.datetime "updated_at",                              null: false
     t.string   "name_translation_method"
-    t.string   "event_translation_summary_code"
+    t.boolean  "log_gender",              default: false
+    t.boolean  "log_gender_summary",      default: false
+    t.boolean  "summary",                 default: false
     t.index ["actor_type", "actor_id"], name: "index_l_logs_on_actor_type_and_actor_id", using: :btree
-    t.index ["event_translation_summary_code"], name: "index_l_logs_on_event_translation_summary_code", using: :btree
     t.index ["g_game_board_id"], name: "index_l_logs_on_g_game_board_id", using: :btree
+    t.index ["summary"], name: "index_l_logs_on_summary", using: :btree
   end
 
   create_table "m_monsters", force: :cascade do |t|
