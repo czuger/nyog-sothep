@@ -1,18 +1,22 @@
 fr:
 
   fight:
-    gun_shot: '%{investigator_name} tire sur le professeur et lui fait perdre %{life_loss} HP -> %{cur_life} HP.'
-      summary: 'Le prof perd %{life_loss} HP.'
+    gun_shot:
+      log: '%{investigator_name} tire sur le professeur et lui fait perdre %{life_loss} HP -> %{cur_life} HP.'
+      log_summary: 'Le prof perd %{life_loss} HP.'
 
-    gun_miss: '%{investigator_name} tire sur le professeur et le rate.'
-      summary: '%{investigator_name} manque le professeur'
+    gun_miss:
+      log: '%{investigator_name} tire sur le professeur et le rate.'
+      log_summary: '%{investigator_name} manque le professeur'
 
     sign_protect:
-      m: "%{investigator_name} rencontre le professeur. Il se protège avec son signe mais perds 2 points de SAN et son signe."
-      f: "%{investigator_name} rencontre le professeur. Elle se protège avec son signe mais perds 2 points de SAN et son signe."
-      summary:
+      log:
+        m: "%{investigator_name} rencontre le professeur. Il se protège avec son signe mais perds 2 points de SAN et son signe."
+        f: "%{investigator_name} rencontre le professeur. Elle se protège avec son signe mais perds 2 points de SAN et son signe."
+      log_summary:
         "%{investigator_name} perds %{san_loss} SAN"
 
-    no_protection: "%{investigator_name} rencontre le professeur et perds 4 points de SAN."
-      summary:
+    no_protection:
+      log: "%{investigator_name} rencontre le professeur et perds 4 points de SAN."
+      log_summary:
         "%{investigator_name} perds %{san_loss} SAN"

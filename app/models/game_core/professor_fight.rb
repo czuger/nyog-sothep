@@ -48,7 +48,7 @@ module GameCore
             when 2..5
               loose_life( gb, investigator, 2 )
             when 1
-              LLog.log( gb, investigator, 'log.prof_missed' )
+              LLog.log( gb, investigator, 'fight.prof_missed' )
             else
               raise "Quantic perturbation : roll = #{result}"
           end
@@ -57,13 +57,13 @@ module GameCore
         elsif investigator.sign
           investigator.loose_san( gb, 2 )
           investigator.update( sign: false )
-          LLog.log( gb, investigator, 'prof_fight.sign_protect', true,
+          LLog.log( gb, investigator, 'fight.sign_protect', true,
                     { san_loss: 2, cur_san: investigator.san },  )
           # gb.inv_repelled!
 
         else
           investigator.loose_san( gb, 4 )
-          LLog.log( gb, investigator, 'prof_fight.no_protection', true,
+          LLog.log( gb, investigator, 'fight.no_protection', true,
                     { san_loss: 4, cur_san: investigator.san  } )
           # gb.inv_repelled!
 

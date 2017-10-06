@@ -74,7 +74,7 @@ module GameCore
           end
         else
           # TODO : translate event
-          LLog.log( game_board, self, :cant_move )
+          LLog.log( game_board, self, 'movement.cant_move' )
         end
 
       end

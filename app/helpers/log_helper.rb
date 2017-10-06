@@ -10,12 +10,12 @@ module LogHelper
       params[ :investigator_name ] = ( log.name_translation_method ? act.translated_name( log.name_translation_method ) : act.translated_name )
     end
 
-    translation_code += '.summary' if log.summary
-
     if summary
-      translation_code += '.' + act.gender if log.log_gender_summary
+      translation_code += '.log_summary'
+      translation_code += ('.' + act.gender) if log.log_gender_summary
     else
-      translation_code += '.' + act.gender if log.log_gender
+      translation_code += '.log'
+      translation_code += ('.' + act.gender) if log.log_gender
     end
 
     I18n.t( translation_code, params )

@@ -78,7 +78,7 @@ class IInvestigator < ApplicationRecord
 
   end
 
-  def translated_name( translation_type= :regular )
+  def translated_name( translation_type= 'beginning' )
     I18n.t( "investigators.#{code_name}.#{translation_type}" )
   end
 

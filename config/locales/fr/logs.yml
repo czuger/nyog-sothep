@@ -5,14 +5,6 @@ fr:
       m: "Tour %{tour_no} : Le professeur et nyog sothep ne peuvent pas bouger ce tour."
       f: "Tour %{tour_no} : Le professeur et nyog sothep ne peuvent pas bouger ce tour."
 
-    inv_cant_move:
-      m: "Tour %{tour_no} : %{investigator_name} ne peut pas bouger"
-      f: "Tour %{tour_no} : %{investigator_name} ne peut pas bouger"
-
-    inv_crazy:
-      m: '%{investigator_name} est éliminé.'
-      f: '%{investigator_name} est éliminée.'
-
   log:
 
     nyog_sothep_first_encounter:
@@ -37,7 +29,3 @@ fr:
     nyog_sothep_regular_encounter:
       m: '%{investigator_name} rencontre Nyog Sothep et perds %{san_loss} SAN -> %{cur_san} SAN.'
       f: '%{investigator_name} rencontre Nyog Sothep et perds %{san_loss} SAN -> %{cur_san} SAN.'
-
-    go_psy:
-      m: "%{investigator_name} va voir un psychanalyste. Il gagne %{san_gain} points de SAN mais passe son prochain tour."
-      f: "%{investigator_name} va voir un psychanalyste. Elle gagne %{san_gain} points de SAN mais passe son prochain tour."

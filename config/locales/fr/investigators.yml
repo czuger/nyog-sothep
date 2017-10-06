@@ -1,26 +1,32 @@
 fr:
   investigators:
     lemon:
-      regular: 'Miss Lemon'
-      preposition_1: 'de miss Lemon'
-      preposition_2: 'à miss Lemon'
+      beginning: 'Miss Lemon'
+      middle_1: 'miss Lemon'
+      middle_2: 'de miss Lemon'
+      middle_3: 'à miss Lemon'
     hercule:
-      regular: 'Hercule'
-      preposition_1: "d'Hercule"
-      preposition_2: 'à Hercule'
+      beginning: 'Hercule'
+      middle_1: 'Hercule'
+      middle_2: "d'Hercule"
+      middle_3: 'à Hercule'
     poirot:
-      regular: 'Mr Poirot'
-      preposition_1: 'de mr Poirot'
-      preposition_2: 'à mr Poirot'
+      beginning: 'Mr Poirot'
+      middle_1: 'mr Poirot'
+      middle_2: 'de mr Poirot'
+      middle_3: 'à mr Poirot'
     hastings:
-      regular: 'Hastings'
-      preposition_1: "d'Hastings"
-      preposition_2: 'à Hastings'
+      beginning: 'Hastings'
+      middle_1: 'Hastings'
+      middle_2: "d'Hastings"
+      middle_3: 'à Hastings'
     le_capitaine:
-      regular: 'le capitaine'
-      preposition_1: 'du capitaine'
-      preposition_2: 'au capitaine'
+      beginning: 'Le capitaine'
+      middle_1: 'le capitaine'
+      middle_2: 'du capitaine'
+      middle_3: 'au capitaine'
     sandy:
-      regular: 'Sandy'
-      preposition_1: 'de Sandy'
-      preposition_2: 'à Sandy'
+      beginning: 'Sandy'
+      middle_1: 'Sandy'
+      middle_2: 'de Sandy'
+      middle_3: 'à Sandy'
