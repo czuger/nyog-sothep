@@ -80,8 +80,8 @@ module GameCore
         end
 
         # If all slots are filled, then choose randomly
-        unless @prof_positions.empty?
-          return @prof_positions.sample
+        unless @most_probable_prof_locations.empty?
+          return @most_probable_prof_locations.sample
         end
       end
 
