@@ -18,6 +18,8 @@ fr:
         log:
           m: "Dans une malle, %{investigator_name} trouve de vieux manuscritsqui montrent comment renvoyer l'immonde. Il trouve le sort de renvoi et perds 3 points de SAN"
           f: "Dans une malle, %{investigator_name} trouve de vieux manuscritsqui montrent comment renvoyer l'immonde. Elle trouve le sort de renvoi et perds 3 points de SAN"
+        log_summary:
+          "%{investigator_name} perd %{san_loss} points de SAN."
 
       e4:
         name_translation: 'middle_1'
@@ -30,6 +32,8 @@ fr:
         log:
           m: "Un ermite a l'esprit un peu dérangé donne %{investigator_name} un signe protecteur et lui parle de créatures insensées. Il perds 2 points de SAN."
           f: "Un ermite a l'esprit un peu dérangé donne %{investigator_name} un signe protecteur et lui parle de créatures insensées. Elle perds 2 points de SAN."
+        log_summary:
+          "%{investigator_name} perd %{san_loss} points de SAN."
 
       e6:
         name_translation: 'beginning'
@@ -48,6 +52,8 @@ fr:
         log:
           m: "Près d'une sortie d'égout, un cadavre de profond. Auprès de lui %{investigator_name} trouve un médaillon mais perds 3 SAN."
           f: "Près d'une sortie d'égout, un cadavre de profond. Auprès de lui %{investigator_name} trouve un médaillon mais perds 3 SAN."
+        log_summary:
+          "%{investigator_name} perd %{san_loss} points de SAN."
 
       e9:
         name_translation: 'beginning'
@@ -60,6 +66,8 @@ fr:
         log:
           m: "La lecture d'un gros livre d'ocultisme apprend %{investigator_name} le sort de renvoi. Il perds 2 points de SAN mais rejoue immédiatement."
           f: "La lecture d'un gros livre d'ocultisme apprend %{investigator_name} le sort de renvoi. Elle perds 2 points de SAN mais rejoue immédiatement."
+        log_summary:
+          "%{investigator_name} perd %{san_loss} points de SAN."
 
       e11:
         name_translation: 'beginning'
@@ -72,6 +80,8 @@ fr:
         log:
           m: "%{investigator_name} perds 2 points de SAN."
           f: "%{investigator_name} perds 2 points de SAN."
+        log_summary:
+          "%{investigator_name} perd %{san_loss} points de SAN."
 
       e13:
         name_translation: 'beginning'
@@ -90,6 +100,8 @@ fr:
         log:
           m: "Dans la bibliothèque, un vieux livre qui parle des légendes locales: certaines créatures brumeuses y sont citées. Vous perdez 2 points de SAN, mais vous pouvez citer deux villes au Professeur: it vous dit si Nyog'Sothep doit y apparaître."
           f: "Dans la bibliothèque, un vieux livre qui parle des légendes locales: certaines créatures brumeuses y sont citées. Vous perdez 2 points de SAN, mais vous pouvez citer deux villes au Professeur: it vous dit si Nyog'Sothep doit y apparaître."
+        log_summary:
+          "%{investigator_name} perd %{san_loss} points de SAN."
 
       e16:
         name_translation: 'beginning'
@@ -108,3 +120,5 @@ fr:
         log:
           m: "%{investigator_name} perdes son arme (si il en avait une) et 2 points de SAN."
           f: "%{investigator_name} perdes son arme (si elle en avait une) et 2 points de SAN."
+        log_summary:
+          "%{investigator_name} perd %{san_loss} points de SAN."

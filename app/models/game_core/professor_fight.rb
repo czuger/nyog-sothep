@@ -48,7 +48,7 @@ module GameCore
             when 2..5
               loose_life( gb, investigator, 2 )
             when 1
-              LLog.log( gb, investigator, 'fight.prof_missed' )
+              LLog.log( gb, investigator, 'fight.gun_miss' )
             else
               raise "Quantic perturbation : roll = #{result}"
           end

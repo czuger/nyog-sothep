@@ -12,12 +12,16 @@ fr:
         log:
           m: "%{investigator_name} découvre un repaire de profonds. Il perds 2 points de SAN, mais trouve arme."
           f: "%{investigator_name} découvre un repaire de profonds. Elle perds 2 points de SAN, mais trouve arme."
+        log_summary:
+          "%{investigator_name} perd %{san_loss} points de SAN."
 
       e3:
         name_translation: 'beginning'
         log:
           m: "%{investigator_name} rencontre un vieillard qui lui parle des créatures de l'au dela et lui donne un signe protecteur. Il perds 2 points de SAN."
           f: "%{investigator_name} rencontre un vieillard qui lui parle des créatures de l'au dela et lui donne un signe protecteur. Elle perds 2 points de SAN."
+        log_summary:
+          "%{investigator_name} perd %{san_loss} points de SAN."
 
       e4:
         name_translation: 'middle_2'
@@ -36,12 +40,16 @@ fr:
         log:
           m: "Dans le grenier d'une vieille maison %{investigator_name} trouve le sort de renvoi mais perds 2 points de SAN"
           f: "Dans le grenier d'une vieille maison %{investigator_name} trouve le sort de renvoi mais perds 2 points de SAN"
+        log_summary:
+          "%{investigator_name} perd %{san_loss} points de SAN."
 
       e7:
         name_translation: 'beginning'
         log:
           m: "%{investigator_name} ere dans un cimetière plein de goules. Il perds 2 points de SAN et son arme (s'il en avait une)"
           f: "%{investigator_name} ere dans un cimetière plein de goules. Elle perds 2 points de SAN et son arme (si elle en avait une)"
+        log_summary:
+          "%{investigator_name} perd %{san_loss} points de SAN."
 
       e8:
         name_translation: 'middle_2'
@@ -66,12 +74,16 @@ fr:
         log:
           m: "%{investigator_name} est aggressé par des adorateurs déments. Il perd 2 points de SAN, mais trouve une arme."
           f: "%{investigator_name} est aggressé par des adorateurs déments. Elle perd 2 points de SAN, mais trouve une arme."
+        log_summary:
+          "%{investigator_name} perd %{san_loss} points de SAN."
 
       e12:
         name_translation: 'beginning'
         log:
           m: "%{investigator_name} trouve un manuscrit qui parle de Nyog'Sothep. Il gagne le sort de renvoi et perds 3 points de SAN."
           f: "%{investigator_name} trouve un manuscrit qui parle de Nyog'Sothep. Elle gagne le sort de renvoi et perds 3 points de SAN."
+        log_summary:
+          "%{investigator_name} perd %{san_loss} points de SAN."
 
       e13:
         name_translation: 'beginning'

@@ -1,16 +1,10 @@
 fr:
   movement:
     goes:
-      log:
-        m: '%{investigator_name} se déplace %{dest_cn}'
-        f: '%{investigator_name} se déplace %{dest_cn}'
+      log: '%{investigator_name} se déplace %{dest_cn}.'
     return:
-      log:
-        m: '%{investigator_name} retourne %{dest_cn}'
-        f: '%{investigator_name} retourne %{dest_cn}'
+      log: '%{investigator_name} retourne %{dest_cn}.'
     cant_move:
-      log:
-        m: "Tour %{tour_no} : %{investigator_name} ne peut pas bouger"
-        f: "Tour %{tour_no} : %{investigator_name} ne peut pas bouger"
+      log: '%{investigator_name} ne peut pas bouger.'
     prof_move:
       log: 'Le professeur se déplace'
