@@ -74,7 +74,7 @@ module GameCore
           end
         else
           LLog.log( game_board, self, 'errors.ia_couldnt_find_target', true,
-                    { investigator_name: investigator_name, current_location_code_name: current_location_code_name,
+                    { current_location_code_name: current_location_code_name,
                       ia_target_destination_code_name: ia_target_destination_code_name } )
         end
 
