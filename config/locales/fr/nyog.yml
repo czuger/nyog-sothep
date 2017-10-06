@@ -1,0 +1,39 @@
+fr:
+
+  nyog:
+
+    cant_move:
+      log: "Le professeur et nyog sothep ne peuvent pas bouger ce tour."
+      log_summary: "Nyog Sothep ne bouge pas."
+
+    first_encounter:
+      log: '%{investigator_name} rencontre Nyog Sothep pour la première fois et perds %{san} SAN -> %{cur_san} SAN.'
+      log_summary: "%{investigator_name} perd %{san_loss} points de SAN."
+
+    regular_encounter:
+      log: '%{investigator_name} rencontre Nyog Sothep et perds %{san_loss} SAN -> %{cur_san} SAN.'
+      log_summary: "%{investigator_name} perd %{san_loss} points de SAN."
+
+    repelling_failed_bad_really_bad:
+      log: 'Le renvoi de Nyog Sothep échoue et les investigateurs perdent chacun 4 SAN.'
+      log_summary: "Les investigateurs perdent 4 SAN."
+
+    repelling_failed_bad_really:
+      log: 'Le renvoi de Nyog Sothep échoue et les investigateurs perdent chacun 2 SAN.'
+      log_summary: "Les investigateurs perdent 2 SAN."
+
+    repelling_failed:
+      log: 'Le renvoi de Nyog Sothep échoue.'
+      log_summary: 'Le renvoi de Nyog Sothep échoue.'
+
+    sent_to_a_city:
+      log: 'Nyog Sothep est envoyé dans une autre ville (non implémenté).'
+      log_summary: 'Nyog Sothep est repoussé.'
+
+    repelled:
+      log: 'Nyog Sothep est renvoyé. La partie est terminée.'
+      log_summary: 'Vous avez perdu.'
+
+    destroyed_city:
+      log: 'Nyog Sothep se déplace %{dest_cn}. La ville est détruite.'
+      log_summary: '%{dc_name} est détruite.'

@@ -16,18 +16,18 @@ module GameCore
           case rr
             when 3
               san_loss = 4
-              LLog.log( self, nil, :nyog_sothep_repelling_failed_bad, true, { san_loss: 4 } )
+              LLog.log( self, nil, 'nyog.repelling_failed_really_bad', true, { san_loss: 4 } )
             when 2
               san_loss = 2
-              LLog.log( self, nil, :nyog_sothep_repelling_failed_bad,  true, { san_loss: 2 } )
+              LLog.log( self, nil, 'nyog.repelling_failed_bad',  true, { san_loss: 2 } )
             when 0, 1
               # Nothing happens
-              LLog.log( self, nil, :nyog_sothep_repelling_failed )
+              LLog.log( self, nil, 'nyog.repelling_failed' )
             when -1
               # TODO : Move Nyog Sothep randomly
-              LLog.log( self, nil, :nyog_sothep_sent_to_a_city )
+              LLog.log( self, nil, 'nyog.sent_to_a_city' )
             else
-              LLog.log( self, nil, :nyog_sothep_repelled )
+              LLog.log( self, nil, 'nyog.repelled' )
               loose_game!
           end
 
@@ -68,13 +68,14 @@ module GameCore
 
           if nyog_and_prof_sothep_can_not_move?
             # Nyog sothep and the professor are forbidden to move
-            LLog.log( self, prof, 'nyog_cant_move' )
+            LLog.log( self, nil, 'nyog.cant_move', true )
             return false
           end
 
           self.nyog_sothep_current_location_code_name = dest_loc.code_name
 
           GDestroyedCity.destroy_city( self, dest_loc.code_name )
+          LLog.log( self, nil, 'nyog.destroyed_city', true, { dest_cn: dest_loc.code_name, dc_name: dest_loc.code_name.capitalize } )
         end
       end
       true
@@ -95,14 +96,14 @@ module GameCore
       investigators_on_nyog_sothep_city = alive_investigators.where( spell: true ).where( current_location_code_name: nyog_sothep_current_location_code_name )
       investigators_on_nyog_sothep_city.each do |i|
         if i.nyog_sothep_already_seen
-          LLog.log( self, i, :nyog_sothep_first_encounter, true,
-                    { san_loss: 2, cur_san: i.san } )
-          i.loose_san( self, 2 )
-        else
-          LLog.log( self, i, :nyog_sothep_regular_encounter, true,
-                    { san_loss: 4, cur_san: i.san } )
-          i.nyog_sothep_already_seen = true
           i.loose_san( self, 4 )
+          LLog.log( self, i, 'nyog.first_encounter', true,
+                    { san_loss: 4, cur_san: i.san } )
+        else
+          i.loose_san( self, 2 )
+          LLog.log( self, i, 'nyog.regular_encounter', true,
+                    { san_loss: 2, cur_san: i.san } )
+          i.nyog_sothep_already_seen = true
         end
       end
       investigators_on_nyog_sothep_city

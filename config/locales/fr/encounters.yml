@@ -72,11 +72,15 @@ fr:
         log:
           m: "%{investigator_name} rencontre des fanatiques. Sans armes, il s'en retourne d'ou il vient."
           f: "%{investigator_name} rencontre des fanatiques. Sans armes, elle s'en retourne d'ou elle vient."
+        log_summary:
+          "%{investigator_name} rebrousse chemin."
       weapon_fail:
         name_translation: 'beginning'
         log:
           m: "%{investigator_name} rencontre des fanatiques. Il les menace de son arme mais leur détermination est plus forte. Il revient d'ou il vient."
           f: "%{investigator_name} rencontre des fanatiques. Elle les menace de son arme mais leur détermination est plus forte. Elle revient d'ou elle vient."
+        log_summary:
+          "%{investigator_name} rebrousse chemin."
       weapon_success:
         name_translation: 'beginning'
         log:

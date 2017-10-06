@@ -22,7 +22,7 @@ module LogHelper
       translation_code += ('.' + act.gender) if log.log_gender
     end
 
-    if params[ :dest_cn ]
+    if params[ :dest_cn ] && params[ :dest_cn ].is_a?( Symbol )
       params[ :dest_cn ] = I18n.t( 'movement.locations.' + params[ :dest_cn ].to_s )
     end
 
