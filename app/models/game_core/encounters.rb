@@ -107,8 +107,8 @@ module GameCore
 
     def log_encounter( investigator, code, san_loss = nil, cur_san = nil )
       data = {}
-      data['san_loss'] = san_loss if san_loss
-      data['san_loss'] = cur_san if cur_san
+      data[:san_loss] = san_loss if san_loss
+      data[:cur_san] = cur_san if cur_san
 
       code = 'encounter.' + code
       name_translation_method = I18n.t( code + '.name_translation' )

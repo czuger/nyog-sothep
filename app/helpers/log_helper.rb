@@ -7,7 +7,11 @@ module LogHelper
     act = log.actor
 
     if act&.is_a?( IInvestigator )
-      params[ :investigator_name ] = ( log.name_translation_method ? act.translated_name( log.name_translation_method ) : act.translated_name )
+      if summary
+        params[ :investigator_name ] = act.translated_name( 'beginning' )
+      else
+        params[ :investigator_name ] = ( log.name_translation_method ? act.translated_name( log.name_translation_method ) : act.translated_name )
+      end
     end
 
     if summary

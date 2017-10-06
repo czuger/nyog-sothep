@@ -4,8 +4,10 @@ fr:
       log: '%{investigator_name} se déplace %{dest_cn}.'
     return:
       log: '%{investigator_name} retourne %{dest_cn}.'
-    cant_move:
-      log: '%{investigator_name} ne peut pas bouger.'
+    border_control:
+      log:
+        m: "%{investigator_name} a été empêché de passer la frontière par une patrouille."
+        f: "%{investigator_name} a été empêchée de passer la frontière par une patrouille."
     prof_move:
       log: 'Le professeur se déplace'
 

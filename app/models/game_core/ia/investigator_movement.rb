@@ -73,8 +73,9 @@ module GameCore
             regular_move_token( game_board, self, next_step_code_name  )
           end
         else
-          # TODO : translate event
-          LLog.log( game_board, self, 'movement.cant_move' )
+          LLog.log( game_board, self, 'errors.ia_couldnt_find_target', true,
+                    { investigator_name: investigator_name, current_location_code_name: current_location_code_name,
+                      ia_target_destination_code_name: ia_target_destination_code_name } )
         end
 
       end
@@ -104,8 +105,8 @@ module GameCore
           if GameCore::Map::BordersCrossings.check?( token.current_location_code_name, dest_loc.code_name )
             dice = GameCore::Dices.d6
             if dice >= 5
-              event = 'border_control'
-              LLog.log( gb, self, event )
+              event = 'movement.border_control'
+              LLog.log( gb, self, event, false, {}, true )
               border_allowed = false
             end
           end

@@ -9,13 +9,12 @@ fr:
   errors:
     no_more_monsters: 'Le professeur ne peux plus prendre de monstre. Le stock est vide.'
 
+    ia_couldnt_find_target:
+      log: "L'ia n'a pas trouvé de destination pour %{investigator_name}. current_location_code_name = %{current_location_code_name}, ia_target_destination_code_name = %{ia_target_destination_code_name}."
+      log_summary: "Ia error !!!"
+
   events:
     no_water_events:
-      m: '%{investigator_name} continue son chemin.'
-      f: '%{investigator_name} continue son chemin.'
+      log: '%{investigator_name} continue son chemin.'
     not_implemented:
       log: 'Evenement non implémenté : %{method}'
-
-  border_control:
-    m: "%{investigator_name} a été empêché de passer la frontière par une patrouille."
-    f: "%{investigator_name} a été empêchée de passer la frontière par une patrouille."
