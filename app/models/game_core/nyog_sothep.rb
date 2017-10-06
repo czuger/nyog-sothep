@@ -16,10 +16,10 @@ module GameCore
           case rr
             when 3
               san_loss = 4
-              LLog.log( self, nil, :nyog_sothep_repelling_failed_bad, event_translation_data: { san_loss: 4 } )
+              LLog.log( self, nil, :nyog_sothep_repelling_failed_bad, true, { san_loss: 4 } )
             when 2
               san_loss = 2
-              LLog.log( self, nil, :nyog_sothep_repelling_failed_bad,  event_translation_data: { san_loss: 2 } )
+              LLog.log( self, nil, :nyog_sothep_repelling_failed_bad,  true, { san_loss: 2 } )
             when 0, 1
               # Nothing happens
               LLog.log( self, nil, :nyog_sothep_repelling_failed )
@@ -34,7 +34,7 @@ module GameCore
           if san_loss
             investigators_on_nyog_sothep_city.each do |i|
               i.loose_san( self, san_loss )
-              LLog.log( self, i, :nyog_sothep_repelling_failed_bad_inv_loss,  event_translation_data: { san_loss: san_loss, cur_san: i.san } )
+              LLog.log( self, i, :nyog_sothep_repelling_failed_bad_inv_loss, true, { san_loss: san_loss, cur_san: i.san } )
             end
           end
 
@@ -68,7 +68,7 @@ module GameCore
 
           if nyog_and_prof_sothep_can_not_move?
             # Nyog sothep and the professor are forbidden to move
-            LLog.log( self, prof, 'nyog_cant_move', {} )
+            LLog.log( self, prof, 'nyog_cant_move' )
             return false
           end
 
@@ -95,12 +95,12 @@ module GameCore
       investigators_on_nyog_sothep_city = alive_investigators.where( spell: true ).where( current_location_code_name: nyog_sothep_current_location_code_name )
       investigators_on_nyog_sothep_city.each do |i|
         if i.nyog_sothep_already_seen
-          LLog.log( self, i, :nyog_sothep_first_encounter,
-                    event_translation_data: { san_loss: 2, cur_san: i.san }, event_translation_summary_code: 'loose_san' )
+          LLog.log( self, i, :nyog_sothep_first_encounter, true,
+                    { san_loss: 2, cur_san: i.san } )
           i.loose_san( self, 2 )
         else
-          LLog.log( self, i, :nyog_sothep_regular_encounter,
-                    event_translation_data: { san_loss: 4, cur_san: i.san }, event_translation_summary_code: 'loose_san' )
+          LLog.log( self, i, :nyog_sothep_regular_encounter, true,
+                    { san_loss: 4, cur_san: i.san } )
           i.nyog_sothep_already_seen = true
           i.loose_san( self, 4 )
         end

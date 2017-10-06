@@ -53,11 +53,12 @@ module GameCore
 
     def loose_san_from_misty_things( game_board )
       increment!( :san, -1 )
-      LLog.log( game_board, self,"encounter.back_from_misty_things", {} ) if game_board
+      LLog.log( game_board, self,'encounter.back_from_misty_things' ) if game_board
     end
 
     def die( game_board )
-      LLog.log( game_board, self,"actions.result.crazy", event_translation_summary_code: 'inv_crazy' )
+      LLog.log( game_board, self,'actions.result.crazy', true, {},
+                true, true )
       game_board.p_monster_positions.create!(
         location_code_name: current_location_code_name, code_name: 'fanatiques', discovered: true, token_rotation: rand( -15 .. 15 ) )
       aasm_die!

@@ -74,7 +74,7 @@ module GameCore
           end
         else
           # TODO : translate event
-          LLog.log( game_board, self, :cant_move, {} )
+          LLog.log( game_board, self, :cant_move )
         end
 
       end
@@ -105,7 +105,7 @@ module GameCore
             dice = GameCore::Dices.d6
             if dice >= 5
               event = 'border_control'
-              LLog.log( gb, self, event, {} )
+              LLog.log( gb, self, event )
               border_allowed = false
             end
           end

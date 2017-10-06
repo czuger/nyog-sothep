@@ -6,7 +6,7 @@ module LogHelper
     translation_code = log.event_translation_code
     act = log.actor
 
-    if act.is_a?( IInvestigator )
+    if act&.is_a?( IInvestigator )
       params[ :investigator_name ] = ( log.name_translation_method ? act.translated_name( log.name_translation_method ) : act.translated_name )
     end
 

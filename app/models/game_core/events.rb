@@ -19,7 +19,7 @@ module GameCore
 
         send( "table#{table}_e#{roll}", game_board, professor )
       else
-        LLog.log( game_board, self, 'events.no_water_events', {} )
+        LLog.log( game_board, self, 'events.no_water_events' )
       end
     end
 
@@ -30,7 +30,7 @@ module GameCore
         raise "Bad arguements : method_name = #{method_name}, args = #{args.inspect}"
       end
 
-      LLog.log( args.first, self, "event non implementé : #{method_name}", {} )
+      LLog.log( args.first, self, "event non implementé : #{method_name}" )
     end
 
     def choose_table
@@ -63,9 +63,8 @@ module GameCore
       log_event_code = 'events.' + method.to_s.gsub('_','.')
       name_translation_method = I18n.t( log_event_code + '.name_translation' )
 
-      LLog.log( game_board, self, log_event_code,
-                event_translation_data: san_hash, event_translation_summary_code: summary,
-                name_translation_method: name_translation_method )
+      LLog.log( game_board, self, log_event_code, summary, san_hash,
+                true, summary, name_translation_method )
     end
   end
 end

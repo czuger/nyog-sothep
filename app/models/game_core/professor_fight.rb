@@ -57,14 +57,14 @@ module GameCore
         elsif investigator.sign
           investigator.loose_san( gb, 2 )
           investigator.update( sign: false )
-          LLog.log( gb, investigator, 'prof_fight.sign_protect',
-                    event_translation_data: { san_loss: 2, cur_san: investigator.san }, event_translation_summary_code: 'san_loss' )
+          LLog.log( gb, investigator, 'prof_fight.sign_protect', true,
+                    { san_loss: 2, cur_san: investigator.san },  )
           # gb.inv_repelled!
 
         else
           investigator.loose_san( gb, 4 )
-          LLog.log( gb, investigator, 'prof_fight.no_protection',
-                    event_translation_data: { san_loss: 4, cur_san: investigator.san  }, event_translation_summary_code: 'san_loss' )
+          LLog.log( gb, investigator, 'prof_fight.no_protection', true,
+                    { san_loss: 4, cur_san: investigator.san  } )
           # gb.inv_repelled!
 
         end

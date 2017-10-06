@@ -14,7 +14,8 @@ class LLog < ApplicationRecord
   # @param [Boolean] log_gender
   # @param [Boolean] log_gender_summary
   # @param [String] name_translation_method
-  def self.log( game_board, actor, event_translation_code, summary = false, event_translation_data = {}, log_gender = false,  log_gender_summary = false, name_translation_method = nil )
+  def self.log( game_board, actor, event_translation_code, summary = false, event_translation_data = {},
+    log_gender = false, log_gender_summary = false, name_translation_method = nil )
 
     aasm_state = actor.aasm_state if actor.kind_of?( IInvestigator )
 
@@ -31,7 +32,7 @@ class LLog < ApplicationRecord
 
     event = 'movement.' + direction.to_s
 
-    log( game_board,investigator, event, event_translation_data: { dest_cn: dest_loc_code_name } )
+    log( game_board,investigator, event, false,{ dest_cn: dest_loc_code_name } )
   end
 
 end
