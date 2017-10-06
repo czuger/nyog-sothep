@@ -4,7 +4,7 @@ module GameCore
 
       def self.all
         load_locations
-        @@locations.keys.map{ |k| Location.get_location( k ) }
+        @@locations.keys.map{ |k| Location.get_location( k ) }.reject{ |e| e.water_area? }.compact
       end
 
       def self.all_codes_names
