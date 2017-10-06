@@ -8,3 +8,58 @@ fr:
       log: '%{investigator_name} ne peut pas bouger.'
     prof_move:
       log: 'Le professeur se déplace'
+
+    locations:
+      atlantic_ocean: "dans l'océan Atlantique"
+      buzzards_bay: 'dans la baie des busards'
+      cape_cod_bay: 'dans la baie du cap Cod'
+      gulf_of_maine: 'dans le golfe du Maine'
+      massachusetts_bay: 'dans la baie du Massachusetts'
+      nantucket_sound: 'à Nantucket Sound'
+      westerly: à Westerly
+      plainfield: à Plainfield
+      pascoag: à Pascoag
+      woonsocket: à Woonsocket
+      providence: à Providence
+      apponaug: à Apponaug
+      narragansett_pier: à Narragansett pier
+      foxboro: à Foxboro
+      attleboro: à Attleboro
+      bristol: à Bristol
+      newport: à Newport
+      taunton: à Taunton
+      fall_river: à Fall river
+      rockland: à Rockland
+      bridgewater_junction: à Bridgewater junction
+      middleboro: à Middleboro
+      new_bedford: à New bedford
+      greenbush: à Greenbush
+      plymouth: à Plymouth
+      tremont: à Tremont
+      falmouth: à Falmouth
+      barnstable: à Barnstable
+      provincetown: à Provincetown
+      chatham: à Chatham
+      edgartown: à Edgartown
+      nantucket: à Nantucket
+      worcester: à Worcester
+      oxford: à Oxford
+      westboro: à Westboro
+      ashland: à Ashland
+      dedham: à Dedham
+      milford: à Milford
+      stoughton: à Stoughton
+      gloucester: à Gloucester
+      sudbury: à Sudbury
+      newburyport: à Newburyport
+      innsmouth: à Innsmouth
+      arkham: à Arkham
+      lynn: à Lynn
+      boston: à Boston
+      nashua: à Nashua
+      dunwich: à Dunwich
+      lowell: à Lowell
+      fitchburg: à Fitchburg
+      oakdale: à Oakdale
+      concord: à Concord
+      lawrence: à Lawrence

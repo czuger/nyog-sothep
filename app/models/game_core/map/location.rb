@@ -44,8 +44,12 @@ module GameCore
         @code_name
       end
 
-      def self.get_location( location= nil )
-        location = load_locations( location )
+      # Get a Location object from a location_code_name
+      #
+      # @param [String] location_code_name the code name of the location you are seeking
+      # @return [Location] the Location object
+      def self.get_location( location_code_name )
+        location = load_locations( location_code_name )
         @@locations[ location ][ :klass ].constantize.new( location, @@locations[ location ] )
       end
 

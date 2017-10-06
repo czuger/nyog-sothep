@@ -18,6 +18,10 @@ module LogHelper
       translation_code += ('.' + act.gender) if log.log_gender
     end
 
+    if params[ :dest_cn ]
+      params[ :dest_cn ] = I18n.t( 'movement.locations.' + params[ :dest_cn ].to_s )
+    end
+
     I18n.t( translation_code, params )
 
   end

@@ -30,7 +30,7 @@ module GameCore
         raise "Bad arguements : method_name = #{method_name}, args = #{args.inspect}"
       end
 
-      LLog.log( args.first, self, "event non implementé : #{method_name}" )
+      LLog.log( args.first, self, 'events.not_implemented', false, { method: method_name } )
     end
 
     def choose_table

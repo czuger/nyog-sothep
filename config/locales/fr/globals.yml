@@ -13,14 +13,8 @@ fr:
     no_water_events:
       m: '%{investigator_name} continue son chemin.'
       f: '%{investigator_name} continue son chemin.'
-
-  locations:
-    atlantic_ocean: "dans l'océan Atlantique"
-    buzzards_bay: 'dans la baie des busards'
-    cape_cod_bay: 'dans la baie du cap Cod'
-    gulf_of_maine: 'dans le golfe du Maine'
-    massachusetts_bay: 'dans la baie du Massachusetts'
-    nantucket_sound: 'à Nantucket Sound'
+    not_implemented:
+      log: 'Evenement non implémenté : %{method}'
 
   border_control:
     m: "%{investigator_name} a été empêché de passer la frontière par une patrouille."
