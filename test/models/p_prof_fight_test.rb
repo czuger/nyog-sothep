@@ -15,7 +15,7 @@ class PProfFightTest < ActiveSupport::TestCase
     @inv.update( weapon: true )
     assert_no_difference '@inv.reload.san' do
       assert_difference '@prof.reload.hp', -3 do
-        @prof.check_for_investigators_to_fight_in_city( @gb, prof_move: false )
+        @inv.check_for_prof_to_fight_in_city( @gb, @prof )
       end
     end
   end
@@ -25,7 +25,7 @@ class PProfFightTest < ActiveSupport::TestCase
     @inv.update( weapon: true )
     assert_no_difference '@inv.reload.san' do
       assert_difference '@prof.reload.hp', -2 do
-        @prof.check_for_investigators_to_fight_in_city( @gb, prof_move: false )
+        @inv.check_for_prof_to_fight_in_city( @gb, @prof )
       end
     end
   end
@@ -35,7 +35,7 @@ class PProfFightTest < ActiveSupport::TestCase
     @inv.update( weapon: true )
     assert_no_difference '@inv.reload.san' do
       assert_no_difference '@prof.reload.hp' do
-        @prof.check_for_investigators_to_fight_in_city( @gb, prof_move: false )
+        @inv.check_for_prof_to_fight_in_city( @gb, @prof )
       end
     end
   end

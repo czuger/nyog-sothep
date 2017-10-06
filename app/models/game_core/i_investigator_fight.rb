@@ -5,7 +5,7 @@ module GameCore
 
     def check_for_prof_to_fight_in_city( game_board, prof )
 
-      if current_location == prof.current_location
+      if current_location_code_name == prof.current_location_code_name
         prof.spotted( game_board )
 
 

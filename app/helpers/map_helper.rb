@@ -42,23 +42,4 @@ module MapHelper
     "top:#{position.y-17+13-50-15}px;left:#{position.x-17-30 + x_decal}px;z-index:50"
   end
 
-  # Log summary part
-
-  def event_log_summary( log_summary )
-
-    name = log_summary.actor.translated_name
-    params = log_summary.event_translation_data
-    params[ :investigator_name ] = name
-
-    result = 'Not implemented'
-
-    if params.has_key?( :san_loss )
-      result = I18n.t( 'log_summary.loose_san', params ).capitalize
-    elsif params.has_key?( :san_gain )
-      result = I18n.t( 'log_summary.gain_san', params ).capitalize
-    end
-
-    result
-  end
-
 end

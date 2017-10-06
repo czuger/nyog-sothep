@@ -1,44 +1,6 @@
 fr:
 
-  log_summary:
-      loose_san:
-        m: "%{investigator_name} perds %{san_loss} SAN -> %{cur_san} SAN."
-        f: "%{investigator_name} perds %{san_loss} SAN -> %{cur_san} SAN."
-
-      gain_san:
-        m: "%{investigator_name} gagne %{san_gain} SAN -> %{cur_san} SAN."
-        f: "%{investigator_name} gagne %{san_gain} SAN -> %{cur_san} SAN."
-
-      nyog_cant_move:
-        m: "Tour %{tour_no} : Le professeur et nyog sothep ne peuvent pas bouger ce tour."
-        f: "Tour %{tour_no} : Le professeur et nyog sothep ne peuvent pas bouger ce tour."
-
-      inv_cant_move:
-        m: "Tour %{tour_no} : %{investigator_name} ne peut pas bouger"
-        f: "Tour %{tour_no} : %{investigator_name} ne peut pas bouger"
-
-      inv_crazy:
-        m: '%{investigator_name} est éliminé.'
-        f: '%{investigator_name} est éliminée.'
-
-      prof_fight:
-        hit: 'Prof perd %{life_loss} HP -> %{cur_life} HP.'
-
   log:
-
-    prof_fight:
-      gun_shot:
-        m: '%{investigator_name} tire sur le professeur et lui fait perdre %{life_loss} HP -> %{cur_life} HP.'
-        f: '%{investigator_name} tire sur le professeur et lui fait perdre %{life_loss} HP -> %{cur_life} HP.'
-      gun_miss:
-        m: '%{investigator_name} tire sur le professeur et le rate.'
-        f: '%{investigator_name} tire sur le professeur et le rate.'
-      sign_protect:
-        m: "%{investigator_name} rencontre le professeur. Il se protège avec son signe mais perds 2 points de SAN et son signe."
-        f: "%{investigator_name} rencontre le professeur. Elle se protège avec son signe mais perds 2 points de SAN et son signe."
-      no_protection:
-        m: "%{investigator_name} rencontre le professeur et perds 4 points de SAN."
-        f: "%{investigator_name} rencontre le professeur et perds 4 points de SAN."
 
     nyog_sothep_first_encounter:
       m: '%{investigator_name} rencontre Nyog Sothep pour la première fois et perds %{san} SAN -> %{cur_san} SAN.'

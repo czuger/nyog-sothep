@@ -5,6 +5,10 @@ class PProfessor < ApplicationRecord
   include GameCore::ProfessorActions
   include GameCore::ProfessorFight
 
+  def gender
+    'm'
+  end
+
   def can_breed_in_city?( position_code_name )
     !g_game_board.p_monster_positions.exists?( location_code_name: position_code_name )
   end
@@ -32,8 +36,8 @@ class PProfessor < ApplicationRecord
 
   def loose_life( gb, investigator, amount )
     decrement!( :hp, amount )
-    LLog.log( gb, investigator,'log.prof_hit', event_translation_data: { life_loss: amount, cur_life: hp },
-              event_translation_summary_code: 'prof_fight.hit' )
+    LLog.log( gb, investigator,'log.prof_fight.gun_shot', event_translation_data: { life_loss: amount, cur_life: hp },
+              event_translation_summary_code: 'log_summary.prof_wounded' )
 
     # TODO : implement gamover on professor death
   end

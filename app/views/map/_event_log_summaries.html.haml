@@ -1,7 +1,7 @@
 - @log_summaries_hashes.each do |_, log_summaries|
   - log_summaries.each do |log_summary|
 
-    = link_to event_log_summary( log_summary ),
+    = link_to log_message( log_summary, summary: true ),
       g_game_board_log_url( @game_board.id, log_summary.id ), class: 'log-summary-detail-hoover', log_id: log_summary.id
     .log-summary-detail{ id: "log-summary-detail-#{log_summary.id}" }
       = log_message( log_summary )

@@ -4,21 +4,14 @@ module GameCore
     # Check if a fight can happen.
     #
     # @param [GGameBoard] game_board the current game board
-    # @param [Bool] prof_move True if the test is done on prof move, false if it is done on investigator move
-    def check_for_investigators_to_fight_in_city( game_board, prof_move: true )
+    def check_for_investigators_to_fight_in_city( game_board )
       investigators = game_board.alive_investigators.order( :id ).select{ |i| i.current_location_code_name == current_location_code_name }
 
       unless investigators.empty?
         fight_occurs = false
         investigators.each do |i|
-          if prof_move
-            # On prof turn, we attack only if investigator does not have a weapon, or a medaillon
-            unless i.weapon || i.medaillon
-              fight( game_board, i )
-              fight_occurs = true
-            end
-          else
-            # On investigator turn, we attack always
+          # On prof turn, we attack only if investigator does not have a weapon, or a medaillon
+          unless i.weapon || i.medaillon
             fight( game_board, i )
             fight_occurs = true
           end
