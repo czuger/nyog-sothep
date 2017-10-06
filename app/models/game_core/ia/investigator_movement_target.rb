@@ -71,17 +71,17 @@ module GameCore
 
         # So here we don't have a sure prof position, we will guess it
         # In fact we send investigators everywhere we have information
-        @prof_positions.each do |pp|
+        @most_probable_prof_locations.each do |pp|
           # If nobody is already chasing the prof on that pos, then we go there
-          unless @prof_positions_covered_by_inv.include?( pp[0] )
-            @prof_positions_covered_by_inv << pp[0]
-            return pp[0]
+          unless @prof_positions_covered_by_inv.include?( pp )
+            @prof_positions_covered_by_inv << pp
+            return pp
           end
         end
 
         # If all slots are filled, then choose randomly
         unless @prof_positions.empty?
-          return @prof_positions.sample[0]
+          return @prof_positions.sample
         end
       end
 
