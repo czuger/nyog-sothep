@@ -5,30 +5,33 @@ module GameCore
     #
     # @param [GGameBoard] game_board the current game board
     def check_for_investigators_to_fight_in_city( game_board )
-      investigators = game_board.alive_investigators.order( :id ).select{ |i| i.current_location_code_name == current_location_code_name }
 
-      unless investigators.empty?
-        fight_occurs = false
-        investigators.each do |i|
-          # On prof turn, we attack only if investigator does not have a weapon, or a medaillon
-          unless i.weapon || i.medaillon
-            fight( game_board, i )
-            fight_occurs = true
-          end
-        end
+      # We fight only in cities
+      if GameCore::Map::Location.get_location( current_location_code_name ).city?
+        investigators = game_board.alive_investigators.order( :id ).select{ |i| i.current_location_code_name == current_location_code_name }
 
-        if fight_occurs
-          # Si l'on a combatu, on sait ou est le professeur
-          spotted( game_board )
-        else
-          # Sinon il est a l'endroit d'un des investigateurs
-          trust_value = 1.0 / investigators.count
+        unless investigators.empty?
+          fight_occurs = false
           investigators.each do |i|
-            IInvTargetPosition.find_or_create_by!( g_game_board_id: game_board.id, position_code_name: i.current_location_code_name, trust: trust_value, turn: game_board.turn )
+            # On prof turn, we attack only if investigator does not have a weapon, or a medaillon
+            unless i.weapon || i.medaillon
+              fight( game_board, i )
+              fight_occurs = true
+            end
+          end
+
+          if fight_occurs
+            # Si l'on a combatu, on sait ou est le professeur
+            spotted( game_board )
+          else
+            # Sinon il est a l'endroit d'un des investigateurs
+            trust_value = 1.0 / investigators.count
+            investigators.each do |i|
+              IInvTargetPosition.find_or_create_by!( g_game_board_id: game_board.id, position_code_name: i.current_location_code_name, trust: trust_value, turn: game_board.turn )
+            end
           end
         end
       end
-
     end
 
     def fight( game_board, investigator )

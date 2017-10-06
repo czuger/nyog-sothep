@@ -1,15 +1,5 @@
 fr:
   actions:
-    result:
-      perte_san: '%{investigator_name} perd %{san} points de SAN -> %{final_san}'
-
-      prof_pick_monsters: 'Le professeur pioche un monstre.'
-      pass: 'Vous passez votre tour'
-      psy_rep: "%{investigator_name} gagne 5 points de SAN"
-
-      crazy:
-       m: "%{investigator_name} devient fou et devient fanatique."
-       f: "%{investigator_name} devient folle et devient fanatique."
 
     go_psy:
       log:
@@ -17,7 +7,3 @@ fr:
         f: "%{investigator_name} va voir un psychanalyste. Elle gagne %{san_gain} points de SAN mais passe son prochain tour."
       log_summary:
         "%{investigator_name} gagne %{san_gain} points de SAN."
-
-    inv_crazy:
-      m: '%{investigator_name} est éliminé.'
-      f: '%{investigator_name} est éliminée.'

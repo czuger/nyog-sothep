@@ -18,3 +18,11 @@ fr:
       log: '%{investigator_name} continue son chemin.'
     not_implemented:
       log: 'Evenement non implémenté : %{method}'
+
+  investigator_becomes_mad:
+    log:
+      m: "%{investigator_name} perd la raison et devient fanatique. Il est éliminé."
+      f: "%{investigator_name} devient folle et devient fanatique. Elle est éliminée."
+    log_summary:
+      m: '%{investigator_name} est éliminé.'
+      f: '%{investigator_name} est éliminée.'
