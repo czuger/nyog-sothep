@@ -7,9 +7,7 @@ class MapController < ApplicationController
   def play
     set_show_map_common_variables
 
-    if @game_board.game_lost?
-
-    elsif @game_board.prof_asked_for_fake_cities?
+    if @game_board.prof_asked_for_fake_cities?
 
       @nb_cities = @game_board.asked_fake_cities_count
       @cities = GameCore::Map::City.all.reject{ |c| c.code_name == @prof_location.code_name }
