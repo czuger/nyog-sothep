@@ -3,7 +3,7 @@ module GameCore
     # Included in investigator
     module InvestigatorActions
 
-      def ia_actions( game_board, prof )
+      def ia_actions( game_board, prof, prof_position_finder )
 
         # We resolve an encounter only if investigator is in event mode
         # IE if not at psy or dead
@@ -13,7 +13,7 @@ module GameCore
         if events?
 
           # Once nyog sothep invoked, we skip events.
-          ia_play_events( game_board, prof ) unless game_board.nyog_sothep_invoked
+          ia_play_events( game_board, prof, prof_position_finder ) unless game_board.nyog_sothep_invoked
 
           # Break out of the investigators loop
           if game_board.prof_asked_for_fake_cities?
@@ -22,7 +22,7 @@ module GameCore
             return :break
           else
             # When the turn of the investigator is finished we need to check for a prof fight
-            check_for_prof_to_fight_in_city( game_board, prof )
+            check_for_prof_to_fight_in_city( game_board, prof, prof_position_finder )
             events_done! if events?
           end
         end

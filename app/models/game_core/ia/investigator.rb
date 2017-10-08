@@ -8,9 +8,9 @@ module GameCore
 
       private
 
-      def ia_play_events( game_board, prof )
+      def ia_play_events( game_board, prof, prof_position_finder )
         # Investigator event check
-        roll_event( game_board, prof )
+        roll_event( game_board, prof, prof_position_finder )
       end
 
       def go_to_psy(game_board )

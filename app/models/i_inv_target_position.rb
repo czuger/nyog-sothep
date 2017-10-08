@@ -1,2 +1,0 @@
-class IInvTargetPosition < ApplicationRecord
-end

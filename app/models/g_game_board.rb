@@ -18,7 +18,7 @@ class GGameBoard < ApplicationRecord
   has_many :m_monsters, dependent: :destroy
   has_many :p_monster_positions, dependent: :destroy
   has_many :p_monsters, dependent: :destroy
-  has_many :i_inv_target_positions, dependent: :destroy
+  has_one :ia_prof_position, dependent: :destroy
   has_one :p_professor, dependent: :destroy
 
   belongs_to :asked_fake_cities_investigator, class_name: 'IInvestigator', optional: true
@@ -58,7 +58,7 @@ class GGameBoard < ApplicationRecord
 
   end
 
-  def next_turn
+  def finalize_turn( prof_position_finder )
     ActiveRecord::Base.transaction do
 
       # Reload is required for some tests
@@ -66,19 +66,11 @@ class GGameBoard < ApplicationRecord
         i.next_turn
       end
 
-      update_i_inv_target_positions
+      prof_position_finder.save( self )
       increment!( :turn )
 
       inv_events_done!
     end
-  end
-
-  def update_i_inv_target_positions
-    # Removing very low trusted positions
-    # IInvTargetPosition.where( g_game_board_id: id ).where( 'trust < 0.1' ).delete_all # Let's see examples
-    # Prof positions are forgotten over time
-    IInvTargetPosition.where( g_game_board_id: id ).where( "turn < #{turn-5}" ).delete_all
-    IInvTargetPosition.where( g_game_board_id: id ).update_all( 'trust = trust - 0.1' )
   end
 
   def professor_pick_start_monsters

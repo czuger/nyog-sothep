@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171006084129) do
+ActiveRecord::Schema.define(version: 20171008082605) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -39,16 +39,6 @@ ActiveRecord::Schema.define(version: 20171006084129) do
     t.string   "nyog_sothep_repelling_city_code_name"
   end
 
-  create_table "i_inv_target_positions", force: :cascade do |t|
-    t.integer  "g_game_board_id"
-    t.datetime "created_at",                       null: false
-    t.datetime "updated_at",                       null: false
-    t.string   "position_code_name",               null: false
-    t.float    "trust",              default: 0.5, null: false
-    t.integer  "turn",                             null: false
-    t.index ["g_game_board_id"], name: "index_i_inv_target_positions_on_g_game_board_id", using: :btree
-  end
-
   create_table "i_investigators", force: :cascade do |t|
     t.string   "code_name",                                                 null: false
     t.integer  "san",                                                       null: false
@@ -68,6 +58,14 @@ ActiveRecord::Schema.define(version: 20171006084129) do
     t.string   "forbidden_city_code_name"
     t.boolean  "nyog_sothep_already_seen",                  default: false, null: false
     t.index ["g_game_board_id"], name: "index_i_investigators_on_g_game_board_id", using: :btree
+  end
+
+  create_table "ia_prof_positions", force: :cascade do |t|
+    t.integer  "g_game_board_id"
+    t.string   "gb_data"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+    t.index ["g_game_board_id"], name: "index_ia_prof_positions_on_g_game_board_id", using: :btree
   end
 
   create_table "l_logs", force: :cascade do |t|
@@ -130,6 +128,7 @@ ActiveRecord::Schema.define(version: 20171006084129) do
 
   add_foreign_key "g_destroyed_cities", "g_game_boards"
   add_foreign_key "i_investigators", "g_game_boards"
+  add_foreign_key "ia_prof_positions", "g_game_boards"
   add_foreign_key "l_logs", "g_game_boards"
   add_foreign_key "m_monsters", "g_game_boards"
   add_foreign_key "p_monster_positions", "g_game_boards"

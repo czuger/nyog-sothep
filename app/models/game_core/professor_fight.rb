@@ -22,7 +22,12 @@ module GameCore
 
           if fight_occurs
             # Si l'on a combatu, on sait ou est le professeur
-            spotted( game_board )
+
+            prof_position_finder = GameCore::Ia::ProfPositionFinder.new
+            prof_position_finder.load( game_board )
+            spotted( game_board, prof_position_finder )
+            prof_position_finder.save( game_board )
+
           else
             # Sinon il est a l'endroit d'un des investigateurs
             trust_value = 1.0 / investigators.count

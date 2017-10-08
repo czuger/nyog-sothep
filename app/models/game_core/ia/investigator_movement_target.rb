@@ -7,20 +7,19 @@ module GameCore
 
       attr_reader :exclusion_city_codes_names_list
 
-      def initialize( game_board, exclusion_city_codes_names_list = [] )
+      def initialize( game_board, prof_position_finder, exclusion_city_codes_names_list = [] )
         @game_board = game_board
         @exclusion_city_codes_names_list = exclusion_city_codes_names_list + game_board.g_destroyed_cities.pluck( :city_code_name )
+        @prof_position_finder = prof_position_finder
 
         @prof_positions_covered_by_inv = Set.new
 
-        @trust_evaluator = GameCore::Ia::ProfPositionTrust::Evaluator.new( @game_board )
-        refresh_prof_positions
       end
 
       # exclusion_city_code_name : a list of all unavaliable city (destroyed, forbiden, etc ...). An array of strings
       def select_new_target( investigator )
 
-        @trust_evaluator.refresh_all
+        refresh_prof_positions
 
         if investigator.weapon
           # If we have a weapon, then we chase the prof
@@ -34,10 +33,10 @@ module GameCore
           prof_position_code_name = guess_avoiding_prof_location
 
           # If we couldn't get the prof position, we pick one randomly
-          prof_position_code_name = choose_random_location( investigator ) unless target_position_code_name
+          prof_position_code_name = choose_random_location( investigator ) unless prof_position_code_name
 
           # TODO : We need to find a city far away from the prof
-          far_cities_dict = GameCore::Ia::BfsAlgo.find_cities_around_city( investigator.current_location_code_name, 5, @exclusion_city_codes_names_list )
+          far_cities_dict = GameCore::Ia::BfsAlgo.find_cities_around_city( prof_position_code_name, 5, @exclusion_city_codes_names_list )
           far_cities_codes_names_array = far_cities_dict[5]
           target_position_code_name = far_cities_codes_names_array.sample
         end
@@ -86,20 +85,9 @@ module GameCore
       end
 
       def refresh_prof_positions
-        # @prof_positions is an array of [ [ 'oxford', 0.9 ], 'lowel', 0.8 ], etc ... ]
-        @prof_positions = @game_board.i_inv_target_positions.order( 'trust DESC' ).pluck( :position_code_name, :trust )
-        @prof_positions.reject!{ |e| @exclusion_city_codes_names_list.include?( e[0] ) }
-
-        first_prof_position = @prof_positions.first
-        # If we know where the prof is, every chasing investigator go there
-        @first_prof_position = first_prof_position[0] if first_prof_position && first_prof_position[1] >= 0.8
-
-        highest_trust = @prof_positions.map{ |e| e[1] }.max
-        @most_probable_prof_locations = []
-        @prof_positions.each do |e|
-          @most_probable_prof_locations << e[0] if e[1] >= highest_trust - 0.1
-        end
-
+        @most_probable_prof_locations = @prof_position_finder.get_prof_positions( @game_board.turn )
+        @most_probable_prof_locations = [] unless @most_probable_prof_locations
+        @first_prof_position = @most_probable_prof_locations.first if @most_probable_prof_locations&.count == 1
       end
 
     end

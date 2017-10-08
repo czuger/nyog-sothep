@@ -5,7 +5,7 @@ module GameCore
     include GameCore::EventGroundA
     include GameCore::EventGroundB
 
-    def roll_event( game_board, professor )
+    def roll_event( game_board, professor, prof_position_finder )
       if current_location.city? && last_location.city?
 
         table = choose_table
@@ -17,7 +17,7 @@ module GameCore
 
         # LLog.log( game_board, self, "table#{table}_e#{roll}" )
 
-        send( "table#{table}_e#{roll}", game_board, professor )
+        send( "table#{table}_e#{roll}", game_board, professor, prof_position_finder )
       else
         LLog.log( game_board, self, 'events.no_water_events' )
       end

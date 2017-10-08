@@ -26,14 +26,15 @@ class EEventGroundTest < ActiveSupport::TestCase
   # end
   #
   def test_all_event_grounds
+    prof_position_finder = GameCore::Ia::ProfPositionFinder.new
     1.upto(18).each do |i|
       @gb.update( aasm_state: :inv_events )
       @investigator.update_attribute( :aasm_state, :events )
-      @investigator.send( "table#{1}_e#{i}", @gb, @professor )
+      @investigator.send( "table#{1}_e#{i}", @gb, @professor, prof_position_finder )
 
       @gb.update( aasm_state: :inv_events )
       @investigator.update_attribute( :aasm_state, :events )
-      @investigator.send( "table#{2}_e#{i}", @gb, @professor )
+      @investigator.send( "table#{2}_e#{i}", @gb, @professor, prof_position_finder )
     end
     # No assertion, this is just a pass through test
   end

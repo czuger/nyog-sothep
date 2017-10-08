@@ -13,14 +13,11 @@ class PProfessor < ApplicationRecord
     !g_game_board.p_monster_positions.exists?( location_code_name: position_code_name )
   end
 
-  def spotted( game_board )
-    # If the prof is really spotted we create 5 records to increase the probability of targeting
-    ActiveRecord::Base.transaction do
-      city = current_location
-      # Le prof n'est jamais repéré dans l'eau
-      unless city.water_area?
-        IInvTargetPosition.create!( g_game_board_id: game_board.id, position_code_name: city.code_name, trust: 1, turn: game_board.turn )
-      end
+  def spotted( game_board, prof_position_finder )
+    city = current_location
+    # Le prof n'est jamais repéré dans l'eau
+    unless city.water_area?
+      prof_position_finder.spot_prof( game_board.turn, prof_position_finder )
     end
   end
 

@@ -22,10 +22,11 @@ class ProfFakePosController < ApplicationController
             "#{@game_board.asked_fake_cities_count + 1} != #{cities_codes_names.count}" )
 
     ActiveRecord::Base.transaction do
-      trust_value = 1.0 / cities_codes_names.count
-      cities_codes_names.each do |city|
-        IInvTargetPosition.create!( g_game_board_id: @game_board.id, position_code_name: city, trust: trust_value, turn: @game_board.turn )
-      end
+
+      prof_position_finder = GameCore::Ia::ProfPositionFinder.new
+      prof_position_finder.load( @game_board )
+      prof_position_finder.add_fake_pos( @game_board.turn, cities_codes_names )
+      prof_position_finder.save( @game_board )
 
       @game_board.return_to_move_status!
 

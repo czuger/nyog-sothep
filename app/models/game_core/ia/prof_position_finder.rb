@@ -10,6 +10,19 @@ class GameCore::Ia::ProfPositionFinder
     @cached_data = nil
   end
 
+  def load( game_board )
+    @data = game_board.ia_prof_position.gb_data if game_board.ia_prof_position
+  end
+
+  def save( game_board )
+    @data.delete_if {|key, _| key < game_board.turn }
+    if game_board.ia_prof_position
+      game_board.ia_prof_position.gb_data = @data
+    else
+      game_board.create_ia_prof_position( gb_data: @data )
+    end
+  end
+
   # This method return the prof positions
   #
   # @param [Integer] turn the current turn
@@ -19,16 +32,18 @@ class GameCore::Ia::ProfPositionFinder
     # Avoiding too much computation
     return @cached_data if @cached_data
 
-    # If the prof is spotted, bingo
-    if @data[ turn ][ :spotted ]
-      @cached_data = @data[ turn ][ :spotted ]
-      return @cached_data
-    end
+    if @data[ turn ]
+      # If the prof is spotted, bingo
+      if @data[ turn ][ :spotted ]
+        @cached_data = @data[ turn ][ :spotted ]
+        return @cached_data
+      end
 
-    # We only have fake pos, it is better than nothing. Maybe we have only one fake pos because the player is dumb
-    if @data[ turn ][ :fake_pos ]
-      @cached_data = @data[ turn ][ :fake_pos ]
-      return @cached_data
+      # We only have fake pos, it is better than nothing. Maybe we have only one fake pos because the player is dumb
+      if @data[ turn ][ :fake_pos ]
+        @cached_data = @data[ turn ][ :fake_pos ]
+        return @cached_data
+      end
     end
 
     # We have nothing this turn. Guess from the previous turn.
