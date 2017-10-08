@@ -30,18 +30,18 @@
         %td= investigator.spell
         %td= investigator.aasm_state
 
--#%hr
--#
--#%table.table
--#  %thead
--#    %tr
--#      %th Trust
--#      %th Position
--#      %th Turn
--#
--#  %tbody
--#    - @game_board.i_inv_target_positions.order( 'trust desc' ).each do |investigator|
--#      %tr
--#        %td= investigator.trust
--#        %td= investigator.position_code_name
--#        %td= investigator.turn
+%hr
+
+%table.table
+  %thead
+    %tr
+      %th Turn
+      %th Spotted
+      %th Fake Pos
+
+  %tbody
+    - @gb_data.each do |data|
+      %tr
+        %td= data
+        %td= investigator.position_code_name
+        %td= investigator.turn

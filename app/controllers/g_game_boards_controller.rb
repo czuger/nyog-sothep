@@ -15,7 +15,8 @@ class GGameBoardsController < ApplicationController
   # GET /g_game_boards/new
   def new
     @g_game_board = GGameBoard.new
-    @cities = GameCore::Map::City.all
+    @cities = GameCore::Map::City.all.reject{ |c| c.code_name == :nantucket }
+    p @cities
 
     set_position_x_decal
   end
