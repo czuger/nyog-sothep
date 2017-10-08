@@ -20,21 +20,27 @@ module GameCore
             end
           end
 
+          prof_position_finder = GameCore::Ia::ProfPositionFinder.new
+          prof_position_finder.load( game_board )
+
           if fight_occurs
             # Si l'on a combatu, on sait ou est le professeur
 
-            prof_position_finder = GameCore::Ia::ProfPositionFinder.new
-            prof_position_finder.load( game_board )
             spotted( game_board, prof_position_finder )
-            prof_position_finder.save( game_board )
-
           else
-            # Sinon il est a l'endroit d'un des investigateurs
-            trust_value = 1.0 / investigators.count
-            investigators.each do |i|
-              IInvTargetPosition.find_or_create_by!( g_game_board_id: game_board.id, position_code_name: i.current_location_code_name, trust: trust_value, turn: game_board.turn )
-            end
+            # TODO : a revoir
+            # # Sinon il est a l'endroit d'un des investigateurs
+            # trust_value = 1.0 / investigators.count
+            # investigators.each do |i|
+            #   IInvTargetPosition.find_or_create_by!( g_game_board_id: game_board.id, position_code_name: i.current_location_code_name, trust: trust_value, turn: game_board.turn )
+            # end
+            #
+            # investigators_positions =
+            # prof_position_finder.add_fake_pos( turn, )
           end
+
+          prof_position_finder.save( game_board )
+
         end
       end
     end

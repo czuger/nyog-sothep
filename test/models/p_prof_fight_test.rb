@@ -8,6 +8,7 @@ class PProfFightTest < ActiveSupport::TestCase
     @gb = create( :g_game_board )
     @prof = @gb.p_professor
     @inv = create( :i_investigator, g_game_board: @gb, current_location_code_name: @prof.current_location_code_name )
+    @prof_position_finder = GameCore::Ia::ProfPositionFinder.new
   end
 
   test 'Investigator should attack professor and harm im 3 pv' do
@@ -15,7 +16,7 @@ class PProfFightTest < ActiveSupport::TestCase
     @inv.update( weapon: true )
     assert_no_difference '@inv.reload.san' do
       assert_difference '@prof.reload.hp', -3 do
-        @inv.check_for_prof_to_fight_in_city( @gb, @prof )
+        @inv.check_for_prof_to_fight_in_city( @gb, @prof, @prof_position_finder )
       end
     end
   end
@@ -25,7 +26,7 @@ class PProfFightTest < ActiveSupport::TestCase
     @inv.update( weapon: true )
     assert_no_difference '@inv.reload.san' do
       assert_difference '@prof.reload.hp', -2 do
-        @inv.check_for_prof_to_fight_in_city( @gb, @prof )
+        @inv.check_for_prof_to_fight_in_city( @gb, @prof, @prof_position_finder )
       end
     end
   end
@@ -35,7 +36,7 @@ class PProfFightTest < ActiveSupport::TestCase
     @inv.update( weapon: true )
     assert_no_difference '@inv.reload.san' do
       assert_no_difference '@prof.reload.hp' do
-        @inv.check_for_prof_to_fight_in_city( @gb, @prof )
+        @inv.check_for_prof_to_fight_in_city( @gb, @prof, @prof_position_finder )
       end
     end
   end
