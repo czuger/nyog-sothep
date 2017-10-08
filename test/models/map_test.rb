@@ -9,7 +9,7 @@ class MapTest < ActiveSupport::TestCase
 
   def test_all_cities
     cities = GameCore::Map::City.all
-    assert_equal 53, cities.count
+    assert_equal 47, cities.count
   end
 
   def test_destinations

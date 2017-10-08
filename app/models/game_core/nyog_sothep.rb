@@ -96,13 +96,13 @@ module GameCore
       investigators_on_nyog_sothep_city = alive_investigators.where( spell: true ).where( current_location_code_name: nyog_sothep_current_location_code_name )
       investigators_on_nyog_sothep_city.each do |i|
         if i.nyog_sothep_already_seen
-          i.loose_san( self, 4 )
-          LLog.log( self, i, 'nyog.first_encounter', true,
-                    { san_loss: 4, cur_san: i.san } )
-        else
           i.loose_san( self, 2 )
           LLog.log( self, i, 'nyog.regular_encounter', true,
                     { san_loss: 2, cur_san: i.san } )
+        else
+          i.loose_san( self, 4 )
+          LLog.log( self, i, 'nyog.first_encounter', true,
+                    { san_loss: 4, cur_san: i.san } )
           i.nyog_sothep_already_seen = true
         end
       end

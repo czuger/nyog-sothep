@@ -15,7 +15,7 @@ class ProfFakePosControllerTest < ActionDispatch::IntegrationTest
 
     get g_game_board_play_path( g_game_board_id: @gb.id )
     assert_response :success
-    assert_select '#investigator', 'Investigateur actuel : le capitaine
+    assert_select '#investigator', 'Investigateur actuel : Le capitaine
 
 Selectionnez 2 villes ou le professeur pourrait être. Votre position actuelle sera ajoutée a la liste.'
   end
