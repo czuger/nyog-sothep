@@ -42,5 +42,11 @@ FactoryGirl.define do
       current_location_code_name :oxford
     end
 
+    factory :weapon_ready_investigator do
+      san 30
+      weapon true
+      current_location_code_name :oxford
+    end
+
   end
 end
