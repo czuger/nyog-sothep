@@ -9,11 +9,13 @@ module GameCore
     end
 
     def table1_e2( game_board, _ , _ )
-			loose_san_from_event( game_board, __method__, :weapon, 2 )
+			loose_san_from_event( game_board, __method__, 2 )
+      update( weapon: true )
     end
 
     def table1_e3( game_board, _ , _ )
-			loose_san_from_event( game_board, __method__, :sign, 2 )
+			loose_san_from_event( game_board, __method__, 2 )
+      update( sign: true )
     end
 
     def table1_e4( game_board, _ , _ )
@@ -21,17 +23,19 @@ module GameCore
       encounter_great_psy!
     end
 
-    def table1_e5( game_board, _ , _ )
+    def table1_e5( game_board, professor , _ )
       log_event( game_board, __method__ )
-      ask_prof_for_fake_cities( game_board, 2 ) unless game_board.p_professor.current_location.water_area?
+      ask_prof_for_fake_cities( game_board, 2 ) unless professor.current_location.water_area?
     end
 
     def table1_e6( game_board, _ , _ )
-			loose_san_from_event( game_board, __method__, :spell, 2 )
+			loose_san_from_event( game_board, __method__, 2 )
+      update( spell: true )
     end
 
     def table1_e7( game_board, _ , _ )
-			loose_san_from_event( game_board, __method__, :weapon, 2 )
+			loose_san_from_event( game_board, __method__, 2 )
+      update( weapon: false )
     end
 
     # def table1_e8( game_board, self, professor )
@@ -45,21 +49,23 @@ module GameCore
     #   replay!
     # end
 
-    def table1_e10( game_board, _ , _ )
+    def table1_e10( game_board, professor , _ )
       log_event( game_board, __method__ )
-      ask_prof_for_fake_cities( game_board, 1 ) unless game_board.p_professor.current_location.water_area?
+      ask_prof_for_fake_cities( game_board, 1 ) unless professor.current_location.water_area?
     end
 
     def table1_e11( game_board, _ , _ )
-			loose_san_from_event( game_board, __method__, :weapon, 2 )
+			loose_san_from_event( game_board, __method__, 2 )
+      update( weapon: true )
     end
 
     def table1_e12( game_board, _ , _ )
-			loose_san_from_event( game_board, __method__, :spell, 3 )
+			loose_san_from_event( game_board, __method__, 3 )
+      update( spell: true )
     end
 
     def table1_e13( game_board, professor, prof_position_finder )
-      log_event( game_board, __method__ )
+      log_event( game_board, __method__ , {}, true )
       professor.spotted( game_board, prof_position_finder )
     end
 

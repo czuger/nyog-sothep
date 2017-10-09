@@ -49,7 +49,7 @@ fr:
           m: "%{investigator_name} ere dans un cimetière plein de goules. Il perds 2 points de SAN et son arme (s'il en avait une)"
           f: "%{investigator_name} ere dans un cimetière plein de goules. Elle perds 2 points de SAN et son arme (si elle en avait une)"
         log_summary:
-          "%{investigator_name} perd %{san_loss} points de SAN."
+          "%{investigator_name} perd %{san_loss} points de SAN et son arme."
 
       e8:
         name_translation: 'middle_2'
@@ -88,8 +88,10 @@ fr:
       e13:
         name_translation: 'beginning'
         log:
-          m: "Le Professeur doit révéler son actuelle position."
-          f: "Le Professeur doit révéler son actuelle position."
+          m: "Le professeur s'est montré imprudent. Il révèle sa position actuelle."
+          f: "Le professeur s'est montré imprudent. Il révèle sa position actuelle."
+        log_summary:
+          "Le professeur est repéré."
 
       e14:
         name_translation: 'beginning'

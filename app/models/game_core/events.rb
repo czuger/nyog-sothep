@@ -51,14 +51,14 @@ module GameCore
       game_board.ask_prof_for_fake_cities!
     end
 
-    def loose_san_from_event( game_board, method, item, amount )
-      update_attribute( item, true ) if loose_san( game_board,  amount )
+    def loose_san_from_event( game_board, method, amount )
       log_event( game_board, method, { san_loss: amount, cur_san: san } )
+      loose_san( game_board,  amount )
     end
 
-    def log_event( game_board, method, san_hash = {} )
+    def log_event( game_board, method, san_hash = {}, summary = nil )
 
-      summary = san_hash.has_key?( :san_loss ) || san_hash.has_key?( :san_gain )
+      summary ||= (san_hash.has_key?( :san_loss ) || san_hash.has_key?( :san_gain ))
 
       log_event_code = 'events.' + method.to_s.gsub('_','.')
       name_translation_method = I18n.t( log_event_code + '.name_translation' )

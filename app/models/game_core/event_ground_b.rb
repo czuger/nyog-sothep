@@ -9,11 +9,13 @@ module GameCore
     end
 
     def table2_e2( game_board, _ , _ )
-			loose_san_from_event( game_board, __method__, :weapon, 3 )
+			loose_san_from_event( game_board, __method__, 3 )
+      update( weapon: true )
     end
 
     def table2_e3( game_board, _ , _ )
-			loose_san_from_event( game_board, __method__, :spell, 2 )
+			loose_san_from_event( game_board, __method__, 2 )
+      update( spell: true )
     end
 
     # def table2_e4( game_board, professor )
@@ -22,7 +24,8 @@ module GameCore
     # end
 
     def table2_e5( game_board, _ , _ )
-			loose_san_from_event( game_board, __method__, :sign, 2 )
+			loose_san_from_event( game_board, __method__, 2 )
+      update( sign: true )
     end
 
     def table2_e6( game_board, professor, _ )
@@ -36,7 +39,8 @@ module GameCore
     end
 
     def table2_e8( game_board, _ , _ )
-			loose_san_from_event( game_board, __method__, :medaillon, 2 )
+			loose_san_from_event( game_board, __method__, 2 )
+      update( medaillon: true )
     end
 
     def table2_e9( game_board, professor, _ )
@@ -64,7 +68,7 @@ module GameCore
     end
 
     def table2_e13( game_board, professor, prof_position_finder )
-      log_event( game_board, __method__ )
+      log_event( game_board, __method__ , {}, true )
       professor.spotted( game_board, prof_position_finder )
     end
 
@@ -74,7 +78,8 @@ module GameCore
     # end
 
     def table2_e18( game_board, _ , _ )
-			loose_san_from_event( game_board, __method__, :weapon, 2 )
+			loose_san_from_event( game_board, __method__, 2 )
+      update( weapon: false )
     end
 
   end
