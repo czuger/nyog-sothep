@@ -66,7 +66,6 @@ class GGameBoard < ApplicationRecord
         i.next_turn
       end
 
-      prof_position_finder.save( self )
       increment!( :turn )
 
       inv_events_done!

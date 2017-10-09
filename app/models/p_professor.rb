@@ -17,7 +17,7 @@ class PProfessor < ApplicationRecord
     city = current_location
     # Le prof n'est jamais repéré dans l'eau
     unless city.water_area?
-      prof_position_finder.spot_prof( game_board.turn, prof_position_finder )
+      prof_position_finder.spot_prof( game_board.turn, current_location_code_name )
     end
   end
 

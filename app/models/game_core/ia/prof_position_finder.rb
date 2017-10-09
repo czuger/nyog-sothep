@@ -15,9 +15,11 @@ class GameCore::Ia::ProfPositionFinder
   end
 
   def save( game_board )
-    @data.delete_if {|key, _| key < game_board.turn }
+    @data.delete_if {|key, _| key < game_board.turn-3 }
+
     if game_board.ia_prof_position
       game_board.ia_prof_position.gb_data = @data
+      game_board.ia_prof_position.save!
     else
       game_board.create_ia_prof_position( gb_data: @data )
     end
@@ -35,33 +37,29 @@ class GameCore::Ia::ProfPositionFinder
     if @data[ turn ]
       # If the prof is spotted, bingo
       if @data[ turn ][ :spotted ]
-        @cached_data = @data[ turn ][ :spotted ]
-        return @cached_data
+        return set_and_return_new_cached_data(@data[ turn ][ :spotted ])
       end
 
       # We only have fake pos, it is better than nothing. Maybe we have only one fake pos because the player is dumb
       if @data[ turn ][ :fake_pos ]
-        @cached_data = @data[ turn ][ :fake_pos ]
-        return @cached_data
+        return set_and_return_new_cached_data(@data[ turn ][ :fake_pos ])
       end
     end
 
     # We have nothing this turn. Guess from the previous turn.
     if @data[ turn-1 ]
-      @cached_data = cities_around_last_spotted_cities( turn )
-      return @cached_data
+      return set_and_return_new_cached_data(cities_around_last_spotted_cities( turn ))
     end
 
     # We have nothing this turn nor the previous turn. Guess from the penultimate turn. Criminals always go back to the crime scene.
     if @data[ turn-2 ]
-      @cached_data = []
-      @cached_data += @data[ turn-2 ][ :spotted ] if @data[ turn-2 ][ :spotted ]
-      @cached_data += @data[ turn-2 ][ :fake_position ] if @data[ turn-2 ][ :fake_position ]
-      return @cached_data
+      data = []
+      data += @data[ turn-2 ][ :spotted ] if @data[ turn-2 ][ :spotted ]
+      data += @data[ turn-2 ][ :fake_position ] if @data[ turn-2 ][ :fake_position ]
+      return set_and_return_new_cached_data(data)
     end
 
     # Whe have nothing since 3 turn. We have nothing. Move randomly.
-
   end
 
   # This method is called when the prof is spotted
@@ -77,7 +75,8 @@ class GameCore::Ia::ProfPositionFinder
   #
   # @param [Integer] turn the current turn
   # @param [Array[String]] fake_positions_code_names an array of strings containing the codes_names of the fakes positions
-  def add_fake_pos( turn, fake_positions_code_names )
+  def add_fake_pos( turn, prof, fake_positions_code_names )
+    fake_positions_code_names << prof.current_location_code_name
     @data[ turn ] ||= { fake_pos: fake_positions_code_names }
     @data[ turn ][ :fake_pos ] = fake_positions_code_names & @data[ turn ][ :fake_pos ]
     validate_fake_pos_with_previous_turn_data( turn )
@@ -85,6 +84,10 @@ class GameCore::Ia::ProfPositionFinder
   end
 
   private
+
+  def set_and_return_new_cached_data( data_array )
+    @cached_data = data_array
+  end
 
   # This method return the cities around the previous spotted or fakes cities
   #
@@ -98,7 +101,8 @@ class GameCore::Ia::ProfPositionFinder
 
       cities_around_last_spotted_cities_array = []
       old_spotted_positions.each do |old_spotted_position|
-        cities_around_last_spotted_cities_array += GameCore::Ia::BfsAlgo.find_cities_around_city( old_spotted_position, 1 )[1]
+        nearby_cities = GameCore::Ia::BfsAlgo.find_cities_around_city( old_spotted_position, 1 )
+        cities_around_last_spotted_cities_array += nearby_cities[1].map( &:to_s ) if nearby_cities
       end
       cities_around_last_spotted_cities_array + old_spotted_positions
     end
@@ -106,6 +110,8 @@ class GameCore::Ia::ProfPositionFinder
 
   # This method check if positions are not too far from the previous spotted position and the previous fakes positions
   def validate_fake_pos_with_previous_turn_data( turn )
-    @data[ turn ][ :fake_pos ] = @data[ turn ][ :fake_pos ] & cities_around_last_spotted_cities( turn ) if @data[ turn-1 ]
+    if @data[ turn-1 ]
+      @data[ turn ][ :fake_pos ] = @data[ turn ][ :fake_pos ] & cities_around_last_spotted_cities( turn )
+    end
   end
 end

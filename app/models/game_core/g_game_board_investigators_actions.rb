@@ -33,6 +33,8 @@ module GameCore
           finalize_turn( prof_position_finder )
         end
 
+        prof_position_finder.save( self )
+
       end
     end
 

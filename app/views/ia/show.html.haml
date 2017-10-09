@@ -40,8 +40,8 @@
       %th Fake Pos
 
   %tbody
-    - @gb_data.each do |data|
+    - @to_show_data.each do |data|
       %tr
-        %td= data
-        %td= investigator.position_code_name
-        %td= investigator.turn
+        %td= data[:turn]
+        %td= data[:spotted]
+        %td= data[:fake_pos]

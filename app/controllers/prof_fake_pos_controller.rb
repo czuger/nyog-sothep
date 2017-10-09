@@ -25,7 +25,7 @@ class ProfFakePosController < ApplicationController
 
       prof_position_finder = GameCore::Ia::ProfPositionFinder.new
       prof_position_finder.load( @game_board )
-      prof_position_finder.add_fake_pos( @game_board.turn, cities_codes_names )
+      prof_position_finder.add_fake_pos( @game_board.turn, @prof,cities_codes_names )
       prof_position_finder.save( @game_board )
 
       @game_board.return_to_move_status!
