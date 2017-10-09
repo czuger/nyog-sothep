@@ -24,6 +24,23 @@ class InvestigatorIAMovementTest < ActiveSupport::TestCase
     assert_equal 1, @investigator.reload.san
   end
 
+  test 'investigators should all target a spotted professor' do
+
+    imt = GameCore::Ia::ProfPositionFinder.new()
+    imt.spot_prof(@gb.turn, @professor.current_location_code_name )
+    imt.save( @gb )
+
+    investigator2 = create( :i_investigator, g_game_board_id: @gb.id )
+    investigator2.update( weapon: true )
+    @investigator.update( weapon: true )
+
+    @gb.investigators_ia_play( @professor )
+
+    assert_equal @professor.current_location_code_name, @investigator.reload.ia_target_destination_code_name
+    assert_equal @professor.current_location_code_name, investigator2.reload.ia_target_destination_code_name
+
+  end
+
 
   # def setup
   #   @gb = create( :g_game_board_for_inv_movement_tests )

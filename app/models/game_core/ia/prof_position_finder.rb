@@ -67,6 +67,7 @@ class GameCore::Ia::ProfPositionFinder
   # @param [Integer] turn the current turn
   # @param [String] prof_position_code_name the code name of the position of the prof
   def spot_prof( turn, prof_position_code_name )
+    raise "prof_position_code_name is not a string" unless prof_position_code_name.is_a?( String )
     @data[ turn ] ||= {}
     @data[ turn ][ :spotted ] ||= [ prof_position_code_name ]
     @cached_data = nil
