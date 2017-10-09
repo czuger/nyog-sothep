@@ -67,7 +67,8 @@ class GameCore::Ia::ProfPositionFinder
   # @param [Integer] turn the current turn
   # @param [String] prof_position_code_name the code name of the position of the prof
   def spot_prof( turn, prof_position_code_name )
-    @data[ turn ] ||= { spotted: [ prof_position_code_name ] }
+    @data[ turn ] ||= {}
+    @data[ turn ][ :spotted ] ||= [ prof_position_code_name ]
     @cached_data = nil
   end
 
@@ -77,7 +78,8 @@ class GameCore::Ia::ProfPositionFinder
   # @param [Array[String]] fake_positions_code_names an array of strings containing the codes_names of the fakes positions
   def add_fake_pos( turn, prof, fake_positions_code_names )
     fake_positions_code_names << prof.current_location_code_name
-    @data[ turn ] ||= { fake_pos: fake_positions_code_names }
+    @data[ turn ] ||= {}
+    @data[ turn ][ :fake_pos ] ||= fake_positions_code_names
     @data[ turn ][ :fake_pos ] = fake_positions_code_names & @data[ turn ][ :fake_pos ]
     validate_fake_pos_with_previous_turn_data( turn )
     @cached_data = nil

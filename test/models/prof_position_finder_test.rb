@@ -50,4 +50,18 @@ class ProfPositionFinderTest < ActiveSupport::TestCase
     assert_equal ['milford', 'providence'], @imt.data[2][:fake_pos]
   end
 
+  test 'Assert adding fake pos work even if prof is spotted in the same turn' do
+    @imt.spot_prof( 1, 'providence' )
+    @imt.add_fake_pos( 1, @professor,%w( providence woonsocket ) )
+    # We get only providence, because the prof has been spotted.
+    assert_equal %w( providence ), @imt.get_prof_positions( 1 )
+  end
+
+  test 'Assert spotting prof work even if fake pos has been set in the same turn' do
+    @imt.add_fake_pos( 1, @professor,%w( providence woonsocket ) )
+    @imt.spot_prof( 1, 'providence' )
+    # We get only providence, because the prof has been spotted.
+    assert_equal %w( providence ), @imt.get_prof_positions( 1 )
+  end
+
 end
