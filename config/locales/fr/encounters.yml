@@ -12,9 +12,9 @@ fr:
     habitants:
       name_translation: 'beginning'
       log:
-        m: "Les vilageois prennent %{investigator_name} pour un fanatique et le chassent du village. Il perd son médaillon et ne pourra plus passer par ce village au prochain tour."
-        f: "Les vilageois prennent %{investigator_name} pour un fanatique et la chassent du village. Elle perd son médaillon et ne pourra plus passer par ce village au prochain tour."
-      helper: "Les vialageois interdisent le passage a un investigateur s'il porte un médaillon."
+        m: "Les villageois prennent %{investigator_name} pour un fanatique et le chassent du village. Il perd son médaillon et ne pourra plus passer par ce village au prochain tour."
+        f: "Les villageois prennent %{investigator_name} pour un fanatique et la chassent du village. Elle perd son médaillon et ne pourra plus passer par ce village au prochain tour."
+      helper: "Les villageois interdisent le passage a un investigateur s'il porte un médaillon."
 
     choses_brume:
       name_translation: 'beginning'
@@ -95,6 +95,8 @@ fr:
         log:
           m: "%{investigator_name} rencontre des fanatiques. Il les disperse en les menaçants de son arme."
           f: "%{investigator_name} rencontre des fanatiques. Elle les disperse en les menaçants de son arme."
+        log_summary:
+          "%{investigator_name} disperse des fanatiques."
       helper: "5 fanatiques sont nécessaires pour invoquer Nyog'Sothep. Si un investigateur possède une arme, il a une chance de disperser les fanatiques. Sinon ceux-ci lui bloquent le passage."
 
 

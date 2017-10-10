@@ -11,32 +11,16 @@ module GameCore
         investigators = game_board.alive_investigators.order( :id ).select{ |i| i.current_location_code_name == current_location_code_name }
 
         unless investigators.empty?
-          fight_occurs = false
-          investigators.each do |i|
-            # On prof turn, we attack only if investigator does not have a weapon, or a medaillon
-            unless i.weapon || i.medaillon
-              fight( game_board, i )
-              fight_occurs = true
-            end
-          end
 
           prof_position_finder = GameCore::Ia::ProfPositionFinder.new
           prof_position_finder.load( game_board )
 
-          if fight_occurs
-            # Si l'on a combatu, on sait ou est le professeur
-
-            spotted( game_board, prof_position_finder )
-          else
-            # TODO : a revoir
-            # # Sinon il est a l'endroit d'un des investigateurs
-            # trust_value = 1.0 / investigators.count
-            # investigators.each do |i|
-            #   IInvTargetPosition.find_or_create_by!( g_game_board_id: game_board.id, position_code_name: i.current_location_code_name, trust: trust_value, turn: game_board.turn )
-            # end
-            #
-            # investigators_positions =
-            # prof_position_finder.add_fake_pos( turn, )
+          investigators.each do |inv|
+            # On prof turn, we attack only if investigator does not have a weapon, or a medaillon
+            unless inv.weapon || inv.medaillon
+              fight( game_board, i )
+              spotted( game_board, inv, prof_position_finder )
+            end
           end
 
           prof_position_finder.save( game_board )

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171008082605) do
+ActiveRecord::Schema.define(version: 20171010094636) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -82,6 +82,7 @@ ActiveRecord::Schema.define(version: 20171008082605) do
     t.boolean  "log_gender",              default: false
     t.boolean  "log_gender_summary",      default: false
     t.boolean  "summary",                 default: false
+    t.string   "game_board_phase",                        null: false
     t.index ["actor_type", "actor_id"], name: "index_l_logs_on_actor_type_and_actor_id", using: :btree
     t.index ["g_game_board_id"], name: "index_l_logs_on_g_game_board_id", using: :btree
     t.index ["summary"], name: "index_l_logs_on_summary", using: :btree

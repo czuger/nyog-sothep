@@ -6,6 +6,8 @@
       %td
         Tour
       %td
+        Movement
+      %td
         Message
 
   %tbody
@@ -13,6 +15,8 @@
       %tr
         %td
           = e.turn
+        %td
+          = e.game_board_phase
         %td
           = log_message( e )
 

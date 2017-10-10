@@ -9,7 +9,7 @@ module GameCore
       if GameCore::Map::Location.get_location( current_location_code_name ).city?
         if current_location_code_name == prof.current_location_code_name
 
-          prof.spotted( game_board, prof_position_finder )
+          prof.spotted( game_board, self, prof_position_finder )
 
           if weapon
             # If we have a weapon : we fight (even if we have the medaillon)

@@ -57,7 +57,7 @@ module GameCore
     end
 
     def die( game_board )
-      LLog.log( game_board, self,'investigator_becomes_mad', true, {},
+      LLog.log( game_board, self,'investigator.becomes_mad', true, {},
                 true, true )
       game_board.p_monster_positions.create!(
         location_code_name: current_location_code_name, code_name: 'fanatiques', discovered: true, token_rotation: rand( -15 .. 15 ) )

@@ -13,11 +13,13 @@ class PProfessor < ApplicationRecord
     !g_game_board.p_monster_positions.exists?( location_code_name: position_code_name )
   end
 
-  def spotted( game_board, prof_position_finder )
+  def spotted( game_board, investigator, prof_position_finder )
     city = current_location
     # Le prof n'est jamais repéré dans l'eau
     unless city.water_area?
       prof_position_finder.spot_prof( game_board.turn, current_location_code_name )
+      LLog.log( game_board, investigator,'investigator.spot_prof', true,
+                { dest_cn: investigator.current_location_code_name } )
     end
   end
 

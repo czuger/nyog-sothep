@@ -22,7 +22,7 @@ class LLog < ApplicationRecord
     log_hash = { turn: game_board.turn, actor: actor, event_translation_code: event_translation_code,
                  event_translation_data: event_translation_data, actor_aasm_state: aasm_state,
                  summary: summary, log_gender: log_gender, log_gender_summary: log_gender_summary,
-                 name_translation_method: name_translation_method }
+                 name_translation_method: name_translation_method, game_board_phase: game_board.aasm_state }
 
     game_board.l_logs.create!( log_hash )
 

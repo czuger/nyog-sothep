@@ -7,6 +7,7 @@ fr:
       dont_breed: 'Ne pas invoquer de monstres'
       prof_attack: "Attaquer %{investigator_name}"
       prof_dont_attack: "Ne pas attaquer l'investigateur"
+
     prof_fake_pos_asked:
       inv_turn: 'Investigateur actuel : %{inv_name}'
       info:

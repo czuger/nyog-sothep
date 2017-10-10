@@ -69,7 +69,7 @@ module GameCore
 
     def table2_e13( game_board, professor, prof_position_finder )
       log_event( game_board, __method__ , {}, true )
-      professor.spotted( game_board, prof_position_finder )
+      professor.spotted( game_board, self, prof_position_finder )
     end
 
     # def table2_e17( game_board, professor )
