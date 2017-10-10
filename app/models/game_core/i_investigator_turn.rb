@@ -53,7 +53,7 @@ module GameCore
 
     def loose_san_from_misty_things( game_board )
       increment!( :san, -1 )
-      LLog.log( game_board, self,'encounter.back_from_misty_things', true ) if game_board
+      LLog.log( game_board, self,'encounter.back_from_misty_things', true, { san_loss: 1 } )
     end
 
     def die( game_board )

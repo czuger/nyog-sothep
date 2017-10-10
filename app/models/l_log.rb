@@ -29,10 +29,7 @@ class LLog < ApplicationRecord
   end
 
   def self.log_investigator_movement( game_board, investigator, dest_loc_code_name, direction: :goes )
-
     event = 'movement.' + direction.to_s
-    city = GameCore::Map::Location.get_location( dest_loc_code_name ).city?
-
     log( game_board,investigator, event, false,{ dest_cn: dest_loc_code_name } )
   end
 
