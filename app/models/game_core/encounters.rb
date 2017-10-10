@@ -14,7 +14,7 @@ module GameCore
     def resolve_encounter_habitants( investigator, encounter )
       if investigator.medaillon
 
-        log_encounter( investigator,'habitants' )
+        log_encounter( investigator,'habitants', nil, nil, false )
         investigator.update( medaillon: false, forbidden_city_code_name: investigator.current_location_code_name )
         investigator.goes_back( self )
         replace_encounter_in_monsters_stack( encounter )
@@ -105,7 +105,7 @@ module GameCore
       encounter.destroy!
     end
 
-    def log_encounter( investigator, code, san_loss = nil, cur_san = nil )
+    def log_encounter( investigator, code, san_loss = nil, cur_san = nil, summary = true )
       data = {}
       data[:san_loss] = san_loss if san_loss
       data[:cur_san] = cur_san if cur_san
@@ -113,7 +113,7 @@ module GameCore
       code = 'encounter.' + code
       name_translation_method = I18n.t( code + '.name_translation' )
 
-      LLog.log( self, investigator,code, true, data,
+      LLog.log( self, investigator,code, summary, data,
                 true, false, name_translation_method )
     end
 

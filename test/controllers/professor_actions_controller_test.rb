@@ -114,26 +114,7 @@ class ProfessorActionsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to g_game_board_play_url
   end
 
-  test 'spotted professor should move all investigators should target him if spotted last turn' do
-    @gb.update( aasm_state: 'prof_move' )
-    Kernel.stubs(:rand).returns(1)
-
-    imt = GameCore::Ia::ProfPositionFinder.new()
-    imt.spot_prof(@gb.turn-1, @professor.current_location_code_name )
-    imt.save( @gb )
-
-    create( :weapon_ready_investigator, g_game_board: @gb )
-    create( :weapon_ready_investigator, g_game_board: @gb )
-
-    get move_g_game_board_professor_actions_url( g_game_board_id: @gb.id, zone_id: @dest.code_name )
-    assert_redirected_to g_game_board_play_url
-
-    @gb.i_investigators.each_with_index do |inv, idx|
-      assert_equal @professor.current_location_code_name, inv.reload.ia_target_destination_code_name
-    end
-  end
-
-  test 'spotted professor should move all investigators should target him if spotted' do
+  test 'spotted professor should move, all investigators should target him if spotted' do
     @gb.update( aasm_state: 'prof_move' )
     Kernel.stubs(:rand).returns(1)
 

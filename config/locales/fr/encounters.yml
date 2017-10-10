@@ -86,6 +86,8 @@ fr:
         log:
           m: "%{investigator_name} rencontre des fanatiques. Il les disperse en les menaçants de son arme. Mais l'action l'éprouve : il perds 2 points de SAN."
           f: "%{investigator_name} rencontre des fanatiques. Elle les disperse en les menaçants de son arme. Mais l'action l'éprouve : elle perds 2 points de SAN."
+        log_summary:
+          "%{investigator_name} disperse un groupe de fanatiques."
       log_summary:
         "%{investigator_name} perd %{san_loss} points de SAN."
       weapon_critical:

@@ -4,6 +4,8 @@ fr:
       log: '%{investigator_name} se déplace %{dest_cn}.'
     return:
       log: '%{investigator_name} retourne %{dest_cn}.'
+    stay:
+      log: '%{investigator_name} reste %{dest_cn}.'
     border_control:
       log:
         m: "%{investigator_name} a été empêché de passer la frontière par une patrouille."

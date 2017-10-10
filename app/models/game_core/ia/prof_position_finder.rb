@@ -1,3 +1,4 @@
+# This class is used for the IA to track informations on the prof (spotted placer or guessed places)
 class GameCore::Ia::ProfPositionFinder
 
   attr_reader :data

@@ -11,7 +11,10 @@ class IInvestigatorTest < ActiveSupport::TestCase
 
   test 'go to the psy if low SAN' do
     @investigator.update( san: 1 )
-    @investigator.ia_play_movements( @gb, @imt )
+
+    investigator_movement = GameCore::Ia::InvestigatorMovement.new( @gb, @investigator.reload, @imt )
+    investigator_movement.ia_play_movements
+
     assert @investigator.reload.san > 1
   end
 
@@ -20,7 +23,8 @@ class IInvestigatorTest < ActiveSupport::TestCase
 
     @investigator.ia_target_destination_code_name = :providence
 
-    @investigator.reload.ia_play_movements( @gb, @imt )
+    investigator_movement = GameCore::Ia::InvestigatorMovement.new( @gb, @investigator.reload, @imt )
+    investigator_movement.ia_play_movements
 
     assert_not_equal @investigator.last_location_code_name, @investigator.current_location_code_name
   end
@@ -30,7 +34,8 @@ class IInvestigatorTest < ActiveSupport::TestCase
 
     @investigator.ia_target_destination_code_name = :providence
 
-    @investigator.reload.ia_play_movements( @gb, @imt )
+    investigator_movement = GameCore::Ia::InvestigatorMovement.new( @gb, @investigator.reload, @imt )
+    investigator_movement.ia_play_movements
 
     assert_equal @investigator.last_location_code_name, @investigator.current_location_code_name
   end

@@ -8,8 +8,7 @@ module GameCore
       end
 
       def self.all_codes_names
-        load_locations
-        @@locations.keys
+        all.map( &:code_name )
       end
 
       # exclusion_list is an array of string

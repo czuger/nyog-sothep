@@ -7,6 +7,7 @@ module GameCore
 
       prof_position_finder = GameCore::Ia::ProfPositionFinder.new
       prof_position_finder.load( self )
+      investigator_movement_target = GameCore::Ia::InvestigatorMovementTarget.new( self, prof_position_finder )
 
       ActiveRecord::Base.transaction do
 
@@ -14,7 +15,7 @@ module GameCore
           when 'inv_move'
             # The regular case, we move then we play events
 
-            investigators_move( prof_position_finder )
+            investigators_move( investigator_movement_target )
             investigators_actions( prof, prof_position_finder )
 
           # This is where we go after a break (user asked for options)
@@ -57,11 +58,11 @@ module GameCore
       end
     end
 
-    def investigators_move( prof_position_finder )
-      imt = GameCore::Ia::InvestigatorMovementTarget.new( self, prof_position_finder )
-      ready_to_move_investigators.reload.each do |i|
-          i.ia_play_movements( self, imt )
-          i.save!
+    def investigators_move( investigator_movement_target )
+
+      ready_to_move_investigators.reload.each do |investigator|
+        GameCore::Ia::InvestigatorMovement.new( self, investigator, investigator_movement_target ).ia_play_movements
+        investigator.save!
       end
       inv_movement_done!
     end
