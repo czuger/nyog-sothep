@@ -14,7 +14,9 @@ class ProfessorActionsController < ApplicationController
   def dont_move
     set_game_board
 
-    prof_actions( nil )
+    @prof.prof_play( @game_board, nil )
+
+    redirect_to g_game_board_play_url( @game_board )
   end
 
   def move
@@ -24,12 +26,9 @@ class ProfessorActionsController < ApplicationController
 
     dest_loc = GameCore::Map::Location.get_location( params['zone_id'] )
 
-    ActiveRecord::Base.transaction do
-      @prof.prof_play( @game_board, dest_loc )
-    end
+    @prof.prof_play( @game_board, dest_loc )
 
     redirect_to g_game_board_play_url( @game_board )
-
   end
 
   def invoke_nyog_sothep
