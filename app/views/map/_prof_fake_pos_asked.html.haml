@@ -1,9 +1,9 @@
 #board
   = render partial: 'map/prof_map'
 
-- @cities.each do |city|
-  .token.prof-fake-position{ style: token_style( city ), city_id: city.id }
-    -#= image_tag( 'tokens/professor.png' )
+  - @cities.each do |city|
+    .token.prof-fake-position{ style: token_style( city ), city_id: city.id }
+      -#= image_tag( 'tokens/professor.png' )
 
 #infos
   #investigator
