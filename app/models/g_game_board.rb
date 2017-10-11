@@ -53,7 +53,7 @@ class GGameBoard < ApplicationRecord
     end
 
     event :loose_game do
-      transitions :from => :prof_move, :to => :game_lost
+      transitions :from => [ :prof_move, :inv_events ], :to => :game_lost
     end
 
   end

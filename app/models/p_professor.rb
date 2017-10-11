@@ -37,7 +37,7 @@ class PProfessor < ApplicationRecord
     decrement!( :hp, amount )
     LLog.log( gb, investigator,'fight.gun_shot', true, { life_loss: amount, cur_life: hp } )
 
-    # TODO : implement gamover on professor death
+    gb.loose_game! if hp <= 0
   end
 
   def assert_breed_validity( position )

@@ -17,8 +17,8 @@ module GameCore
 
           investigators.each do |inv|
             # On prof turn, we attack only if investigator does not have a weapon, or a medaillon
-            unless inv.weapon || inv.medaillon
-              fight( game_board, i )
+            unless inv.weapon
+              fight( game_board, inv )
               spotted( game_board, inv, prof_position_finder )
             end
           end
@@ -56,7 +56,7 @@ module GameCore
           investigator.loose_san( gb, 2 )
           investigator.update( sign: false )
           LLog.log( gb, investigator, 'fight.sign_protect', true,
-                    { san_loss: 2, cur_san: investigator.san },  )
+                    { san_loss: 2, cur_san: investigator.san }, true  )
           # gb.inv_repelled!
 
         else

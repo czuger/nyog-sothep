@@ -52,7 +52,7 @@ module GameCore
     end
 
     def loose_san_from_misty_things( game_board )
-      increment!( :san, -1 )
+      decrement!( :san, 1 )
       LLog.log( game_board, self,'encounter.back_from_misty_things', true, { san_loss: 1 } )
     end
 
