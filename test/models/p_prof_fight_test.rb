@@ -56,12 +56,10 @@ class PProfFightTest < ActiveSupport::TestCase
   end
 
   test 'professor should not attack investigator' do
-    [ [true, true], [true, false], [false, true] ].each do |weapon_medaillon_status|
-      @inv.update( weapon: weapon_medaillon_status[0], medaillon: weapon_medaillon_status[1] )
-      assert_no_difference '@inv.reload.san' do
-        assert_no_difference '@prof.reload.hp' do
-          @prof.check_for_investigators_to_fight_in_city( @gb )
-        end
+    @inv.update( weapon: true )
+    assert_no_difference '@inv.reload.san' do
+      assert_no_difference '@prof.reload.hp' do
+        @prof.check_for_investigators_to_fight_in_city( @gb )
       end
     end
     refute @prof_position_finder.get_prof_positions( @gb.turn )

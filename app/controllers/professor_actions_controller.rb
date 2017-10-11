@@ -25,7 +25,7 @@ class ProfessorActionsController < ApplicationController
     dest_loc = GameCore::Map::Location.get_location( params['zone_id'] )
 
     ActiveRecord::Base.transaction do
-      @prof.prof_play( dest_loc )
+      @prof.prof_play( @game_board, dest_loc )
     end
 
     redirect_to g_game_board_play_url( @game_board )

@@ -26,7 +26,7 @@ class ProfessorActionsControllerTest < ActionDispatch::IntegrationTest
     GGameBoard.any_instance.stubs( :repelling_roll ).returns( -2 )
 
     get move_g_game_board_professor_actions_url( g_game_board_id: @gb.id, zone_id: :oxford )
-    assert_redirected_to g_game_board_game_lost_url
+    assert_redirected_to g_game_board_play_url
   end
 
   test 'professor should move' do

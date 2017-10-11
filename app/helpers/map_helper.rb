@@ -9,11 +9,11 @@ module MapHelper
     end
     x_decal = @position_x_decal[ position.code_name ]
 
-    "top:#{position.y-17+13}px;left:#{position.x-17 + x_decal}px;transform:rotate(#{token_rotation}deg);z-index:#{x_decal}"
+    "top:#{position.y-20}px;left:#{position.x-17 + x_decal}px;transform:rotate(#{token_rotation}deg);z-index:#{x_decal}"
   end
 
   def can_breed_monster( monster )
-    !@monster_at_prof_location && !@prof_in_water && !( monster.code_name == 'profonds' && !@prof_in_port )
+    !@game_over && !@monster_at_prof_location && !@prof_in_water && !( monster.code_name == 'profonds' && !@prof_in_port )
   end
 
   def nyog_sothep_class()

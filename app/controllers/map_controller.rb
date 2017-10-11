@@ -7,6 +7,8 @@ class MapController < ApplicationController
   def play
     set_show_map_common_variables
 
+    @game_over = @game_board.game_lost? || @game_board.game_won?
+
     if @game_board.prof_asked_for_fake_cities?
 
       @nb_cities = @game_board.asked_fake_cities_count

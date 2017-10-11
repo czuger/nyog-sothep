@@ -1,5 +1,7 @@
 - if @game_board.prof_asked_for_fake_cities?
   = render partial: 'prof_fake_pos_asked'
+- elsif @game_over
+  = render partial: 'game_over'
 - else
   = render partial: 'regular_prof_move'
 

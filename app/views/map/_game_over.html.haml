@@ -1,5 +1,10 @@
+- if @game_over
+  - if @game_board.game_lost?
+    %h2= 'Game lost'
+  - else
+    %h2= 'Game won'
+
 #board
-  = render partial: 'prof_dest'
   = render partial: 'prof_map'
 
 #infos

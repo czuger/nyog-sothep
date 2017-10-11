@@ -18,31 +18,31 @@ module GameCore
       12 => :fanatiques }
 
 
-    def prof_play( dest_loc )
+    def prof_play( game_board, dest_loc )
 
       # If we have a destination, then the prof move, otherwise it stay where he is
       # Nyog sothep movement is tested in the method
-      @prof.move_to_dest_loc( dest_loc ) if dest_loc
+      move_to_dest_loc( dest_loc ) if dest_loc
 
       # If nyog sothep is with the prof, then we check for fight
-      @game_board.nyog_sothep_repelled_test
-      return if @game_board.game_lost? || @game_board.game_won?
+      game_board.nyog_sothep_repelled_test
+      return if game_board.game_lost? || game_board.game_won?
 
       # We check for investigators to fight in the city.
-      @prof.check_for_investigators_to_fight_in_city( @game_board )
-      return if @game_board.game_lost? || @game_board.game_won?
+      check_for_investigators_to_fight_in_city( game_board )
+      return if game_board.game_lost? || game_board.game_won?
 
       # If the prof has less than 5 monsters, he pick one.
-      if @game_board.p_monsters.count < 5
-        @prof.pick_one_monster
+      if game_board.p_monsters.count < 5
+        pick_one_monster
       end
 
       # The prof movement is done, we will skip to investigators IA phase.
-      @game_board.prof_movement_done!
+      game_board.prof_movement_done!
 
       # At the end of the professor turn, investigators play
-      @game_board.investigators_ia_play( @prof )
-      @game_board.save!
+      game_board.investigators_ia_play( self )
+      game_board.save!
 
     end
 

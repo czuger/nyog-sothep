@@ -10,7 +10,7 @@ FactoryGirl.define do
     after(:create) do |gb|
       prof = create( :p_professor, g_game_board_id: gb.id )
 
-      create( :l_log, g_game_board_id: gb.id, actor: prof )
+      create( :l_log, g_game_board_id: gb.id, actor: prof, game_board_phase: :prof_play )
 
       1.upto( 10 ).each do
         create( :m_monster, g_game_board_id: gb.id )
@@ -53,7 +53,7 @@ FactoryGirl.define do
         gb.i_investigators.destroy_all
         gb.reload
         create( :has_moved_investigator, g_game_board_id: gb.id, current_location_code_name: :oxford, last_location_code_name: :oxford )
-        create( :l_log, g_game_board_id: gb.id, actor: gb.i_investigators.first )
+        create( :l_log, g_game_board_id: gb.id, actor: gb.i_investigators.first, game_board_phase: :prof_play )
       end
     end
 
