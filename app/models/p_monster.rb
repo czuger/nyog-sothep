@@ -1,2 +1,0 @@
-class PMonster < ApplicationRecord
-end

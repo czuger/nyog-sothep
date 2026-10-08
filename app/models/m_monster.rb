@@ -1,2 +1,0 @@
-class MMonster < ApplicationRecord
-end
