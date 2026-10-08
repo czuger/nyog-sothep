@@ -1,0 +1,5 @@
+<ol class="log">
+  {% for event in view.log %}
+  <li><span class="log-turn">T{{ event.turn }}</span> {{ event.text }}</li>
+  {% endfor %}
+</ol>

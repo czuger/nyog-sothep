@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Tour {{ view.turn }} — Nyog'Sothep{% endblock %}
+{% block body_class %}map-screen{% endblock %}
+{% block content %}
+{% include "board.html" %}
+
+<details class="panel floating floating-controls" open data-remember="controls">
+  <summary>{{ screen.title() }}{% if !view.is_finished() %} — tour {{ view.turn }}{% endif %}</summary>
+  {% include "partials/banner.html" %}
+  {% if let Some(error) = error %}<p class="error panel">{{ error }}</p>{% endif %}
+  {% include "partials/screen.html" %}
+</details>
+
+<div class="floating-column">
+  <details class="panel floating-side" open data-remember="notebook">
+    <summary>Carnet</summary>
+    {% include "partials/notebook.html" %}
+  </details>
+  <details class="panel floating-side" open data-remember="log">
+    <summary>Journal</summary>
+    {% include "partials/log.html" %}
+  </details>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="/static/board.js"></script>
+{% endblock %}

@@ -1,0 +1,11 @@
+<section class="panel screen">
+{% match screen %}
+{% when Screen::Moves %}{% include "screens/moves.html" %}
+{% when Screen::PlayAgain %}{% include "screens/play_again.html" %}
+{% when Screen::Table %}{% include "screens/table.html" %}
+{% when Screen::Cities %}{% include "screens/cities.html" %}
+{% when Screen::Fight %}{% include "screens/fight.html" %}
+{% when Screen::Banishment %}{% include "screens/banishment.html" %}
+{% when Screen::Finished %}{% include "screens/finished.html" %}
+{% endmatch %}
+</section>

@@ -1,0 +1,7 @@
+{% let question = self.city_question() %}
+<h2>{{ self.prompted_name() }} interroge le professeur</h2>
+<p>{{ question.text }} Cochez {% if question.count == 1 %}la ville{% else %}les {{ question.count }} villes{% endif %} sur la carte.</p>
+<form id="screen-form" method="post" action="{{ self.game_path() }}/cities" class="inline-form">
+  <button type="submit">Demander</button>
+  {% if question.optional %}<button type="submit" name="skip" value="1" class="secondary" formnovalidate>Ne rien demander</button>{% endif %}
+</form>

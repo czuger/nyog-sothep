@@ -1,0 +1,23 @@
+<h2 class="{% if self.investigators_won() %}victory{% else %}defeat{% endif %}">{{ self.outcome_text() }}</h2>
+<p>Nyog'Sothep devait apparaître à <strong>{{ self.nyog_city_name() }}</strong>.</p>
+<table class="score-table">
+  <caption>Classement des investigateurs</caption>
+  <thead><tr><th></th><th>PV ôtés</th><th>Fanatiques</th><th>Renvoi</th><th>SAN</th><th>Folie</th><th>Villes</th><th>Total</th></tr></thead>
+  <tbody>
+    {% for line in view.scores %}
+    <tr><th>{{ line.id.name() }}</th><td>{{ line.score.damage }}</td><td>{{ line.score.fanatics }}</td><td>{{ line.score.banishment }}</td><td>{{ line.score.sanity }}</td><td>{{ line.score.madness }}</td><td>{{ line.score.destruction }}</td><td><strong>{{ line.score.total() }}</strong></td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+<details class="route-sheet" open>
+  <summary>Feuille de route du professeur</summary>
+  <table class="score-table">
+    <thead><tr><th>Tour</th><th>Étape</th><th>Pion placé</th></tr></thead>
+    <tbody>
+      {% for line in self.route_lines() %}
+      <tr><td>{{ line.turn }}</td><td>{{ line.place }}</td><td>{{ line.counter }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</details>
+<form method="post" action="/games"><button type="submit">Nouvelle partie</button></form>

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="panel lobby">
+  <h1>Nouvelle partie</h1>
+  <p>Mai 1921, Nouvelle-Angleterre. Le professeur S. Petersen, ethnologue à l'université de Providence, a
+     disparu. Descendant d'une sorcière brûlée en 1688, il veut achever son œuvre : faire venir sur Terre
+     l'innommable <strong>Nyog'Sothep, l'Immonde Brumeux</strong>.</p>
+  <p>Vous menez quatre investigateurs, partis de Nantucket. L'ordinateur joue le professeur, caché derrière
+     son écran : retrouvez-le et tuez-le avant qu'il n'ait réuni des Fanatiques dans cinq villes, ou renvoyez
+     Nyog'Sothep dans l'abîme s'il apparaît.</p>
+  <form method="post" action="/games">
+    <button type="submit">Commencer la partie</button>
+  </form>
+  <p class="hint">La partie a sa propre adresse : gardez-la pour la reprendre plus tard.</p>
+</section>
+{% endblock %}

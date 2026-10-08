@@ -1,0 +1,38 @@
+<div class="board-viewport">
+  <div class="board-frame" style="--board-height: {{ board.height }}px">
+  <div class="board" style="width: {{ board.width }}px">
+    <img src="/img/board.jpg" alt="Carte du Massachusetts et du Rhode Island" width="{{ board.width }}" height="{{ board.height }}">
+    <svg class="board-moves" viewBox="0 0 {{ board.width }} {{ board.height }}" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <marker id="move-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z"></path>
+        </marker>
+      </defs>
+    </svg>
+    {% for place in board.places %}
+    {% if let Some(kind) = place.pick %}
+    <label class="place pick" style="left: {{ place.x }}px; top: {{ place.y }}px" title="{{ place.name }}">
+      <input type="{{ kind }}" name="city" value="{{ place.code }}" form="screen-form">
+      <span class="place-name">{{ place.name }}</span>
+    </label>
+    {% else %}
+    <span class="place" style="left: {{ place.x }}px; top: {{ place.y }}px" title="{{ place.name }}" data-target="{{ place.code }}" data-x="{{ place.x }}" data-y="{{ place.y }}"></span>
+    {% endif %}
+    {% endfor %}
+    {% for token in board.tokens %}
+    {% if let Some(mover) = token.mover %}
+    <button type="button" class="token mover {{ token.class }}" style="left: {{ token.x }}px; top: {{ token.y }}px" title="{{ token.title }}" data-mover="{{ mover.field }}" data-from="{{ mover.from }}" data-targets="{{ mover.targets }}">
+      <img src="{{ token.image }}" alt="{{ token.title }}">
+      {% if token.at_sea %}<img class="boat" src="/img/boat.png" alt="en mer">{% endif %}
+    </button>
+    {% else %}
+    <span class="token {{ token.class }}" style="left: {{ token.x }}px; top: {{ token.y }}px" title="{{ token.title }}">
+      <img src="{{ token.image }}" alt="{{ token.title }}">
+      {% if token.at_sea %}<img class="boat" src="/img/boat.png" alt="en mer">{% endif %}
+      {% if let Some(label) = token.label %}<span class="token-label">{{ label }}</span>{% endif %}
+    </span>
+    {% endif %}
+    {% endfor %}
+  </div>
+  </div>
+</div>

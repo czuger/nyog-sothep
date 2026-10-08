@@ -1,0 +1,16 @@
+<h2>{{ self.prompted_name() }} rejoue</h2>
+<p class="hint">Un nouveau déplacement, puis une nouvelle phase d'action.</p>
+<form id="screen-form" method="post" action="{{ self.game_path() }}/play-again" class="stack">
+  {% for investigator in self.movers() %}
+  <label class="move-choice">
+    <img src="/img/token-investigator-{{ investigator.id.code() }}.png" alt="" class="resource-icon">
+    <span>{{ investigator.id.name() }}</span>
+    <select name="move_{{ investigator.index }}" data-move-select>
+      {% for choice in self.move_choices(investigator) %}
+      <option value="{{ choice.value }}">{{ choice.label }}</option>
+      {% endfor %}
+    </select>
+  </label>
+  {% endfor %}
+  <button type="submit">Valider</button>
+</form>
