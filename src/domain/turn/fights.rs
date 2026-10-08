@@ -157,7 +157,7 @@ impl Engine<'_> {
         if options.is_empty() {
             return;
         }
-        let picked = self.brain.relocate(self.state, &options);
+        let picked = self.brain.relocate(self.state, options);
         self.state.professor.location = if options.contains(&picked) {
             picked
         } else {

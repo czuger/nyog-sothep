@@ -37,6 +37,18 @@ impl Outcome {
         }
     }
 
+    /// Reads a code written by [`Outcome::code`].
+    pub fn from_code(code: &str) -> Option<Outcome> {
+        [
+            Outcome::ProfessorKilled,
+            Outcome::Banished,
+            Outcome::NyogSothepReigns,
+            Outcome::InvestigatorsLost,
+        ]
+        .into_iter()
+        .find(|outcome| outcome.code() == code)
+    }
+
     /// The stable code stored in the database.
     pub fn code(self) -> &'static str {
         match self {

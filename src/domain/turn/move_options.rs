@@ -25,7 +25,8 @@ impl MoveOptions {
         }
         let from = mover.location;
         let destinations = travel::neighbours(from)
-            .into_iter()
+            .iter()
+            .copied()
             .filter(|to| !(to.is_city() && state.is_destroyed(*to)))
             .filter(|to| mover.forbidden_city != Some(*to))
             .filter(|to| mover.blocked_crossing != Some(*to))

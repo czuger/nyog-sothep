@@ -28,8 +28,8 @@ impl Engine<'_> {
         }
     }
 
-    /// Nyog'Sothep and the professor move together: nothing on 1 or 2, else one city, along the
-    /// shortest path when spell holders have gathered.
+    /// Nyog'Sothep and the professor move together: nothing on 1 or 2, else one step (by road, or
+    /// by sea like the professor), along the shortest path when spell holders have gathered.
     pub(super) fn nyog_move(&mut self) {
         let Some(from) = self.state.nyog.location else {
             return;
@@ -38,9 +38,9 @@ impl Engine<'_> {
             self.log("Le professeur et Nyog'Sothep ne bougent pas ce tour-ci.");
             return;
         }
-        let mut options = travel::road_neighbours(from);
+        let mut options = travel::neighbours(from).to_vec();
         if let Some(target) = self.state.nyog.target {
-            let path = travel::first_steps_towards(from, target, Network::Roads, |_| true);
+            let path = travel::first_steps_towards(from, target, Network::All, |_| true);
             if !path.is_empty() {
                 options = path;
             }
@@ -57,7 +57,10 @@ impl Engine<'_> {
         };
         self.state.professor.location = to;
         self.state.nyog.location = Some(to);
-        self.log(format!("Nyog'Sothep et le professeur avancent sur {to}."));
+        self.log(format!(
+            "Nyog'Sothep et le professeur avancent {}.",
+            to.at_phrase()
+        ));
         self.clue(ClueKind::Spotted { at: to });
         self.nyog_enters(to, true);
     }
@@ -65,6 +68,9 @@ impl Engine<'_> {
     /// Nyog'Sothep enters a city: it is destroyed, the investigators there meet the Foul One,
     /// and three spell holders among them cast the spell.
     fn nyog_enters(&mut self, city: LocationId, may_cast: bool) {
+        if city.is_sea() {
+            return;
+        }
         if !self.state.is_destroyed(city) {
             self.state.destroyed.push(city);
             self.log(format!("{city} est détruite."));

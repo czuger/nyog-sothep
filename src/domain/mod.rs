@@ -15,6 +15,7 @@ pub mod location_id;
 mod location_kind;
 pub mod map;
 mod nyog_sothep;
+pub mod professor_ai;
 pub mod professor_fight;
 mod professor_question;
 pub mod scoring;

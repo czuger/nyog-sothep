@@ -1,6 +1,7 @@
 //! Movement on the board: neighbours by road and by sea, border crossings and distances.
 
 use std::collections::VecDeque;
+use std::sync::OnceLock;
 
 use crate::domain::location_id::{LOCATION_COUNT, LocationId};
 use crate::domain::map::{BORDER_CROSSINGS, ROADS, SEA_LINKS};
@@ -14,21 +15,43 @@ pub enum Network {
     Roads,
 }
 
+/// Neighbour lists of every location, built once from the map tables.
+struct Adjacency {
+    roads: Vec<Vec<LocationId>>,
+    all: Vec<Vec<LocationId>>,
+}
+
+fn adjacency() -> &'static Adjacency {
+    static ADJACENCY: OnceLock<Adjacency> = OnceLock::new();
+    ADJACENCY.get_or_init(|| Adjacency {
+        roads: LocationId::ALL
+            .into_iter()
+            .map(|from| linked(&ROADS, from))
+            .collect(),
+        all: LocationId::ALL
+            .into_iter()
+            .map(|from| {
+                let mut found = linked(&ROADS, from);
+                found.extend(linked(&SEA_LINKS, from));
+                found
+            })
+            .collect(),
+    })
+}
+
 /// Cities linked to `from` by a road.
-pub fn road_neighbours(from: LocationId) -> Vec<LocationId> {
-    linked(&ROADS, from)
+pub fn road_neighbours(from: LocationId) -> &'static [LocationId] {
+    &adjacency().roads[from.index()]
 }
 
 /// Locations one move away from `from`: road neighbours, plus the sea zones of a port, or
 /// the neighbouring zones and the ports of a sea zone.
-pub fn neighbours(from: LocationId) -> Vec<LocationId> {
-    let mut found = road_neighbours(from);
-    found.extend(linked(&SEA_LINKS, from));
-    found
+pub fn neighbours(from: LocationId) -> &'static [LocationId] {
+    &adjacency().all[from.index()]
 }
 
 /// Neighbours along the given network.
-pub fn network_neighbours(from: LocationId, network: Network) -> Vec<LocationId> {
+pub fn network_neighbours(from: LocationId, network: Network) -> &'static [LocationId] {
     match network {
         Network::All => neighbours(from),
         Network::Roads => road_neighbours(from),
@@ -54,7 +77,7 @@ pub fn distances(
     let mut queue = VecDeque::from([from]);
     while let Some(current) = queue.pop_front() {
         let next_distance = found[current.index()].unwrap_or(0) + 1;
-        for next in network_neighbours(current, network) {
+        for &next in network_neighbours(current, network) {
             if found[next.index()].is_none() && passable(next) {
                 found[next.index()] = Some(next_distance);
                 queue.push_back(next);
@@ -104,7 +127,8 @@ pub fn first_steps_towards(
         return Vec::new();
     };
     network_neighbours(from, network)
-        .into_iter()
+        .iter()
+        .copied()
         .filter(|next| passable(*next) && to_target[next.index()] == Some(steps - 1))
         .collect()
 }
@@ -129,7 +153,7 @@ mod tests {
     #[test]
     fn adjacency_is_symmetric() {
         for a in LocationId::ALL {
-            for b in neighbours(a) {
+            for &b in neighbours(a) {
                 assert!(neighbours(b).contains(&a), "{a:?}-{b:?}");
             }
         }
@@ -137,7 +161,7 @@ mod tests {
 
     #[test]
     fn sea_moves_go_port_zone_port() {
-        assert_eq!(neighbours(Nantucket), vec![NantucketSound]);
+        assert_eq!(neighbours(Nantucket), [NantucketSound]);
         let from_sound = neighbours(NantucketSound);
         for expected in [
             Chatham,
