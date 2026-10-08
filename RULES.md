@@ -372,3 +372,94 @@ or across several games, with the following scoring:
 | Per SAN point left at the end of the game | +1 |
 | Having become a Fanatic | −5 |
 | Per city destroyed by Nyog'Sothep | −2 per Investigator |
+
+## Notes on unclear points in the original
+
+This implementation is a two-player game: the human leads the four Investigators and the computer plays
+Professor Petersen. Where the rules are silent or ambiguous, it reads them as follows.
+
+### Setup and turn order
+
+- **Investigators:** always four (the two-player setup). Four of the six counters are drawn at random for
+  each game; the other two are not used.
+- **Turn order:** the professor plays; then all four investigators move; then the action phase of each
+  investigator is resolved in turn (encounter, else event, then the unavoidable fight). A "play again" event
+  gives that investigator another move at once, then a whole new action phase (encounter included).
+- **Hand limit:** the professor always draws on Table 1, then discards down to five if he holds six.
+- **Visible information:** the human sees the professor's hit points (the investigators dealt the damage),
+  never the size of his hand.
+
+### The map
+
+- **Ports:** the board shows 18 green ports. Westerly and Gloucester are ports, although the old data of the
+  Rails application did not mark them. Gloucester, Edgartown and Nantucket have no road: only boats reach them.
+- **Forks and crossings:** a road fork or crossing without a city joins every road meeting there, so the
+  cities at their ends are neighbours (for example Greenbush and Bridgewater Junction, Woonsocket and Bristol,
+  Apponaug and Westerly). Such a road crosses a state border when any of its parts does (Oxford–Pascoag,
+  Attleboro–Bristol and Taunton–Bristol cross one).
+- **"Less than three cities away"** (Nyog'Sothep's summoning, Teleportation) means at most two steps, by road
+  or by sea.
+- **At sea:** an investigator who ends their move in a sea zone has no action phase (no event, no fight), and
+  the professor and an investigator in the same sea zone do not meet. Nobody consults a psychoanalyst at sea.
+- **Borders:** on a 5 the investigator may cross any border without a roll on the next turn; on a 6 they may
+  not cross into that same city on the next turn.
+
+### Counters
+
+- **Stacking:** at most one counter per city, hidden or discovered. The professor may place a counter in the
+  city he stays in, provided it holds none. Deep Ones go in ports only.
+- **Events after an encounter:** the encounter "allows" an event when the investigator overcomes it and stays:
+  Ghouls killed with a weapon, Deep Ones repelled with the sign, Fanatics killed, Inhabitants meeting someone
+  without a medallion. Every other encounter ends the action phase.
+- **Inhabitants** do nothing to an investigator without a medallion and stay in the city, face up.
+- **Lost turns** (psychoanalyst event, Things of the Mist, Storm): the investigator neither moves nor draws an
+  encounter or an event; meeting the professor still means a fight. Things of the Mist cost 1 SAN at once and
+  the next turn; the Storm costs the next two turns.
+- **Broken car:** on the next turn the investigator either takes to the sea or stays and loses the turn.
+- **Pushed back, go back:** the investigator returns to the place their last move left, which may be a sea
+  zone; nothing happens when that city has been destroyed.
+- **Teleportation** targets an investigator standing in a city at most two steps from the professor and moves
+  them one or two cities by road; it costs them 2 SAN. Teleportation and the Flying Horror are announced, so
+  they tell the investigators something about the professor's position.
+
+### Fighting the professor
+
+- **Meeting on arrival:** the professor announces it only when he moves into a city holding investigators; the
+  human then knows he is in one of the cities where an investigator stands. On a 1 or 2 he must reveal himself
+  and fight one of them, of his choice; otherwise he may choose to. Investigators left in his city fight him
+  in their own action phase.
+- **Choices:** an investigator holding several items chooses: weapon, protective sign, or (with a medallion)
+  passing for a Fanatic. Someone holding nothing loses 4 SAN and is carried two cities by road (one when no
+  city lies two steps away).
+- **Retreat and push-back:** the professor moves one step of his choice, by road or to sea, and places
+  nothing there.
+- **After the summoning** the professor stays with Nyog'Sothep and no longer fights the investigators.
+
+### Nyog'Sothep
+
+- **Summoning:** the five cities count the Fanatics counters in place at that moment, including those raised
+  by investigators gone mad. Once Nyog'Sothep is out, the professor stays in plain sight.
+- **Investigator going mad:** they become a Fanatics counter, face up, where they stand. A counter already in
+  that city goes back to the reserve, so the stacking rule has no exception.
+- **Killed by Nyog'Sothep:** an investigator without a protective sign who meets it is dead: no Fanatics
+  counter and no −5 "became a Fanatic" score. They count as lost for the "fewer than three Investigators" check.
+- **Movement:** Nyog'Sothep and the professor move one step together, by road or by sea like the professor (so
+  that they can reach investigators gathered on an island); only the cities they enter are destroyed, and
+  nobody is met at sea. Investigators may no longer enter or cross a destroyed city; the professor and
+  Nyog'Sothep can.
+- **Banishment:** as soon as three investigators knowing the spell stand in the same city, Nyog'Sothep heads
+  there by the shortest path. The spell is cast when it enters a city holding three spell holders, after their
+  SAN loss for meeting it. On −1 the human chooses the city where Nyog'Sothep goes; it destroys that city and
+  waits there for the professor to join it again.
+- **Fewer than three investigators before the summoning:** the game goes on, but the summoning then wins at
+  once since Nyog'Sothep can no longer be banished. The game is lost at once only when all four investigators
+  are out (gone mad or dead).
+
+### Answers to the investigators
+
+- When the professor must name cities "one of which is his position", the answer is checked: one named city is
+  always his real position, and he says so when he is at sea. The same goes for "two cities, one of which
+  holds Fanatics"; with no Fanatics in place he says that there are none.
+- "Encounters in two cities" is answered for each city; "is Nyog'Sothep to appear in one of them" is answered
+  for the pair, without saying which.
+- Table 3 #13 reveals the professor's position at once and the destination of his next move.
