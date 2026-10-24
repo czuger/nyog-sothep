@@ -6,6 +6,7 @@
   if (!board) return;
   const SVG_NS = 'http://www.w3.org/2000/svg';
   const boardWidth = board.offsetWidth;
+  const viewport = board.closest('.board-viewport');
   const arrows = board.querySelector('.board-moves');
   let selected = null;
 
@@ -13,7 +14,6 @@
   // open floating panels, so that none of them hides a city; the map scrolls vertically.
   function fitBoard() {
     const gap = 8;
-    const viewport = board.closest('.board-viewport');
     const viewportWidth = viewport.clientWidth;
     let left = 0;
     let right = viewportWidth;
@@ -46,6 +46,26 @@
           // Storage unavailable: the state is simply not remembered.
         }
       });
+    });
+  }
+
+  // The map scrolls inside its viewport, which the browser does not restore on reload. The key is the
+  // game's path, shared by the error page shown at /games/{id}/{token}/{prompt}; the position is kept as a
+  // fraction of the height so that a different board scale lands on the same part of the map.
+  function rememberScroll() {
+    const key = 'nyog-scroll-' + location.pathname.split('/').slice(0, 4).join('/');
+    try {
+      const saved = parseFloat(sessionStorage.getItem(key));
+      if (!Number.isNaN(saved)) viewport.scrollTop = saved * viewport.scrollHeight;
+    } catch (error) {
+      // Storage unavailable: the map opens at the top.
+    }
+    window.addEventListener('pagehide', function () {
+      try {
+        sessionStorage.setItem(key, String(viewport.scrollTop / viewport.scrollHeight));
+      } catch (error) {
+        // Storage unavailable: the position is simply not remembered.
+      }
     });
   }
 
@@ -126,6 +146,7 @@
 
   rememberPanels();
   fitBoard();
+  rememberScroll();
   drawArrows();
   window.addEventListener('resize', fitBoard);
 })();
