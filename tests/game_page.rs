@@ -10,7 +10,7 @@ use nyog_sothep::domain::turn::{
     Engine, GameState, Outcome, Phase, ProfessorMoveOptions, ProfessorPrompt, Prompt, Side,
 };
 use nyog_sothep::domain::{CounterKind, FightChoice, InvestigatorId, LocationId, RandomDice};
-use nyog_sothep::service::GameView;
+use nyog_sothep::service::{GameView, TokenTilts, refresh_tilts};
 use nyog_sothep::web::{GamePage, Screen};
 
 const IDS: [InvestigatorId; 4] = [
@@ -49,10 +49,14 @@ async fn render(state: &GameState) -> (Screen, String) {
         .unwrap()
         .unwrap();
     save_state(&mut connection, &mut game, state).await.unwrap();
+    refresh_tilts(&mut connection, game_id, state)
+        .await
+        .unwrap();
+    let tilts = TokenTilts::load(&mut connection, game_id).await.unwrap();
     let log = EventRecord::newest_first(&mut connection, game_id)
         .await
         .unwrap();
-    let view = GameView::of(&game, state, log);
+    let view = GameView::of(&game, state, log, tilts);
     let page = GamePage::new(view, None);
     (page.screen, page.render().unwrap())
 }
@@ -78,6 +82,7 @@ async fn moves_are_offered_on_the_map_and_in_the_panel() {
     let (screen, html) = render(&secret_state()).await;
     assert_eq!(screen, Screen::Moves);
     assert!(html.contains(r#"data-mover="move_0""#));
+    assert!(html.contains("--tilt: ") && html.contains(r#"href="/">Nouvelle partie</a>"#));
     assert!(html.contains(r#"data-targets="nantucket_sound""#));
     assert!(html.contains(r#"<select name="move_3" data-move-select>"#));
     assert!(html.contains(r#"value="nantucket_sound">Embarquer : Nantucket Sound"#));

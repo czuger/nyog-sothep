@@ -9,6 +9,7 @@ use crate::domain::professor_ai::PetersenAi;
 use crate::domain::turn::{Engine, GameState, LogLine, Side};
 use crate::domain::{InvestigatorId, RandomDice};
 use crate::error::AppError;
+use crate::service::token_tilts::refresh_tilts;
 use crate::service::write_transaction::begin_write;
 
 /// Investigators played in a game (the rules' two-player setup).
@@ -45,6 +46,7 @@ pub async fn create_game(pool: &SqlitePool, human: Side) -> Result<CreatedGame, 
         .await?
         .ok_or(AppError::GameNotFound)?;
     save_state(&mut transaction, &mut game, &state).await?;
+    refresh_tilts(&mut transaction, game_id, &state).await?;
     EventRecord::insert_all(&mut transaction, game_id, &log).await?;
     transaction.commit().await?;
     Ok(CreatedGame { game_id, token })

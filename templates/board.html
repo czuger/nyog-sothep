@@ -21,12 +21,12 @@
     {% endfor %}
     {% for token in board.tokens %}
     {% if let Some(mover) = token.mover %}
-    <button type="button" class="token mover {{ token.class }}" style="left: {{ token.x }}px; top: {{ token.y }}px" title="{{ token.title }}" data-mover="{{ mover.field }}" data-from="{{ mover.from }}" data-targets="{{ mover.targets }}">
+    <button type="button" class="token mover {{ token.class }}" style="left: {{ token.x }}px; top: {{ token.y }}px; --tilt: {{ token.tilt }}deg" title="{{ token.title }}" data-mover="{{ mover.field }}" data-from="{{ mover.from }}" data-targets="{{ mover.targets }}">
       <img src="{{ token.image }}" alt="{{ token.title }}">
       {% if token.at_sea %}<img class="boat" src="/img/boat.png" alt="en mer">{% endif %}
     </button>
     {% else %}
-    <span class="token {{ token.class }}" style="left: {{ token.x }}px; top: {{ token.y }}px" title="{{ token.title }}">
+    <span class="token {{ token.class }}" style="left: {{ token.x }}px; top: {{ token.y }}px; --tilt: {{ token.tilt }}deg" title="{{ token.title }}">
       <img src="{{ token.image }}" alt="{{ token.title }}">
       {% if token.at_sea %}<img class="boat" src="/img/boat.png" alt="en mer">{% endif %}
       {% if let Some(label) = token.label %}<span class="token-label">{{ label }}</span>{% endif %}

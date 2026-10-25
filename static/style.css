@@ -89,7 +89,7 @@ body.map-screen { overflow: hidden; }
 .place.pick:hover .place-name, .place.pick:has(input:checked) .place-name { display: block; }
 
 .token {
-  position: absolute; transform: translate(-50%, -50%); display: block; padding: 0; margin: 0;
+  position: absolute; transform: translate(-50%, -50%) rotate(var(--tilt, 0deg)); display: block; padding: 0; margin: 0;
   border: 0; background: none; line-height: 0; z-index: 4;
 }
 .token img { display: block; filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.85)); }
@@ -130,6 +130,7 @@ body.map-screen { overflow: hidden; }
   background: var(--accent); color: #fff; font-weight: bold;
 }
 .floating:not([open]) { width: auto; }
+.summary-link { float: right; margin-left: 12px; color: #fff; font-weight: normal; font-size: 0.85rem; }
 .floating > :not(summary), .floating-side > :not(summary) { margin: 8px; }
 .floating .panel { padding: 8px 10px; margin-bottom: 8px; }
 

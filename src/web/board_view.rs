@@ -1,7 +1,7 @@
 use crate::domain::map::{BOARD_HEIGHT, BOARD_WIDTH, location};
 use crate::domain::turn::{ProfessorPrompt, Prompt};
 use crate::domain::{InvestigatorStatus, LocationId};
-use crate::service::{GameView, ProfessorSighting};
+use crate::service::{GameView, ProfessorSighting, TiltedToken};
 use crate::web::screen::Screen;
 
 /// Horizontal step between tokens stacked on the same location, in board pixels.
@@ -41,6 +41,8 @@ pub struct BoardToken {
     pub x: i32,
     /// Pixel position of the token's centre.
     pub y: i32,
+    /// Rotation, in degrees.
+    pub tilt: f64,
     /// Extra CSS classes.
     pub class: &'static str,
     /// A small label under the token (« T3 » for an old sighting).
@@ -127,6 +129,7 @@ fn stack(view: &GameView, id: LocationId) -> Vec<BoardToken> {
             "/img/token-destroyed-city.png",
             format!("{id} est détruite"),
             "",
+            view.tilts.of(TiltedToken::Destroyed(id)),
         ));
     }
     for counter in view.counters.iter().filter(|counter| counter.city == id) {
@@ -138,6 +141,7 @@ fn stack(view: &GameView, id: LocationId) -> Vec<BoardToken> {
             &format!("/img/token-{}.png", counter.kind.code()),
             title,
             class,
+            view.tilts.of(TiltedToken::Counter(id, counter.kind)),
         ));
     }
     if view.nyog_location == Some(id) {
@@ -145,6 +149,7 @@ fn stack(view: &GameView, id: LocationId) -> Vec<BoardToken> {
             "/img/token-nyog-sothep.png",
             format!("Nyog'Sothep {}", id.at_phrase()),
             "",
+            view.tilts.of(TiltedToken::Nyog),
         ));
     }
     tokens.extend(professor_token(view, id));
@@ -168,6 +173,7 @@ fn investigator_tokens(view: &GameView, id: LocationId) -> Vec<BoardToken> {
                 &format!("/img/token-investigator-{}.png", investigator.id.code()),
                 format!("{} — {} SAN", investigator.id.name(), investigator.san),
                 "investigator",
+                view.tilts.of(TiltedToken::Investigator(investigator.id)),
             );
             drawn.at_sea = id.is_sea();
             drawn.mover = investigator.moves.as_ref().map(|moves| Mover {
@@ -192,6 +198,7 @@ fn professor_token(view: &GameView, id: LocationId) -> Option<BoardToken> {
                 "/img/token-professor.png",
                 format!("Le professeur Petersen {}", id.at_phrase()),
                 "professor",
+                view.tilts.of(TiltedToken::Professor),
             );
             drawn.mover = professor_mover(view, id);
             Some(drawn)
@@ -201,6 +208,7 @@ fn professor_token(view: &GameView, id: LocationId) -> Option<BoardToken> {
                 "/img/token-professor.png",
                 format!("Le professeur a été vu {} au tour {turn}", id.at_phrase()),
                 "last-seen",
+                view.tilts.of(TiltedToken::Sighting),
             );
             drawn.label = Some(format!("T{turn}"));
             Some(drawn)
@@ -230,12 +238,13 @@ fn professor_mover(view: &GameView, at: LocationId) -> Option<Mover> {
     })
 }
 
-fn token(image: &str, title: String, class: &'static str) -> BoardToken {
+fn token(image: &str, title: String, class: &'static str, tilt: f64) -> BoardToken {
     BoardToken {
         image: image.to_string(),
         title,
         x: 0,
         y: 0,
+        tilt,
         class,
         label: None,
         at_sea: false,

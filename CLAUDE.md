@@ -93,6 +93,8 @@ Layers, from the inside out:
   position (only the last sighting), hand, hidden counters, route sheet or Nyog'Sothep's city while they are
   secret; playing the professor, it holds all of them (`CounterView::hidden` marks the counters the
   investigators have not found). At the end it reveals the route sheet, every counter and the scores.
+  `TokenTilts` gives every token a random tilt of up to 5° either way (table `token_tilts`), drawn again by
+  `refresh_tilts` after each save only for the tokens that moved.
 - **`src/web/`**: `router.rs` lists the routes (`/`, `POST /games` with the `side` field, `/games/{id}/{token}`
   and one `POST` per kind of answer: the investigators' `moves`, `table`, `cities`, `play-again`, `fight`,
   `banishment` in `answer_handlers.rs`, the professor's `setup`, `teleport`, `move`, `attack`, `location`

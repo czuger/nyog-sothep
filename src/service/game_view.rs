@@ -8,6 +8,7 @@ use crate::domain::{
     CounterKind, CounterPlace, InvestigatorId, InvestigatorStatus, LocationId, Score,
 };
 use crate::error::AppError;
+use crate::service::token_tilts::{TiltedToken, TokenTilts};
 
 /// What the investigators know of the professor's position.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -131,6 +132,8 @@ pub struct GameView {
     pub route_sheet: Vec<RouteStage>,
     /// The investigators' scores, at the end only.
     pub scores: Vec<ScoreLine>,
+    /// The rotations the tokens are drawn with.
+    pub tilts: TokenTilts,
 }
 
 impl GameView {
@@ -145,14 +148,23 @@ impl GameView {
             .ok_or(AppError::GameNotFound)?;
         let state = load_state(&mut connection, &game).await?;
         let log = EventRecord::newest_first(&mut connection, game_id).await?;
-        Ok(GameView::of(&game, &state, log))
+        let tilts = TokenTilts::load(&mut connection, game_id).await?;
+        Ok(GameView::of(&game, &state, log, tilts))
     }
 
     /// Builds the view from the full state, keeping only what the human may see.
-    pub fn of(game: &GameRecord, state: &GameState, log: Vec<EventRecord>) -> GameView {
+    pub fn of(
+        game: &GameRecord,
+        state: &GameState,
+        log: Vec<EventRecord>,
+        mut tilts: TokenTilts,
+    ) -> GameView {
         let finished = state.is_finished();
         let secrets = finished || state.human == Side::Professor;
         let revealed = secrets || state.nyog.is_summoned();
+        if !revealed {
+            tilts.forget(TiltedToken::Professor);
+        }
         GameView {
             human: state.human,
             game_id: game.id,
@@ -189,6 +201,7 @@ impl GameView {
                 Vec::new()
             },
             scores: if finished { scores(state) } else { Vec::new() },
+            tilts,
         }
     }
 
@@ -234,18 +247,17 @@ fn sighting(state: &GameState, revealed: bool) -> ProfessorSighting {
             at: state.professor.location,
         };
     }
-    state
-        .clues
-        .iter()
-        .rev()
-        .find_map(|clue| match clue.kind {
-            ClueKind::Spotted { at } => Some(ProfessorSighting::LastSeen {
-                at,
-                turn: clue.turn,
-            }),
-            _ => None,
-        })
+    last_sighting(state)
+        .map(|(at, turn)| ProfessorSighting::LastSeen { at, turn })
         .unwrap_or(ProfessorSighting::Unknown)
+}
+
+/// Where and on which turn the investigators last spotted the professor.
+pub(crate) fn last_sighting(state: &GameState) -> Option<(LocationId, u32)> {
+    state.clues.iter().rev().find_map(|clue| match clue.kind {
+        ClueKind::Spotted { at } => Some((at, clue.turn)),
+        _ => None,
+    })
 }
 
 fn investigators(state: &GameState) -> Vec<InvestigatorView> {

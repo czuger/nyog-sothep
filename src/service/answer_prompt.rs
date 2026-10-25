@@ -6,6 +6,7 @@ use crate::domain::investigator_ai::InvestigatorsAi;
 use crate::domain::professor_ai::PetersenAi;
 use crate::domain::turn::{Answer, Engine, GameState, LogLine};
 use crate::error::AppError;
+use crate::service::token_tilts::refresh_tilts;
 use crate::service::write_transaction::begin_write;
 
 /// Applies the human's answer to the pending prompt; the computer's side then plays until the
@@ -27,6 +28,7 @@ pub async fn answer_prompt(
     let mut state = load_state(&mut transaction, &game).await?;
     let log = play(&mut state, answer)?;
     save_state(&mut transaction, &mut game, &state).await?;
+    refresh_tilts(&mut transaction, game_id, &state).await?;
     EventRecord::insert_all(&mut transaction, game_id, &log).await?;
     transaction.commit().await?;
     Ok(())
