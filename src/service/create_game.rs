@@ -4,8 +4,9 @@ use rand::{Rng, RngExt};
 use sqlx::SqlitePool;
 
 use crate::db::{EventRecord, GameRecord, save_state};
+use crate::domain::investigator_ai::InvestigatorsAi;
 use crate::domain::professor_ai::PetersenAi;
-use crate::domain::turn::{Engine, GameState, LogLine};
+use crate::domain::turn::{Engine, GameState, LogLine, Side};
 use crate::domain::{InvestigatorId, RandomDice};
 use crate::error::AppError;
 use crate::service::write_transaction::begin_write;
@@ -30,10 +31,14 @@ impl CreatedGame {
     }
 }
 
-/// Creates a game: four of the six investigators are drawn, the professor's AI sets up and
-/// plays its first turn, and the game waits for the human's first moves.
-pub async fn create_game(pool: &SqlitePool) -> Result<CreatedGame, AppError> {
-    let (token, state, log) = set_up();
+/// Creates a game: four of the six investigators are drawn and the game runs until the human's
+/// first decision: the first moves when the AI plays the professor, the professor's setup
+/// otherwise.
+///
+/// # Arguments
+/// * `human` - the side the human plays; the computer plays the other.
+pub async fn create_game(pool: &SqlitePool, human: Side) -> Result<CreatedGame, AppError> {
+    let (token, state, log) = set_up(human);
     let mut transaction = begin_write(pool).await?;
     let game_id = GameRecord::insert(&mut transaction, &token, &state).await?;
     let mut game = GameRecord::load(&mut transaction, game_id, &token)
@@ -45,16 +50,23 @@ pub async fn create_game(pool: &SqlitePool) -> Result<CreatedGame, AppError> {
     Ok(CreatedGame { game_id, token })
 }
 
-/// Draws the investigators and the private token, then lets the professor set up and play.
-fn set_up() -> (String, GameState, Vec<LogLine>) {
+/// Draws the investigators and the private token, then starts the game.
+fn set_up(human: Side) -> (String, GameState, Vec<LogLine>) {
     let mut rng = rand::rng();
     let investigators = draw_investigators(&mut rng);
     let token: String = (0..TOKEN_LENGTH)
         .map(|_| char::from(rng.sample(Alphanumeric)))
         .collect();
     let mut dice = RandomDice::new();
-    let mut ai = PetersenAi::new();
-    let (state, log) = Engine::new_game(&investigators, &mut dice, &mut ai);
+    let mut professor = PetersenAi::new();
+    let mut investigator_ai = InvestigatorsAi::new();
+    let (state, log) = Engine::new_game(
+        &investigators,
+        human,
+        &mut dice,
+        &mut professor,
+        &mut investigator_ai,
+    );
     (token, state, log)
 }
 

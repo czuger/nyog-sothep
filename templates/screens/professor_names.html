@@ -1,0 +1,6 @@
+{% let (count, text) = self.names_question() %}
+<h2>Les investigateurs vous interrogent</h2>
+<p>{{ text }} Cochez les {{ count }} villes sur la carte.</p>
+<form id="screen-form" method="post" action="{{ self.game_path() }}/name" class="inline-form">
+  <button type="submit">Répondre</button>
+</form>

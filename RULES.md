@@ -376,7 +376,7 @@ or across several games, with the following scoring:
 ## Notes on unclear points in the original
 
 This implementation is a two-player game: the human leads the four Investigators and the computer plays
-Professor Petersen. Where the rules are silent or ambiguous, it reads them as follows.
+Professor Petersen, or the other way round. Where the rules are silent or ambiguous, it reads them as follows.
 
 ### Setup and turn order
 
@@ -386,8 +386,11 @@ Professor Petersen. Where the rules are silent or ambiguous, it reads them as fo
   investigator is resolved in turn (encounter, else event, then the unavoidable fight). A "play again" event
   gives that investigator another move at once, then a whole new action phase (encounter included).
 - **Hand limit:** the professor always draws on Table 1, then discards down to five if he holds six.
-- **Visible information:** the human sees the professor's hit points (the investigators dealt the damage),
-  never the size of his hand.
+- **Visible information:** the human leading the investigators sees the professor's hit points (the
+  investigators dealt the damage), never the size of his hand. The human playing the professor sees
+  everything: his position, hand, hidden counters and route sheet, and the investigators' notebook. The
+  computer's investigators only use what the investigators may know: the notebook, the counters lying face
+  up, and what happens on the board.
 
 ### The map
 
@@ -449,7 +452,7 @@ Professor Petersen. Where the rules are silent or ambiguous, it reads them as fo
   Nyog'Sothep can.
 - **Banishment:** as soon as three investigators knowing the spell stand in the same city, Nyog'Sothep heads
   there by the shortest path. The spell is cast when it enters a city holding three spell holders, after their
-  SAN loss for meeting it. On −1 the human chooses the city where Nyog'Sothep goes; it destroys that city and
+  SAN loss for meeting it. On −1 the investigators choose the city where Nyog'Sothep goes; it destroys that city and
   waits there for the professor to join it again.
 - **Fewer than three investigators before the summoning:** the game goes on, but the summoning then wins at
   once since Nyog'Sothep can no longer be banished. The game is lost at once only when all four investigators
@@ -458,8 +461,11 @@ Professor Petersen. Where the rules are silent or ambiguous, it reads them as fo
 ### Answers to the investigators
 
 - When the professor must name cities "one of which is his position", the answer is checked: one named city is
-  always his real position, and he says so when he is at sea. The same goes for "two cities, one of which
-  holds Fanatics"; with no Fanatics in place he says that there are none.
+  always his real position (a human professor's answer is refused otherwise), and he says so when he is at
+  sea. The same goes for "two cities, one of which holds Fanatics"; with no Fanatics in place he says that
+  there are none. The facts asked of him (encounters, Nyog'Sothep's city, his position) are always answered
+  by the game itself.
+- **Flying Horror:** the professor uses it only to reach a location that an ordinary move could not.
 - "Encounters in two cities" is answered for each city; "is Nyog'Sothep to appear in one of them" is answered
   for the pair, without saying which.
 - Table 3 #13 reveals the professor's position at once and the destination of his next move.

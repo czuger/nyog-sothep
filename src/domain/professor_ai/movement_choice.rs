@@ -6,10 +6,10 @@ use crate::domain::counter_kind::CounterKind;
 use crate::domain::location_id::LocationId;
 use crate::domain::nyog_sothep::{SUMMONING_FANATICS_CITIES, SUMMONING_RANGE};
 use crate::domain::professor_ai::near_best::pick_near_best;
-use crate::domain::professor_ai::professor_belief::ProfessorBelief;
 use crate::domain::professor_ai::threats::{
     Reach, danger_with, has_investigator, investigator_reach, nearest_with,
 };
+use crate::domain::professor_belief::ProfessorBelief;
 use crate::domain::travel::{self, Network};
 use crate::domain::turn::{GameState, ProfessorMove, ProfessorMoveOptions};
 

@@ -1,7 +1,8 @@
 # Nyog'Sothep ou les brumes de l'Immonde
 
 A web version of *Nyog'Sothep ou les brumes de l'Immonde*, a board game published in *Jeux & Stratégie* (1988).
-You lead the four Investigators; the computer plays Professor Petersen, hidden behind his screen. See
+Choose your side when you start a game: lead the four Investigators against the computer's Professor
+Petersen, hidden behind his screen, or play the professor against four investigators led by the computer. See
 `RULES.md` for the translated rules and the readings this implementation chose.
 
 ## Run
@@ -26,5 +27,5 @@ Settings (environment variables):
 
 ```sh
 cargo test
-cargo test --test simulation -- --nocapture   # the professor's AI against a simple bot, with statistics
+cargo test --test simulation -- --nocapture   # the professor's AI against the investigators' AI, with statistics
 ```

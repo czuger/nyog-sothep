@@ -18,6 +18,7 @@ pub async fn load_state(
     game: &GameRecord,
 ) -> Result<GameState, AppError> {
     Ok(GameState {
+        human: game.human()?,
         turn: game.turn(),
         phase: game.phase()?,
         prompt: game.prompt()?,
@@ -54,9 +55,33 @@ pub async fn save_state(
 mod tests {
     use super::*;
     use crate::db::connect;
+    use crate::domain::investigator_ai::InvestigatorsAi;
     use crate::domain::professor_ai::PetersenAi;
-    use crate::domain::turn::{Answer, Engine, MoveOrder};
+    use crate::domain::turn::{
+        Answer, Engine, MoveOrder, ProfessorAnswer, ProfessorPrompt, Prompt, Side,
+    };
     use crate::domain::{InvestigatorId, LocationId, RandomDice};
+
+    const IDS: [InvestigatorId; 4] = [
+        InvestigatorId::Poirot,
+        InvestigatorId::Hastings,
+        InvestigatorId::Captain,
+        InvestigatorId::Lemon,
+    ];
+
+    /// Stores a new game and checks that it reads back unchanged.
+    async fn store(connection: &mut SqliteConnection, state: &GameState) -> GameRecord {
+        let game_id = GameRecord::insert(connection, "token", state)
+            .await
+            .unwrap();
+        let mut game = GameRecord::load(connection, game_id, "token")
+            .await
+            .unwrap()
+            .unwrap();
+        save_state(connection, &mut game, state).await.unwrap();
+        assert_eq!(&load_state(connection, &game).await.unwrap(), state);
+        game
+    }
 
     #[tokio::test]
     async fn a_state_survives_a_round_trip() {
@@ -64,29 +89,21 @@ mod tests {
         let mut connection = pool.acquire().await.unwrap();
         let mut dice = RandomDice::seeded(11);
         let mut ai = PetersenAi::seeded(11);
-        let ids = [
-            InvestigatorId::Poirot,
-            InvestigatorId::Hastings,
-            InvestigatorId::Captain,
-            InvestigatorId::Lemon,
-        ];
-        let (mut state, _) = Engine::new_game(&ids, &mut dice, &mut ai);
-        let game_id = GameRecord::insert(&mut connection, "token", &state)
-            .await
-            .unwrap();
-        let mut game = GameRecord::load(&mut connection, game_id, "token")
-            .await
-            .unwrap()
-            .unwrap();
-        save_state(&mut connection, &mut game, &state)
-            .await
-            .unwrap();
-        assert_eq!(load_state(&mut connection, &game).await.unwrap(), state);
+        let mut investigators = InvestigatorsAi::seeded(11);
+        let (mut state, _) = Engine::new_game(
+            &IDS,
+            Side::Investigators,
+            &mut dice,
+            &mut ai,
+            &mut investigators,
+        );
+        let mut game = store(&mut connection, &state).await;
+        let game_id = game.id;
 
         let sail = (0..4)
             .map(|index| (index, MoveOrder::Go(LocationId::NantucketSound)))
             .collect();
-        Engine::new(&mut state, &mut dice, &mut ai)
+        Engine::new(&mut state, &mut dice, &mut ai, &mut investigators)
             .answer(Answer::Moves(sail))
             .unwrap();
         state.destroyed.push(LocationId::Boston);
@@ -105,5 +122,37 @@ mod tests {
                 .unwrap()
                 .is_none()
         );
+    }
+
+    #[tokio::test]
+    async fn a_professor_game_survives_a_round_trip() {
+        let pool = connect("sqlite::memory:").await.unwrap();
+        let mut connection = pool.acquire().await.unwrap();
+        let mut dice = RandomDice::seeded(3);
+        let mut ai = PetersenAi::seeded(3);
+        let mut investigators = InvestigatorsAi::seeded(3);
+        let (mut state, _) = Engine::new_game(
+            &IDS,
+            Side::Professor,
+            &mut dice,
+            &mut ai,
+            &mut investigators,
+        );
+        assert_eq!(
+            state.prompt,
+            Some(Prompt::Professor(ProfessorPrompt::Setup))
+        );
+        store(&mut connection, &state).await;
+
+        let setup = ProfessorAnswer::Setup {
+            start: LocationId::Worcester,
+            nyog_city: LocationId::Concord,
+        };
+        Engine::new(&mut state, &mut dice, &mut ai, &mut investigators)
+            .answer(Answer::Professor(setup))
+            .unwrap();
+        assert_eq!(state.human, Side::Professor);
+        assert!(matches!(state.prompt, Some(Prompt::Professor(_))));
+        store(&mut connection, &state).await;
     }
 }

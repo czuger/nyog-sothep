@@ -5,6 +5,7 @@ use crate::domain::counter_kind::CounterKind;
 use crate::domain::dice::ScriptedDice;
 use crate::domain::event_table::EventTable;
 use crate::domain::fight_choice::FightChoice;
+use crate::domain::investigator_ai::InvestigatorsAi;
 use crate::domain::investigator_id::InvestigatorId;
 use crate::domain::investigator_status::InvestigatorStatus;
 use crate::domain::location_id::LocationId;
@@ -27,7 +28,14 @@ fn new_game(brain: &mut ScriptedProfessor) -> GameState {
         script.extend([5, 6]);
     }
     let mut dice = ScriptedDice::new(&script, 1);
-    let (state, _) = Engine::new_game(&IDS, &mut dice, brain);
+    let mut investigators = InvestigatorsAi::seeded(0);
+    let (state, _) = Engine::new_game(
+        &IDS,
+        Side::Investigators,
+        &mut dice,
+        brain,
+        &mut investigators,
+    );
     state
 }
 
@@ -47,7 +55,8 @@ fn answer(
     answer: Answer,
 ) -> Result<Vec<String>, AnswerError> {
     let mut dice = ScriptedDice::new(rolls, 1);
-    let mut engine = Engine::new(state, &mut dice, brain);
+    let mut investigators = InvestigatorsAi::seeded(0);
+    let mut engine = Engine::new(state, &mut dice, brain, &mut investigators);
     engine.answer(answer)?;
     Ok(engine
         .into_log()
@@ -301,7 +310,8 @@ fn ready_to_summon(brain: &mut ScriptedProfessor) -> GameState {
 
 fn run(state: &mut GameState, brain: &mut ScriptedProfessor, rolls: &[u8]) {
     let mut dice = ScriptedDice::new(rolls, 1);
-    Engine::new(state, &mut dice, brain).run();
+    let mut investigators = InvestigatorsAi::seeded(0);
+    Engine::new(state, &mut dice, brain, &mut investigators).run();
 }
 
 #[test]
@@ -445,4 +455,149 @@ fn teleportation_moves_a_nearby_investigator() {
             .iter()
             .any(|c| c.kind == ClueKind::Teleported { near: Lynn })
     );
+}
+
+/// A game where the human plays the professor, waiting for his setup: SAN 15 each.
+fn professor_game(brain: &mut ScriptedProfessor) -> GameState {
+    let mut dice = ScriptedDice::new(&[4; 12], 1);
+    let mut investigators = InvestigatorsAi::seeded(0);
+    let (state, _) = Engine::new_game(&IDS, Side::Professor, &mut dice, brain, &mut investigators);
+    state
+}
+
+fn professor(answer: ProfessorAnswer) -> Answer {
+    Answer::Professor(answer)
+}
+
+#[test]
+fn the_human_professor_sets_up_draws_and_moves() {
+    let mut brain = ScriptedProfessor::new(Boston, Boston);
+    let mut state = professor_game(&mut brain);
+    assert_eq!(
+        state.prompt,
+        Some(Prompt::Professor(ProfessorPrompt::Setup))
+    );
+    let at_sea = professor(ProfessorAnswer::Setup {
+        start: GulfOfMaine,
+        nyog_city: Concord,
+    });
+    assert_eq!(
+        answer(&mut state, &mut brain, &[], at_sea),
+        Err(AnswerError::NotACity)
+    );
+    let setup = professor(ProfessorAnswer::Setup {
+        start: Worcester,
+        nyog_city: Concord,
+    });
+    answer(&mut state, &mut brain, &[1, 1], setup).unwrap();
+    let offered = vec![CounterKind::FlyingHorror, CounterKind::Ghouls];
+    assert_eq!(
+        state.prompt,
+        Some(Prompt::Professor(ProfessorPrompt::Table1 {
+            options: offered
+        }))
+    );
+    let rolls = [5, 6, 5, 6, 5, 6];
+    let kept = professor(ProfessorAnswer::Counter(CounterKind::Ghouls));
+    answer(&mut state, &mut brain, &rolls, kept).unwrap();
+    assert_eq!(state.turn, 1);
+    assert_eq!(state.counters.hand().len(), 4);
+    let Some(Prompt::Professor(ProfessorPrompt::Movement { options })) = state.prompt.clone()
+    else {
+        panic!("{:?}", state.prompt);
+    };
+    assert_eq!(options.steps[0], Worcester);
+    assert!(options.flying.is_empty());
+
+    let before = state.clone();
+    let far = professor(ProfessorAnswer::Location(Boston));
+    assert_eq!(
+        answer(&mut state, &mut brain, &[], far),
+        Err(AnswerError::NotAnOption)
+    );
+    assert_eq!(state, before);
+    assert_eq!(
+        answer(&mut state, &mut brain, &[], everyone_stays()),
+        Err(AnswerError::Unexpected)
+    );
+
+    let step = professor(ProfessorAnswer::Location(options.steps[1]));
+    answer(&mut state, &mut brain, &[], step).unwrap();
+    assert_eq!(state.professor.location, options.steps[1]);
+    let Some(Prompt::Professor(ProfessorPrompt::Placement { options })) = state.prompt.clone()
+    else {
+        panic!("{:?}", state.prompt);
+    };
+    assert!(options.contains(&CounterKind::Fanatics));
+    let placed = professor(ProfessorAnswer::Placement(Some(CounterKind::Fanatics)));
+    answer(&mut state, &mut brain, &[5, 6], placed).unwrap();
+    let stage = state.route_sheet.last().unwrap();
+    assert_eq!(stage.counter, Some(CounterKind::Fanatics));
+    // The computer's investigators moved and played their action phases: the professor's
+    // next decision comes, at the latest, with his next move.
+    assert!(state.investigators.iter().any(|i| i.location != Nantucket));
+    assert_eq!(
+        state.prompt.as_ref().map(Prompt::side),
+        Some(Side::Professor)
+    );
+}
+
+#[test]
+fn the_human_professor_must_name_his_own_city() {
+    let mut brain = ScriptedProfessor::new(Boston, Boston);
+    let mut state = professor_game(&mut brain);
+    state.professor.location = Worcester;
+    state.prompt = Some(Prompt::Professor(ProfessorPrompt::NameCities { count: 2 }));
+    state.phase = Phase::Action {
+        investigator: 3,
+        step: ActionStep::AfterEvent { plays_again: false },
+    };
+    let lie = professor(ProfessorAnswer::Cities(vec![Boston, Lynn]));
+    assert_eq!(
+        answer(&mut state, &mut brain, &[], lie),
+        Err(AnswerError::MustNameOwnCity)
+    );
+    let three = professor(ProfessorAnswer::Cities(vec![Boston, Lynn, Worcester]));
+    assert_eq!(
+        answer(&mut state, &mut brain, &[], three),
+        Err(AnswerError::WrongCityCount(2))
+    );
+    let truth = professor(ProfessorAnswer::Cities(vec![Lynn, Worcester]));
+    answer(&mut state, &mut brain, &[], truth).unwrap();
+    let clue = ClueKind::NamedCities {
+        cities: vec![Lynn, Worcester],
+    };
+    assert!(state.clues.iter().any(|c| c.kind == clue));
+}
+
+#[test]
+fn the_human_professor_carries_an_unarmed_investigator_then_the_round_goes_on() {
+    let mut brain = ScriptedProfessor::new(Boston, Boston);
+    let mut state = professor_game(&mut brain);
+    place(&mut state, &[Boston]);
+    state.professor.location = Boston;
+    state.nyog = crate::domain::NyogSothep::new(Concord);
+    state.turn = 1;
+    state.prompt = None;
+    state.phase = Phase::Action {
+        investigator: 0,
+        step: ActionStep::Fight,
+    };
+    run(&mut state, &mut brain, &[]);
+    assert_eq!(state.investigators[0].san, 11);
+    let Some(Prompt::Professor(ProfessorPrompt::Carry {
+        investigator: 0,
+        options,
+    })) = state.prompt.clone()
+    else {
+        panic!("{:?}", state.prompt);
+    };
+    let carried = professor(ProfessorAnswer::Location(options[0]));
+    answer(&mut state, &mut brain, &[], carried).unwrap();
+    assert_eq!(state.investigators[0].location, options[0]);
+    assert_eq!(state.turn, 2);
+    assert!(matches!(
+        state.prompt,
+        Some(Prompt::Professor(ProfessorPrompt::Movement { .. }))
+    ));
 }

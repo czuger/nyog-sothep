@@ -12,6 +12,7 @@ impl Engine<'_> {
     pub(super) fn action(&mut self, investigator: usize, step: ActionStep) {
         match step {
             ActionStep::Start => self.action_start(investigator),
+            ActionStep::AfterEvent { plays_again } => self.after_event(investigator, plays_again),
             ActionStep::Fight => self.action_fight(investigator),
             ActionStep::Done => {
                 self.action_step(investigator + 1, ActionStep::Start);
@@ -94,7 +95,8 @@ impl Engine<'_> {
         outcome.event_allowed
     }
 
-    /// Rolls on the chosen table and applies the event.
+    /// Rolls on the chosen table and applies the event; the professor's answer, if any, comes
+    /// before the « play again » move.
     pub(super) fn draw_event(&mut self, investigator: usize, table: EventTable) {
         let actor = &self.state.investigators[investigator];
         let dice_count = actor.event_dice();
@@ -111,6 +113,12 @@ impl Engine<'_> {
             self.action_step(investigator, ActionStep::Done);
             return;
         }
+        self.action_step(
+            investigator,
+            ActionStep::AfterEvent {
+                plays_again: effect.plays_again,
+            },
+        );
         if let Some(question) = effect.question {
             if question.cities_named_by_investigator().is_some() {
                 let step = ActionStep::Question {
@@ -127,7 +135,6 @@ impl Engine<'_> {
             }
             self.professor_answers(question);
         }
-        self.after_event(investigator, effect.plays_again);
     }
 
     fn apply_event(&mut self, investigator: usize, effect: &EventEffect) {

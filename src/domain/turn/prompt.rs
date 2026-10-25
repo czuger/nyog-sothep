@@ -4,8 +4,10 @@ use crate::domain::event_table::EventTable;
 use crate::domain::fight_choice::FightChoice;
 use crate::domain::location_id::LocationId;
 use crate::domain::professor_question::ProfessorQuestion;
+use crate::domain::turn::professor_prompt::{ProfessorAnswer, ProfessorPrompt};
+use crate::domain::turn::side::Side;
 
-/// A decision the human (the investigators) must take before the game goes on.
+/// A decision one side must take before the game goes on.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum Prompt {
     /// Move the four investigators.
@@ -36,6 +38,18 @@ pub enum Prompt {
     },
     /// Choose the city where Nyog'Sothep is placed after a partial banishment.
     BanishmentCity,
+    /// A decision of the professor.
+    Professor(ProfessorPrompt),
+}
+
+impl Prompt {
+    /// The side that must answer.
+    pub fn side(&self) -> Side {
+        match self {
+            Prompt::Professor(_) => Side::Professor,
+            _ => Side::Investigators,
+        }
+    }
 }
 
 /// An investigator's move order.
@@ -49,7 +63,7 @@ pub enum MoveOrder {
     Go(LocationId),
 }
 
-/// The human's answer to a [`Prompt`].
+/// The answer to a [`Prompt`].
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Answer {
     /// Moves for the investigators, by index.
@@ -64,4 +78,6 @@ pub enum Answer {
     Fight(FightChoice),
     /// Where Nyog'Sothep goes.
     BanishmentCity(LocationId),
+    /// The professor's answer.
+    Professor(ProfessorAnswer),
 }

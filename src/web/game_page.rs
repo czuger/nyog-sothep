@@ -1,6 +1,6 @@
 use askama::Template;
 
-use crate::domain::turn::{Prompt, RouteStage};
+use crate::domain::turn::{ProfessorPrompt, Prompt, RouteStage, Side};
 use crate::domain::{FightChoice, LocationId, ProfessorQuestion};
 use crate::service::{GameView, InvestigatorView, ProfessorSighting};
 use crate::web::board_view::BoardView;
@@ -34,11 +34,21 @@ pub struct RouteLine {
     pub counter: &'static str,
 }
 
+/// A counter to pick: the form value, its French name and its picture.
+pub struct CounterChoice {
+    /// Form value (the counter code).
+    pub value: &'static str,
+    /// French name.
+    pub label: &'static str,
+    /// Image path.
+    pub image: String,
+}
+
 /// The game page.
 #[derive(Template)]
 #[template(path = "game.html")]
 pub struct GamePage {
-    /// The game as the investigators see it.
+    /// The game as the human sees it.
     pub view: GameView,
     /// The screen drawn for the pending prompt.
     pub screen: Screen,
@@ -97,14 +107,20 @@ impl GamePage {
         choices
     }
 
+    /// Whether the human plays the professor.
+    pub fn is_professor(&self) -> bool {
+        self.view.human == Side::Professor
+    }
+
     /// The investigator the prompt is about.
     pub fn prompted(&self) -> Option<&InvestigatorView> {
         let index = match self.view.prompt.as_ref()? {
             Prompt::Table { investigator }
             | Prompt::Cities { investigator, .. }
             | Prompt::PlayAgain { investigator }
-            | Prompt::Fight { investigator, .. } => *investigator,
-            Prompt::Moves | Prompt::BanishmentCity => return None,
+            | Prompt::Fight { investigator, .. }
+            | Prompt::Professor(ProfessorPrompt::Carry { investigator, .. }) => *investigator,
+            Prompt::Moves | Prompt::BanishmentCity | Prompt::Professor(_) => return None,
         };
         self.view.investigators.get(index)
     }
@@ -169,6 +185,9 @@ impl GamePage {
     /// French text of the professor's known position, for the banner.
     pub fn professor_status(&self) -> String {
         match self.view.professor {
+            ProfessorSighting::Visible { at } if self.is_professor() => {
+                format!("vous êtes {}", at.at_phrase())
+            }
             ProfessorSighting::Unknown => "position inconnue".to_string(),
             ProfessorSighting::LastSeen { at, turn } => {
                 format!("vu {} au tour {turn}", at.at_phrase())
@@ -179,14 +198,16 @@ impl GamePage {
 
     /// The outcome's French text, once the game is over.
     pub fn outcome_text(&self) -> &'static str {
-        self.view.outcome.map_or("", |outcome| outcome.text())
-    }
-
-    /// Whether the investigators won.
-    pub fn investigators_won(&self) -> bool {
         self.view
             .outcome
-            .is_some_and(|outcome| outcome.investigators_win())
+            .map_or("", |outcome| outcome.text(self.view.human))
+    }
+
+    /// Whether the human won.
+    pub fn human_won(&self) -> bool {
+        self.view
+            .outcome
+            .is_some_and(|outcome| outcome.won_by(self.view.human))
     }
 
     /// The revealed route sheet.

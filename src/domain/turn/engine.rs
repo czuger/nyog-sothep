@@ -2,6 +2,7 @@ use crate::domain::dice::Dice;
 use crate::domain::turn::answer_error::AnswerError;
 use crate::domain::turn::clue::{Clue, ClueKind};
 use crate::domain::turn::game_state::GameState;
+use crate::domain::turn::investigator_brain::InvestigatorBrain;
 use crate::domain::turn::log_line::LogLine;
 use crate::domain::turn::outcome::Outcome;
 use crate::domain::turn::phase::{ActionStep, Phase};
@@ -10,26 +11,30 @@ use crate::domain::turn::prompt::{Answer, Prompt};
 
 /// The turn engine: plays the game forward until the human must decide or the game ends.
 ///
-/// The professor's decisions are taken synchronously by its brain, so the loop only pauses on a
-/// [`Prompt`] for the human.
+/// Every decision is a [`Prompt`]. The computer's side answers its prompts synchronously through
+/// its brain, so the loop only pauses on a prompt for the human.
 pub struct Engine<'a> {
     pub(super) state: &'a mut GameState,
     pub(super) dice: &'a mut dyn Dice,
-    pub(super) brain: &'a mut dyn ProfessorBrain,
+    pub(super) professor: &'a mut dyn ProfessorBrain,
+    pub(super) investigators: &'a mut dyn InvestigatorBrain,
     log: Vec<LogLine>,
 }
 
 impl<'a> Engine<'a> {
-    /// An engine working on `state` with the given dice and professor.
+    /// An engine working on `state` with the given dice; the brain of the side the human does
+    /// not play takes that side's decisions (the other one is never asked).
     pub fn new(
         state: &'a mut GameState,
         dice: &'a mut dyn Dice,
-        brain: &'a mut dyn ProfessorBrain,
+        professor: &'a mut dyn ProfessorBrain,
+        investigators: &'a mut dyn InvestigatorBrain,
     ) -> Engine<'a> {
         Engine {
             state,
             dice,
-            brain,
+            professor,
+            investigators,
             log: Vec::new(),
         }
     }
@@ -39,14 +44,23 @@ impl<'a> Engine<'a> {
         self.log
     }
 
-    /// Advances the game until the human must answer a prompt or the game ends.
+    /// Advances the game until the human must answer a prompt or the game ends; the computer
+    /// answers the prompts of its own side on the way.
     pub fn run(&mut self) {
-        while self.state.prompt.is_none() && !self.state.is_finished() {
+        while !self.state.is_finished() {
+            if let Some(prompt) = self.state.prompt.clone() {
+                if prompt.side() == self.state.human || !self.play_computer(prompt) {
+                    break;
+                }
+                continue;
+            }
             match self.state.phase {
+                Phase::Setup => self.ask_setup(),
                 Phase::ProfessorMove => self.professor_move(),
+                Phase::ProfessorMovement => self.professor_movement(),
                 Phase::ProfessorSummon => self.professor_summon(),
                 Phase::ProfessorPlace => self.professor_place(),
-                Phase::ProfessorDraw => self.professor_draw(),
+                Phase::ProfessorDraw { remaining } => self.professor_draw(remaining),
                 Phase::Moves => self.start_moves(),
                 Phase::Action { investigator, step } => self.action(investigator, step),
                 // Waiting phases without a prompt cannot happen; move on rather than loop.
@@ -60,13 +74,26 @@ impl<'a> Engine<'a> {
     /// Applies the human's answer to the pending prompt, then runs the game forward.
     ///
     /// # Errors
-    /// Refuses an answer that does not match the prompt or breaks a rule; the state is then
-    /// unchanged.
+    /// Refuses an answer that does not match the prompt, a prompt of the computer's side, or an
+    /// answer that breaks a rule; the state is then unchanged.
     pub fn answer(&mut self, answer: Answer) -> Result<(), AnswerError> {
         if self.state.is_finished() {
             return Err(AnswerError::GameOver);
         }
         let prompt = self.state.prompt.clone().ok_or(AnswerError::Unexpected)?;
+        if prompt.side() != self.state.human {
+            return Err(AnswerError::Unexpected);
+        }
+        self.apply(prompt, answer)?;
+        self.run();
+        Ok(())
+    }
+
+    /// Applies an answer to the pending prompt, whichever side gives it.
+    ///
+    /// # Errors
+    /// As [`Engine::answer`]; the state is then unchanged.
+    pub(super) fn apply(&mut self, prompt: Prompt, answer: Answer) -> Result<(), AnswerError> {
         match (prompt, answer) {
             (Prompt::Moves, Answer::Moves(orders)) => self.answer_moves(&orders)?,
             (Prompt::Table { investigator }, Answer::Table(table)) => {
@@ -93,9 +120,11 @@ impl<'a> Engine<'a> {
             (Prompt::BanishmentCity, Answer::BanishmentCity(city)) => {
                 self.answer_banishment_city(city)?
             }
+            (Prompt::Professor(prompt), Answer::Professor(answer)) => {
+                self.answer_professor(prompt, answer)?
+            }
             _ => return Err(AnswerError::Unexpected),
         }
-        self.run();
         Ok(())
     }
 
@@ -115,7 +144,7 @@ impl<'a> Engine<'a> {
         });
     }
 
-    /// Asks the human, and parks the engine in `phase` until the answer.
+    /// Asks a side, and parks the engine in `phase` until the answer.
     pub(super) fn ask(&mut self, prompt: Prompt, phase: Phase) {
         self.state.prompt = Some(prompt);
         self.state.phase = phase;
@@ -129,7 +158,7 @@ impl<'a> Engine<'a> {
         self.state.outcome = Some(outcome);
         self.state.phase = Phase::Finished;
         self.state.prompt = None;
-        self.log(outcome.text());
+        self.log(outcome.text(self.state.human));
     }
 
     /// Ends the game when too few investigators remain.

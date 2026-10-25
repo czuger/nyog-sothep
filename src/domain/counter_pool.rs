@@ -119,6 +119,26 @@ impl CounterPool {
             || self.change(CounterKind::Fanatics, CounterPlace::Hand, placed)
     }
 
+    /// The pool as the investigators see it: the hand and the hidden counters are back in the
+    /// reserve.
+    pub fn without_secrets(&self) -> CounterPool {
+        let counters = self
+            .counters
+            .iter()
+            .map(|counter| match counter.place {
+                CounterPlace::Hand
+                | CounterPlace::Placed {
+                    discovered: false, ..
+                } => Counter {
+                    place: CounterPlace::Reserve,
+                    ..*counter
+                },
+                _ => *counter,
+            })
+            .collect();
+        CounterPool { counters }
+    }
+
     /// Changes the place of the counter standing in a city.
     pub fn set_place_at(&mut self, city: LocationId, place: CounterPlace) {
         if let Some(counter) = self

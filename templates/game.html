@@ -13,9 +13,22 @@
 
 <div class="floating-column">
   <details class="panel floating-side" open data-remember="notebook">
-    <summary>Carnet</summary>
+    <summary>{% if self.is_professor() %}Carnet des investigateurs{% else %}Carnet{% endif %}</summary>
     {% include "partials/notebook.html" %}
   </details>
+  {% if self.is_professor() && !view.is_finished() %}
+  <details class="panel floating-side" open data-remember="route-sheet">
+    <summary>Feuille de route</summary>
+    <table class="score-table">
+      <thead><tr><th>Tour</th><th>Étape</th><th>Pion placé</th></tr></thead>
+      <tbody>
+        {% for line in self.route_lines() %}
+        <tr><td>{{ line.turn }}</td><td>{{ line.place }}</td><td>{{ line.counter }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </details>
+  {% endif %}
   <details class="panel floating-side" open data-remember="log">
     <summary>Journal</summary>
     {% include "partials/log.html" %}

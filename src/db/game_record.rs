@@ -2,10 +2,10 @@ use sqlx::SqliteConnection;
 
 use crate::db::codec;
 use crate::domain::NyogSothep;
-use crate::domain::turn::{GameState, Outcome, Phase, Prompt};
+use crate::domain::turn::{GameState, Outcome, Phase, Prompt, Side};
 use crate::error::AppError;
 
-/// A row of `games`: the engine's cursor, the public flags and Nyog'Sothep.
+/// A row of `games`: the human's side, the engine's cursor, the public flags and Nyog'Sothep.
 #[derive(Debug, Clone, sqlx::FromRow)]
 pub struct GameRecord {
     /// Game id.
@@ -24,6 +24,7 @@ pub struct GameRecord {
     nyog_target: Option<String>,
     sea_announcements: bool,
     move_in_the_open: bool,
+    human_side: String,
 }
 
 impl GameRecord {
@@ -34,11 +35,12 @@ impl GameRecord {
         state: &GameState,
     ) -> Result<i64, AppError> {
         let id = sqlx::query(
-            "INSERT INTO games (token, turn, phase, nyog_city, nyog_joined, sea_announcements, move_in_the_open)
-             VALUES (?, 0, '\"Moves\"', ?, 0, 0, 0)",
+            "INSERT INTO games (token, turn, phase, nyog_city, nyog_joined, sea_announcements, move_in_the_open, human_side)
+             VALUES (?, 0, '\"Moves\"', ?, 0, 0, 0, ?)",
         )
         .bind(token)
         .bind(state.nyog.city.code())
+        .bind(state.human.code())
         .execute(&mut *connection)
         .await?
         .last_insert_rowid();
@@ -95,6 +97,12 @@ impl GameRecord {
         .await?;
         self.version += 1;
         Ok(())
+    }
+
+    /// The side the human plays.
+    pub fn human(&self) -> Result<Side, AppError> {
+        Side::from_code(&self.human_side)
+            .ok_or_else(|| codec::corrupt("games.human_side", &self.human_side))
     }
 
     /// The round number.

@@ -5,7 +5,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## What this is
 
 A web implementation of *Nyog'Sothep ou les brumes de l'Immonde*, a board game published in *Jeux & Stratégie*
-(1988). The human leads the **four Investigators**; the computer plays **Professor Petersen**. `RULES.md` holds the
+(1988). The human chooses a side: lead the **four Investigators** against the computer's **Professor Petersen**,
+or play the professor against investigators led by the computer. `RULES.md` holds the
 translated rules and, at the end, the readings this implementation chose for the unclear points. Scans of the
 magazine pages and of the board are in `work/`; `work/board/` holds the straightened board, the counter slices and
 the scripts that made them (see its README).
@@ -19,7 +20,7 @@ It started as an unfinished Rails 5.2 application; the `rust_conversion` branch 
 cargo run                                     # serve on http://127.0.0.1:3000 (DATABASE_URL, BIND_ADDR, ASSET_ROOT, RUST_LOG)
 cargo test                                    # unit tests + tests/ (in-memory SQLite)
 cargo test --test game_flow <name>            # one integration test
-cargo test --test simulation -- --nocapture   # the professor's AI against a bot; SIMULATION_DEBUG=1 describes stalled games
+cargo test --test simulation -- --nocapture   # the professor's AI against the investigators' AI; SIMULATION_DEBUG=1 describes stalled games
 cargo clippy --all-targets -- -D warnings
 cargo fmt
 ```
@@ -42,26 +43,41 @@ Layers, from the inside out:
     `Investigator`/`InvestigatorId` (French name forms and gender agreement)/`InvestigatorStatus`, `encounter`
     (one outcome per counter), `EventTable`/`EventEffect`/`ProfessorQuestion` (Tables 2 and 3 as data, with the
     French row texts), `FightChoice` and `professor_fight`, `NyogSothep` and the banishment table, `Score`.
-  - `turn/`: the turn engine, a pure state machine. `GameState` holds everything (turn, `Phase` cursor, pending
-    `Prompt`, professor, investigators, counters, Nyog'Sothep, destroyed cities, route sheet, the investigators'
-    notebook of `Clue`s). `Engine::new_game` sets up and plays until the first prompt; `Engine::answer` applies the
-    human's `Answer` (moves of all four, table choice, named cities, play-again move, fight choice, banishment
-    city) and `Engine::run` plays on until the human must decide again or the game ends. Every refused answer
-    leaves the state unchanged (`AnswerError`, French texts). The professor's decisions go through the
-    `ProfessorBrain` trait, synchronously, so the human never waits; the engine checks every answer of the brain
-    and falls back to a legal one, and answers factual questions itself, so the professor cannot lie. Log lines
-    (`LogLine`, French) never reveal his secrets. The engine is split by topic (`professor_turn`, `nyog_turn`,
-    `moves`, `action_phase`, `fights`, `questions`, `sanity`, `setup`); `engine_tests.rs` plays whole rounds with
-    scripted dice and a scripted professor.
+  - `turn/`: the turn engine, a pure state machine. `GameState` holds everything (the `Side` the human plays,
+    turn, `Phase` cursor, pending `Prompt`, professor, investigators, counters, Nyog'Sothep, destroyed cities,
+    route sheet, the investigators' notebook of `Clue`s). Every decision of either side is a `Prompt`: the
+    investigators' (moves of all four, table choice, named cities, play-again move, fight choice, banishment
+    city) and the professor's, `Prompt::Professor(ProfessorPrompt)` (setup, Teleportation, move, attack, carry,
+    retreat, summoning, placement, Table 1 choice, discard, Nyog'Sothep's step, named cities), each holding its
+    options and parking the engine on the `Phase` where it resumes. `Engine::new_game` sets up and plays until
+    the human's first prompt; `Engine::answer` applies the human's `Answer` and `Engine::run` plays on until the
+    human must decide again or the game ends, answering on the way the prompts of the computer's side:
+    `ProfessorBrain::answer` dispatches to one method per decision, and `InvestigatorBrain` only receives
+    `GameState::public_copy` (no hand, hidden counter, route sheet or secret position), so it cannot cheat. The
+    computer's answers go through the same checks as the human's; a refused one is replaced by a legal
+    fallback. Every refused answer leaves the state unchanged (`AnswerError`, French texts); the engine answers
+    factual questions itself and checks the cities the professor names, so he cannot lie. Log lines (`LogLine`,
+    French) never reveal his secrets. The engine is split by topic (`professor_turn`, `professor_counters`,
+    `professor_answers`, `computer_players`, `nyog_turn`, `moves`, `action_phase`, `fights`, `questions`,
+    `sanity`, `setup`); `engine_tests.rs` plays whole rounds with scripted dice and a scripted professor, from
+    either side.
+  - `ProfessorBelief` rebuilds from the notebook the set of locations where the investigators can still place
+    the professor (one move per turn, three with the Flying Horror, narrowed by each clue); both AIs read it.
   - `professor_ai/`: `PetersenAi`, the computer's professor. It keeps no memory: each decision is computed from
-    the state. `ProfessorBelief` rebuilds from the notebook the set of locations where the investigators can
-    still place him (one move per turn, three with the Flying Horror, narrowed by each clue). It picks a central
+    the state, and from `ProfessorBelief` to know how well hidden he is. It picks a central
     appearance city with many roads, drops Fanatics in new cities away from armed investigators while staying
     near that city, closes in once five Fanatics cities are in place, lays traps suited to the investigators near
     them, attacks only the defenceless, teleports armed investigators away, bluffs with decoy cities that are far
     from him but still believable, and hunts the investigators without a protective sign with Nyog'Sothep.
-    `pick_near_best` varies its moves. `tests/simulation.rs` plays 150 games against a simple bot and checks
-    every answer of the AI.
+    `pick_near_best` varies its moves.
+  - `investigator_ai/`: `InvestigatorsAi`, the computer's four investigators, stateless too, one file per
+    decision. Armed investigators hunt the professor across `ProfessorBelief` (its nearest cities when narrow,
+    its centre otherwise, spreading out), the unarmed drift the same way while drawing events away from known
+    counters, everyone rests at the psychoanalyst before their SAN gets too low to face Nyog'Sothep, tables are
+    chosen by the expected worth of their rows, and once Nyog'Sothep is out the spell holders with a sign gather
+    while the others keep away from it. `tests/simulation.rs` plays 150 games of `PetersenAi` against it,
+    checking every answer of the professor's AI, and checks that playing either side from outside the engine
+    plays the same games.
 - **`src/db/`**: one record type per table (`GameRecord`, `ProfessorRecord`, `InvestigatorRecord`,
   `CounterRecord`, `RouteStageRecord`, `DestroyedCityRecord`, `ClueRecord`, `EventRecord`), with async functions
   taking `&mut SqliteConnection`; `game_store::load_state`/`save_state` rebuild and write a whole `GameState`
@@ -69,23 +85,30 @@ Layers, from the inside out:
   `sqlx::query`/`query_as` (no `DATABASE_URL` at build time). `db::connect` runs `migrations/` (embedded with
   `sqlx::migrate!`); schema changes go in a new migration file, never by editing an applied one. A partial unique
   index enforces one placed counter per city.
-- **`src/service/`**: one use case per file. `create_game` draws four investigators and a private token, lets the
-  AI set up and play its first turn, and stores everything. `answer_prompt` opens `begin_write`
-  (`BEGIN IMMEDIATE`), loads the state, runs the engine with real dice and `PetersenAi`, saves the state and
-  appends the log. `GameView` is the investigators' view of a game: it never holds the professor's position
-  (only the last sighting), hand, hidden counters, route sheet or Nyog'Sothep's city while they are secret; at
-  the end it reveals the route sheet, every counter and the scores.
-- **`src/web/`**: `router.rs` lists the routes (`/`, `POST /games`, `/games/{id}/{token}` and one `POST` per
-  prompt: `moves`, `table`, `cities`, `play-again`, `fight`, `banishment`). Handlers read the form as name/value
-  pairs, call `answer_prompt`, then redirect (303) to the game page, or show it again with the French error
-  (400). `GamePage` (`templates/game.html`) draws the full-window map (`BoardView`: every location as a click
+- **`src/service/`**: one use case per file. `create_game` takes the human's `Side`, draws four investigators and
+  a private token, runs the game until the human's first prompt (the first moves, or the professor's setup) and
+  stores everything (`games.human_side`). `answer_prompt` opens `begin_write` (`BEGIN IMMEDIATE`), loads the
+  state, runs the engine with real dice, `PetersenAi` and `InvestigatorsAi`, saves the state and appends the
+  log. `GameView` is the human's view of a game. Leading the investigators, it never holds the professor's
+  position (only the last sighting), hand, hidden counters, route sheet or Nyog'Sothep's city while they are
+  secret; playing the professor, it holds all of them (`CounterView::hidden` marks the counters the
+  investigators have not found). At the end it reveals the route sheet, every counter and the scores.
+- **`src/web/`**: `router.rs` lists the routes (`/`, `POST /games` with the `side` field, `/games/{id}/{token}`
+  and one `POST` per kind of answer: the investigators' `moves`, `table`, `cities`, `play-again`, `fight`,
+  `banishment` in `answer_handlers.rs`, the professor's `setup`, `teleport`, `move`, `attack`, `location`
+  (carry, retreat, Nyog'Sothep's step), `summon`, `place`, `counter` (Table 1, discard), `name` in
+  `professor_handlers.rs`). Handlers read the form as name/value pairs (`form_fields.rs`), call
+  `answer_prompt`, then redirect (303) to the game page, or show it again with the French error (400). `GamePage` (`templates/game.html`) draws the full-window map (`BoardView`: every location as a click
   target, tokens stacked side by side on their location, investigators at sea on a boat, the professor's last
-  sighting) with floating panels: on the left the banner (professor's hit points and known position, the
+  sighting, or his position and hidden counters for the professor) with floating panels: on the left the banner
+  (professor's hit points and position; for the professor, also his hand and summoning progress; the
   investigators with SAN, items, spell and lasting effects) and the screen of the pending prompt (`Screen::of`,
-  `templates/screens/*.html`), on the right the notebook and the log. Investigator moves are made in selects
-  named `move_{index}`, which `board.js` also fills when the player clicks an investigator and then a highlighted
-  destination (it draws an arrow per move). Cities are named by ticking inputs drawn on the map (`name="city"`,
-  joined to `#screen-form` with the `form` attribute). `board.js` scales the board to the width left between the
+  `templates/screens/*.html`, the professor's in `professor_*.html` with their choices in
+  `professor_screens.rs`), on the right the notebook, the professor's route sheet and the log. Moves are made in
+  selects (`move_{index}` for the investigators, `destination` for the professor), which `board.js` also fills
+  when the player clicks a token and then a highlighted destination (it draws an arrow per move). Locations are
+  picked by ticking inputs drawn on the map (`name="city"`, joined to `#screen-form` with the `form` attribute),
+  only on the locations the prompt allows. `board.js` scales the board to the width left between the
   panels and remembers which panels are open.
 
 `img/board.jpg` (2242×2732) is `work/board/map.png`; the counters are `img/token-<kind>.png` (counter codes),

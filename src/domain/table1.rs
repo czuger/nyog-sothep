@@ -10,7 +10,7 @@ use CounterKind::*;
 pub const HAND_LIMIT: usize = 5;
 
 /// Counters drawn before the first turn.
-pub const STARTING_DRAWS: usize = 4;
+pub const STARTING_DRAWS: u8 = 4;
 
 /// The counters offered by a 2d6 roll; two of them when the professor chooses.
 pub fn options(roll: u8) -> &'static [CounterKind] {

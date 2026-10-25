@@ -1,5 +1,5 @@
 {% if view.notebook.is_empty() %}
-<p class="hint">Rien encore sur le professeur.</p>
+<p class="hint">{% if self.is_professor() %}Les investigateurs ne savent encore rien de vous.{% else %}Rien encore sur le professeur.{% endif %}</p>
 {% else %}
 <ol class="log notebook">
   {% for line in view.notebook.iter().rev() %}

@@ -1,5 +1,7 @@
 use serde::{Deserialize, Serialize};
 
+use crate::domain::turn::side::Side;
+
 /// How a game ended.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum Outcome {
@@ -19,8 +21,37 @@ impl Outcome {
         matches!(self, Outcome::ProfessorKilled | Outcome::Banished)
     }
 
-    /// French sentence announcing the result.
-    pub fn text(self) -> &'static str {
+    /// Whether the given side won.
+    pub fn won_by(self, side: Side) -> bool {
+        self.investigators_win() == (side == Side::Investigators)
+    }
+
+    /// French sentence announcing the result to the human, who plays `human`.
+    pub fn text(self, human: Side) -> &'static str {
+        match human {
+            Side::Investigators => self.investigators_text(),
+            Side::Professor => self.professor_text(),
+        }
+    }
+
+    fn professor_text(self) -> &'static str {
+        match self {
+            Outcome::ProfessorKilled => {
+                "Défaite… Les investigateurs vous ont tué avant que vous n'ayez pu invoquer Nyog'Sothep."
+            }
+            Outcome::Banished => {
+                "Défaite… Nyog'Sothep est renvoyé dans l'abîme sans fond pour de nombreuses générations."
+            }
+            Outcome::NyogSothepReigns => {
+                "Victoire ! Nyog'Sothep est parmi nous et il ne reste plus assez d'investigateurs pour le renvoyer. Son règne sera sans fin."
+            }
+            Outcome::InvestigatorsLost => {
+                "Victoire ! Tous les investigateurs ont perdu la raison ou la vie."
+            }
+        }
+    }
+
+    fn investigators_text(self) -> &'static str {
         match self {
             Outcome::ProfessorKilled => {
                 "Victoire ! Le professeur Petersen est mort avant d'avoir pu invoquer Nyog'Sothep."

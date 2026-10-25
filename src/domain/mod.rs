@@ -9,6 +9,7 @@ mod event_effect;
 mod event_table;
 mod fight_choice;
 mod investigator;
+pub mod investigator_ai;
 mod investigator_id;
 mod investigator_status;
 pub mod location_id;
@@ -16,6 +17,7 @@ mod location_kind;
 pub mod map;
 mod nyog_sothep;
 pub mod professor_ai;
+mod professor_belief;
 pub mod professor_fight;
 mod professor_question;
 pub mod scoring;
@@ -39,6 +41,7 @@ pub use nyog_sothep::{
     BANISHERS_NEEDED, BanishmentResult, NyogSothep, SUMMONING_FANATICS_CITIES, SUMMONING_RANGE,
     banishment, meeting_san_loss,
 };
+pub use professor_belief::ProfessorBelief;
 pub use professor_question::ProfessorQuestion;
 pub use scoring::Score;
 pub use travel::Network;

@@ -7,5 +7,7 @@ mod write_transaction;
 
 pub use answer_prompt::answer_prompt;
 pub use create_game::{CreatedGame, INVESTIGATOR_COUNT, create_game};
-pub use game_view::{GameView, InvestigatorView, NotebookLine, ProfessorSighting, ScoreLine};
+pub use game_view::{
+    CounterView, GameView, InvestigatorView, NotebookLine, ProfessorSighting, ScoreLine,
+};
 pub use write_transaction::begin_write;

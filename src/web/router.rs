@@ -8,33 +8,22 @@ use tower_http::services::ServeDir;
 use tower_http::set_header::SetResponseHeaderLayer;
 
 use crate::web::app_state::AppState;
-use crate::web::{answer_handlers, game_handlers, lobby_handlers};
+use crate::web::{answer_handlers, game_handlers, lobby_handlers, professor_handlers};
+
+/// The private URL of a game.
+const GAME_PATH: &str = "/games/{game_id}/{token}";
 
 /// Builds every route of the application.
 ///
 /// # Arguments
 /// * `asset_root` - directory holding the `img/` and `static/` folders.
 pub fn build_router(state: AppState, asset_root: &Path) -> Router {
-    let game_path = "/games/{game_id}/{token}";
     Router::new()
         .route("/", get(lobby_handlers::show_lobby))
         .route("/games", post(lobby_handlers::create_game))
-        .route(game_path, get(game_handlers::show_game))
-        .route(&format!("{game_path}/moves"), post(answer_handlers::moves))
-        .route(&format!("{game_path}/table"), post(answer_handlers::table))
-        .route(
-            &format!("{game_path}/cities"),
-            post(answer_handlers::cities),
-        )
-        .route(
-            &format!("{game_path}/play-again"),
-            post(answer_handlers::play_again),
-        )
-        .route(&format!("{game_path}/fight"), post(answer_handlers::fight))
-        .route(
-            &format!("{game_path}/banishment"),
-            post(answer_handlers::banishment),
-        )
+        .route(GAME_PATH, get(game_handlers::show_game))
+        .merge(investigator_routes())
+        .merge(professor_routes())
         .nest_service("/img", ServeDir::new(asset_root.join("img")))
         .nest_service("/static", ServeDir::new(asset_root.join("static")))
         // Assets keep stable URLs, so browsers must revalidate them (a 304 when unchanged) to see edits.
@@ -43,4 +32,45 @@ pub fn build_router(state: AppState, asset_root: &Path) -> Router {
             HeaderValue::from_static("no-cache"),
         ))
         .with_state(state)
+}
+
+/// One `POST` per prompt of the investigators.
+fn investigator_routes() -> Router<AppState> {
+    Router::new()
+        .route(&prompt_path("moves"), post(answer_handlers::moves))
+        .route(&prompt_path("table"), post(answer_handlers::table))
+        .route(&prompt_path("cities"), post(answer_handlers::cities))
+        .route(
+            &prompt_path("play-again"),
+            post(answer_handlers::play_again),
+        )
+        .route(&prompt_path("fight"), post(answer_handlers::fight))
+        .route(
+            &prompt_path("banishment"),
+            post(answer_handlers::banishment),
+        )
+}
+
+/// One `POST` per kind of answer of the professor.
+fn professor_routes() -> Router<AppState> {
+    Router::new()
+        .route(&prompt_path("setup"), post(professor_handlers::setup))
+        .route(&prompt_path("teleport"), post(professor_handlers::teleport))
+        .route(&prompt_path("move"), post(professor_handlers::movement))
+        .route(&prompt_path("attack"), post(professor_handlers::attack))
+        .route(
+            &prompt_path("location"),
+            post(professor_handlers::pick_location),
+        )
+        .route(&prompt_path("summon"), post(professor_handlers::summon))
+        .route(&prompt_path("place"), post(professor_handlers::place))
+        .route(
+            &prompt_path("counter"),
+            post(professor_handlers::pick_counter),
+        )
+        .route(&prompt_path("name"), post(professor_handlers::name))
+}
+
+fn prompt_path(prompt: &str) -> String {
+    format!("{GAME_PATH}/{prompt}")
 }

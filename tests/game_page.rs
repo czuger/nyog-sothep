@@ -4,8 +4,11 @@ use askama::Template;
 use sqlx::SqlitePool;
 
 use nyog_sothep::db::{self, EventRecord, GameRecord, save_state};
+use nyog_sothep::domain::investigator_ai::InvestigatorsAi;
 use nyog_sothep::domain::professor_ai::PetersenAi;
-use nyog_sothep::domain::turn::{Engine, GameState, Outcome, Phase, Prompt};
+use nyog_sothep::domain::turn::{
+    Engine, GameState, Outcome, Phase, ProfessorMoveOptions, ProfessorPrompt, Prompt, Side,
+};
 use nyog_sothep::domain::{CounterKind, FightChoice, InvestigatorId, LocationId, RandomDice};
 use nyog_sothep::service::GameView;
 use nyog_sothep::web::{GamePage, Screen};
@@ -19,8 +22,13 @@ const IDS: [InvestigatorId; 4] = [
 
 /// A fresh game whose professor holds the Flying Horror and has hidden Ghouls in Lynn.
 fn secret_state() -> GameState {
-    let (mut state, _) =
-        Engine::new_game(&IDS, &mut RandomDice::seeded(5), &mut PetersenAi::seeded(5));
+    let (mut state, _) = Engine::new_game(
+        &IDS,
+        Side::Investigators,
+        &mut RandomDice::seeded(5),
+        &mut PetersenAi::seeded(5),
+        &mut InvestigatorsAi::seeded(5),
+    );
     for kind in state.counters.hand() {
         state.counters.discard(kind);
     }
@@ -143,4 +151,55 @@ async fn the_end_reveals_everything() {
         "hidden counters are shown at the end"
     );
     assert!(html.contains("Classement des investigateurs"));
+}
+
+#[tokio::test]
+async fn the_professor_sees_his_secrets() {
+    let mut state = secret_state();
+    state.human = Side::Professor;
+    let at = state.professor.location;
+    state.prompt = Some(Prompt::Professor(ProfessorPrompt::Movement {
+        options: ProfessorMoveOptions {
+            steps: vec![at],
+            flying: vec![LocationId::Boston],
+        },
+    }));
+    let (screen, html) = render(&state).await;
+    assert_eq!(screen, Screen::ProfessorMove);
+    assert!(html.contains("token-ghouls.png"), "his hidden counter");
+    assert!(html.contains("token hidden"));
+    assert!(html.contains("Votre main") && html.contains("token-flying_horror.png"));
+    assert!(html.contains(r#"data-mover="destination""#));
+    assert!(html.contains(r#"data-targets="boston""#));
+    assert!(html.contains("Horreur volante : Boston"));
+    assert!(html.contains("Feuille de route") && html.contains("Carnet des investigateurs"));
+    assert!(html.contains(&format!("vous êtes {}", at.at_phrase())));
+    assert!(html.contains("/move"));
+}
+
+#[tokio::test]
+async fn the_professors_prompts_have_their_screens() {
+    let mut state = secret_state();
+    state.human = Side::Professor;
+    state.prompt = Some(Prompt::Professor(ProfessorPrompt::Relocate {
+        options: vec![LocationId::Lynn, LocationId::MassachusettsBay],
+        pushed_back: false,
+    }));
+    let (screen, html) = render(&state).await;
+    assert_eq!(screen, Screen::Retreat);
+    assert!(html.contains(r#"<input type="radio" name="city" value="massachusetts_bay""#));
+    assert!(!html.contains(r#"value="boston" form="screen-form""#));
+
+    state.prompt = Some(Prompt::Professor(ProfessorPrompt::Table1 {
+        options: vec![CounterKind::Storm, CounterKind::Fanatics],
+    }));
+    let (screen, html) = render(&state).await;
+    assert_eq!(screen, Screen::Table1);
+    assert!(html.contains(r#"name="counter" value="storm""#) && html.contains("/counter"));
+
+    state.prompt = Some(Prompt::Professor(ProfessorPrompt::Setup));
+    let (screen, html) = render(&state).await;
+    assert_eq!(screen, Screen::Setup);
+    assert!(html.contains(r#"<select name="nyog_city">"#));
+    assert!(html.contains(r#"<input type="radio" name="city" value="boston" form="screen-form">"#));
 }

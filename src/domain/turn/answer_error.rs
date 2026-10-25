@@ -24,4 +24,16 @@ pub enum AnswerError {
     /// The fight choice is not open to the investigator.
     #[error("Ce choix de combat n'est pas possible.")]
     IllegalFightChoice,
+    /// The professor's choice is not among the options.
+    #[error("Ce choix n'est pas possible.")]
+    NotAnOption,
+    /// The die made the professor reveal himself.
+    #[error("Le dé vous oblige à vous révéler : choisissez l'investigateur que vous attaquez.")]
+    MustAttack,
+    /// The professor's position is not among the named cities.
+    #[error("Votre position doit figurer parmi les villes citées.")]
+    MustNameOwnCity,
+    /// No Fanatics city is among the named cities.
+    #[error("L'une des villes citées doit abriter des Fanatiques.")]
+    MustNameFanaticsCity,
 }

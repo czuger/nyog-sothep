@@ -6,6 +6,8 @@ use crate::domain::turn::clue::ClueKind;
 use crate::domain::turn::engine::Engine;
 use crate::domain::turn::outcome::Outcome;
 use crate::domain::turn::phase::Phase;
+use crate::domain::turn::professor_answers::pick;
+use crate::domain::turn::professor_prompt::ProfessorPrompt;
 use crate::domain::turn::prompt::Prompt;
 
 impl Engine<'_> {
@@ -30,6 +32,7 @@ impl Engine<'_> {
 
     /// Nyog'Sothep and the professor move together: nothing on 1 or 2, else one step (by road, or
     /// by sea like the professor), along the shortest path when spell holders have gathered.
+    /// The professor picks the step.
     pub(super) fn nyog_move(&mut self) {
         let Some(from) = self.state.nyog.location else {
             return;
@@ -49,12 +52,19 @@ impl Engine<'_> {
             self.log("Le professeur et Nyog'Sothep ne bougent pas ce tour-ci.");
             return;
         }
-        let picked = self.brain.nyog_step(self.state, &options);
-        let to = if options.contains(&picked) {
-            picked
-        } else {
-            options[0]
-        };
+        self.ask(
+            Prompt::Professor(ProfessorPrompt::NyogStep { options }),
+            self.state.phase,
+        );
+    }
+
+    pub(super) fn answer_nyog_step(
+        &mut self,
+        options: &[LocationId],
+        picked: LocationId,
+    ) -> Result<(), AnswerError> {
+        let to = pick(options, picked)?;
+        self.state.prompt = None;
         self.state.professor.location = to;
         self.state.nyog.location = Some(to);
         self.log(format!(
@@ -63,6 +73,7 @@ impl Engine<'_> {
         ));
         self.clue(ClueKind::Spotted { at: to });
         self.nyog_enters(to, true);
+        Ok(())
     }
 
     /// Nyog'Sothep enters a city: it is destroyed, the investigators there meet the Foul One,

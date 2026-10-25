@@ -6,8 +6,8 @@ use crate::domain::counter::CounterPlace;
 use crate::domain::location_id::LocationId;
 use crate::domain::map;
 use crate::domain::professor_ai::near_best::pick_near_best;
-use crate::domain::professor_ai::professor_belief::ProfessorBelief;
 use crate::domain::professor_ai::threats::{has_investigator, nearest_investigator};
+use crate::domain::professor_belief::ProfessorBelief;
 use crate::domain::travel::{self, Network};
 use crate::domain::turn::GameState;
 

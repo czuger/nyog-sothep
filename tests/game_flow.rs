@@ -4,13 +4,19 @@ use sqlx::SqlitePool;
 
 use nyog_sothep::db;
 use nyog_sothep::domain::LocationId;
-use nyog_sothep::domain::turn::{Answer, AnswerError, MoveOrder, Prompt};
+use nyog_sothep::domain::turn::{
+    Answer, AnswerError, MoveOrder, ProfessorAnswer, ProfessorPrompt, Prompt, Side,
+};
 use nyog_sothep::error::AppError;
-use nyog_sothep::service::{CreatedGame, GameView, answer_prompt, create_game};
+use nyog_sothep::service::{CreatedGame, GameView, ProfessorSighting, answer_prompt, create_game};
 
 async fn new_game() -> (SqlitePool, CreatedGame) {
+    new_game_as(Side::Investigators).await
+}
+
+async fn new_game_as(human: Side) -> (SqlitePool, CreatedGame) {
     let pool = db::connect("sqlite::memory:").await.unwrap();
-    let game = create_game(&pool).await.unwrap();
+    let game = create_game(&pool, human).await.unwrap();
     (pool, game)
 }
 
@@ -127,4 +133,66 @@ async fn games_can_be_played_for_many_rounds() {
             .unwrap();
     }
     assert!(view(&pool, &game).await.turn >= 3);
+}
+
+#[tokio::test]
+async fn the_professor_plays_against_the_computer_investigators() {
+    let (pool, game) = new_game_as(Side::Professor).await;
+    let first = view(&pool, &game).await;
+    assert_eq!(first.human, Side::Professor);
+    assert_eq!(
+        first.prompt,
+        Some(Prompt::Professor(ProfessorPrompt::Setup))
+    );
+    let setup = ProfessorAnswer::Setup {
+        start: LocationId::Providence,
+        nyog_city: LocationId::Boston,
+    };
+    answer_prompt(&pool, game.game_id, &game.token, Answer::Professor(setup))
+        .await
+        .unwrap();
+    // The professor answers every prompt with the most passive choice; the computer's
+    // investigators play everything else.
+    for _ in 0..40 {
+        let current = view(&pool, &game).await;
+        let Some(Prompt::Professor(prompt)) = current.prompt else {
+            break;
+        };
+        let answer = match prompt {
+            ProfessorPrompt::Movement { options } => ProfessorAnswer::Location(options.steps[0]),
+            ProfessorPrompt::Table1 { options } => ProfessorAnswer::Counter(options[0]),
+            ProfessorPrompt::Discard { hand } => ProfessorAnswer::Counter(hand[0]),
+            ProfessorPrompt::Placement { .. } => ProfessorAnswer::Placement(None),
+            ProfessorPrompt::Teleport { .. } => ProfessorAnswer::Teleport(None),
+            ProfessorPrompt::Attack { candidates, forced } => {
+                ProfessorAnswer::Attack(forced.then(|| candidates[0]))
+            }
+            ProfessorPrompt::Carry { options, .. }
+            | ProfessorPrompt::Relocate { options, .. }
+            | ProfessorPrompt::NyogStep { options } => ProfessorAnswer::Location(options[0]),
+            ProfessorPrompt::Summon => ProfessorAnswer::Summon(false),
+            ProfessorPrompt::NameCities { count } => {
+                let ProfessorSighting::Visible { at } = current.professor else {
+                    panic!("the professor sees himself");
+                };
+                let mut cities = vec![at];
+                cities.extend(
+                    [LocationId::Boston, LocationId::Lynn, LocationId::Arkham]
+                        .into_iter()
+                        .filter(|city| *city != at)
+                        .take(count - 1),
+                );
+                ProfessorAnswer::Cities(cities)
+            }
+            other => panic!("unexpected prompt {other:?}"),
+        };
+        answer_prompt(&pool, game.game_id, &game.token, Answer::Professor(answer))
+            .await
+            .unwrap();
+    }
+    let after = view(&pool, &game).await;
+    assert!(after.turn >= 3 || after.is_finished());
+    assert!(matches!(after.professor, ProfessorSighting::Visible { .. }));
+    assert_eq!(after.nyog_city, Some(LocationId::Boston));
+    assert!(!after.route_sheet.is_empty());
 }

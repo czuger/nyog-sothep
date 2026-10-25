@@ -1,0 +1,12 @@
+<h2>Des investigateurs sont ici</h2>
+{% if self.attack_forced() %}
+<p>Le dé vous oblige à vous révéler : choisissez qui vous attaquez.</p>
+{% else %}
+<p>Vous pouvez vous révéler et attaquer, ou rester caché.</p>
+{% endif %}
+<form id="screen-form" method="post" action="{{ self.game_path() }}/attack" class="stack">
+  {% for choice in self.attack_choices() %}
+  <button type="submit" name="target" value="{{ choice.value }}">{{ choice.label }}</button>
+  {% endfor %}
+  {% if !self.attack_forced() %}<button type="submit" name="target" value="none" class="secondary">Rester caché</button>{% endif %}
+</form>

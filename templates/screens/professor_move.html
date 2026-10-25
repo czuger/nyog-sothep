@@ -1,0 +1,16 @@
+<h2>Où allez-vous ?</h2>
+<p class="hint">Cliquez sur votre destination parmi les villes en surbrillance (sur votre pion pour rester), ou
+   choisissez dans la liste. Avec l'Horreur volante, vous pouvez aller jusqu'à trois cases plus loin, mais les
+   investigateurs le sauront.</p>
+<form id="screen-form" method="post" action="{{ self.game_path() }}/move" class="stack">
+  <label class="move-choice">
+    <img src="/img/token-professor.png" alt="" class="resource-icon">
+    <span>Professeur Petersen</span>
+    <select name="destination" data-move-select>
+      {% for choice in self.destination_choices() %}
+      <option value="{{ choice.value }}">{{ choice.label }}</option>
+      {% endfor %}
+    </select>
+  </label>
+  <button type="submit">Valider</button>
+</form>

@@ -1,4 +1,4 @@
-<h2 class="{% if self.investigators_won() %}victory{% else %}defeat{% endif %}">{{ self.outcome_text() }}</h2>
+<h2 class="{% if self.human_won() %}victory{% else %}defeat{% endif %}">{{ self.outcome_text() }}</h2>
 <p>Nyog'Sothep devait apparaître à <strong>{{ self.nyog_city_name() }}</strong>.</p>
 <table class="score-table">
   <caption>Classement des investigateurs</caption>
@@ -20,4 +20,4 @@
     </tbody>
   </table>
 </details>
-<form method="post" action="/games"><button type="submit">Nouvelle partie</button></form>
+{% include "partials/new_game.html" %}

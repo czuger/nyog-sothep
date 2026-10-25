@@ -6,10 +6,12 @@ use crate::domain::turn::answer_error::AnswerError;
 use crate::domain::turn::clue::ClueKind;
 use crate::domain::turn::engine::Engine;
 use crate::domain::turn::phase::{ActionStep, Phase};
+use crate::domain::turn::professor_prompt::ProfessorPrompt;
+use crate::domain::turn::prompt::Prompt;
 
 impl Engine<'_> {
-    /// The professor answers an event's question. Facts come from the state itself; his bluffs
-    /// are checked, so he can never lie.
+    /// The professor answers an event's question. Facts come from the state itself; the cities
+    /// he names are asked of him and checked, so he can never lie.
     pub(super) fn professor_answers(&mut self, question: ProfessorQuestion) {
         match question {
             ProfessorQuestion::NameCities(count) => self.name_cities(usize::from(count)),
@@ -123,38 +125,65 @@ impl Engine<'_> {
     }
 
     fn name_cities(&mut self, count: usize) {
-        let at = self.state.professor.location;
-        if at.is_sea() {
+        if self.state.professor.location.is_sea() {
             self.log("Le professeur répond qu'il est en mer.");
             self.clue(ClueKind::AtSea);
             return;
         }
-        let named = self.brain.name_cities(self.state, count);
-        let named = match valid_names(&named, count) && named.contains(&at) {
-            true => named,
-            false => with_nearest_cities(at, count),
-        };
-        let clue = ClueKind::NamedCities { cities: named };
-        self.log(format!("Le professeur répond : {}", clue.describe()));
-        self.clue(clue);
+        self.ask(
+            Prompt::Professor(ProfessorPrompt::NameCities { count }),
+            self.state.phase,
+        );
     }
 
     fn name_fanatics_cities(&mut self) {
-        let fanatics = self.state.counters.fanatics_cities();
-        let Some(first) = fanatics.first().copied() else {
+        if self.state.counters.fanatics_cities().is_empty() {
             self.log("Le professeur n'a aucun groupe de Fanatiques en place.");
             self.clue(ClueKind::NoFanatics);
             return;
+        }
+        self.ask(
+            Prompt::Professor(ProfessorPrompt::NameFanaticsCities),
+            self.state.phase,
+        );
+    }
+
+    /// The cities the professor names: his position, or a Fanatics city, must be among them.
+    pub(super) fn answer_professor_names(
+        &mut self,
+        prompt: &ProfessorPrompt,
+        named: &[LocationId],
+    ) -> Result<(), AnswerError> {
+        let clue = match prompt {
+            ProfessorPrompt::NameCities { count } => {
+                if !valid_names(named, *count) {
+                    return Err(AnswerError::WrongCityCount(*count));
+                }
+                if !named.contains(&self.state.professor.location) {
+                    return Err(AnswerError::MustNameOwnCity);
+                }
+                ClueKind::NamedCities {
+                    cities: named.to_vec(),
+                }
+            }
+            ProfessorPrompt::NameFanaticsCities => {
+                if !valid_names(named, 2) {
+                    return Err(AnswerError::WrongCityCount(2));
+                }
+                let fanatics = self.state.counters.fanatics_cities();
+                if !named.iter().any(|city| fanatics.contains(city)) {
+                    return Err(AnswerError::MustNameFanaticsCity);
+                }
+                ClueKind::FanaticsAmong {
+                    cities: named.to_vec(),
+                }
+            }
+            _ => return Err(AnswerError::Unexpected),
         };
-        let named = self.brain.name_fanatics_cities(self.state);
-        let named = match valid_names(&named, 2) && named.iter().any(|city| fanatics.contains(city))
-        {
-            true => named,
-            false => with_nearest_cities(first, 2),
-        };
-        let clue = ClueKind::FanaticsAmong { cities: named };
+        self.state.prompt = None;
         self.log(format!("Le professeur répond : {}", clue.describe()));
         self.clue(clue);
+        Ok(())
     }
 }
 
@@ -167,7 +196,7 @@ fn valid_names(named: &[LocationId], count: usize) -> bool {
 }
 
 /// `city` and the cities nearest to it, `count` in all, in board order.
-fn with_nearest_cities(city: LocationId, count: usize) -> Vec<LocationId> {
+pub(super) fn with_nearest_cities(city: LocationId, count: usize) -> Vec<LocationId> {
     let found = travel::distances(city, Network::All, |_| true);
     let mut others: Vec<LocationId> = map::cities().filter(|other| *other != city).collect();
     others.sort_by_key(|other| found[other.index()].unwrap_or(u8::MAX));

@@ -6,6 +6,14 @@
 {% when Screen::Cities %}{% include "screens/cities.html" %}
 {% when Screen::Fight %}{% include "screens/fight.html" %}
 {% when Screen::Banishment %}{% include "screens/banishment.html" %}
+{% when Screen::Setup %}{% include "screens/professor_setup.html" %}
+{% when Screen::Teleport %}{% include "screens/professor_teleport.html" %}
+{% when Screen::ProfessorMove %}{% include "screens/professor_move.html" %}
+{% when Screen::Attack %}{% include "screens/professor_attack.html" %}
+{% when Screen::Carry | Screen::Retreat | Screen::NyogStep %}{% include "screens/professor_location.html" %}
+{% when Screen::Summon %}{% include "screens/professor_summon.html" %}
+{% when Screen::Placement | Screen::Table1 | Screen::Discard %}{% include "screens/professor_counter.html" %}
+{% when Screen::Names %}{% include "screens/professor_names.html" %}
 {% when Screen::Finished %}{% include "screens/finished.html" %}
 {% endmatch %}
 </section>

@@ -1,0 +1,7 @@
+<h2>Invoquer Nyog'Sothep ?</h2>
+<p>Vos Fanatiques sont en place et vous êtes assez près de {{ self.nyog_city_name() }}. Si vous l'invoquez, vous vous
+   révélez avec vos Fanatiques, et l'Immonde Brumeux apparaît : il faudra le rejoindre.</p>
+<form id="screen-form" method="post" action="{{ self.game_path() }}/summon" class="inline-form">
+  <button type="submit" name="summon" value="yes">Invoquer Nyog'Sothep</button>
+  <button type="submit" name="summon" value="no" class="secondary">Attendre</button>
+</form>

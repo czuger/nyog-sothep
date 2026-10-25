@@ -1,4 +1,5 @@
-// The map: scaled to the room left by the floating panels, with investigator moves staged by clicking.
+// The map: scaled to the room left by the floating panels, with moves (the investigators', or the
+// professor's) staged by clicking.
 // A mover ([data-mover]) names the select of its move (data-mover) and lists in data-targets the
 // [data-target] places it may enter; staging a move sets that select and draws an arrow.
 (function () {
@@ -9,6 +10,9 @@
   const viewport = board.closest('.board-viewport');
   const arrows = board.querySelector('.board-moves');
   let selected = null;
+  const movers = board.querySelectorAll('[data-mover]');
+  // A lone mover (the professor) is always selected: one click on a destination stages his move.
+  const soleMover = movers.length === 1 ? movers[0] : null;
 
   // The board keeps its pixel coordinates and is scaled as a whole to the width left between the
   // open floating panels, so that none of them hides a city; the map scrolls vertically.
@@ -78,6 +82,7 @@
   }
 
   function select(mover) {
+    mover = mover || soleMover;
     document.body.classList.toggle('choosing', Boolean(mover));
     if (selected) selected.classList.remove('is-selected');
     board.querySelectorAll('.is-target').forEach(function (element) {
@@ -96,10 +101,12 @@
   function drawArrows() {
     if (!arrows) return;
     arrows.querySelectorAll('line').forEach(function (line) { line.remove(); });
-    board.querySelectorAll('[data-mover]').forEach(function (mover) {
+    movers.forEach(function (mover) {
       const choice = selectFor(mover);
-      const moving = choice && place(choice.value);
-      mover.classList.toggle('is-staged', Boolean(choice) && choice.value !== 'stay');
+      // Staying is « stay » for an investigator, and the professor's own location for him.
+      const staying = !choice || choice.value === 'stay' || choice.value === mover.dataset.from;
+      const moving = !staying && place(choice.value);
+      mover.classList.toggle('is-staged', !staying);
       if (!moving) return;
       const start = place(mover.dataset.from);
       const line = document.createElementNS(SVG_NS, 'line');
@@ -119,9 +126,11 @@
     select(null);
   }
 
-  board.querySelectorAll('[data-mover]').forEach(function (mover) {
+  movers.forEach(function (mover) {
     mover.addEventListener('click', function (event) {
       event.stopPropagation();
+      // The lone mover's own token means staying where he is.
+      if (mover === soleMover) return stage(mover.dataset.from);
       // Another investigator standing on a destination: the click means that destination.
       const reachable = selected && selected !== mover && selected.dataset.targets.split(' ').includes(mover.dataset.from);
       if (reachable) stage(mover.dataset.from);
@@ -148,5 +157,6 @@
   fitBoard();
   rememberScroll();
   drawArrows();
+  select(null);
   window.addEventListener('resize', fitBoard);
 })();

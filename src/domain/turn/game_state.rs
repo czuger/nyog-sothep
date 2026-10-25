@@ -3,21 +3,25 @@ use serde::{Deserialize, Serialize};
 use crate::domain::counter_pool::CounterPool;
 use crate::domain::investigator::Investigator;
 use crate::domain::location_id::LocationId;
-use crate::domain::nyog_sothep::NyogSothep;
+use crate::domain::nyog_sothep::{NyogSothep, SUMMONING_FANATICS_CITIES, SUMMONING_RANGE};
+use crate::domain::travel::{self, Network};
 use crate::domain::turn::clue::Clue;
 use crate::domain::turn::outcome::Outcome;
 use crate::domain::turn::phase::Phase;
 use crate::domain::turn::professor::{Professor, RouteStage};
 use crate::domain::turn::prompt::Prompt;
+use crate::domain::turn::side::Side;
 
 /// The whole state of a game: everything the turn engine needs to resume.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct GameState {
+    /// The side the human plays; the computer plays the other.
+    pub human: Side,
     /// The round being played (the professor's turn opens it).
     pub turn: u32,
     /// The engine's cursor.
     pub phase: Phase,
-    /// The decision the human must take, if any.
+    /// The decision waited for, if any.
     pub prompt: Option<Prompt>,
     /// The result, once the game is over.
     pub outcome: Option<Outcome>,
@@ -60,6 +64,20 @@ impl GameState {
             .into_iter()
             .filter(|index| self.investigators[*index].location == location)
             .collect()
+    }
+
+    /// Whether the professor may summon Nyog'Sothep: Fanatics in five cities and his position
+    /// close enough to its city.
+    pub fn can_summon(&self) -> bool {
+        !self.nyog.is_summoned()
+            && self.counters.fanatics_cities().len() >= SUMMONING_FANATICS_CITIES
+            && travel::distance(
+                self.professor.location,
+                self.nyog.city,
+                Network::All,
+                |_| true,
+            )
+            .is_some_and(|steps| steps <= SUMMONING_RANGE)
     }
 
     /// Whether the game is over.

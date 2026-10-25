@@ -1,0 +1,13 @@
+<h2>Lancer une Téléportation ?</h2>
+<p class="hint">Avant de vous déplacer, vous pouvez transporter un investigateur situé à deux cases au plus de
+   vous jusqu'à deux villes plus loin par la route ; il perd 2 SAN. Les investigateurs sauront que vous étiez
+   près de lui.</p>
+<form id="screen-form" method="post" action="{{ self.game_path() }}/teleport" class="stack">
+  <select name="teleport">
+    {% for choice in self.teleport_choices() %}
+    <option value="{{ choice.value }}">{{ choice.label }}</option>
+    {% endfor %}
+  </select>
+  <button type="submit">Téléporter</button>
+  <button type="submit" name="skip" value="1" class="secondary">Ne pas téléporter</button>
+</form>

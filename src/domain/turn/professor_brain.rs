@@ -1,6 +1,9 @@
+use serde::{Deserialize, Serialize};
+
 use crate::domain::counter_kind::CounterKind;
 use crate::domain::location_id::LocationId;
 use crate::domain::turn::game_state::GameState;
+use crate::domain::turn::professor_prompt::{ProfessorAnswer, ProfessorPrompt};
 
 /// The professor's move for the turn.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -12,7 +15,7 @@ pub struct ProfessorMove {
 }
 
 /// The legal moves offered to the professor.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ProfessorMoveOptions {
     /// Staying, or one ordinary step by road or by sea.
     pub steps: Vec<LocationId>,
@@ -21,7 +24,7 @@ pub struct ProfessorMoveOptions {
 }
 
 /// A Teleportation the professor may cast.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Teleport {
     /// The investigator moved, by index.
     pub investigator: usize,
@@ -29,11 +32,39 @@ pub struct Teleport {
     pub destination: LocationId,
 }
 
-/// The decisions of Professor Petersen, taken by the computer.
+/// The decisions of Professor Petersen when the computer plays him.
 ///
-/// Every method receives the whole state, which the professor may read except for future dice.
-/// The engine checks each answer and falls back to a legal one when it is not.
+/// Every method answers one [`ProfessorPrompt`] and receives the whole state, which the professor
+/// may read except for future dice. The engine checks each answer like a human's and falls back
+/// to a legal one when it is refused.
 pub trait ProfessorBrain {
+    /// Answers a prompt by asking the matching method.
+    fn answer(&mut self, state: &GameState, prompt: &ProfessorPrompt) -> ProfessorAnswer {
+        use ProfessorAnswer as A;
+        use ProfessorPrompt as P;
+        match prompt {
+            P::Setup => {
+                let (start, nyog_city) = self.setup(state);
+                A::Setup { start, nyog_city }
+            }
+            P::Teleport { options } => A::Teleport(self.teleport(state, options)),
+            P::Movement { options } => A::Location(self.movement(state, options).destination),
+            P::Attack { candidates, forced } => A::Attack(self.attack(state, candidates, *forced)),
+            P::Carry {
+                investigator,
+                options,
+            } => A::Location(self.carry(state, *investigator, options)),
+            P::Relocate { options, .. } => A::Location(self.relocate(state, options)),
+            P::Summon => A::Summon(self.summon(state)),
+            P::Placement { options } => A::Placement(self.placement(state, options)),
+            P::Table1 { options } => A::Counter(self.table1_choice(state, options)),
+            P::Discard { hand } => A::Counter(self.discard(state, hand)),
+            P::NyogStep { options } => A::Location(self.nyog_step(state, options)),
+            P::NameCities { count } => A::Cities(self.name_cities(state, *count)),
+            P::NameFanaticsCities => A::Cities(self.name_fanatics_cities(state)),
+        }
+    }
+
     /// Chooses the start city and the city where Nyog'Sothep will appear.
     fn setup(&mut self, state: &GameState) -> (LocationId, LocationId);
 

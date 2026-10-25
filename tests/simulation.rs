@@ -1,25 +1,21 @@
-//! The professor's AI plays full games against a simple investigator bot.
+//! The professor's AI plays full games against the investigators' AI, one side played from
+//! outside the engine as the human would.
 //!
-//! Every answer of the AI is checked for legality, every game must end without error, and the
-//! results are printed (`cargo test --test simulation -- --nocapture`) to tune the
-//! balance; `SIMULATION_DEBUG=1` also describes the games left unfinished.
+//! Every answer of the professor's AI is checked for legality, the side played from outside
+//! must never see an answer refused, every game must end without error, and the results are
+//! printed (`cargo test --test simulation -- --nocapture`) to tune the balance;
+//! `SIMULATION_DEBUG=1` also describes the games left unfinished.
 
-use rand::rngs::StdRng;
-use rand::seq::IndexedRandom;
-use rand::{RngExt, SeedableRng};
-
-use nyog_sothep::domain::map;
+use nyog_sothep::domain::investigator_ai::InvestigatorsAi;
 use nyog_sothep::domain::professor_ai::PetersenAi;
-use nyog_sothep::domain::travel::{self, Network};
 use nyog_sothep::domain::turn::{
-    Answer, ClueKind, Engine, GameState, MoveOptions, MoveOrder, Outcome, ProfessorBrain,
-    ProfessorMove, ProfessorMoveOptions, Prompt, Teleport,
+    Answer, Engine, GameState, InvestigatorBrain, Outcome, ProfessorBrain, ProfessorMove,
+    ProfessorMoveOptions, Prompt, Side, Teleport,
 };
-use nyog_sothep::domain::{
-    CounterKind, EventTable, FightChoice, InvestigatorId, LocationId, ProfessorQuestion, RandomDice,
-};
+use nyog_sothep::domain::{CounterKind, InvestigatorId, LocationId, RandomDice};
 
 const GAMES: u64 = 150;
+const SAME_GAME_SEEDS: u64 = 10;
 const TURN_LIMIT: u32 = 120;
 
 /// The AI, with every answer checked against the options it was given.
@@ -118,159 +114,24 @@ impl ProfessorBrain for CheckedAi {
     }
 }
 
-/// A plain investigator player: armed investigators chase the last sighting, the others roam;
-/// spell holders gather once Nyog'Sothep is out.
-struct Bot {
-    rng: StdRng,
-}
-
-impl Bot {
-    fn answer(&mut self, state: &GameState, prompt: &Prompt) -> Answer {
-        match prompt {
-            Prompt::Moves => Answer::Moves(
-                (0..state.investigators.len())
-                    .filter_map(|index| {
-                        MoveOptions::of(state, index, false)
-                            .map(|options| (index, self.order(state, index, &options)))
-                    })
-                    .collect(),
-            ),
-            Prompt::PlayAgain { investigator } => {
-                let options = MoveOptions::of(state, *investigator, true).expect("plays again");
-                Answer::PlayAgain(self.order(state, *investigator, &options))
-            }
-            Prompt::Table { .. } => Answer::Table(match self.rng.random_bool(0.5) {
-                true => EventTable::Two,
-                false => EventTable::Three,
-            }),
-            Prompt::Cities { question, .. } => {
-                let count = question.cities_named_by_investigator().unwrap_or(0);
-                let optional =
-                    *question == ProfessorQuestion::NyogSothepInTwoCities { optional: true };
-                let cities: Vec<LocationId> = map::cities().collect();
-                let named = match optional && self.rng.random_bool(0.3) {
-                    true => Vec::new(),
-                    false => cities.sample(&mut self.rng, count).copied().collect(),
-                };
-                Answer::Cities(named)
-            }
-            Prompt::Fight { options, .. } => Answer::Fight(options[0]).clone_for(options),
-            Prompt::BanishmentCity => {
-                let far = map::cities()
-                    .filter(|city| state.investigators_at(*city).is_empty())
-                    .max_by_key(|city| {
-                        travel::distance(*city, LocationId::Nantucket, Network::All, |_| true)
-                    })
-                    .unwrap_or(LocationId::Gloucester);
-                Answer::BanishmentCity(far)
-            }
-        }
-    }
-
-    fn order(&mut self, state: &GameState, index: usize, options: &MoveOptions) -> MoveOrder {
-        let me = &state.investigators[index];
-        let goal = self.goal(state, index);
-        if me.san <= 6 && options.psychoanalyst && !(state.nyog.is_summoned() && me.spell) {
-            return MoveOrder::Psychoanalyst;
-        }
-        if let Some(goal) = goal {
-            let closest = options.destinations.iter().copied().min_by_key(|to| {
-                travel::distance(*to, goal, Network::All, |_| true).unwrap_or(u8::MAX)
-            });
-            let here = travel::distance(me.location, goal, Network::All, |_| true);
-            if let Some(to) = closest
-                && travel::distance(to, goal, Network::All, |_| true) < here
-            {
-                return MoveOrder::Go(to);
-            }
-            return MoveOrder::Stay;
-        }
-        match options.destinations.choose(&mut self.rng) {
-            Some(to) if self.rng.random_bool(0.8) => MoveOrder::Go(*to),
-            _ => MoveOrder::Stay,
-        }
-    }
-
-    fn goal(&self, state: &GameState, index: usize) -> Option<LocationId> {
-        let me = &state.investigators[index];
-        if let Some(nyog) = state.nyog.location {
-            if me.spell {
-                return rally(state);
-            }
-            return flee(state, me.location, nyog);
-        }
-        if !me.weapon {
-            return None;
-        }
-        state.clues.iter().rev().find_map(|clue| match clue.kind {
-            ClueKind::Spotted { at } if clue.turn + 3 >= state.turn => Some(at),
-            _ => None,
-        })
-    }
-}
-
-/// The open city closest, in total, to the active spell holders.
-fn rally(state: &GameState) -> Option<LocationId> {
-    let holders: Vec<LocationId> = state
-        .active_investigators()
-        .into_iter()
-        .filter(|index| state.investigators[*index].spell)
-        .map(|index| state.investigators[index].location)
-        .collect();
-    map::cities()
-        .filter(|city| !state.is_destroyed(*city))
-        .min_by_key(|city| {
-            holders
-                .iter()
-                .map(|at| {
-                    u32::from(travel::distance(*at, *city, Network::All, |_| true).unwrap_or(30))
-                })
-                .max()
-        })
-}
-
-/// A neighbouring city farther from Nyog'Sothep, if any.
-fn flee(state: &GameState, from: LocationId, nyog: LocationId) -> Option<LocationId> {
-    let away = |city: LocationId| travel::distance(city, nyog, Network::All, |_| true).unwrap_or(0);
-    travel::neighbours(from)
-        .iter()
-        .copied()
-        .filter(|city| !state.is_destroyed(*city))
-        .max_by_key(|city| away(*city))
-        .filter(|city| away(*city) > away(from))
-}
-
-trait FightPreference {
-    fn clone_for(self, options: &[FightChoice]) -> Answer;
-}
-
-impl FightPreference for Answer {
-    fn clone_for(self, options: &[FightChoice]) -> Answer {
-        let preferred = [FightChoice::Weapon, FightChoice::Sign, FightChoice::Hide];
-        let choice = preferred
-            .into_iter()
-            .find(|choice| options.contains(choice))
-            .unwrap_or(options[0]);
-        Answer::Fight(choice)
-    }
-}
-
-fn play(seed: u64) -> (Option<Outcome>, u32) {
+fn play(seed: u64, human: Side) -> (Option<Outcome>, u32) {
     let mut dice = RandomDice::seeded(seed);
-    let mut ai = CheckedAi(PetersenAi::seeded(seed));
-    let mut bot = Bot {
-        rng: StdRng::seed_from_u64(seed),
-    };
+    let mut professor = CheckedAi(PetersenAi::seeded(seed));
+    let mut investigators = InvestigatorsAi::seeded(seed);
     let mut ids = InvestigatorId::ALL.to_vec();
     ids.truncate(4);
-    let (mut state, _) = Engine::new_game(&ids, &mut dice, &mut ai);
+    let (mut state, _) =
+        Engine::new_game(&ids, human, &mut dice, &mut professor, &mut investigators);
     while !state.is_finished() && state.turn <= TURN_LIMIT {
         let prompt = state
             .prompt
             .clone()
             .expect("an unfinished game waits for the human");
-        let answer = bot.answer(&state, &prompt);
-        let mut engine = Engine::new(&mut state, &mut dice, &mut ai);
+        let answer = match &prompt {
+            Prompt::Professor(asked) => Answer::Professor(professor.answer(&state, asked)),
+            _ => investigators.answer(&state.public_copy(), &prompt),
+        };
+        let mut engine = Engine::new(&mut state, &mut dice, &mut professor, &mut investigators);
         engine
             .answer(answer.clone())
             .unwrap_or_else(|error| panic!("seed {seed}: {prompt:?} {answer:?}: {error}"));
@@ -286,7 +147,7 @@ fn play(seed: u64) -> (Option<Outcome>, u32) {
             })
             .count();
         eprintln!(
-            "seed {seed}: summoned {} fanatics cities {} removed {} hand {:?} active {} prof {:?} nyog {:?} hp {} spells {} signs {} sans {:?} target {:?}",
+            "seed {seed}: summoned {} fanatics cities {} removed {} hand {:?} active {} prof {:?} nyog {:?} hp {} spells {} signs {} sans {:?} target {:?} nyog at {:?} joined {}",
             state.nyog.is_summoned(),
             state.counters.fanatics_cities().len(),
             removed,
@@ -311,18 +172,37 @@ fn play(seed: u64) -> (Option<Outcome>, u32) {
                 .map(|i| (i.san, i.location))
                 .collect::<Vec<_>>(),
             state.nyog.target,
+            state.nyog.location,
+            state.nyog.joined,
         );
     }
     (state.outcome, state.turn)
 }
 
 #[test]
-fn the_ai_plays_full_games() {
+fn the_ais_play_full_games() {
+    simulate(Side::Investigators);
+}
+
+/// Answering the professor's prompts from outside the engine plays exactly the same games as
+/// letting the engine ask his brain.
+#[test]
+fn either_side_can_be_played_from_outside() {
+    for seed in 0..SAME_GAME_SEEDS {
+        assert_eq!(
+            play(seed, Side::Professor),
+            play(seed, Side::Investigators),
+            "seed {seed}"
+        );
+    }
+}
+
+fn simulate(human: Side) {
     let mut wins = [0u32; 4];
     let mut unfinished = 0;
     let mut turns = 0;
     for seed in 0..GAMES {
-        let (outcome, length) = play(seed);
+        let (outcome, length) = play(seed, human);
         turns += length;
         match outcome {
             Some(Outcome::ProfessorKilled) => wins[0] += 1,

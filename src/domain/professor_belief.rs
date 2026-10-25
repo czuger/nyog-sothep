@@ -10,7 +10,8 @@ const TELEPORT_RANGE: u8 = 2;
 /// The locations where the investigators can still place the professor, given their notebook.
 ///
 /// Each turn the set grows by one move (three with the Flying Horror), then every clue of the
-/// turn narrows it. The professor's AI reads it to know how well hidden he is.
+/// turn narrows it. The professor's AI reads it to know how well hidden he is; the investigators' AI,
+/// to know where to hunt him.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ProfessorBelief {
     possible: [bool; LOCATION_COUNT],

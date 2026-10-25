@@ -1,7 +1,7 @@
 use sqlx::SqlitePool;
 
 use crate::db::{EventRecord, GameRecord, load_state};
-use crate::domain::turn::{ClueKind, GameState, MoveOptions, Outcome, Prompt, RouteStage};
+use crate::domain::turn::{ClueKind, GameState, MoveOptions, Outcome, Prompt, RouteStage, Side};
 use crate::domain::{
     CounterKind, CounterPlace, InvestigatorId, InvestigatorStatus, LocationId, Score,
 };
@@ -62,6 +62,17 @@ pub struct NotebookLine {
     pub text: String,
 }
 
+/// A counter placed on the board.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct CounterView {
+    /// Its city.
+    pub city: LocationId,
+    /// Its kind.
+    pub kind: CounterKind,
+    /// Still hidden from the investigators (only shown to the professor, or at the end).
+    pub hidden: bool,
+}
+
 /// One investigator's final score.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ScoreLine {
@@ -71,10 +82,13 @@ pub struct ScoreLine {
     pub score: Score,
 }
 
-/// The game as the human (the investigators) may see it: never the professor's position, hand,
-/// hidden counters, route sheet or Nyog'Sothep's city while they are secret.
+/// The game as the human may see it. Playing the investigators, never the professor's position,
+/// hand, hidden counters, route sheet or Nyog'Sothep's city while they are secret; playing the
+/// professor, everything.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct GameView {
+    /// The side the human plays.
+    pub human: Side,
     /// Game id.
     pub game_id: i64,
     /// Secret part of the game's private URL.
@@ -93,8 +107,12 @@ pub struct GameView {
     pub professor: ProfessorSighting,
     /// The four investigators.
     pub investigators: Vec<InvestigatorView>,
-    /// Counters lying face up on the board.
-    pub counters: Vec<(LocationId, CounterKind)>,
+    /// Counters on the board that the human may see.
+    pub counters: Vec<CounterView>,
+    /// The professor's hand, when the human may see it.
+    pub hand: Vec<CounterKind>,
+    /// The professor may summon Nyog'Sothep now (shown to the professor only).
+    pub can_summon: bool,
     /// Cities destroyed by Nyog'Sothep.
     pub destroyed: Vec<LocationId>,
     /// Where Nyog'Sothep stands, once summoned.
@@ -107,7 +125,7 @@ pub struct GameView {
     pub notebook: Vec<NotebookLine>,
     /// The game log, newest first.
     pub log: Vec<EventRecord>,
-    /// The professor's route sheet, shown at the end only.
+    /// The professor's route sheet, shown to the professor, or at the end.
     pub route_sheet: Vec<RouteStage>,
     /// The investigators' scores, at the end only.
     pub scores: Vec<ScoreLine>,
@@ -128,11 +146,13 @@ impl GameView {
         Ok(GameView::of(&game, &state, log))
     }
 
-    /// Builds the view from the full state, keeping only what the investigators may see.
+    /// Builds the view from the full state, keeping only what the human may see.
     pub fn of(game: &GameRecord, state: &GameState, log: Vec<EventRecord>) -> GameView {
         let finished = state.is_finished();
-        let revealed = finished || state.nyog.is_summoned();
+        let secrets = finished || state.human == Side::Professor;
+        let revealed = secrets || state.nyog.is_summoned();
         GameView {
+            human: state.human,
             game_id: game.id,
             token: game.token.clone(),
             version: game.version,
@@ -142,21 +162,12 @@ impl GameView {
             professor_hp: state.professor.hp,
             professor: sighting(state, revealed),
             investigators: investigators(state),
-            counters: state
-                .counters
-                .placed()
-                .filter(|(_, counter)| {
-                    finished
-                        || matches!(
-                            counter.place,
-                            CounterPlace::Placed {
-                                discovered: true,
-                                ..
-                            }
-                        )
-                })
-                .map(|(city, counter)| (city, counter.kind))
-                .collect(),
+            counters: counters(state, secrets),
+            hand: match secrets {
+                true => state.counters.hand(),
+                false => Vec::new(),
+            },
+            can_summon: state.human == Side::Professor && state.can_summon(),
             destroyed: state.destroyed.clone(),
             nyog_location: state.nyog.location,
             nyog_city: revealed.then_some(state.nyog.city),
@@ -170,7 +181,7 @@ impl GameView {
                 })
                 .collect(),
             log,
-            route_sheet: if finished {
+            route_sheet: if secrets {
                 state.route_sheet.clone()
             } else {
                 Vec::new()
@@ -183,6 +194,25 @@ impl GameView {
     pub fn is_finished(&self) -> bool {
         self.outcome.is_some()
     }
+}
+
+fn counters(state: &GameState, secrets: bool) -> Vec<CounterView> {
+    state
+        .counters
+        .placed()
+        .map(|(city, counter)| CounterView {
+            city,
+            kind: counter.kind,
+            hidden: !matches!(
+                counter.place,
+                CounterPlace::Placed {
+                    discovered: true,
+                    ..
+                }
+            ),
+        })
+        .filter(|counter| secrets || !counter.hidden)
+        .collect()
 }
 
 fn sighting(state: &GameState, revealed: bool) -> ProfessorSighting {

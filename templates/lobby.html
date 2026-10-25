@@ -5,12 +5,15 @@
   <p>Mai 1921, Nouvelle-Angleterre. Le professeur S. Petersen, ethnologue à l'université de Providence, a
      disparu. Descendant d'une sorcière brûlée en 1688, il veut achever son œuvre : faire venir sur Terre
      l'innommable <strong>Nyog'Sothep, l'Immonde Brumeux</strong>.</p>
-  <p>Vous menez quatre investigateurs, partis de Nantucket. L'ordinateur joue le professeur, caché derrière
-     son écran : retrouvez-le et tuez-le avant qu'il n'ait réuni des Fanatiques dans cinq villes, ou renvoyez
-     Nyog'Sothep dans l'abîme s'il apparaît.</p>
-  <form method="post" action="/games">
-    <button type="submit">Commencer la partie</button>
-  </form>
+  <p>Choisissez votre camp, l'ordinateur jouera l'autre.</p>
+  <ul>
+    <li><strong>Les investigateurs</strong> : vous menez quatre investigateurs, partis de Nantucket. Retrouvez le
+        professeur et tuez-le avant qu'il n'ait réuni des Fanatiques dans cinq villes, ou renvoyez Nyog'Sothep
+        dans l'abîme s'il apparaît.</li>
+    <li><strong>Le professeur Petersen</strong> : caché derrière votre écran, semez vos pions, placez vos
+        Fanatiques et invoquez Nyog'Sothep, sans vous faire prendre par les investigateurs.</li>
+  </ul>
+  {% include "partials/new_game.html" %}
   <p class="hint">La partie a sa propre adresse : gardez-la pour la reprendre plus tard.</p>
 </section>
 {% endblock %}

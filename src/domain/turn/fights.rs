@@ -7,6 +7,8 @@ use crate::domain::turn::clue::ClueKind;
 use crate::domain::turn::engine::Engine;
 use crate::domain::turn::outcome::Outcome;
 use crate::domain::turn::phase::{ActionStep, Phase};
+use crate::domain::turn::professor_answers::pick;
+use crate::domain::turn::professor_prompt::ProfessorPrompt;
 use crate::domain::turn::prompt::Prompt;
 
 /// Who started a fight, which tells where the engine resumes.
@@ -98,11 +100,11 @@ impl Engine<'_> {
         if outcome.damage > 0 && self.wound_professor(investigator, outcome.damage) {
             return;
         }
+        // An unarmed investigator is carried away and the professor stays; otherwise he leaves.
         if outcome.carries_investigator {
-            self.carry(investigator);
-        }
-        if outcome.professor != ProfessorAfterFight::Stays {
-            self.relocate_professor(outcome.professor);
+            self.offer_carry(investigator);
+        } else if outcome.professor != ProfessorAfterFight::Stays {
+            self.offer_relocation(outcome.professor == ProfessorAfterFight::PushedBack);
         }
     }
 
@@ -122,8 +124,9 @@ impl Engine<'_> {
         false
     }
 
-    /// The professor moves an unarmed investigator two cities.
-    fn carry(&mut self, investigator: usize) {
+    /// Asks where the professor carries an unarmed investigator, two cities away; the engine
+    /// then resumes where the fight started.
+    fn offer_carry(&mut self, investigator: usize) {
         if !self.state.investigators[investigator].is_active() {
             return;
         }
@@ -136,12 +139,23 @@ impl Engine<'_> {
         if options.is_empty() {
             return;
         }
-        let picked = self.brain.carry(self.state, investigator, &options);
-        let destination = if options.contains(&picked) {
-            picked
-        } else {
-            options[0]
-        };
+        self.ask(
+            Prompt::Professor(ProfessorPrompt::Carry {
+                investigator,
+                options,
+            }),
+            self.state.phase,
+        );
+    }
+
+    pub(super) fn answer_carry(
+        &mut self,
+        investigator: usize,
+        options: &[LocationId],
+        picked: LocationId,
+    ) -> Result<(), AnswerError> {
+        let destination = pick(options, picked)?;
+        self.state.prompt = None;
         let target = &mut self.state.investigators[investigator];
         target.go_to(destination);
         let name = target.id.inner_name();
@@ -149,24 +163,39 @@ impl Engine<'_> {
             "Le professeur emmène {name} {}.",
             destination.at_phrase()
         ));
+        Ok(())
     }
 
-    fn relocate_professor(&mut self, after: ProfessorAfterFight) {
-        let from = self.state.professor.location;
-        let options = travel::neighbours(from);
+    /// Asks where the professor retreats, or is pushed back, after a fight.
+    fn offer_relocation(&mut self, pushed_back: bool) {
+        let options = travel::neighbours(self.state.professor.location).to_vec();
         if options.is_empty() {
             return;
         }
-        let picked = self.brain.relocate(self.state, options);
-        self.state.professor.location = if options.contains(&picked) {
-            picked
-        } else {
-            options[0]
-        };
+        self.ask(
+            Prompt::Professor(ProfessorPrompt::Relocate {
+                options,
+                pushed_back,
+            }),
+            self.state.phase,
+        );
+    }
+
+    pub(super) fn answer_relocation(
+        &mut self,
+        options: &[LocationId],
+        pushed_back: bool,
+        picked: LocationId,
+    ) -> Result<(), AnswerError> {
+        let destination = pick(options, picked)?;
+        self.state.prompt = None;
+        let from = self.state.professor.location;
+        self.state.professor.location = destination;
         self.clue(ClueKind::Retreated { from });
-        self.log(match after {
-            ProfessorAfterFight::PushedBack => "Le professeur est repoussé d'un cran.",
-            _ => "Le professeur bat en retraite d'un cran.",
+        self.log(match pushed_back {
+            true => "Le professeur est repoussé d'un cran.",
+            false => "Le professeur bat en retraite d'un cran.",
         });
+        Ok(())
     }
 }
