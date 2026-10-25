@@ -96,20 +96,39 @@ impl GamePage {
         )
     }
 
+    /// The locations of a carry, a retreat or Nyog'Sothep's step, for the list beside the map.
+    pub fn location_choices(&self) -> Vec<Choice> {
+        let options = match self.professor_prompt() {
+            Some(
+                ProfessorPrompt::Carry { options, .. }
+                | ProfessorPrompt::Relocate { options, .. }
+                | ProfessorPrompt::NyogStep { options },
+            ) => options,
+            _ => return Vec::new(),
+        };
+        options
+            .iter()
+            .map(|to| Choice {
+                value: to.code().to_string(),
+                label: to.to_string(),
+            })
+            .collect()
+    }
+
     /// What to pick on the map for a carry, a retreat or Nyog'Sothep's step.
     pub fn location_text(&self) -> String {
         match self.professor_prompt() {
             Some(ProfessorPrompt::Carry { .. }) => format!(
-                "{} n'avait rien pour se défendre : choisissez sur la carte où vous l'emmenez, à deux villes de là.",
+                "{} n'avait rien pour se défendre : choisissez sur la carte ou dans la liste où vous l'emmenez, à deux villes de là.",
                 self.prompted_name()
             ),
             Some(ProfessorPrompt::Relocate {
                 pushed_back: true, ..
-            }) => "Le signe protecteur vous repousse : choisissez sur la carte où vous reculez d'un cran.".to_string(),
+            }) => "Le signe protecteur vous repousse : choisissez sur la carte ou dans la liste où vous reculez d'un cran.".to_string(),
             Some(ProfessorPrompt::Relocate { .. }) => {
-                "Blessé, vous battez en retraite : choisissez sur la carte où vous reculez d'un cran.".to_string()
+                "Blessé, vous battez en retraite : choisissez sur la carte ou dans la liste où vous reculez d'un cran.".to_string()
             }
-            _ => "Le dé fait avancer Nyog'Sothep : choisissez sur la carte la ville où vous l'emmenez avec vous.".to_string(),
+            _ => "Le dé fait avancer Nyog'Sothep : choisissez sur la carte ou dans la liste la ville où vous l'emmenez avec vous.".to_string(),
         }
     }
 
@@ -132,18 +151,25 @@ impl GamePage {
         self.view.hand.iter().copied().map(counter_choice).collect()
     }
 
-    /// How many cities he must name, and why.
-    pub fn names_question(&self) -> (usize, &'static str) {
-        match self.professor_prompt() {
-            Some(ProfessorPrompt::NameCities { count }) => (
-                *count,
-                "Un investigateur vous oblige à citer des villes : votre position doit en faire partie.",
+    /// How many cities he must tick on the map, and why; his own position is named for him.
+    pub fn names_question(&self) -> (usize, String) {
+        match (self.professor_prompt(), self.view.own_city_to_name()) {
+            (Some(ProfessorPrompt::NameCities { count }), Some(own)) => (
+                count.saturating_sub(1),
+                format!(
+                    "Un investigateur vous oblige à citer {count} villes : votre position, {own}, en fait partie d'office."
+                ),
             ),
             _ => (
                 2,
-                "Un investigateur vous oblige à citer deux villes : l'une d'elles doit abriter des Fanatiques.",
+                "Un investigateur vous oblige à citer deux villes : l'une d'elles doit abriter des Fanatiques.".to_string(),
             ),
         }
+    }
+
+    /// Code of his position, sent with the cities he ticks.
+    pub fn own_named_code(&self) -> Option<&'static str> {
+        self.view.own_city_to_name().map(LocationId::code)
     }
 
     /// French summary of his progress towards the summoning.

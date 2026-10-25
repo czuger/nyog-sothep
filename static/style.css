@@ -85,6 +85,7 @@ body.map-screen { overflow: hidden; }
   position: absolute; top: 60px; white-space: nowrap; font: bold 24px/1 sans-serif; color: #fff;
   text-shadow: 0 0 3px #000, 0 0 3px #000; display: none;
 }
+.place.pick.is-locked { cursor: not-allowed; opacity: 0.4; }
 .place.pick:hover .place-name, .place.pick:has(input:checked) .place-name { display: block; }
 
 .token {
@@ -103,6 +104,8 @@ body.map-screen { overflow: hidden; }
 }
 .token.investigator { z-index: 7; }
 .choosing .token:not(.mover) { pointer-events: none; }
+/* Tokens drawn over a pickable location must not swallow the click meant for it. */
+.board:has(.place.pick) .token:not(.mover) { pointer-events: none; }
 .mover { cursor: pointer; border-radius: 6px; box-shadow: 0 0 0 4px #fff, 0 0 10px 4px rgba(244, 208, 63, 0.9); }
 .mover.is-selected { box-shadow: 0 0 0 6px var(--gold), 0 0 18px 8px var(--gold); }
 .mover.is-staged { box-shadow: 0 0 0 4px #2f8a3a; }

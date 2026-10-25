@@ -105,7 +105,14 @@ fn picks(view: &GameView, screen: Screen) -> (Option<&'static str>, Vec<Location
         _ => Vec::new(),
     };
     match screen {
-        Screen::Cities | Screen::Names => (Some("checkbox"), cities()),
+        Screen::Cities => (Some("checkbox"), cities()),
+        Screen::Names => {
+            let own = view.own_city_to_name();
+            let others = crate::domain::map::cities()
+                .filter(|city| Some(*city) != own)
+                .collect();
+            (Some("checkbox"), others)
+        }
         Screen::Banishment | Screen::Setup => (Some("radio"), cities()),
         Screen::Carry | Screen::Retreat | Screen::NyogStep => (Some("radio"), options),
         _ => (None, Vec::new()),

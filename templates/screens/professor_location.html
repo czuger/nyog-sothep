@@ -1,5 +1,13 @@
 <h2>{{ screen.title() }}</h2>
 <p>{{ self.location_text() }}</p>
-<form id="screen-form" method="post" action="{{ self.game_path() }}/location" class="inline-form">
+<form id="screen-form" method="post" action="{{ self.game_path() }}/location" class="stack">
+  <label class="move-choice">
+    <span>Lieu</span>
+    <select name="city" data-pick-select>
+      {% for choice in self.location_choices() %}
+      <option value="{{ choice.value }}">{{ choice.label }}</option>
+      {% endfor %}
+    </select>
+  </label>
   <button type="submit">Valider</button>
 </form>

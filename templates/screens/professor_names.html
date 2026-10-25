@@ -1,6 +1,7 @@
 {% let (count, text) = self.names_question() %}
 <h2>Les investigateurs vous interrogent</h2>
-<p>{{ text }} Cochez les {{ count }} villes sur la carte.</p>
-<form id="screen-form" method="post" action="{{ self.game_path() }}/name" class="inline-form">
+<p>{{ text }} Cochez {% if self.own_named_code().is_some() %}{% if count == 1 %}l'autre ville{% else %}les {{ count }} autres villes{% endif %}{% else %}les {{ count }} villes{% endif %} sur la carte.</p>
+<form id="screen-form" method="post" action="{{ self.game_path() }}/name" class="inline-form" data-pick-limit="{{ count }}">
+  {% if let Some(own) = self.own_named_code() %}<input type="hidden" name="city" value="{{ own }}">{% endif %}
   <button type="submit">Répondre</button>
 </form>

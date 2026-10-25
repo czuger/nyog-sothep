@@ -189,6 +189,16 @@ async fn the_professors_prompts_have_their_screens() {
     assert_eq!(screen, Screen::Retreat);
     assert!(html.contains(r#"<input type="radio" name="city" value="massachusetts_bay""#));
     assert!(!html.contains(r#"value="boston" form="screen-form""#));
+    assert!(html.contains(r#"<select name="city" data-pick-select>"#));
+    assert!(html.contains(r#"<option value="massachusetts_bay">"#));
+
+    state.prompt = Some(Prompt::Professor(ProfessorPrompt::NyogStep {
+        options: vec![LocationId::Dedham],
+    }));
+    let (screen, html) = render(&state).await;
+    assert_eq!(screen, Screen::NyogStep);
+    assert!(html.contains(r#"<option value="dedham">Dedham</option>"#));
+    assert!(html.contains("/location"));
 
     state.prompt = Some(Prompt::Professor(ProfessorPrompt::Table1 {
         options: vec![CounterKind::Storm, CounterKind::Fanatics],
@@ -202,4 +212,21 @@ async fn the_professors_prompts_have_their_screens() {
     assert_eq!(screen, Screen::Setup);
     assert!(html.contains(r#"<select name="nyog_city">"#));
     assert!(html.contains(r#"<input type="radio" name="city" value="boston" form="screen-form">"#));
+}
+
+#[tokio::test]
+async fn the_professors_own_city_is_named_for_him() {
+    let mut state = secret_state();
+    state.human = Side::Professor;
+    state.professor.location = LocationId::Pascoag;
+    state.prompt = Some(Prompt::Professor(ProfessorPrompt::NameCities { count: 3 }));
+    let (screen, html) = render(&state).await;
+    assert_eq!(screen, Screen::Names);
+    assert!(html.contains(r#"<input type="hidden" name="city" value="pascoag">"#));
+    assert!(!html.contains(r#"value="pascoag" form="screen-form""#));
+    assert!(
+        html.contains(r#"<input type="checkbox" name="city" value="boston" form="screen-form">"#)
+    );
+    assert!(html.contains(r#"data-pick-limit="2""#));
+    assert!(html.contains("Cochez les 2 autres villes"));
 }

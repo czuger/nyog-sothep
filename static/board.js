@@ -149,11 +149,46 @@
     choice.addEventListener('change', drawArrows);
   });
 
+  // A form with data-pick-limit takes at most that many ticked cities: the others lock once it is reached.
+  function limitPicks() {
+    const form = document.querySelector('form[data-pick-limit]');
+    if (!form) return;
+    const limit = Number(form.dataset.pickLimit);
+    const boxes = board.querySelectorAll('input[type="checkbox"][form="' + form.id + '"]');
+    function update() {
+      const ticked = Array.from(boxes).filter(function (box) { return box.checked; }).length;
+      boxes.forEach(function (box) {
+        box.disabled = !box.checked && ticked >= limit;
+        box.closest('.place').classList.toggle('is-locked', box.disabled);
+      });
+    }
+    boxes.forEach(function (box) { box.addEventListener('change', update); });
+    update();
+  }
+
+  // A pick list ([data-pick-select]) and the radios of its form on the map name the same location: each
+  // follows the other, so the form sends that location twice.
+  function mirrorPicks() {
+    const list = document.querySelector('select[data-pick-select]');
+    if (!list || !list.form) return;
+    const radios = board.querySelectorAll('input[type="radio"][form="' + list.form.id + '"]');
+    function check() {
+      radios.forEach(function (radio) { radio.checked = radio.value === list.value; });
+    }
+    radios.forEach(function (radio) {
+      radio.addEventListener('change', function () { list.value = radio.value; });
+    });
+    list.addEventListener('change', check);
+    check();
+  }
+
   document.addEventListener('keydown', function (event) {
     if (event.key === 'Escape') select(null);
   });
 
   rememberPanels();
+  limitPicks();
+  mirrorPicks();
   fitBoard();
   rememberScroll();
   drawArrows();

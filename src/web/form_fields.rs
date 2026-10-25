@@ -59,10 +59,10 @@ pub fn location(code: &str) -> Result<LocationId, AppError> {
         .ok_or_else(|| AppError::InvalidForm(format!("lieu inconnu « {code} »")))
 }
 
-/// The single location of a field.
+/// The single location of a field, which may be sent more than once (by the map and by the list).
 pub fn one_location(fields: &Fields, name: &str) -> Result<LocationId, AppError> {
-    match locations(fields, name)?.as_slice() {
-        [one] => Ok(*one),
+    match locations(fields, name)?.split_first() {
+        Some((first, rest)) if rest.iter().all(|other| other == first) => Ok(*first),
         _ => Err(AppError::InvalidForm("choisissez un lieu".to_string())),
     }
 }
@@ -84,5 +84,12 @@ mod tests {
         let named = locations(&fields(&[("city", "lynn"), ("city", "arkham")]), "city").unwrap();
         assert_eq!(named, vec![LocationId::Lynn, LocationId::Arkham]);
         assert!(one_location(&fields(&[("city", "lynn"), ("city", "arkham")]), "city").is_err());
+    }
+
+    #[test]
+    fn one_location_may_be_sent_twice() {
+        let picked = one_location(&fields(&[("city", "lynn"), ("city", "lynn")]), "city").unwrap();
+        assert_eq!(picked, LocationId::Lynn);
+        assert!(one_location(&fields(&[]), "city").is_err());
     }
 }

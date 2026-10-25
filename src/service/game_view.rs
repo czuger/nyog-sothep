@@ -1,7 +1,9 @@
 use sqlx::SqlitePool;
 
 use crate::db::{EventRecord, GameRecord, load_state};
-use crate::domain::turn::{ClueKind, GameState, MoveOptions, Outcome, Prompt, RouteStage, Side};
+use crate::domain::turn::{
+    ClueKind, GameState, MoveOptions, Outcome, ProfessorPrompt, Prompt, RouteStage, Side,
+};
 use crate::domain::{
     CounterKind, CounterPlace, InvestigatorId, InvestigatorStatus, LocationId, Score,
 };
@@ -193,6 +195,17 @@ impl GameView {
     /// Whether the game is over.
     pub fn is_finished(&self) -> bool {
         self.outcome.is_some()
+    }
+
+    /// The professor's position when he must name it among other cities: the page names it for him.
+    pub fn own_city_to_name(&self) -> Option<LocationId> {
+        match (&self.prompt, &self.professor) {
+            (
+                Some(Prompt::Professor(ProfessorPrompt::NameCities { .. })),
+                ProfessorSighting::Visible { at },
+            ) => Some(*at),
+            _ => None,
+        }
     }
 }
 
