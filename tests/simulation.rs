@@ -10,7 +10,7 @@ use nyog_sothep::domain::investigator_ai::InvestigatorsAi;
 use nyog_sothep::domain::professor_ai::PetersenAi;
 use nyog_sothep::domain::turn::{
     Answer, Engine, GameState, InvestigatorBrain, Outcome, ProfessorBrain, ProfessorMove,
-    ProfessorMoveOptions, Prompt, Side, Teleport,
+    ProfessorMoveOptions, Prompt, ReplayBoard, ReplayStep, Side, Teleport,
 };
 use nyog_sothep::domain::{CounterKind, InvestigatorId, LocationId, RandomDice};
 
@@ -114,14 +114,16 @@ impl ProfessorBrain for CheckedAi {
     }
 }
 
-fn play(seed: u64, human: Side) -> (Option<Outcome>, u32) {
+/// Plays a game to its end (or the turn limit), with the replay steps written on the way.
+fn play_recorded(seed: u64, human: Side) -> (GameState, Vec<ReplayStep>) {
     let mut dice = RandomDice::seeded(seed);
     let mut professor = CheckedAi(PetersenAi::seeded(seed));
     let mut investigators = InvestigatorsAi::seeded(seed);
     let mut ids = InvestigatorId::ALL.to_vec();
     ids.truncate(4);
-    let (mut state, _) =
+    let (mut state, history) =
         Engine::new_game(&ids, human, &mut dice, &mut professor, &mut investigators);
+    let mut replay = history.replay;
     while !state.is_finished() && state.turn <= TURN_LIMIT {
         let prompt = state
             .prompt
@@ -135,7 +137,13 @@ fn play(seed: u64, human: Side) -> (Option<Outcome>, u32) {
         engine
             .answer(answer.clone())
             .unwrap_or_else(|error| panic!("seed {seed}: {prompt:?} {answer:?}: {error}"));
+        replay.extend(engine.into_history().replay);
     }
+    (state, replay)
+}
+
+fn play(seed: u64, human: Side) -> (Option<Outcome>, u32) {
+    let (state, _) = play_recorded(seed, human);
     if state.outcome.is_none() && std::env::var("SIMULATION_DEBUG").is_ok() {
         let removed = state
             .counters
@@ -194,6 +202,26 @@ fn either_side_can_be_played_from_outside() {
             play(seed, Side::Investigators),
             "seed {seed}"
         );
+    }
+}
+
+/// The replay starts from a board, every step tells what happened or shows dice, and its boards
+/// end on the final state of the game.
+#[test]
+fn the_replay_follows_the_whole_game() {
+    for seed in 0..SAME_GAME_SEEDS {
+        for human in [Side::Investigators, Side::Professor] {
+            let (state, replay) = play_recorded(seed, human);
+            assert!(replay[0].board.is_some(), "seed {seed}");
+            assert!(
+                replay
+                    .iter()
+                    .all(|step| step.text.is_some() || !step.dice.is_empty()),
+                "seed {seed}"
+            );
+            let last = replay.iter().rev().find_map(|step| step.board.as_ref());
+            assert_eq!(last, Some(&ReplayBoard::of(&state)), "seed {seed}");
+        }
     }
 }
 

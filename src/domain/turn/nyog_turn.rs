@@ -1,3 +1,4 @@
+use crate::domain::dice::Dice;
 use crate::domain::location_id::LocationId;
 use crate::domain::nyog_sothep::{self, BANISHERS_NEEDED, BanishmentResult};
 use crate::domain::travel::{self, Network};

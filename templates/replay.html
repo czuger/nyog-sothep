@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Rejeu — Nyog'Sothep{% endblock %}
+{% block body_class %}map-screen replay{% endblock %}
+{% block content %}
+{% include "board.html" %}
+
+<div class="floating-left">
+  <details class="panel floating floating-controls" open data-remember="replay">
+    <summary>Rejeu de la partie</summary>
+    {% if view.is_empty() %}
+    <p class="panel">Cette partie a été jouée avant l'enregistrement des coups : elle ne peut pas être rejouée.</p>
+    {% else %}
+    <section class="panel replay-step" aria-live="polite">
+      <p class="replay-position"><span data-replay="turn"></span> · <span data-replay="position"></span></p>
+      <p class="replay-text" data-replay="text"></p>
+      <p class="replay-dice" data-replay="dice"></p>
+    </section>
+    <div class="replay-controls">
+      <button type="button" class="secondary" data-replay-action="first" title="Début">⏮</button>
+      <button type="button" class="secondary" data-replay-action="previous" title="Événement précédent">◀</button>
+      <button type="button" data-replay-action="play" title="Lecture / pause (espace)">⏸</button>
+      <button type="button" class="secondary" data-replay-action="next" title="Événement suivant">▶</button>
+      <button type="button" class="secondary" data-replay-action="last" title="Fin">⏭</button>
+    </div>
+    <input type="range" class="replay-progress" min="0" value="0" data-replay="progress" aria-label="Position dans la partie">
+    <section class="panel banner" data-replay="banner"></section>
+    <h2 class="replay-outcome {% if self.human_won() %}victory{% else %}defeat{% endif %}" data-replay="outcome" hidden>{{ self.outcome_text() }}</h2>
+    {% endif %}
+  </details>
+  <nav class="panel floating-actions">
+    <a class="button" href="{{ self.game_path() }}">Retour à la partie</a>
+    <a class="button" href="/">Nouvelle partie</a>
+  </nav>
+</div>
+
+{% if !view.is_empty() %}
+<div class="floating-column">
+  <details class="panel floating-side" open data-remember="replay-log">
+    <summary>Journal du rejeu</summary>
+    <ol class="log replay-log" data-replay="log"></ol>
+  </details>
+</div>
+<script type="application/json" id="replay-data">{{ data|safe }}</script>
+{% endif %}
+{% endblock %}
+{% block scripts %}
+<script src="/static/board.js"></script>
+{% if !view.is_empty() %}<script src="/static/replay.js"></script>{% endif %}
+{% endblock %}

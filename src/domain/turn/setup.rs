@@ -11,8 +11,8 @@ use crate::domain::table1::STARTING_DRAWS;
 use crate::domain::turn::answer_error::AnswerError;
 use crate::domain::turn::engine::Engine;
 use crate::domain::turn::game_state::GameState;
+use crate::domain::turn::history::History;
 use crate::domain::turn::investigator_brain::InvestigatorBrain;
-use crate::domain::turn::log_line::LogLine;
 use crate::domain::turn::phase::Phase;
 use crate::domain::turn::professor::{Professor, RouteStage};
 use crate::domain::turn::professor_brain::ProfessorBrain;
@@ -39,16 +39,14 @@ impl Engine<'_> {
         dice: &mut dyn Dice,
         professor: &mut dyn ProfessorBrain,
         investigator_brain: &mut dyn InvestigatorBrain,
-    ) -> (GameState, Vec<LogLine>) {
-        let investigators: Vec<Investigator> = investigators
+    ) -> (GameState, History) {
+        let investigators = investigators
             .iter()
-            .map(|id| {
-                let san = i32::from(dice.roll(STARTING_SAN_DICE)) + STARTING_SAN_BONUS;
-                Investigator::new(*id, san)
-            })
+            .map(|id| Investigator::new(*id, 0))
             .collect();
         let mut state = blank_state(investigators, human);
         let mut engine = Engine::new(&mut state, dice, professor, investigator_brain);
+        engine.replayed_board = None;
         let names: Vec<&str> = engine
             .state
             .investigators
@@ -59,9 +57,21 @@ impl Engine<'_> {
             "Mai 1921. {} débarquent à Nantucket sur les traces du professeur Petersen.",
             names.join(", ")
         ));
+        engine.roll_starting_san();
         engine.run();
-        let log = engine.into_log();
-        (state, log)
+        let history = engine.into_history();
+        (state, history)
+    }
+
+    /// Each investigator rolls their starting SAN.
+    fn roll_starting_san(&mut self) {
+        for index in 0..self.state.investigators.len() {
+            let san = i32::from(self.dice.roll(STARTING_SAN_DICE)) + STARTING_SAN_BONUS;
+            let investigator = &mut self.state.investigators[index];
+            investigator.san = san;
+            let name = investigator.id.name();
+            self.reveal(format!("{name} commence avec {san} SAN."));
+        }
     }
 
     /// Asks the professor for his start and Nyog'Sothep's city.
@@ -86,6 +96,11 @@ impl Engine<'_> {
             location: start,
             counter: None,
         });
+        self.reveal(format!(
+            "Le professeur part en secret {} et écrit que Nyog'Sothep apparaîtra {}.",
+            start.at_phrase(),
+            nyog_city.at_phrase()
+        ));
         self.state.phase = Phase::ProfessorDraw {
             remaining: STARTING_DRAWS,
         };

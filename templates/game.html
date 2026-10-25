@@ -4,12 +4,18 @@
 {% block content %}
 {% include "board.html" %}
 
-<details class="panel floating floating-controls" open data-remember="controls">
-  <summary>{{ screen.title() }}{% if !view.is_finished() %} — tour {{ view.turn }}{% endif %}<a class="summary-link" href="/">Nouvelle partie</a></summary>
-  {% include "partials/banner.html" %}
-  {% if let Some(error) = error %}<p class="error panel">{{ error }}</p>{% endif %}
-  {% include "partials/screen.html" %}
-</details>
+<div class="floating-left">
+  <details class="panel floating floating-controls" open data-remember="controls">
+    <summary>{{ screen.title() }}{% if !view.is_finished() %} — tour {{ view.turn }}{% endif %}</summary>
+    {% include "partials/banner.html" %}
+    {% if let Some(error) = error %}<p class="error panel">{{ error }}</p>{% endif %}
+    {% include "partials/screen.html" %}
+  </details>
+  <nav class="panel floating-actions">
+    <a class="button" href="/">Nouvelle partie</a>
+    <a class="button" href="/rules" target="_blank">Règles</a>
+  </nav>
+</div>
 
 <div class="floating-column">
   <details class="panel floating-side" open data-remember="notebook">

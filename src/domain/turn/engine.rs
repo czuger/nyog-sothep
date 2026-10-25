@@ -2,12 +2,16 @@ use crate::domain::dice::Dice;
 use crate::domain::turn::answer_error::AnswerError;
 use crate::domain::turn::clue::{Clue, ClueKind};
 use crate::domain::turn::game_state::GameState;
+use crate::domain::turn::history::History;
 use crate::domain::turn::investigator_brain::InvestigatorBrain;
 use crate::domain::turn::log_line::LogLine;
 use crate::domain::turn::outcome::Outcome;
 use crate::domain::turn::phase::{ActionStep, Phase};
 use crate::domain::turn::professor_brain::ProfessorBrain;
 use crate::domain::turn::prompt::{Answer, Prompt};
+use crate::domain::turn::recorded_dice::RecordedDice;
+use crate::domain::turn::replay_board::ReplayBoard;
+use crate::domain::turn::replay_step::ReplayStep;
 
 /// The turn engine: plays the game forward until the human must decide or the game ends.
 ///
@@ -15,10 +19,13 @@ use crate::domain::turn::prompt::{Answer, Prompt};
 /// its brain, so the loop only pauses on a prompt for the human.
 pub struct Engine<'a> {
     pub(super) state: &'a mut GameState,
-    pub(super) dice: &'a mut dyn Dice,
+    pub(super) dice: RecordedDice<'a>,
     pub(super) professor: &'a mut dyn ProfessorBrain,
     pub(super) investigators: &'a mut dyn InvestigatorBrain,
-    log: Vec<LogLine>,
+    pub(super) log: Vec<LogLine>,
+    pub(super) replay: Vec<ReplayStep>,
+    /// The board of the last replay step (none before the first step of a new game).
+    pub(super) replayed_board: Option<ReplayBoard>,
 }
 
 impl<'a> Engine<'a> {
@@ -30,12 +37,15 @@ impl<'a> Engine<'a> {
         professor: &'a mut dyn ProfessorBrain,
         investigators: &'a mut dyn InvestigatorBrain,
     ) -> Engine<'a> {
+        let replayed_board = Some(ReplayBoard::of(state));
         Engine {
             state,
-            dice,
+            dice: RecordedDice::new(dice),
             professor,
             investigators,
             log: Vec::new(),
+            replay: Vec::new(),
+            replayed_board,
         }
     }
 
@@ -44,10 +54,19 @@ impl<'a> Engine<'a> {
         self.log
     }
 
+    /// The log lines and replay steps written so far.
+    pub fn into_history(self) -> History {
+        History {
+            log: self.log,
+            replay: self.replay,
+        }
+    }
+
     /// Advances the game until the human must answer a prompt or the game ends; the computer
     /// answers the prompts of its own side on the way.
     pub fn run(&mut self) {
         while !self.state.is_finished() {
+            self.amend_replay();
             if let Some(prompt) = self.state.prompt.clone() {
                 if prompt.side() == self.state.human || !self.play_computer(prompt) {
                     break;
@@ -69,6 +88,7 @@ impl<'a> Engine<'a> {
                 Phase::Finished => break,
             }
         }
+        self.settle_replay();
     }
 
     /// Applies the human's answer to the pending prompt, then runs the game forward.
@@ -126,14 +146,6 @@ impl<'a> Engine<'a> {
             _ => return Err(AnswerError::Unexpected),
         }
         Ok(())
-    }
-
-    /// Writes a public log line for the current turn.
-    pub(super) fn log(&mut self, text: impl Into<String>) {
-        self.log.push(LogLine {
-            turn: self.state.turn,
-            text: text.into(),
-        });
     }
 
     /// Notes a clue in the investigators' notebook.

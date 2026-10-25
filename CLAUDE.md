@@ -28,7 +28,7 @@ cargo fmt
 ## Architecture
 
 Stack: axum (HTTP), askama (server-rendered HTML in `templates/`), sqlx on SQLite. No front-end build:
-`static/style.css` and `static/board.js`, images served from `img/`.
+`static/style.css`, `static/board.js` and `static/replay.js`, images served from `img/`.
 
 Layers, from the inside out:
 
@@ -57,9 +57,15 @@ Layers, from the inside out:
     computer's answers go through the same checks as the human's; a refused one is replaced by a legal
     fallback. Every refused answer leaves the state unchanged (`AnswerError`, French texts); the engine answers
     factual questions itself and checks the cities the professor names, so he cannot lie. Log lines (`LogLine`,
-    French) never reveal his secrets. The engine is split by topic (`professor_turn`, `professor_counters`,
+    French) never reveal his secrets. The engine also records the replay (`replay.rs`): every log line is a
+    `ReplayStep` too, with the dice rolled since the previous step (`RecordedDice` wraps the dice) and the
+    `ReplayBoard` (every token, secrets included) when it changed; `reveal` adds a step only the replay shows
+    (the professor's setup, placements, Table 1 draws, discards) and `log_revealing` shows the replay the secret
+    a log line hides (his secret move or retreat). Changes made after a step's text (an event's effects) are
+    amended into that step between two iterations of `run`. `Engine::into_history` returns both as a `History`.
+    The engine is split by topic (`professor_turn`, `professor_counters`,
     `professor_answers`, `computer_players`, `nyog_turn`, `moves`, `action_phase`, `fights`, `questions`,
-    `sanity`, `setup`); `engine_tests.rs` plays whole rounds with scripted dice and a scripted professor, from
+    `sanity`, `setup`, `replay`); `engine_tests.rs` plays whole rounds with scripted dice and a scripted professor, from
     either side.
   - `ProfessorBelief` rebuilds from the notebook the set of locations where the investigators can still place
     the professor (one move per turn, three with the Flying Horror, narrowed by each clue); both AIs read it.
@@ -77,11 +83,12 @@ Layers, from the inside out:
     chosen by the expected worth of their rows, and once Nyog'Sothep is out the spell holders with a sign gather
     while the others keep away from it. `tests/simulation.rs` plays 150 games of `PetersenAi` against it,
     checking every answer of the professor's AI, and checks that playing either side from outside the engine
-    plays the same games.
+    plays the same games, and that the replay follows each game to its final board.
 - **`src/db/`**: one record type per table (`GameRecord`, `ProfessorRecord`, `InvestigatorRecord`,
-  `CounterRecord`, `RouteStageRecord`, `DestroyedCityRecord`, `ClueRecord`, `EventRecord`), with async functions
-  taking `&mut SqliteConnection`; `game_store::load_state`/`save_state` rebuild and write a whole `GameState`
-  (`games.version` is bumped on every save; the phase, prompt and clues are stored as JSON). Queries use runtime
+  `CounterRecord`, `RouteStageRecord`, `DestroyedCityRecord`, `ClueRecord`, `EventRecord`, `ReplayStepRecord`),
+  with async functions taking `&mut SqliteConnection`; `game_store::load_state`/`save_state` rebuild and write a
+  whole `GameState` (`games.version` is bumped on every save; the phase, prompt and clues are stored as JSON) and
+  `append_history` appends an engine's log and replay steps (`replay_steps`, board as JSON, NULL when unchanged). Queries use runtime
   `sqlx::query`/`query_as` (no `DATABASE_URL` at build time). `db::connect` runs `migrations/` (embedded with
   `sqlx::migrate!`); schema changes go in a new migration file, never by editing an applied one. A partial unique
   index enforces one placed counter per city.
@@ -89,13 +96,15 @@ Layers, from the inside out:
   a private token, runs the game until the human's first prompt (the first moves, or the professor's setup) and
   stores everything (`games.human_side`). `answer_prompt` opens `begin_write` (`BEGIN IMMEDIATE`), loads the
   state, runs the engine with real dice, `PetersenAi` and `InvestigatorsAi`, saves the state and appends the
-  log. `GameView` is the human's view of a game. Leading the investigators, it never holds the professor's
+  log and the replay steps. `GameView` is the human's view of a game. Leading the investigators, it never holds the professor's
   position (only the last sighting), hand, hidden counters, route sheet or Nyog'Sothep's city while they are
   secret; playing the professor, it holds all of them (`CounterView::hidden` marks the counters the
   investigators have not found). At the end it reveals the route sheet, every counter and the scores.
   `TokenTilts` gives every token a random tilt of up to 5° either way (table `token_tilts`), drawn again by
-  `refresh_tilts` after each save only for the tokens that moved.
-- **`src/web/`**: `router.rs` lists the routes (`/`, `POST /games` with the `side` field, `/games/{id}/{token}`
+  `refresh_tilts` after each save only for the tokens that moved. `ReplayView` holds the replay steps of a
+  finished game (`AppError::GameNotOver` before the end), from the first one with a board.
+- **`src/web/`**: `router.rs` lists the routes (`/`, `POST /games` with the `side` field, `/rules` (the scanned French
+  rules, `img/rules-*.jpg`), `/games/{id}/{token}`, `/games/{id}/{token}/replay` (`replay_handlers.rs`)
   and one `POST` per kind of answer: the investigators' `moves`, `table`, `cities`, `play-again`, `fight`,
   `banishment` in `answer_handlers.rs`, the professor's `setup`, `teleport`, `move`, `attack`, `location`
   (carry, retreat, Nyog'Sothep's step), `summon`, `place`, `counter` (Table 1, discard), `name` in
@@ -106,12 +115,15 @@ Layers, from the inside out:
   (professor's hit points and position; for the professor, also his hand and summoning progress; the
   investigators with SAN, items, spell and lasting effects) and the screen of the pending prompt (`Screen::of`,
   `templates/screens/*.html`, the professor's in `professor_*.html` with their choices in
-  `professor_screens.rs`), on the right the notebook, the professor's route sheet and the log. Moves are made in
+  `professor_screens.rs`), with below it the « Nouvelle partie » and « Règles » buttons, on the right the notebook, the professor's route sheet and the log. Moves are made in
   selects (`move_{index}` for the investigators, `destination` for the professor), which `board.js` also fills
   when the player clicks a token and then a highlighted destination (it draws an arrow per move). Locations are
   picked by ticking inputs drawn on the map (`name="city"`, joined to `#screen-form` with the `form` attribute),
   only on the locations the prompt allows. `board.js` scales the board to the width left between the
-  panels and remembers which panels are open.
+  panels and remembers which panels are open. `ReplayPage` (`templates/replay.html`, linked from the end screen)
+  draws the bare map (`BoardView::bare`) and embeds the steps as JSON with the French names; `replay.js` plays
+  them every half second (play/pause, step, scrub, journal), laying out the tokens as `BoardView` does and
+  sliding them to their new location.
 
 `img/board.jpg` (2242×2732) is `work/board/map.png`; the counters are `img/token-<kind>.png` (counter codes),
 `img/token-investigator-<code>.png` and a few others, all cut from the same photo (see `work/board/README.md`).

@@ -5,11 +5,13 @@ use sqlx::SqliteConnection;
 use crate::db::clue_record::ClueRecord;
 use crate::db::counter_record::CounterRecord;
 use crate::db::destroyed_city_record::DestroyedCityRecord;
+use crate::db::event_record::EventRecord;
 use crate::db::game_record::GameRecord;
 use crate::db::investigator_record::InvestigatorRecord;
 use crate::db::professor_record::ProfessorRecord;
+use crate::db::replay_step_record::ReplayStepRecord;
 use crate::db::route_stage_record::RouteStageRecord;
-use crate::domain::turn::GameState;
+use crate::domain::turn::{GameState, History};
 use crate::error::AppError;
 
 /// Rebuilds the state of a game from its rows.
@@ -49,6 +51,16 @@ pub async fn save_state(
     RouteStageRecord::append_new(connection, game.id, &state.route_sheet).await?;
     ClueRecord::append_new(connection, game.id, &state.clues).await?;
     Ok(())
+}
+
+/// Appends what an engine wrote to the game's log and replay.
+pub async fn append_history(
+    connection: &mut SqliteConnection,
+    game_id: i64,
+    history: &History,
+) -> Result<(), AppError> {
+    EventRecord::insert_all(connection, game_id, &history.log).await?;
+    ReplayStepRecord::insert_all(connection, game_id, &history.replay).await
 }
 
 #[cfg(test)]

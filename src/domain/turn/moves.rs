@@ -1,3 +1,4 @@
+use crate::domain::dice::Dice;
 use crate::domain::location_id::LocationId;
 use crate::domain::travel;
 use crate::domain::turn::answer_error::AnswerError;

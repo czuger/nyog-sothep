@@ -38,9 +38,13 @@ impl Engine<'_> {
         let picked = picked.map(|kind| pick(options, kind)).transpose()?;
         self.state.prompt = None;
         if let Some(kind) = picked {
-            self.state
-                .counters
-                .place(kind, self.state.professor.location);
+            let at = self.state.professor.location;
+            self.state.counters.place(kind, at);
+            self.reveal(format!(
+                "Le professeur place {} {}.",
+                kind.with_article(),
+                at.at_phrase()
+            ));
         }
         self.write_stage(picked);
         Ok(())
@@ -75,7 +79,7 @@ impl Engine<'_> {
             return;
         };
         self.state.phase = Phase::ProfessorDraw { remaining: left };
-        let Some(options) = table1::roll(&self.state.counters, self.dice) else {
+        let Some(options) = table1::roll(&self.state.counters, &mut self.dice) else {
             return;
         };
         match options.as_slice() {
@@ -101,6 +105,10 @@ impl Engine<'_> {
     /// Draws a counter; with six in hand, the professor must discard one.
     fn take_counter(&mut self, kind: CounterKind) {
         self.state.counters.draw(kind);
+        self.reveal(format!(
+            "Le professeur tire un pion de la table 1 : {}.",
+            kind.name()
+        ));
         let hand = self.state.counters.hand();
         if hand.len() > HAND_LIMIT {
             self.ask(
@@ -118,6 +126,10 @@ impl Engine<'_> {
         let kind = pick(hand, picked)?;
         self.state.prompt = None;
         self.state.counters.discard(kind);
+        self.reveal(format!(
+            "Le professeur se défausse d'un pion : {}.",
+            kind.name()
+        ));
         Ok(())
     }
 }

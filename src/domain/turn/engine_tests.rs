@@ -93,6 +93,50 @@ fn a_new_game_waits_for_the_first_moves() {
 }
 
 #[test]
+fn the_replay_reveals_the_setup_and_the_dice() {
+    let mut brain = ScriptedProfessor::new(Worcester, Concord);
+    let mut dice = ScriptedDice::new(&[4; 12], 1);
+    let mut investigators = InvestigatorsAi::seeded(0);
+    let (state, history) = Engine::new_game(
+        &IDS,
+        Side::Investigators,
+        &mut dice,
+        &mut brain,
+        &mut investigators,
+    );
+    let first = &history.replay[0];
+    assert!(first.text.as_deref().unwrap().starts_with("Mai 1921."));
+    assert!(first.board.is_some());
+    let san = &history.replay[1];
+    assert_eq!(
+        san.text.as_deref(),
+        Some("Le docteur Armitage commence avec 15 SAN.")
+    );
+    assert_eq!(san.dice, vec![4, 4, 4]);
+    assert_eq!(san.board.as_ref().unwrap().investigators[0].san, 15);
+    let setup =
+        "Le professeur part en secret à Worcester et écrit que Nyog'Sothep apparaîtra à Concord.";
+    assert!(
+        history
+            .replay
+            .iter()
+            .any(|step| step.text.as_deref() == Some(setup))
+    );
+    assert!(
+        history
+            .log
+            .iter()
+            .all(|line| !line.text.contains("Worcester"))
+    );
+    let last = history
+        .replay
+        .iter()
+        .rev()
+        .find_map(|step| step.board.as_ref());
+    assert_eq!(last, Some(&ReplayBoard::of(&state)));
+}
+
+#[test]
 fn moves_are_checked_and_sea_skips_the_action_phase() {
     let mut brain = ScriptedProfessor::new(Worcester, Concord);
     let mut state = new_game(&mut brain);

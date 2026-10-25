@@ -32,6 +32,9 @@ pub enum AppError {
     /// No game has this id and token.
     #[error("Cette partie n'existe pas.")]
     GameNotFound,
+    /// The replay of a game is only shown once it is over.
+    #[error("Le rejeu n'est disponible qu'une fois la partie terminée.")]
+    GameNotOver,
     /// A form field could not be read.
     #[error("Choix invalide : {0}.")]
     InvalidForm(String),

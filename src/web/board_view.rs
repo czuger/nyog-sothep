@@ -69,19 +69,6 @@ impl BoardView {
     /// Lays out the visible tokens of a game on the map.
     pub fn of(view: &GameView, screen: Screen) -> BoardView {
         let (pick, pickable) = picks(view, screen);
-        let places = LocationId::ALL
-            .into_iter()
-            .map(|id| {
-                let info = location(id);
-                Place {
-                    code: id.code(),
-                    name: info.name,
-                    x: info.x,
-                    y: info.y,
-                    pick: pick.filter(|_| pickable.contains(&id)),
-                }
-            })
-            .collect();
         let mut tokens = Vec::new();
         for id in LocationId::ALL {
             tokens.extend(stack(view, id));
@@ -89,10 +76,37 @@ impl BoardView {
         BoardView {
             width: BOARD_WIDTH,
             height: BOARD_HEIGHT,
-            places,
+            places: places(pick, &pickable),
             tokens,
         }
     }
+
+    /// The map alone, for a page that draws the tokens itself (the replay).
+    pub fn bare() -> BoardView {
+        BoardView {
+            width: BOARD_WIDTH,
+            height: BOARD_HEIGHT,
+            places: places(None, &[]),
+            tokens: Vec::new(),
+        }
+    }
+}
+
+/// Every location, with `pick` drawn on the pickable ones.
+fn places(pick: Option<&'static str>, pickable: &[LocationId]) -> Vec<Place> {
+    LocationId::ALL
+        .into_iter()
+        .map(|id| {
+            let info = location(id);
+            Place {
+                code: id.code(),
+                name: info.name,
+                x: info.x,
+                y: info.y,
+                pick: pick.filter(|_| pickable.contains(&id)),
+            }
+        })
+        .collect()
 }
 
 /// The input drawn on the pickable locations of a screen, and those locations.

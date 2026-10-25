@@ -1,4 +1,5 @@
 use crate::domain::counter::{Counter, CounterPlace};
+use crate::domain::dice::Dice;
 use crate::domain::encounter::{self, CounterFate};
 use crate::domain::event_effect::EventEffect;
 use crate::domain::event_table::EventTable;
@@ -65,7 +66,7 @@ impl Engine<'_> {
         let outcome = encounter::resolve(
             counter.kind,
             &self.state.investigators[investigator],
-            self.dice,
+            &mut self.dice,
         );
         self.log(outcome.text.clone());
         let place = match outcome.fate {

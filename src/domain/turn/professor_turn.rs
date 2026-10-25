@@ -1,4 +1,5 @@
 use crate::domain::counter_kind::CounterKind;
+use crate::domain::dice::Dice;
 use crate::domain::location_id::LocationId;
 use crate::domain::travel::{self, Network};
 use crate::domain::turn::answer_error::AnswerError;
@@ -132,7 +133,7 @@ impl Engine<'_> {
         }
         let from = self.state.professor.location;
         self.state.professor.location = destination;
-        self.announce_move(destination);
+        self.announce_move(from, destination);
         if self.state.nyog.location == Some(destination) && self.state.nyog.is_summoned() {
             self.state.nyog.joined = true;
             self.log(format!(
@@ -147,8 +148,12 @@ impl Engine<'_> {
     }
 
     /// What the investigators learn of the professor's move.
-    fn announce_move(&mut self, destination: LocationId) {
+    fn announce_move(&mut self, from: LocationId, destination: LocationId) {
         let at = destination.at_phrase();
+        let revealed = match destination == from {
+            true => format!("Le professeur reste en secret {at}."),
+            false => format!("Le professeur se rend en secret {at}."),
+        };
         if self.state.nyog.is_summoned() {
             self.log(format!("Le professeur se rend {at}."));
             self.clue(ClueKind::Spotted { at: destination });
@@ -159,10 +164,10 @@ impl Engine<'_> {
             ));
             self.clue(ClueKind::Spotted { at: destination });
         } else if self.state.sea_announcements && destination.is_sea() {
-            self.log("Le professeur annonce qu'il se déplace en mer.");
+            self.log_revealing("Le professeur annonce qu'il se déplace en mer.", revealed);
             self.clue(ClueKind::AtSea);
         } else {
-            self.log("Le professeur se déplace en secret.");
+            self.log_revealing("Le professeur se déplace en secret.", revealed);
         }
     }
 

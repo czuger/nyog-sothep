@@ -82,7 +82,11 @@ async fn moves_are_offered_on_the_map_and_in_the_panel() {
     let (screen, html) = render(&secret_state()).await;
     assert_eq!(screen, Screen::Moves);
     assert!(html.contains(r#"data-mover="move_0""#));
-    assert!(html.contains("--tilt: ") && html.contains(r#"href="/">Nouvelle partie</a>"#));
+    assert!(
+        html.contains("--tilt: ")
+            && html.contains(r#"<a class="button" href="/">Nouvelle partie</a>"#)
+    );
+    assert!(html.contains(r#"<a class="button" href="/rules" target="_blank">Règles</a>"#));
     assert!(html.contains(r#"data-targets="nantucket_sound""#));
     assert!(html.contains(r#"<select name="move_3" data-move-select>"#));
     assert!(html.contains(r#"value="nantucket_sound">Embarquer : Nantucket Sound"#));
@@ -156,6 +160,7 @@ async fn the_end_reveals_everything() {
         "hidden counters are shown at the end"
     );
     assert!(html.contains("Classement des investigateurs"));
+    assert!(html.contains(r#"href="/games/1/secret-token/replay">Revoir la partie</a>"#));
 }
 
 #[tokio::test]

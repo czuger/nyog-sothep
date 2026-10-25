@@ -8,7 +8,10 @@ use tower_http::services::ServeDir;
 use tower_http::set_header::SetResponseHeaderLayer;
 
 use crate::web::app_state::AppState;
-use crate::web::{answer_handlers, game_handlers, lobby_handlers, professor_handlers};
+use crate::web::{
+    answer_handlers, game_handlers, lobby_handlers, professor_handlers, replay_handlers,
+    rules_handlers,
+};
 
 /// The private URL of a game.
 const GAME_PATH: &str = "/games/{game_id}/{token}";
@@ -21,7 +24,12 @@ pub fn build_router(state: AppState, asset_root: &Path) -> Router {
     Router::new()
         .route("/", get(lobby_handlers::show_lobby))
         .route("/games", post(lobby_handlers::create_game))
+        .route("/rules", get(rules_handlers::show_rules))
         .route(GAME_PATH, get(game_handlers::show_game))
+        .route(
+            &format!("{GAME_PATH}/replay"),
+            get(replay_handlers::show_replay),
+        )
         .merge(investigator_routes())
         .merge(professor_routes())
         .nest_service("/img", ServeDir::new(asset_root.join("img")))

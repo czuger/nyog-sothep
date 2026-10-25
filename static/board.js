@@ -21,7 +21,7 @@
     const viewportWidth = viewport.clientWidth;
     let left = 0;
     let right = viewportWidth;
-    document.querySelectorAll('.floating[open], .floating-column').forEach(function (panel) {
+    document.querySelectorAll('.floating-left, .floating-column').forEach(function (panel) {
       const rect = panel.getBoundingClientRect();
       if (rect.width === 0 || viewportWidth < 760) return;
       if (rect.left < viewportWidth / 2) left = Math.max(left, rect.right + gap);

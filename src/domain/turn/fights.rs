@@ -69,7 +69,7 @@ impl Engine<'_> {
     }
 
     fn resolve_fight(&mut self, investigator: usize, choice: FightChoice) {
-        let outcome = professor_fight::resolve(choice, self.dice);
+        let outcome = professor_fight::resolve(choice, &mut self.dice);
         let id = self.state.investigators[investigator].id;
         let name = id.name();
         match choice {
@@ -192,10 +192,12 @@ impl Engine<'_> {
         let from = self.state.professor.location;
         self.state.professor.location = destination;
         self.clue(ClueKind::Retreated { from });
-        self.log(match pushed_back {
+        let public = match pushed_back {
             true => "Le professeur est repoussé d'un cran.",
             false => "Le professeur bat en retraite d'un cran.",
-        });
+        };
+        let revealed = format!("{} Il se rend {}.", public, destination.at_phrase());
+        self.log_revealing(public, revealed);
         Ok(())
     }
 }
