@@ -15,10 +15,10 @@ use crate::domain::turn::*;
 use LocationId::*;
 
 const IDS: [InvestigatorId; 4] = [
-    InvestigatorId::Poirot,
-    InvestigatorId::Hercule,
-    InvestigatorId::Sandy,
-    InvestigatorId::Lemon,
+    InvestigatorId::Armitage,
+    InvestigatorId::Carter,
+    InvestigatorId::Barnes,
+    InvestigatorId::Walker,
 ];
 
 /// A game at the first movement prompt: SAN 15 each, five Fanatics in the professor's hand.
@@ -99,12 +99,12 @@ fn moves_are_checked_and_sea_skips_the_action_phase() {
     let partial = Answer::Moves(vec![(0, MoveOrder::Stay)]);
     assert_eq!(
         answer(&mut state, &mut brain, &[], partial),
-        Err(AnswerError::MissingMove("Hercule"))
+        Err(AnswerError::MissingMove("Randolph Carter"))
     );
     let illegal = Answer::Moves((0..4).map(|i| (i, MoveOrder::Go(Boston))).collect());
     assert_eq!(
         answer(&mut state, &mut brain, &[], illegal),
-        Err(AnswerError::IllegalMove("Mr Poirot"))
+        Err(AnswerError::IllegalMove("Le docteur Armitage"))
     );
     let sail = Answer::Moves((0..4).map(|i| (i, MoveOrder::Go(NantucketSound))).collect());
     answer(&mut state, &mut brain, &[], sail).unwrap();

@@ -33,10 +33,10 @@ pub(crate) fn test_state() -> crate::domain::turn::GameState {
             location: LocationId::Worcester,
         },
         investigators: [
-            InvestigatorId::Poirot,
-            InvestigatorId::Hercule,
-            InvestigatorId::Sandy,
-            InvestigatorId::Lemon,
+            InvestigatorId::Armitage,
+            InvestigatorId::Carter,
+            InvestigatorId::Barnes,
+            InvestigatorId::Walker,
         ]
         .into_iter()
         .map(|id| Investigator::new(id, 15))

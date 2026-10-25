@@ -241,7 +241,7 @@ mod tests {
     use crate::domain::investigator_id::InvestigatorId;
 
     fn investigator(weapon: bool, sign: bool, medallion: bool) -> Investigator {
-        let mut investigator = Investigator::new(InvestigatorId::Sandy, 12);
+        let mut investigator = Investigator::new(InvestigatorId::Barnes, 12);
         investigator.weapon = weapon;
         investigator.sign = sign;
         investigator.medallion = medallion;

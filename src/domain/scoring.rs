@@ -56,7 +56,7 @@ mod tests {
 
     #[test]
     fn scores_add_up() {
-        let mut investigator = Investigator::new(InvestigatorId::Lemon, 9);
+        let mut investigator = Investigator::new(InvestigatorId::Walker, 9);
         investigator.damage_dealt = 3;
         investigator.fanatics_killed = 1;
         investigator.banished = true;

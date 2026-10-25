@@ -63,10 +63,10 @@ mod tests {
     use crate::domain::{InvestigatorId, LocationId, RandomDice};
 
     const IDS: [InvestigatorId; 4] = [
-        InvestigatorId::Poirot,
-        InvestigatorId::Hastings,
-        InvestigatorId::Captain,
-        InvestigatorId::Lemon,
+        InvestigatorId::Armitage,
+        InvestigatorId::Malone,
+        InvestigatorId::Johansen,
+        InvestigatorId::Walker,
     ];
 
     /// Stores a new game and checks that it reads back unchanged.

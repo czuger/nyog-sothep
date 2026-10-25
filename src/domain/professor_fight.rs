@@ -84,7 +84,7 @@ mod tests {
 
     #[test]
     fn options_depend_on_the_items() {
-        let mut investigator = Investigator::new(InvestigatorId::Hastings, 10);
+        let mut investigator = Investigator::new(InvestigatorId::Malone, 10);
         assert_eq!(
             FightChoice::options(&investigator),
             vec![FightChoice::Unarmed]

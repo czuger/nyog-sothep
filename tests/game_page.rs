@@ -14,10 +14,10 @@ use nyog_sothep::service::GameView;
 use nyog_sothep::web::{GamePage, Screen};
 
 const IDS: [InvestigatorId; 4] = [
-    InvestigatorId::Poirot,
-    InvestigatorId::Hercule,
-    InvestigatorId::Sandy,
-    InvestigatorId::Lemon,
+    InvestigatorId::Armitage,
+    InvestigatorId::Carter,
+    InvestigatorId::Barnes,
+    InvestigatorId::Walker,
 ];
 
 /// A fresh game whose professor holds the Flying Horror and has hidden Ghouls in Lynn.
@@ -113,7 +113,7 @@ async fn each_prompt_has_its_screen() {
     state.prompt = Some(Prompt::Table { investigator: 1 });
     let (screen, html) = render(&state).await;
     assert_eq!(screen, Screen::Table);
-    assert!(html.contains(r#"name="table" value="3""#) && html.contains("Hercule"));
+    assert!(html.contains(r#"name="table" value="3""#) && html.contains("Randolph Carter"));
 
     state.prompt = Some(Prompt::Fight {
         investigator: 2,
