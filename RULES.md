@@ -454,6 +454,12 @@ Professor Petersen, or the other way round. Where the rules are silent or ambigu
   there by the shortest path. The spell is cast when it enters a city holding three spell holders, after their
   SAN loss for meeting it. On −1 the investigators choose the city where Nyog'Sothep goes; it destroys that city and
   waits there for the professor to join it again.
+- **Fanatics wiped out:** the investigators' goal includes killing the Fanatics. Before the summoning, once
+  fewer than five Fanatics counters remain in the game (those in the reserve, the professor's hand and on the
+  board count; killed ones are out for good), Nyog'Sothep can never be summoned and the investigators win.
+- **Destroyed cities:** an investigator who survives Nyog'Sothep in a city stays among its ruins and may leave
+  it, but cannot consult a psychoanalyst there. Investigators shut in by destroyed cities all around can then
+  no longer recover, and wear down under the Foul One's visits.
 - **Fewer than three investigators before the summoning:** the game goes on, but the summoning then wins at
   once since Nyog'Sothep can no longer be banished. The game is lost at once only when all four investigators
   are out (gone mad or dead).

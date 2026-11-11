@@ -43,11 +43,15 @@ impl Engine<'_> {
             self.action_step(investigator, ActionStep::Fight);
             return;
         }
-        if let Some(counter) = self.state.counters.placed_at(actor.location)
-            && !self.encounter(investigator, counter)
-        {
-            self.action_step(investigator, ActionStep::Fight);
-            return;
+        if let Some(counter) = self.state.counters.placed_at(actor.location) {
+            let event_allowed = self.encounter(investigator, counter);
+            if self.state.is_finished() {
+                return;
+            }
+            if !event_allowed {
+                self.action_step(investigator, ActionStep::Fight);
+                return;
+            }
         }
         if self.state.investigators[investigator].is_active() {
             self.ask(
@@ -93,6 +97,9 @@ impl Engine<'_> {
             actor.forbidden_city = Some(city);
         }
         self.change_san(investigator, -outcome.san_loss);
+        if outcome.kills_fanatics {
+            self.check_end();
+        }
         outcome.event_allowed
     }
 

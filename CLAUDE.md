@@ -20,7 +20,8 @@ It started as an unfinished Rails 5.2 application; the `rust_conversion` branch 
 cargo run                                     # serve on http://127.0.0.1:3000 (DATABASE_URL, BIND_ADDR, ASSET_ROOT, RUST_LOG)
 cargo test                                    # unit tests + tests/ (in-memory SQLite)
 cargo test --test game_flow <name>            # one integration test
-cargo test --test simulation -- --nocapture   # the professor's AI against the investigators' AI; SIMULATION_DEBUG=1 describes stalled games
+cargo test --test simulation -- --nocapture   # the professor's AI against the investigators' AI; SIMULATION_DEBUG=1 describes stalled games, SIMULATION_TRACE=<seed> prints a game's log
+cargo run --release --example tune_ai -- [rounds] [games]   # tunes both AIs' weights by self-play
 cargo clippy --all-targets -- -D warnings
 cargo fmt
 ```
@@ -68,22 +69,34 @@ Layers, from the inside out:
     `sanity`, `setup`, `replay`); `engine_tests.rs` plays whole rounds with scripted dice and a scripted professor, from
     either side.
   - `ProfessorBelief` rebuilds from the notebook the set of locations where the investigators can still place
-    the professor (one move per turn, three with the Flying Horror, narrowed by each clue); both AIs read it.
+    the professor (one move per turn, three with the Flying Horror, narrowed by each clue), and `weights` how
+    likely each one is from public facts (he avoids armed investigators and the sea, lingers near face-up
+    Fanatics); both AIs read it.
   - `professor_ai/`: `PetersenAi`, the computer's professor. It keeps no memory: each decision is computed from
     the state, and from `ProfessorBelief` to know how well hidden he is. It picks a central
-    appearance city with many roads, drops Fanatics in new cities away from armed investigators while staying
-    near that city, closes in once five Fanatics cities are in place, lays traps suited to the investigators near
-    them, attacks only the defenceless, teleports armed investigators away, bluffs with decoy cities that are far
-    from him but still believable, and hunts the investigators without a protective sign with Nyog'Sothep.
-    `pick_near_best` varies its moves.
+    appearance city with many roads, drops Fanatics in new cities that are safe (`fanatics_safety`: far from
+    every investigator, the armed most, and off busy crossroads) while staying near that city, closes in once
+    five Fanatics cities are in place, lays traps suited to the investigators near them, attacks only the
+    defenceless, teleports armed investigators away, bluffs with decoy cities that are far from him but still
+    believable, joins Nyog'Sothep at once after the summoning, and with it hunts the investigators on land, those
+    it can kill or drive mad and the spell holders first, never stepping onto three spell holders unless forced.
+    `pick_near_best` varies its moves. Its weights are a `ProfessorWeights` (`PetersenAi::with_weights`).
   - `investigator_ai/`: `InvestigatorsAi`, the computer's four investigators, stateless too, one file per
-    decision. Armed investigators hunt the professor across `ProfessorBelief` (its nearest cities when narrow,
-    its centre otherwise, spreading out), the unarmed drift the same way while drawing events away from known
-    counters, everyone rests at the psychoanalyst before their SAN gets too low to face Nyog'Sothep, tables are
-    chosen by the expected worth of their rows, and once Nyog'Sothep is out the spell holders with a sign gather
-    while the others keep away from it. `tests/simulation.rs` plays 150 games of `PetersenAi` against it,
-    checking every answer of the professor's AI, and checks that playing either side from outside the engine
-    plays the same games, and that the replay follows each game to its final board.
+    decision. Armed investigators share out the professor's likely positions (`Hunt`: the weighted belief now
+    and after his next move, each hunter covering what the previous ones leave) and walk into face-up Fanatics
+    to kill them, the more as the Fanatics left near five; the unarmed drift towards the belief while drawing
+    events away from known counters; everyone rests at the psychoanalyst before their SAN gets too low to face
+    Nyog'Sothep; tables are chosen by the expected worth of their rows, questions by the bits they would teach
+    about his position. Once Nyog'Sothep is out (`banishers`), the spell holders with a sign gather at the
+    city where three of them meet at the least cost (a tired one's steps cost more), resting first when the
+    Foul One would strike them all the way, the others keep away from it, everyone avoids being shut in by
+    ruins, and after a partial banishment it is sent back close to fit banishers, far away otherwise. Paths
+    (`paths`) avoid destroyed cities. Its weights are an `InvestigatorWeights`
+    (`InvestigatorsAi::with_weights`). `tests/simulation.rs` plays 150 games of `PetersenAi` against it,
+    checking every answer of the professor's AI and that almost every game ends, and checks that playing
+    either side from outside the engine plays the same games, and that the replay follows each game to its
+    final board. `examples/tune_ai.rs` hill-climbs both sides' weights by self-play on every core, keeping a
+    change only when it wins more by three standard errors.
 - **`src/db/`**: one record type per table (`GameRecord`, `ProfessorRecord`, `InvestigatorRecord`,
   `CounterRecord`, `RouteStageRecord`, `DestroyedCityRecord`, `ClueRecord`, `EventRecord`, `ReplayStepRecord`),
   with async functions taking `&mut SqliteConnection`; `game_store::load_state`/`save_state` rebuild and write a

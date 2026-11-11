@@ -163,6 +163,22 @@ fn moves_are_checked_and_sea_skips_the_action_phase() {
 }
 
 #[test]
+fn no_psychoanalyst_among_ruins() {
+    let mut brain = ScriptedProfessor::new(Worcester, Concord);
+    let mut state = new_game(&mut brain);
+    place(&mut state, &[Boston, Lynn]);
+    state.destroyed.push(Boston);
+    assert!(!MoveOptions::of(&state, 0, false).unwrap().psychoanalyst);
+    assert!(MoveOptions::of(&state, 1, false).unwrap().psychoanalyst);
+    let mut orders: Vec<(usize, MoveOrder)> = (0..4).map(|i| (i, MoveOrder::Stay)).collect();
+    orders[0].1 = MoveOrder::Psychoanalyst;
+    assert_eq!(
+        answer(&mut state, &mut brain, &[], Answer::Moves(orders)),
+        Err(AnswerError::IllegalMove("Le docteur Armitage"))
+    );
+}
+
+#[test]
 fn an_encounter_without_an_event() {
     let mut brain = ScriptedProfessor::new(Worcester, Concord);
     let mut state = new_game(&mut brain);
@@ -289,6 +305,25 @@ fn killing_the_professor_wins() {
         answer(&mut state, &mut brain, &[], everyone_stays()),
         Err(AnswerError::GameOver)
     );
+}
+
+#[test]
+fn killing_the_sixth_fanatics_wins() {
+    let mut brain = ScriptedProfessor::new(Worcester, Concord);
+    let mut state = new_game(&mut brain);
+    for _ in 0..5 {
+        assert!(state.counters.spend(CounterKind::Fanatics));
+    }
+    place(&mut state, &[Boston]);
+    state.investigators[0].weapon = true;
+    state.investigators[0].medallion = true;
+    put_counter(&mut state, CounterKind::Fanatics, Boston);
+    assert_eq!(state.counters.fanatics_in_play(), 5);
+    answer(&mut state, &mut brain, &[6], everyone_stays()).unwrap();
+    assert_eq!(state.counters.fanatics_in_play(), 4);
+    assert_eq!(state.outcome, Some(Outcome::FanaticsDestroyed));
+    assert_eq!(state.phase, Phase::Finished);
+    assert_eq!(state.prompt, None);
 }
 
 #[test]

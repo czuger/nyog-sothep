@@ -78,6 +78,16 @@ impl CounterPool {
         cities
     }
 
+    /// Fanatics counters still in the game: in the reserve, in the hand or on the board.
+    pub fn fanatics_in_play(&self) -> usize {
+        self.counters
+            .iter()
+            .filter(|counter| {
+                counter.kind == CounterKind::Fanatics && counter.place != CounterPlace::Removed
+            })
+            .count()
+    }
+
     /// Moves a counter of this kind from the reserve to the hand.
     ///
     /// # Returns

@@ -2,9 +2,10 @@
 //! outside the engine as the human would.
 //!
 //! Every answer of the professor's AI is checked for legality, the side played from outside
-//! must never see an answer refused, every game must end without error, and the results are
-//! printed (`cargo test --test simulation -- --nocapture`) to tune the balance;
-//! `SIMULATION_DEBUG=1` also describes the games left unfinished.
+//! must never see an answer refused, every game must end without error, at most a few may reach
+//! the turn limit, and the results are printed (`cargo test --test simulation -- --nocapture`)
+//! to watch the balance; `SIMULATION_DEBUG=1` also describes the games left unfinished, and
+//! `SIMULATION_TRACE=<seed>` prints the end of that game's log.
 
 use nyog_sothep::domain::investigator_ai::InvestigatorsAi;
 use nyog_sothep::domain::professor_ai::PetersenAi;
@@ -17,6 +18,9 @@ use nyog_sothep::domain::{CounterKind, InvestigatorId, LocationId, RandomDice};
 const GAMES: u64 = 150;
 const SAME_GAME_SEEDS: u64 = 10;
 const TURN_LIMIT: u32 = 120;
+const TRACE_LINES: usize = 80;
+/// The share of games, in percent, allowed to reach the turn limit.
+const MAX_UNFINISHED_PERCENT: u64 = 3;
 
 /// The AI, with every answer checked against the options it was given.
 struct CheckedAi(PetersenAi);
@@ -114,7 +118,8 @@ impl ProfessorBrain for CheckedAi {
     }
 }
 
-/// Plays a game to its end (or the turn limit), with the replay steps written on the way.
+/// Plays a game to its end (or the turn limit), with the replay steps written on the way;
+/// `SIMULATION_TRACE=<seed>` prints the end of that game's log.
 fn play_recorded(seed: u64, human: Side) -> (GameState, Vec<ReplayStep>) {
     let mut dice = RandomDice::seeded(seed);
     let mut professor = CheckedAi(PetersenAi::seeded(seed));
@@ -124,6 +129,7 @@ fn play_recorded(seed: u64, human: Side) -> (GameState, Vec<ReplayStep>) {
     let (mut state, history) =
         Engine::new_game(&ids, human, &mut dice, &mut professor, &mut investigators);
     let mut replay = history.replay;
+    let mut log: Vec<String> = history.log.into_iter().map(|line| line.text).collect();
     while !state.is_finished() && state.turn <= TURN_LIMIT {
         let prompt = state
             .prompt
@@ -137,12 +143,19 @@ fn play_recorded(seed: u64, human: Side) -> (GameState, Vec<ReplayStep>) {
         engine
             .answer(answer.clone())
             .unwrap_or_else(|error| panic!("seed {seed}: {prompt:?} {answer:?}: {error}"));
-        replay.extend(engine.into_history().replay);
+        let history = engine.into_history();
+        replay.extend(history.replay);
+        log.extend(history.log.into_iter().map(|line| line.text));
+    }
+    if std::env::var("SIMULATION_TRACE").is_ok_and(|traced| traced == seed.to_string()) {
+        for line in &log[log.len().saturating_sub(TRACE_LINES)..] {
+            eprintln!("{line}");
+        }
     }
     (state, replay)
 }
 
-fn play(seed: u64, human: Side) -> (Option<Outcome>, u32) {
+fn play(seed: u64, human: Side) -> (Option<Outcome>, u32, i32) {
     let (state, _) = play_recorded(seed, human);
     if state.outcome.is_none() && std::env::var("SIMULATION_DEBUG").is_ok() {
         let removed = state
@@ -183,8 +196,19 @@ fn play(seed: u64, human: Side) -> (Option<Outcome>, u32) {
             state.nyog.location,
             state.nyog.joined,
         );
+        let trapped = state
+            .active_investigators()
+            .into_iter()
+            .filter(|index| {
+                let at = state.investigators[*index].location;
+                nyog_sothep::domain::travel::neighbours(at)
+                    .iter()
+                    .all(|next| next.is_city() && state.is_destroyed(*next))
+            })
+            .count();
+        eprintln!("seed {seed}: trapped investigators {trapped}");
     }
-    (state.outcome, state.turn)
+    (state.outcome, state.turn, state.professor.hp)
 }
 
 #[test]
@@ -226,28 +250,37 @@ fn the_replay_follows_the_whole_game() {
 }
 
 fn simulate(human: Side) {
-    let mut wins = [0u32; 4];
-    let mut unfinished = 0;
+    let mut wins = [0u32; 5];
+    let mut unfinished: u64 = 0;
     let mut turns = 0;
+    let mut hit_points: i32 = 0;
     for seed in 0..GAMES {
-        let (outcome, length) = play(seed, human);
+        let (outcome, length, hp) = play(seed, human);
         turns += length;
+        hit_points += hp;
         match outcome {
             Some(Outcome::ProfessorKilled) => wins[0] += 1,
             Some(Outcome::Banished) => wins[1] += 1,
             Some(Outcome::NyogSothepReigns) => wins[2] += 1,
             Some(Outcome::InvestigatorsLost) => wins[3] += 1,
+            Some(Outcome::FanaticsDestroyed) => wins[4] += 1,
             None => unfinished += 1,
         }
     }
     println!(
-        "{GAMES} games, {:.1} turns on average: professor killed {}, banished {}, Nyog'Sothep reigns {}, investigators lost {}, unfinished after {TURN_LIMIT} turns {}",
+        "{GAMES} games, {:.1} turns on average: professor killed {}, Fanatics destroyed {}, banished {}, Nyog'Sothep reigns {}, investigators lost {}, unfinished after {TURN_LIMIT} turns {}; the professor ends with {:.1} hit points on average",
         f64::from(turns) / GAMES as f64,
         wins[0],
+        wins[4],
         wins[1],
         wins[2],
         wins[3],
-        unfinished
+        unfinished,
+        f64::from(hit_points) / GAMES as f64
     );
     assert!(wins.iter().sum::<u32>() > 0);
+    assert!(
+        unfinished * 100 <= GAMES * MAX_UNFINISHED_PERCENT,
+        "{unfinished} games stalled"
+    );
 }

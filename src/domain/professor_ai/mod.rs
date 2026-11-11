@@ -2,17 +2,20 @@
 
 mod bluff;
 mod counter_values;
+mod fanatics_safety;
 mod fight_choices;
 mod movement_choice;
 mod near_best;
 mod nyog_choice;
 mod petersen_ai;
 mod placement_choice;
+mod professor_weights;
 mod setup_choice;
 mod threats;
 
 pub use near_best::pick_near_best;
 pub use petersen_ai::PetersenAi;
+pub use professor_weights::ProfessorWeights;
 
 #[cfg(test)]
 mod ai_tests;

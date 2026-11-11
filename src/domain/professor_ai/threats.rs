@@ -1,6 +1,7 @@
 //! How dangerous or useful the investigators make each location for the professor.
 
 use crate::domain::location_id::{LOCATION_COUNT, LocationId};
+use crate::domain::professor_ai::professor_weights::ProfessorWeights;
 use crate::domain::travel::{self, Network};
 use crate::domain::turn::GameState;
 
@@ -24,12 +25,17 @@ pub fn investigator_reach(state: &GameState) -> Reach {
 
 /// Risk of ending a turn in a location: an armed investigator there, or one move away, will
 /// shoot at the professor.
-pub fn danger(state: &GameState, location: LocationId) -> f64 {
-    danger_with(state, &investigator_reach(state), location)
+pub fn danger(state: &GameState, weights: &ProfessorWeights, location: LocationId) -> f64 {
+    danger_with(state, weights, &investigator_reach(state), location)
 }
 
 /// [`danger`] with the investigators' reach already computed.
-pub fn danger_with(state: &GameState, reach: &Reach, location: LocationId) -> f64 {
+pub fn danger_with(
+    state: &GameState,
+    weights: &ProfessorWeights,
+    reach: &Reach,
+    location: LocationId,
+) -> f64 {
     if location.is_sea() {
         return 0.0;
     }
@@ -37,9 +43,9 @@ pub fn danger_with(state: &GameState, reach: &Reach, location: LocationId) -> f6
         .iter()
         .filter(|(index, _)| state.investigators[*index].weapon)
         .map(|(_, reach)| match reach[location.index()] {
-            Some(0) => 30.0,
-            Some(1) => 20.0,
-            Some(2) => 4.0,
+            Some(0) => weights.danger_here,
+            Some(1) => weights.danger_next,
+            Some(2) => weights.danger_far,
             _ => 0.0,
         })
         .sum()

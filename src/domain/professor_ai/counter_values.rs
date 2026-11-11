@@ -1,13 +1,11 @@
 //! How much each counter is worth to the professor, for Table 1 choices and discards.
 
 use crate::domain::counter_kind::CounterKind;
+use crate::domain::professor_ai::professor_weights::ProfessorWeights;
 use crate::domain::turn::GameState;
 
-/// Fanatics cities the professor aims for, a little above the five needed in case some die.
-pub const FANATICS_TARGET: usize = 7;
-
 /// The worth of holding one more counter of this kind.
-pub fn counter_value(state: &GameState, kind: CounterKind) -> f64 {
+pub fn counter_value(state: &GameState, weights: &ProfessorWeights, kind: CounterKind) -> f64 {
     match kind {
         CounterKind::Fanatics => {
             let placed = state.counters.fanatics_cities().len();
@@ -17,7 +15,7 @@ pub fn counter_value(state: &GameState, kind: CounterKind) -> f64 {
                 .into_iter()
                 .filter(|held| *held == CounterKind::Fanatics)
                 .count();
-            if placed + held < FANATICS_TARGET {
+            if ((placed + held) as f64) < weights.fanatics_target {
                 10.0
             } else {
                 3.0
@@ -39,22 +37,33 @@ pub fn counter_value(state: &GameState, kind: CounterKind) -> f64 {
 }
 
 /// The better of the two counters a Table 1 roll offers.
-pub fn choose_table1(state: &GameState, options: &[CounterKind]) -> CounterKind {
-    best_by(state, options, f64::total_cmp).unwrap_or(CounterKind::Fanatics)
+pub fn choose_table1(
+    state: &GameState,
+    weights: &ProfessorWeights,
+    options: &[CounterKind],
+) -> CounterKind {
+    best_by(state, weights, options, f64::total_cmp).unwrap_or(CounterKind::Fanatics)
 }
 
 /// The least useful counter of the hand.
-pub fn choose_discard(state: &GameState, hand: &[CounterKind]) -> CounterKind {
-    best_by(state, hand, |a, b| b.total_cmp(a)).unwrap_or(CounterKind::Dreams)
+pub fn choose_discard(
+    state: &GameState,
+    weights: &ProfessorWeights,
+    hand: &[CounterKind],
+) -> CounterKind {
+    best_by(state, weights, hand, |a, b| b.total_cmp(a)).unwrap_or(CounterKind::Dreams)
 }
 
 fn best_by(
     state: &GameState,
+    weights: &ProfessorWeights,
     kinds: &[CounterKind],
     order: impl Fn(&f64, &f64) -> std::cmp::Ordering,
 ) -> Option<CounterKind> {
-    kinds
-        .iter()
-        .copied()
-        .max_by(|a, b| order(&counter_value(state, *a), &counter_value(state, *b)))
+    kinds.iter().copied().max_by(|a, b| {
+        order(
+            &counter_value(state, weights, *a),
+            &counter_value(state, weights, *b),
+        )
+    })
 }

@@ -173,13 +173,18 @@ impl<'a> Engine<'a> {
         self.log(outcome.text(self.state.human));
     }
 
-    /// Ends the game when too few investigators remain.
+    /// Ends the game when too few investigators remain, or too few Fanatics to summon.
     pub(super) fn check_end(&mut self) {
         let active = self.state.active_investigators().len();
+        let summoned = self.state.nyog.is_summoned();
         if active == 0 {
             self.finish(Outcome::InvestigatorsLost);
-        } else if self.state.nyog.is_summoned() && active < crate::domain::BANISHERS_NEEDED {
+        } else if summoned && active < crate::domain::BANISHERS_NEEDED {
             self.finish(Outcome::NyogSothepReigns);
+        } else if !summoned
+            && self.state.counters.fanatics_in_play() < crate::domain::SUMMONING_FANATICS_CITIES
+        {
+            self.finish(Outcome::FanaticsDestroyed);
         }
     }
 

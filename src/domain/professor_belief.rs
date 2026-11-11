@@ -6,6 +6,14 @@ use crate::domain::turn::{ClueKind, GameState};
 const FLYING_HORROR_RANGE: u8 = 3;
 /// The farthest a teleported investigator stood from the professor.
 const TELEPORT_RANGE: u8 = 2;
+/// How much less likely a location is when an armed investigator can strike it at once.
+const ARMED_NEAR_FACTOR: f64 = 0.3;
+/// How much less likely the sea is: he loses time there.
+const SEA_FACTOR: f64 = 0.5;
+/// How much more likely a location is close to Fanatics he has left.
+const FANATICS_NEAR_FACTOR: f64 = 1.5;
+/// Steps from a face-up Fanatics city that still count as close.
+const FANATICS_RANGE: u8 = 2;
 
 /// The locations where the investigators can still place the professor, given their notebook.
 ///
@@ -69,6 +77,40 @@ impl ProfessorBelief {
             .collect()
     }
 
+    /// How likely each location is, summing to 1, from what the investigators can see: he keeps
+    /// away from armed investigators and from the sea, and lingers near the Fanatics he left.
+    pub fn weights(&self, state: &GameState) -> [f64; LOCATION_COUNT] {
+        let armed: Vec<LocationId> = state
+            .active_investigators()
+            .into_iter()
+            .map(|index| &state.investigators[index])
+            .filter(|investigator| investigator.weapon)
+            .map(|investigator| investigator.location)
+            .collect();
+        let fanatics = state.counters.fanatics_cities();
+        let mut weights = [0.0; LOCATION_COUNT];
+        for location in self.locations() {
+            let near = |places: &[LocationId], range: u8| {
+                places.iter().any(|at| {
+                    travel::distance(*at, location, Network::All, |_| true)
+                        .is_some_and(|steps| steps <= range)
+                })
+            };
+            let mut weight = 1.0;
+            if near(&armed, 1) {
+                weight *= ARMED_NEAR_FACTOR;
+            }
+            if location.is_sea() {
+                weight *= SEA_FACTOR;
+            }
+            if near(&fanatics, FANATICS_RANGE) {
+                weight *= FANATICS_NEAR_FACTOR;
+            }
+            weights[location.index()] = weight;
+        }
+        normalized(weights)
+    }
+
     fn expand(&mut self, range: u8) {
         let mut grown = self.possible;
         for from in self.locations() {
@@ -123,6 +165,17 @@ impl ProfessorBelief {
             _ => {}
         }
     }
+}
+
+/// Scales weights so that they sum to 1 (all zero stays all zero).
+pub fn normalized(mut weights: [f64; LOCATION_COUNT]) -> [f64; LOCATION_COUNT] {
+    let total: f64 = weights.iter().sum();
+    if total > 0.0 {
+        for weight in &mut weights {
+            *weight /= total;
+        }
+    }
+    weights
 }
 
 #[cfg(test)]
@@ -181,6 +234,17 @@ mod tests {
         let belief = ProfessorBelief::of(&with_clues(2, clues));
         assert!(belief.contains(Concord) && belief.contains(Lawrence));
         assert!(!belief.contains(Worcester));
+    }
+
+    #[test]
+    fn weights_shy_away_from_armed_investigators() {
+        let mut state = with_clues(2, vec![(1, ClueKind::Spotted { at: Nashua })]);
+        state.investigators[0].weapon = true;
+        state.investigators[0].location = Lawrence;
+        let weights = ProfessorBelief::of(&state).weights(&state);
+        assert!((weights.iter().sum::<f64>() - 1.0).abs() < 1e-9);
+        assert!(weights[Dunwich.index()] > weights[Lowell.index()]);
+        assert_eq!(weights[Worcester.index()], 0.0);
     }
 
     #[test]

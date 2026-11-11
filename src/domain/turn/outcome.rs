@@ -13,12 +13,18 @@ pub enum Outcome {
     NyogSothepReigns,
     /// Every investigator went mad or died.
     InvestigatorsLost,
+    /// Before the summoning, the investigators killed so many Fanatics that fewer than five
+    /// counters remain: Nyog'Sothep can never be summoned.
+    FanaticsDestroyed,
 }
 
 impl Outcome {
     /// Whether the human (the investigators) won.
     pub fn investigators_win(self) -> bool {
-        matches!(self, Outcome::ProfessorKilled | Outcome::Banished)
+        matches!(
+            self,
+            Outcome::ProfessorKilled | Outcome::Banished | Outcome::FanaticsDestroyed
+        )
     }
 
     /// Whether the given side won.
@@ -48,6 +54,9 @@ impl Outcome {
             Outcome::InvestigatorsLost => {
                 "Victoire ! Tous les investigateurs ont perdu la raison ou la vie."
             }
+            Outcome::FanaticsDestroyed => {
+                "Défaite… Les investigateurs ont exterminé tant de Fanatiques que Nyog'Sothep ne pourra jamais être invoqué."
+            }
         }
     }
 
@@ -65,6 +74,9 @@ impl Outcome {
             Outcome::InvestigatorsLost => {
                 "Défaite… Tous les investigateurs ont perdu la raison ou la vie."
             }
+            Outcome::FanaticsDestroyed => {
+                "Victoire ! Les investigateurs ont exterminé tant de Fanatiques que Nyog'Sothep ne pourra jamais être invoqué."
+            }
         }
     }
 
@@ -75,6 +87,7 @@ impl Outcome {
             Outcome::Banished,
             Outcome::NyogSothepReigns,
             Outcome::InvestigatorsLost,
+            Outcome::FanaticsDestroyed,
         ]
         .into_iter()
         .find(|outcome| outcome.code() == code)
@@ -87,6 +100,7 @@ impl Outcome {
             Outcome::Banished => "banished",
             Outcome::NyogSothepReigns => "nyog_sothep_reigns",
             Outcome::InvestigatorsLost => "investigators_lost",
+            Outcome::FanaticsDestroyed => "fanatics_destroyed",
         }
     }
 }

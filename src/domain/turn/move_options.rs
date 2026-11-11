@@ -33,7 +33,10 @@ impl MoveOptions {
             .filter(|to| !mover.car_broken || to.is_sea())
             .collect();
         Some(MoveOptions {
-            psychoanalyst: !replay && from.is_city() && !mover.car_broken,
+            psychoanalyst: !replay
+                && from.is_city()
+                && !state.is_destroyed(from)
+                && !mover.car_broken,
             destinations,
         })
     }

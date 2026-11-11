@@ -11,6 +11,7 @@ use crate::domain::professor_ai::fight_choices::{
 use crate::domain::professor_ai::movement_choice::choose_movement;
 use crate::domain::professor_ai::nyog_choice::choose_nyog_step;
 use crate::domain::professor_ai::placement_choice::choose_placement;
+use crate::domain::professor_ai::professor_weights::ProfessorWeights;
 use crate::domain::professor_ai::setup_choice::choose_setup;
 use crate::domain::turn::{
     GameState, ProfessorBrain, ProfessorMove, ProfessorMoveOptions, Teleport,
@@ -23,6 +24,7 @@ use crate::domain::turn::{
 /// near-best options.
 pub struct PetersenAi {
     rng: StdRng,
+    weights: ProfessorWeights,
 }
 
 impl PetersenAi {
@@ -30,6 +32,7 @@ impl PetersenAi {
     pub fn new() -> PetersenAi {
         PetersenAi {
             rng: rand::make_rng(),
+            weights: ProfessorWeights::default(),
         }
     }
 
@@ -37,7 +40,13 @@ impl PetersenAi {
     pub fn seeded(seed: u64) -> PetersenAi {
         PetersenAi {
             rng: StdRng::seed_from_u64(seed),
+            weights: ProfessorWeights::default(),
         }
+    }
+
+    /// The same AI scoring its choices with other weights.
+    pub fn with_weights(self, weights: ProfessorWeights) -> PetersenAi {
+        PetersenAi { weights, ..self }
     }
 }
 
@@ -57,7 +66,7 @@ impl ProfessorBrain for PetersenAi {
     }
 
     fn movement(&mut self, state: &GameState, options: &ProfessorMoveOptions) -> ProfessorMove {
-        choose_movement(state, options, &mut self.rng)
+        choose_movement(state, &self.weights, options, &mut self.rng)
     }
 
     fn attack(&mut self, state: &GameState, candidates: &[usize], forced: bool) -> Option<usize> {
@@ -65,7 +74,7 @@ impl ProfessorBrain for PetersenAi {
     }
 
     fn relocate(&mut self, state: &GameState, options: &[LocationId]) -> LocationId {
-        choose_relocation(state, options)
+        choose_relocation(state, &self.weights, options)
     }
 
     fn carry(&mut self, state: &GameState, _: usize, options: &[LocationId]) -> LocationId {
@@ -73,15 +82,15 @@ impl ProfessorBrain for PetersenAi {
     }
 
     fn placement(&mut self, state: &GameState, options: &[CounterKind]) -> Option<CounterKind> {
-        choose_placement(state, options)
+        choose_placement(state, &self.weights, options)
     }
 
     fn table1_choice(&mut self, state: &GameState, options: &[CounterKind]) -> CounterKind {
-        choose_table1(state, options)
+        choose_table1(state, &self.weights, options)
     }
 
     fn discard(&mut self, state: &GameState, hand: &[CounterKind]) -> CounterKind {
-        choose_discard(state, hand)
+        choose_discard(state, &self.weights, hand)
     }
 
     fn summon(&mut self, _: &GameState) -> bool {
@@ -89,7 +98,7 @@ impl ProfessorBrain for PetersenAi {
     }
 
     fn nyog_step(&mut self, state: &GameState, options: &[LocationId]) -> LocationId {
-        choose_nyog_step(state, options)
+        choose_nyog_step(state, &self.weights, options)
     }
 
     fn name_cities(&mut self, state: &GameState, count: usize) -> Vec<LocationId> {

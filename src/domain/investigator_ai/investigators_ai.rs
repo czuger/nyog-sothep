@@ -3,6 +3,7 @@ use rand::rngs::StdRng;
 
 use crate::domain::investigator_ai::banishment_choice::choose_banishment_city;
 use crate::domain::investigator_ai::fight_preference::choose_fight;
+use crate::domain::investigator_ai::investigator_weights::InvestigatorWeights;
 use crate::domain::investigator_ai::move_choice::{choose_moves, choose_replay};
 use crate::domain::investigator_ai::question_choice::choose_cities;
 use crate::domain::investigator_ai::table_choice::choose_table;
@@ -14,6 +15,7 @@ use crate::domain::turn::{Answer, GameState, InvestigatorBrain, Prompt};
 /// know, and its random generator only varies the choice among near-best options.
 pub struct InvestigatorsAi {
     rng: StdRng,
+    weights: InvestigatorWeights,
 }
 
 impl InvestigatorsAi {
@@ -21,6 +23,7 @@ impl InvestigatorsAi {
     pub fn new() -> InvestigatorsAi {
         InvestigatorsAi {
             rng: rand::make_rng(),
+            weights: InvestigatorWeights::default(),
         }
     }
 
@@ -28,7 +31,13 @@ impl InvestigatorsAi {
     pub fn seeded(seed: u64) -> InvestigatorsAi {
         InvestigatorsAi {
             rng: StdRng::seed_from_u64(seed),
+            weights: InvestigatorWeights::default(),
         }
+    }
+
+    /// The same AI scoring its choices with other weights.
+    pub fn with_weights(self, weights: InvestigatorWeights) -> InvestigatorsAi {
+        InvestigatorsAi { weights, ..self }
     }
 }
 
@@ -41,11 +50,16 @@ impl Default for InvestigatorsAi {
 impl InvestigatorBrain for InvestigatorsAi {
     fn answer(&mut self, state: &GameState, prompt: &Prompt) -> Answer {
         match prompt {
-            Prompt::Moves => Answer::Moves(choose_moves(state, &mut self.rng)),
-            Prompt::PlayAgain { investigator } => {
-                Answer::PlayAgain(choose_replay(state, *investigator, &mut self.rng))
+            Prompt::Moves => Answer::Moves(choose_moves(state, &self.weights, &mut self.rng)),
+            Prompt::PlayAgain { investigator } => Answer::PlayAgain(choose_replay(
+                state,
+                &self.weights,
+                *investigator,
+                &mut self.rng,
+            )),
+            Prompt::Table { investigator } => {
+                Answer::Table(choose_table(state, &self.weights, *investigator))
             }
-            Prompt::Table { investigator } => Answer::Table(choose_table(state, *investigator)),
             Prompt::Cities {
                 investigator,
                 question,
@@ -59,7 +73,7 @@ impl InvestigatorBrain for InvestigatorsAi {
             // The engine never asks the investigators the professor's prompts; an empty
             // answer is refused and replaced by a legal one.
             Prompt::BanishmentCity | Prompt::Professor(_) => {
-                Answer::BanishmentCity(choose_banishment_city(state))
+                Answer::BanishmentCity(choose_banishment_city(state, &self.weights))
             }
         }
     }

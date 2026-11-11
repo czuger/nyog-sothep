@@ -3,6 +3,7 @@
 use crate::domain::counter::CounterPlace;
 use crate::domain::counter_kind::CounterKind;
 use crate::domain::location_id::LocationId;
+use crate::domain::professor_ai::professor_weights::ProfessorWeights;
 use crate::domain::professor_ai::threats::{danger, nearest_investigator};
 use crate::domain::travel::{self, Network};
 use crate::domain::turn::{GameState, Teleport};
@@ -44,11 +45,15 @@ fn victim_score(state: &GameState, index: usize) -> f64 {
 }
 
 /// Picks where to retreat or be pushed: away from armed investigators, preferably on land.
-pub fn choose_relocation(state: &GameState, options: &[LocationId]) -> LocationId {
+pub fn choose_relocation(
+    state: &GameState,
+    weights: &ProfessorWeights,
+    options: &[LocationId],
+) -> LocationId {
     best_of(options, |location| {
         let sea = if location.is_sea() { 2.0 } else { 0.0 };
         let distance = f64::from(nearest_investigator(state, location).unwrap_or(6).min(6));
-        distance - danger(state, location) - sea
+        distance - danger(state, weights, location) - sea
     })
     .unwrap_or(state.professor.location)
 }
