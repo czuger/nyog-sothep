@@ -10,6 +10,7 @@ use crate::error::AppError;
 use crate::service::{GameView, answer_prompt};
 use crate::web::app_state::AppState;
 use crate::web::game_page::GamePage;
+use crate::web::relative_root::RelativeRoot;
 
 /// A submitted form, as its name/value pairs (city lists repeat the same name).
 pub type Fields = Vec<(String, String)>;
@@ -19,6 +20,7 @@ pub async fn respond(
     state: &AppState,
     game_id: i64,
     token: &str,
+    root: &RelativeRoot,
     answer: Result<Answer, AppError>,
 ) -> Result<Response, AppError> {
     let result = match answer {
@@ -26,10 +28,10 @@ pub async fn respond(
         Err(error) => Err(error),
     };
     match result {
-        Ok(()) => Ok(Redirect::to(&format!("/games/{game_id}/{token}")).into_response()),
+        Ok(()) => Ok(Redirect::to(&format!("{root}games/{game_id}/{token}")).into_response()),
         Err(error) if !error.is_internal() && !matches!(error, AppError::GameNotFound) => {
             let view = GameView::load(&state.pool, game_id, token).await?;
-            let page = GamePage::new(view, Some(error.to_string()));
+            let page = GamePage::new(view, Some(error.to_string()), root.clone());
             Ok((StatusCode::BAD_REQUEST, Html(page.render()?)).into_response())
         }
         Err(error) => Err(error),

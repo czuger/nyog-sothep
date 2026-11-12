@@ -1,13 +1,13 @@
-use std::path::Path;
-
 use axum::Router;
 use axum::http::HeaderValue;
 use axum::http::header::CACHE_CONTROL;
+use axum::middleware;
 use axum::routing::{get, post};
-use tower_http::services::ServeDir;
 use tower_http::set_header::SetResponseHeaderLayer;
 
 use crate::web::app_state::AppState;
+use crate::web::embedded_assets::{Images, StaticFiles, serve_asset};
+use crate::web::error_page::render_error_pages;
 use crate::web::{
     answer_handlers, game_handlers, lobby_handlers, professor_handlers, replay_handlers,
     rules_handlers,
@@ -16,11 +16,8 @@ use crate::web::{
 /// The private URL of a game.
 const GAME_PATH: &str = "/games/{game_id}/{token}";
 
-/// Builds every route of the application.
-///
-/// # Arguments
-/// * `asset_root` - directory holding the `img/` and `static/` folders.
-pub fn build_router(state: AppState, asset_root: &Path) -> Router {
+/// Builds every route of the application, mounted at `/` (the proxy strips the public sub-path).
+pub fn build_router(state: AppState) -> Router {
     Router::new()
         .route("/", get(lobby_handlers::show_lobby))
         .route("/games", post(lobby_handlers::create_game))
@@ -32,8 +29,9 @@ pub fn build_router(state: AppState, asset_root: &Path) -> Router {
         )
         .merge(investigator_routes())
         .merge(professor_routes())
-        .nest_service("/img", ServeDir::new(asset_root.join("img")))
-        .nest_service("/static", ServeDir::new(asset_root.join("static")))
+        .route("/img/{*file}", get(serve_asset::<Images>))
+        .route("/static/{*file}", get(serve_asset::<StaticFiles>))
+        .layer(middleware::from_fn(render_error_pages))
         // Assets keep stable URLs, so browsers must revalidate them (a 304 when unchanged) to see edits.
         .layer(SetResponseHeaderLayer::if_not_present(
             CACHE_CONTROL,

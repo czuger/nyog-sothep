@@ -33,7 +33,7 @@ pub struct Mover {
 
 /// A token drawn on the map.
 pub struct BoardToken {
-    /// Image path.
+    /// Image path, relative to the application's root.
     pub image: String,
     /// French tooltip.
     pub title: String,
@@ -140,7 +140,7 @@ fn stack(view: &GameView, id: LocationId) -> Vec<BoardToken> {
     let mut tokens = Vec::new();
     if view.destroyed.contains(&id) {
         tokens.push(token(
-            "/img/token-destroyed-city.png",
+            "img/token-destroyed-city.png",
             format!("{id} est détruite"),
             "",
             view.tilts.of(TiltedToken::Destroyed(id)),
@@ -152,7 +152,7 @@ fn stack(view: &GameView, id: LocationId) -> Vec<BoardToken> {
             false => (format!("{} à {id}", counter.kind.name()), ""),
         };
         tokens.push(token(
-            &format!("/img/token-{}.png", counter.kind.code()),
+            &format!("img/token-{}.png", counter.kind.code()),
             title,
             class,
             view.tilts.of(TiltedToken::Counter(id, counter.kind)),
@@ -160,7 +160,7 @@ fn stack(view: &GameView, id: LocationId) -> Vec<BoardToken> {
     }
     if view.nyog_location == Some(id) {
         tokens.push(token(
-            "/img/token-nyog-sothep.png",
+            "img/token-nyog-sothep.png",
             format!("Nyog'Sothep {}", id.at_phrase()),
             "",
             view.tilts.of(TiltedToken::Nyog),
@@ -184,7 +184,7 @@ fn investigator_tokens(view: &GameView, id: LocationId) -> Vec<BoardToken> {
         .filter(|i| i.location == id && i.status == InvestigatorStatus::Active)
         .map(|investigator| {
             let mut drawn = token(
-                &format!("/img/token-investigator-{}.png", investigator.id.code()),
+                &format!("img/token-investigator-{}.png", investigator.id.code()),
                 format!("{} — {} SAN", investigator.id.name(), investigator.san),
                 "investigator",
                 view.tilts.of(TiltedToken::Investigator(investigator.id)),
@@ -209,7 +209,7 @@ fn professor_token(view: &GameView, id: LocationId) -> Option<BoardToken> {
     match view.professor {
         ProfessorSighting::Visible { at } if at == id => {
             let mut drawn = token(
-                "/img/token-professor.png",
+                "img/token-professor.png",
                 format!("Le professeur Petersen {}", id.at_phrase()),
                 "professor",
                 view.tilts.of(TiltedToken::Professor),
@@ -219,7 +219,7 @@ fn professor_token(view: &GameView, id: LocationId) -> Option<BoardToken> {
         }
         ProfessorSighting::LastSeen { at, turn } if at == id => {
             let mut drawn = token(
-                "/img/token-professor.png",
+                "img/token-professor.png",
                 format!("Le professeur a été vu {} au tour {turn}", id.at_phrase()),
                 "last-seen",
                 view.tilts.of(TiltedToken::Sighting),

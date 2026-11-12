@@ -4,7 +4,7 @@
    investigateurs le sauront.</p>
 <form id="screen-form" method="post" action="{{ self.game_path() }}/move" class="stack">
   <label class="move-choice">
-    <img src="/img/token-professor.png" alt="" class="resource-icon">
+    <img src="{{ root }}img/token-professor.png" alt="" class="resource-icon">
     <span>Professeur Petersen</span>
     <select name="destination" data-move-select>
       {% for choice in self.destination_choices() %}

@@ -203,6 +203,6 @@ fn counter_choice(kind: CounterKind) -> CounterChoice {
     CounterChoice {
         value: kind.code(),
         label: kind.name(),
-        image: format!("/img/token-{}.png", kind.code()),
+        image: format!("img/token-{}.png", kind.code()),
     }
 }

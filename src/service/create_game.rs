@@ -26,9 +26,9 @@ pub struct CreatedGame {
 }
 
 impl CreatedGame {
-    /// The game's private URL.
+    /// The game's private URL, relative to the application's root (no leading `/`).
     pub fn path(&self) -> String {
-        format!("/games/{}/{}", self.game_id, self.token)
+        format!("games/{}/{}", self.game_id, self.token)
     }
 }
 

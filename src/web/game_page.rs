@@ -4,6 +4,7 @@ use crate::domain::turn::{ProfessorPrompt, Prompt, RouteStage, Side};
 use crate::domain::{FightChoice, LocationId, ProfessorQuestion};
 use crate::service::{GameView, InvestigatorView, ProfessorSighting};
 use crate::web::board_view::BoardView;
+use crate::web::relative_root::RelativeRoot;
 use crate::web::screen::Screen;
 
 /// One choice of a select or button list: the form value and its French label.
@@ -40,7 +41,7 @@ pub struct CounterChoice {
     pub value: &'static str,
     /// French name.
     pub label: &'static str,
-    /// Image path.
+    /// Image path, relative to the application's root.
     pub image: String,
 }
 
@@ -56,11 +57,13 @@ pub struct GamePage {
     pub board: BoardView,
     /// Error from the last answer, if it was refused.
     pub error: Option<String>,
+    /// The way back to the application's root, which prefixes every link.
+    pub root: RelativeRoot,
 }
 
 impl GamePage {
     /// Builds the page, with an optional error message from a refused answer.
-    pub fn new(view: GameView, error: Option<String>) -> GamePage {
+    pub fn new(view: GameView, error: Option<String>, root: RelativeRoot) -> GamePage {
         let screen = Screen::of(&view);
         let board = BoardView::of(&view, screen);
         GamePage {
@@ -68,12 +71,16 @@ impl GamePage {
             screen,
             board,
             error,
+            root,
         }
     }
 
     /// The game's private URL.
     pub fn game_path(&self) -> String {
-        format!("/games/{}/{}", self.view.game_id, self.view.token)
+        format!(
+            "{}games/{}/{}",
+            self.root, self.view.game_id, self.view.token
+        )
     }
 
     /// The investigators the human moves now.

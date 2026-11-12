@@ -12,7 +12,7 @@
 <form id="screen-form" method="post" action="{{ self.game_path() }}/{% if screen == Screen::Placement %}place{% else %}counter{% endif %}" class="stack">
   {% for choice in self.counter_choices() %}
   <button type="submit" name="counter" value="{{ choice.value }}" class="counter-choice">
-    <img src="{{ choice.image }}" alt="" class="resource-icon"> {{ choice.label }}
+    <img src="{{ root }}{{ choice.image }}" alt="" class="resource-icon"> {{ choice.label }}
   </button>
   {% endfor %}
   {% if screen == Screen::Placement %}<button type="submit" name="counter" value="none" class="secondary">Ne rien poser</button>{% endif %}

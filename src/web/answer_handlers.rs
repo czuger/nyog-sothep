@@ -10,21 +10,24 @@ use crate::domain::{EventTable, FightChoice};
 use crate::error::AppError;
 use crate::web::app_state::AppState;
 use crate::web::form_fields::{Fields, field, location, locations, respond};
+use crate::web::relative_root::RelativeRoot;
 
 /// `POST …/moves`: one `move_{index}` field per investigator.
 pub async fn moves(
     State(state): State<AppState>,
     Path((game_id, token)): Path<(i64, String)>,
+    root: RelativeRoot,
     Form(fields): Form<Fields>,
 ) -> Result<Response, AppError> {
     let answer = parse_moves(&fields).map(Answer::Moves);
-    respond(&state, game_id, &token, answer).await
+    respond(&state, game_id, &token, &root, answer).await
 }
 
 /// `POST …/play-again`: the `move_{index}` field of the investigator playing again.
 pub async fn play_again(
     State(state): State<AppState>,
     Path((game_id, token)): Path<(i64, String)>,
+    root: RelativeRoot,
     Form(fields): Form<Fields>,
 ) -> Result<Response, AppError> {
     let answer = parse_moves(&fields).and_then(|orders| match orders.as_slice() {
@@ -33,59 +36,63 @@ pub async fn play_again(
             "un seul déplacement est attendu".to_string(),
         )),
     });
-    respond(&state, game_id, &token, answer).await
+    respond(&state, game_id, &token, &root, answer).await
 }
 
 /// `POST …/table`: `table` is 2 or 3.
 pub async fn table(
     State(state): State<AppState>,
     Path((game_id, token)): Path<(i64, String)>,
+    root: RelativeRoot,
     Form(fields): Form<Fields>,
 ) -> Result<Response, AppError> {
     let answer = field(&fields, "table")
         .and_then(EventTable::from_number)
         .map(Answer::Table)
         .ok_or_else(|| AppError::InvalidForm("table inconnue".to_string()));
-    respond(&state, game_id, &token, answer).await
+    respond(&state, game_id, &token, &root, answer).await
 }
 
 /// `POST …/cities`: one `city` field per named city, or `skip` to decline.
 pub async fn cities(
     State(state): State<AppState>,
     Path((game_id, token)): Path<(i64, String)>,
+    root: RelativeRoot,
     Form(fields): Form<Fields>,
 ) -> Result<Response, AppError> {
     let answer = match field(&fields, "skip") {
         Some(_) => Ok(Answer::Cities(Vec::new())),
         None => locations(&fields, "city").map(Answer::Cities),
     };
-    respond(&state, game_id, &token, answer).await
+    respond(&state, game_id, &token, &root, answer).await
 }
 
 /// `POST …/fight`: `choice` is a [`FightChoice`] code.
 pub async fn fight(
     State(state): State<AppState>,
     Path((game_id, token)): Path<(i64, String)>,
+    root: RelativeRoot,
     Form(fields): Form<Fields>,
 ) -> Result<Response, AppError> {
     let answer = field(&fields, "choice")
         .and_then(FightChoice::from_code)
         .map(Answer::Fight)
         .ok_or_else(|| AppError::InvalidForm("choix de combat inconnu".to_string()));
-    respond(&state, game_id, &token, answer).await
+    respond(&state, game_id, &token, &root, answer).await
 }
 
 /// `POST …/banishment`: the `city` where Nyog'Sothep goes.
 pub async fn banishment(
     State(state): State<AppState>,
     Path((game_id, token)): Path<(i64, String)>,
+    root: RelativeRoot,
     Form(fields): Form<Fields>,
 ) -> Result<Response, AppError> {
     let answer = locations(&fields, "city").and_then(|cities| match cities.as_slice() {
         [city] => Ok(Answer::BanishmentCity(*city)),
         _ => Err(AppError::InvalidForm("choisissez une ville".to_string())),
     });
-    respond(&state, game_id, &token, answer).await
+    respond(&state, game_id, &token, &root, answer).await
 }
 
 /// Reads the `move_{index}` fields.
@@ -111,6 +118,7 @@ fn parse_moves(fields: &Fields) -> Result<Vec<(usize, MoveOrder)>, AppError> {
 mod tests {
     use axum::body::to_bytes;
     use axum::http::StatusCode;
+    use axum::http::header::LOCATION;
 
     use super::*;
     use crate::db;
@@ -130,26 +138,35 @@ mod tests {
         let state = AppState { pool };
         let game = create_game(&state.pool, Side::Investigators).await.unwrap();
         let path = || Path((game.game_id, game.token.clone()));
+        let root = || RelativeRoot::of_path("/games/1/token/moves");
         let wrong = fields(&[("move_0", "boston")]);
-        let response = moves(State(state.clone()), path(), Form(wrong))
+        let response = moves(State(state.clone()), path(), root(), Form(wrong))
             .await
             .unwrap();
         assert_eq!(response.status(), StatusCode::BAD_REQUEST);
         let html = body_of(response).await;
         assert!(html.contains("Déplacement impossible pour"), "{html}");
         assert!(html.contains(r#"data-mover="move_0""#));
+        assert!(html.contains(r#"href="../../../static/style.css""#));
 
         let sail: Fields = (0..4)
             .map(|index| (format!("move_{index}"), "nantucket_sound".to_string()))
             .collect();
-        let response = moves(State(state.clone()), path(), Form(sail))
+        let response = moves(State(state.clone()), path(), root(), Form(sail))
             .await
             .unwrap();
         assert_eq!(response.status(), StatusCode::SEE_OTHER);
+        let game_page = format!("../../../games/{}/{}", game.game_id, game.token);
+        assert_eq!(response.headers()[LOCATION], game_page.as_str());
 
-        let response = table(State(state), path(), Form(fields(&[("table", "4")])))
-            .await
-            .unwrap();
+        let response = table(
+            State(state),
+            path(),
+            root(),
+            Form(fields(&[("table", "4")])),
+        )
+        .await
+        .unwrap();
         assert_eq!(response.status(), StatusCode::BAD_REQUEST);
         assert!(body_of(response).await.contains("table inconnue"));
     }

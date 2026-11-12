@@ -19,9 +19,28 @@ Settings (environment variables):
 | Variable | Default | Meaning |
 |---|---|---|
 | `DATABASE_URL` | `sqlite://data/nyog_sothep.db` | SQLite database, created with its folder if missing |
-| `BIND_ADDR` | `127.0.0.1:3000` | Address the server listens on |
-| `ASSET_ROOT` | `.` | Folder holding `img/` and `static/` |
+| `NYOG_SOTHEP_DATA_DIR` | | Folder holding `nyog_sothep.db`, used when `DATABASE_URL` is not set |
+| `BIND_ADDR` | `127.0.0.1:3000` | TCP address the server listens on |
+| `NYOG_SOTHEP_SOCKET` | | Unix socket to listen on instead of TCP |
 | `RUST_LOG` | `info` | Log filter |
+
+`img/` and `static/` are compiled into the binary (read from disk in debug builds). Links are relative, so the
+site works under any sub-path.
+
+## Deployment
+
+Deployed with `cargo deploy`, my deployment tool: it cross-compiles the binary, uploads it over SSH and runs it as
+a systemd user service listening on `NYOG_SOTHEP_SOCKET`, served by the existing nginx under `/nyog-sothep/`. The
+server settings come from the `DEPLOY_*` environment variables; how the app is started (no arguments, the
+database in `data/db/`) is in `[package.metadata.deploy]` of `Cargo.toml`.
+
+```sh
+cargo deploy setup      # once: server layout, prerequisites, nginx snippet
+cargo deploy            # build, upload, restart, health check on GET /
+cargo deploy rollback   # back to the previous release
+cargo deploy status     # versions, service state, socket and public URL
+cargo deploy logs       # follow the journal
+```
 
 ## Tests
 

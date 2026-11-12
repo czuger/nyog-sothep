@@ -6,6 +6,8 @@
   const board = document.querySelector('.board');
   if (!source || !board) return;
   const data = JSON.parse(source.textContent);
+  // The app is served under a sub-path: images are found next to this script's folder.
+  const IMG = new URL('../img/', document.currentScript.src).href;
   const DELAY = 500;
   // Same spacing as the game page (board_view.rs).
   const STACK_STEP = 46;
@@ -54,23 +56,23 @@
       byPlace.get(at).push(token);
     }
     state.destroyed.forEach(function (city) {
-      add(city, { key: 'destroyed:' + city, image: '/img/token-destroyed-city.png', title: place(city).name + ' est détruite' });
+      add(city, { key: 'destroyed:' + city, image: IMG + 'token-destroyed-city.png', title: place(city).name + ' est détruite' });
     });
     state.counters.forEach(function (counter) {
       const name = data.counters[counter.kind];
       add(counter.city, {
         key: 'counter:' + counter.city + ':' + counter.kind,
-        image: '/img/token-' + counter.kind + '.png',
+        image: IMG + 'token-' + counter.kind + '.png',
         title: name + ' à ' + place(counter.city).name + (counter.hidden ? ' (caché)' : ''),
         className: counter.hidden ? 'hidden' : '',
       });
     });
     if (state.nyog) {
-      add(state.nyog, { key: 'nyog', image: '/img/token-nyog-sothep.png', title: "Nyog'Sothep " + place(state.nyog).at });
+      add(state.nyog, { key: 'nyog', image: IMG + 'token-nyog-sothep.png', title: "Nyog'Sothep " + place(state.nyog).at });
     } else if (state.nyog_city) {
       add(state.nyog_city, {
         key: 'nyog',
-        image: '/img/token-nyog-sothep.png',
+        image: IMG + 'token-nyog-sothep.png',
         title: "Nyog'Sothep apparaîtra " + place(state.nyog_city).at,
         className: 'hidden',
       });
@@ -78,7 +80,7 @@
     if (state.professor) {
       add(state.professor, {
         key: 'professor',
-        image: '/img/token-professor.png',
+        image: IMG + 'token-professor.png',
         title: 'Le professeur Petersen ' + place(state.professor).at,
         className: 'professor',
       });
@@ -88,7 +90,7 @@
       const names = data.investigators[investigator.id];
       add(investigator.location, {
         key: 'investigator:' + investigator.id,
-        image: '/img/token-investigator-' + investigator.id + '.png',
+        image: IMG + 'token-investigator-' + investigator.id + '.png',
         title: names.name + ' — ' + investigator.san + ' SAN',
         className: 'investigator',
         atSea: place(investigator.location).sea,
@@ -124,7 +126,7 @@
       node.style.top = token.y + 'px';
       node.style.setProperty('--tilt', tilt(token.key, token.at) + 'deg');
       const boat = node.querySelector('.boat');
-      if (token.atSea && !boat) node.appendChild(image('/img/boat.png', 'en mer', 'boat'));
+      if (token.atSea && !boat) node.appendChild(image(IMG + 'boat.png', 'en mer', 'boat'));
       if (!token.atSea && boat) boat.remove();
     });
     drawn.forEach(function (node, key) {
@@ -140,9 +142,9 @@
     if (investigator.status === 'Active') {
       body.append(element('span', { class: 'chip-stats' }, [investigator.san + ' SAN · ' + place(investigator.location).at]));
       const items = element('span', { class: 'chip-items' });
-      if (investigator.weapon) items.append(image('/img/token-weapon.png', 'Arme'));
-      if (investigator.sign) items.append(image('/img/token-sign.png', 'Signe protecteur'));
-      if (investigator.medallion) items.append(image('/img/token-medallion.png', 'Médaillon de Fanatique'));
+      if (investigator.weapon) items.append(image(IMG + 'token-weapon.png', 'Arme'));
+      if (investigator.sign) items.append(image(IMG + 'token-sign.png', 'Signe protecteur'));
+      if (investigator.medallion) items.append(image(IMG + 'token-medallion.png', 'Médaillon de Fanatique'));
       if (investigator.spell) items.append(element('span', { class: 'spell' }, ['✶ sort de renvoi']));
       body.append(items);
     } else {
@@ -150,7 +152,7 @@
       body.append(element('span', { class: 'chip-note' }, [fate]));
     }
     return element('li', { class: 'investigator-chip status-' + investigator.status.toLowerCase() }, [
-      image('/img/token-investigator-' + investigator.id + '.png', '', 'chip-token'),
+      image(IMG + 'token-investigator-' + investigator.id + '.png', '', 'chip-token'),
       body,
     ]);
   }
@@ -158,7 +160,7 @@
   function drawBanner(state) {
     const hand = element('p', { class: 'banner-hand' }, ['Main du professeur :']);
     state.hand.forEach(function (kind) {
-      hand.append(image('/img/token-' + kind + '.png', data.counters[kind], 'resource-icon'));
+      hand.append(image(IMG + 'token-' + kind + '.png', data.counters[kind], 'resource-icon'));
     });
     if (state.hand.length === 0) hand.append(element('span', {}, ['vide']));
     let nyog = "Nyog'Sothep : ville d'apparition pas encore choisie.";
@@ -167,14 +169,14 @@
     const professor = state.professor ? place(state.professor).at : 'point de départ pas encore choisi';
     field('banner').replaceChildren(
       element('p', { class: 'banner-professor' }, [
-        image('/img/token-professor.png', '', 'resource-icon'),
+        image(IMG + 'token-professor.png', '', 'resource-icon'),
         element('span', {}, [
           element('strong', {}, ['Professeur Petersen']),
           ' : ' + state.professor_hp + ' points de vie, ' + professor,
         ]),
       ]),
       hand,
-      element('p', { class: 'banner-professor' }, [image('/img/token-nyog-sothep.png', '', 'resource-icon'), nyog]),
+      element('p', { class: 'banner-professor' }, [image(IMG + 'token-nyog-sothep.png', '', 'resource-icon'), nyog]),
       element('ul', { class: 'investigators' }, state.investigators.map(investigatorChip))
     );
   }

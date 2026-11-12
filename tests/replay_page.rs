@@ -7,7 +7,7 @@ use nyog_sothep::db::{self, GameRecord, load_state, save_state};
 use nyog_sothep::domain::turn::{Answer, MoveOrder, Outcome, Phase, Side};
 use nyog_sothep::error::AppError;
 use nyog_sothep::service::{CreatedGame, ReplayView, answer_prompt, create_game};
-use nyog_sothep::web::ReplayPage;
+use nyog_sothep::web::{RelativeRoot, ReplayPage};
 
 /// Ends a stored game as if the investigators had killed the professor.
 async fn finish(pool: &SqlitePool, game: &CreatedGame) {
@@ -58,16 +58,19 @@ async fn a_finished_game_is_replayed_with_its_secrets() {
     assert!(texts.iter().any(|text| text.contains("reste à Nantucket")));
     assert!(view.steps.iter().any(|step| !step.dice.is_empty()));
 
-    let page = ReplayPage::new(view).unwrap();
+    let page = ReplayPage::new(view, RelativeRoot::of_path("/games/1/token/replay")).unwrap();
     assert!(
         !page.data.contains('<'),
         "the JSON could close its script element"
     );
     let html = page.render().unwrap();
     assert!(html.contains(r#"<script type="application/json" id="replay-data">"#));
-    assert!(html.contains("/static/replay.js"));
+    assert!(html.contains(r#"src="../../../static/replay.js""#));
     assert!(html.contains("Victoire"));
-    assert!(html.contains(&format!(r#"href="{}">Retour à la partie"#, game.path())));
+    assert!(html.contains(&format!(
+        r#"href="../../../{}">Retour à la partie"#,
+        game.path()
+    )));
 }
 
 #[tokio::test]

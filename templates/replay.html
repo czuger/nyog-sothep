@@ -29,7 +29,7 @@
   </details>
   <nav class="panel floating-actions">
     <a class="button" href="{{ self.game_path() }}">Retour à la partie</a>
-    <a class="button" href="/">Nouvelle partie</a>
+    <a class="button" href="{{ root }}">Nouvelle partie</a>
   </nav>
 </div>
 
@@ -44,6 +44,6 @@
 {% endif %}
 {% endblock %}
 {% block scripts %}
-<script src="/static/board.js"></script>
-{% if !view.is_empty() %}<script src="/static/replay.js"></script>{% endif %}
+<script src="{{ root }}static/board.js"></script>
+{% if !view.is_empty() %}<script src="{{ root }}static/replay.js"></script>{% endif %}
 {% endblock %}

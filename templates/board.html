@@ -1,7 +1,7 @@
 <div class="board-viewport">
   <div class="board-frame" style="--board-height: {{ board.height }}px">
   <div class="board" style="width: {{ board.width }}px">
-    <img src="/img/board.jpg" alt="Carte du Massachusetts et du Rhode Island" width="{{ board.width }}" height="{{ board.height }}">
+    <img src="{{ root }}img/board.jpg" alt="Carte du Massachusetts et du Rhode Island" width="{{ board.width }}" height="{{ board.height }}">
     <svg class="board-moves" viewBox="0 0 {{ board.width }} {{ board.height }}" preserveAspectRatio="none" aria-hidden="true">
       <defs>
         <marker id="move-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
@@ -22,13 +22,13 @@
     {% for token in board.tokens %}
     {% if let Some(mover) = token.mover %}
     <button type="button" class="token mover {{ token.class }}" style="left: {{ token.x }}px; top: {{ token.y }}px; --tilt: {{ token.tilt }}deg" title="{{ token.title }}" data-mover="{{ mover.field }}" data-from="{{ mover.from }}" data-targets="{{ mover.targets }}">
-      <img src="{{ token.image }}" alt="{{ token.title }}">
-      {% if token.at_sea %}<img class="boat" src="/img/boat.png" alt="en mer">{% endif %}
+      <img src="{{ root }}{{ token.image }}" alt="{{ token.title }}">
+      {% if token.at_sea %}<img class="boat" src="{{ root }}img/boat.png" alt="en mer">{% endif %}
     </button>
     {% else %}
     <span class="token {{ token.class }}" style="left: {{ token.x }}px; top: {{ token.y }}px; --tilt: {{ token.tilt }}deg" title="{{ token.title }}">
-      <img src="{{ token.image }}" alt="{{ token.title }}">
-      {% if token.at_sea %}<img class="boat" src="/img/boat.png" alt="en mer">{% endif %}
+      <img src="{{ root }}{{ token.image }}" alt="{{ token.title }}">
+      {% if token.at_sea %}<img class="boat" src="{{ root }}img/boat.png" alt="en mer">{% endif %}
       {% if let Some(label) = token.label %}<span class="token-label">{{ label }}</span>{% endif %}
     </span>
     {% endif %}

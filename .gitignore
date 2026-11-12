@@ -4,3 +4,6 @@
 *.db-wal
 /data/
 .DS_Store
+
+# Deploy settings for the real server (see .env.example).
+.env

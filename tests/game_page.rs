@@ -11,7 +11,7 @@ use nyog_sothep::domain::turn::{
 };
 use nyog_sothep::domain::{CounterKind, FightChoice, InvestigatorId, LocationId, RandomDice};
 use nyog_sothep::service::{GameView, TokenTilts, refresh_tilts};
-use nyog_sothep::web::{GamePage, Screen};
+use nyog_sothep::web::{GamePage, RelativeRoot, Screen};
 
 const IDS: [InvestigatorId; 4] = [
     InvestigatorId::Armitage,
@@ -57,7 +57,7 @@ async fn render(state: &GameState) -> (Screen, String) {
         .await
         .unwrap();
     let view = GameView::of(&game, state, log, tilts);
-    let page = GamePage::new(view, None);
+    let page = GamePage::new(view, None, RelativeRoot::of_path("/games/1/secret-token"));
     (page.screen, page.render().unwrap())
 }
 
@@ -84,9 +84,9 @@ async fn moves_are_offered_on_the_map_and_in_the_panel() {
     assert!(html.contains(r#"data-mover="move_0""#));
     assert!(
         html.contains("--tilt: ")
-            && html.contains(r#"<a class="button" href="/">Nouvelle partie</a>"#)
+            && html.contains(r#"<a class="button" href="../../">Nouvelle partie</a>"#)
     );
-    assert!(html.contains(r#"<a class="button" href="/rules" target="_blank">Règles</a>"#));
+    assert!(html.contains(r#"<a class="button" href="../../rules" target="_blank">Règles</a>"#));
     assert!(html.contains(r#"data-targets="nantucket_sound""#));
     assert!(html.contains(r#"<select name="move_3" data-move-select>"#));
     assert!(html.contains(r#"value="nantucket_sound">Embarquer : Nantucket Sound"#));
@@ -160,7 +160,7 @@ async fn the_end_reveals_everything() {
         "hidden counters are shown at the end"
     );
     assert!(html.contains("Classement des investigateurs"));
-    assert!(html.contains(r#"href="/games/1/secret-token/replay">Revoir la partie</a>"#));
+    assert!(html.contains(r#"href="../../games/1/secret-token/replay">Revoir la partie</a>"#));
 }
 
 #[tokio::test]

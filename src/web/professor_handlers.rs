@@ -10,24 +10,27 @@ use crate::domain::turn::{Answer, ProfessorAnswer, Teleport};
 use crate::error::AppError;
 use crate::web::app_state::AppState;
 use crate::web::form_fields::{Fields, field, location, locations, one_location, respond};
+use crate::web::relative_root::RelativeRoot;
 
 /// `POST …/setup`: his start `city` (picked on the map) and `nyog_city`.
 pub async fn setup(
     State(state): State<AppState>,
     Path((game_id, token)): Path<(i64, String)>,
+    root: RelativeRoot,
     Form(fields): Form<Fields>,
 ) -> Result<Response, AppError> {
     let answer = one_location(&fields, "city").and_then(|start| {
         let nyog_city = one_location(&fields, "nyog_city")?;
         Ok(ProfessorAnswer::Setup { start, nyog_city })
     });
-    send(&state, game_id, &token, answer).await
+    send(&state, game_id, &token, &root, answer).await
 }
 
 /// `POST …/teleport`: `teleport` is `{investigator}:{city}`, or `skip` declines.
 pub async fn teleport(
     State(state): State<AppState>,
     Path((game_id, token)): Path<(i64, String)>,
+    root: RelativeRoot,
     Form(fields): Form<Fields>,
 ) -> Result<Response, AppError> {
     let answer = match field(&fields, "skip") {
@@ -35,23 +38,25 @@ pub async fn teleport(
         None => parse_teleport(field(&fields, "teleport").unwrap_or_default())
             .map(|teleport| ProfessorAnswer::Teleport(Some(teleport))),
     };
-    send(&state, game_id, &token, answer).await
+    send(&state, game_id, &token, &root, answer).await
 }
 
 /// `POST …/move`: his `destination`.
 pub async fn movement(
     State(state): State<AppState>,
     Path((game_id, token)): Path<(i64, String)>,
+    root: RelativeRoot,
     Form(fields): Form<Fields>,
 ) -> Result<Response, AppError> {
     let answer = one_location(&fields, "destination").map(ProfessorAnswer::Location);
-    send(&state, game_id, &token, answer).await
+    send(&state, game_id, &token, &root, answer).await
 }
 
 /// `POST …/attack`: `target` is an investigator's index, or `none`.
 pub async fn attack(
     State(state): State<AppState>,
     Path((game_id, token)): Path<(i64, String)>,
+    root: RelativeRoot,
     Form(fields): Form<Fields>,
 ) -> Result<Response, AppError> {
     let answer = match field(&fields, "target") {
@@ -61,71 +66,77 @@ pub async fn attack(
             .map(|index| ProfessorAnswer::Attack(Some(index)))
             .ok_or_else(|| AppError::InvalidForm("investigateur inconnu".to_string())),
     };
-    send(&state, game_id, &token, answer).await
+    send(&state, game_id, &token, &root, answer).await
 }
 
 /// `POST …/location`: the `city` picked on the map (a carry, a retreat or Nyog'Sothep's step).
 pub async fn pick_location(
     State(state): State<AppState>,
     Path((game_id, token)): Path<(i64, String)>,
+    root: RelativeRoot,
     Form(fields): Form<Fields>,
 ) -> Result<Response, AppError> {
     let answer = one_location(&fields, "city").map(ProfessorAnswer::Location);
-    send(&state, game_id, &token, answer).await
+    send(&state, game_id, &token, &root, answer).await
 }
 
 /// `POST …/summon`: `summon` is `yes` or `no`.
 pub async fn summon(
     State(state): State<AppState>,
     Path((game_id, token)): Path<(i64, String)>,
+    root: RelativeRoot,
     Form(fields): Form<Fields>,
 ) -> Result<Response, AppError> {
     let answer = Ok(ProfessorAnswer::Summon(
         field(&fields, "summon") == Some("yes"),
     ));
-    send(&state, game_id, &token, answer).await
+    send(&state, game_id, &token, &root, answer).await
 }
 
 /// `POST …/place`: the `counter` code, or `none`.
 pub async fn place(
     State(state): State<AppState>,
     Path((game_id, token)): Path<(i64, String)>,
+    root: RelativeRoot,
     Form(fields): Form<Fields>,
 ) -> Result<Response, AppError> {
     let answer = match field(&fields, "counter") {
         Some("none") => Ok(ProfessorAnswer::Placement(None)),
         _ => counter(&fields).map(|kind| ProfessorAnswer::Placement(Some(kind))),
     };
-    send(&state, game_id, &token, answer).await
+    send(&state, game_id, &token, &root, answer).await
 }
 
 /// `POST …/counter`: the `counter` kept from Table 1, or discarded.
 pub async fn pick_counter(
     State(state): State<AppState>,
     Path((game_id, token)): Path<(i64, String)>,
+    root: RelativeRoot,
     Form(fields): Form<Fields>,
 ) -> Result<Response, AppError> {
     let answer = counter(&fields).map(ProfessorAnswer::Counter);
-    send(&state, game_id, &token, answer).await
+    send(&state, game_id, &token, &root, answer).await
 }
 
 /// `POST …/name`: one `city` field per named city.
 pub async fn name(
     State(state): State<AppState>,
     Path((game_id, token)): Path<(i64, String)>,
+    root: RelativeRoot,
     Form(fields): Form<Fields>,
 ) -> Result<Response, AppError> {
     let answer = locations(&fields, "city").map(ProfessorAnswer::Cities);
-    send(&state, game_id, &token, answer).await
+    send(&state, game_id, &token, &root, answer).await
 }
 
 async fn send(
     state: &AppState,
     game_id: i64,
     token: &str,
+    root: &RelativeRoot,
     answer: Result<ProfessorAnswer, AppError>,
 ) -> Result<Response, AppError> {
-    respond(state, game_id, token, answer.map(Answer::Professor)).await
+    respond(state, game_id, token, root, answer.map(Answer::Professor)).await
 }
 
 fn counter(fields: &Fields) -> Result<CounterKind, AppError> {
@@ -170,25 +181,26 @@ mod tests {
         let state = AppState { pool };
         let game = create_game(&state.pool, Side::Professor).await.unwrap();
         let path = || Path((game.game_id, game.token.clone()));
+        let root = || RelativeRoot::of_path("/games/1/token/setup");
         let view = GameView::load(&state.pool, game.game_id, &game.token)
             .await
             .unwrap();
-        assert_eq!(GamePage::new(view, None).screen, Screen::Setup);
+        assert_eq!(GamePage::new(view, None, root()).screen, Screen::Setup);
 
         let sea = fields(&[("city", "nantucket_sound"), ("nyog_city", "boston")]);
-        let response = setup(State(state.clone()), path(), Form(sea))
+        let response = setup(State(state.clone()), path(), root(), Form(sea))
             .await
             .unwrap();
         assert_eq!(response.status(), StatusCode::BAD_REQUEST);
 
         let chosen = fields(&[("city", "worcester"), ("nyog_city", "concord")]);
-        let response = setup(State(state.clone()), path(), Form(chosen))
+        let response = setup(State(state.clone()), path(), root(), Form(chosen))
             .await
             .unwrap();
         assert_eq!(response.status(), StatusCode::SEE_OTHER);
         let view = GameView::load(&state.pool, game.game_id, &game.token)
             .await
             .unwrap();
-        assert_ne!(GamePage::new(view, None).screen, Screen::Setup);
+        assert_ne!(GamePage::new(view, None, root()).screen, Screen::Setup);
     }
 }

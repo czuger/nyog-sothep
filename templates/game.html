@@ -12,8 +12,8 @@
     {% include "partials/screen.html" %}
   </details>
   <nav class="panel floating-actions">
-    <a class="button" href="/">Nouvelle partie</a>
-    <a class="button" href="/rules" target="_blank">Règles</a>
+    <a class="button" href="{{ root }}">Nouvelle partie</a>
+    <a class="button" href="{{ root }}rules" target="_blank">Règles</a>
   </nav>
 </div>
 
@@ -42,5 +42,5 @@
 </div>
 {% endblock %}
 {% block scripts %}
-<script src="/static/board.js"></script>
+<script src="{{ root }}static/board.js"></script>
 {% endblock %}

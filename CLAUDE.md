@@ -17,19 +17,27 @@ It started as an unfinished Rails 5.2 application; the `rust_conversion` branch 
 ## Commands
 
 ```sh
-cargo run                                     # serve on http://127.0.0.1:3000 (DATABASE_URL, BIND_ADDR, ASSET_ROOT, RUST_LOG)
+cargo run                                     # serve on http://127.0.0.1:3000 (DATABASE_URL, NYOG_SOTHEP_DATA_DIR, BIND_ADDR, NYOG_SOTHEP_SOCKET, RUST_LOG)
 cargo test                                    # unit tests + tests/ (in-memory SQLite)
 cargo test --test game_flow <name>            # one integration test
 cargo test --test simulation -- --nocapture   # the professor's AI against the investigators' AI; SIMULATION_DEBUG=1 describes stalled games, SIMULATION_TRACE=<seed> prints a game's log
 cargo run --release --example tune_ai -- [rounds] [games]   # tunes both AIs' weights by self-play
 cargo clippy --all-targets -- -D warnings
 cargo fmt
+cargo deploy render                           # resolved deploy settings, systemd unit and nginx snippet in target/cargo-deploy/ (local)
+cargo deploy                                  # deploys to the server (also setup, rollback, status, logs): only when asked
 ```
+
+Deployment: `cargo deploy` (see the README) runs the binary as a systemd user service on the Unix socket
+`NYOG_SOTHEP_SOCKET`, behind nginx under `/nyog-sothep/` with the prefix stripped; `[package.metadata.deploy]` in
+`Cargo.toml` describes it, the server values come from the `DEPLOY_*` variables.
 
 ## Architecture
 
 Stack: axum (HTTP), askama (server-rendered HTML in `templates/`), sqlx on SQLite. No front-end build:
-`static/style.css`, `static/board.js` and `static/replay.js`, images served from `img/`.
+`static/style.css`, `static/board.js` and `static/replay.js`, images in `img/`, both embedded in the binary with
+rust-embed (`web/embedded_assets.rs`, read from disk in debug builds). `main.rs` reads `AppConfig` (`config.rs`) and
+calls `server::serve` (TCP, or the Unix socket when `NYOG_SOTHEP_SOCKET` is set, until SIGTERM/Ctrl-C).
 
 Layers, from the inside out:
 
@@ -122,8 +130,12 @@ Layers, from the inside out:
   `banishment` in `answer_handlers.rs`, the professor's `setup`, `teleport`, `move`, `attack`, `location`
   (carry, retreat, Nyog'Sothep's step), `summon`, `place`, `counter` (Table 1, discard), `name` in
   `professor_handlers.rs`). Handlers read the form as name/value pairs (`form_fields.rs`), call
-  `answer_prompt`, then redirect (303) to the game page, or show it again with the French error (400). `GamePage` (`templates/game.html`) draws the full-window map (`BoardView`: every location as a click
-  target, tokens stacked side by side on their location, investigators at sea on a boat, the professor's last
+  `answer_prompt`, then redirect (303) to the game page, or show it again with the French error (400).
+  Every link, form action and redirect is relative, the site being served under a sub-path: pages get a
+  `RelativeRoot` (`relative_root.rs`, an extractor: `./`, `../../`…) as `root` and write `{{ root }}static/…`,
+  `{{ root }}games/…`; `AppError` responses are turned into the error page by the `render_error_pages` middleware,
+  which knows the request's path, and `replay.js` finds the images next to its own URL.
+  `GamePage` (`templates/game.html`) draws the full-window map (`BoardView`: every location as a click target, tokens stacked side by side on their location, investigators at sea on a boat, the professor's last
   sighting, or his position and hidden counters for the professor) with floating panels: on the left the banner
   (professor's hit points and position; for the professor, also his hand and summoning progress; the
   investigators with SAN, items, spell and lasting effects) and the screen of the pending prompt (`Screen::of`,

@@ -1,30 +1,30 @@
 <section class="panel banner">
   <p class="banner-professor">
-    <img src="/img/token-professor.png" alt="" class="resource-icon">
+    <img src="{{ root }}img/token-professor.png" alt="" class="resource-icon">
     <span><strong>Professeur Petersen</strong> : {{ view.professor_hp }} points de vie, {{ self.professor_status() }}{% if view.sea_announcements %} · annonce ses déplacements en mer{% endif %}</span>
   </p>
   {% if self.is_professor() && !view.is_finished() %}
   <p class="banner-professor"><span>Nyog'Sothep apparaîtra à <strong>{{ self.nyog_city_name() }}</strong>. {{ self.summoning_status() }}</span></p>
   <p class="banner-hand">
     <span>Votre main :</span>
-    {% for counter in self.hand_counters() %}<img src="{{ counter.image }}" alt="{{ counter.label }}" title="{{ counter.label }}" class="resource-icon">{% else %}<span>vide</span>{% endfor %}
+    {% for counter in self.hand_counters() %}<img src="{{ root }}{{ counter.image }}" alt="{{ counter.label }}" title="{{ counter.label }}" class="resource-icon">{% else %}<span>vide</span>{% endfor %}
   </p>
   {% endif %}
   {% if let Some(city) = view.nyog_location %}
-  <p class="banner-professor"><img src="/img/token-nyog-sothep.png" alt="" class="resource-icon"> <span><strong>Nyog'Sothep</strong> {{ city.at_phrase() }}</span></p>
+  <p class="banner-professor"><img src="{{ root }}img/token-nyog-sothep.png" alt="" class="resource-icon"> <span><strong>Nyog'Sothep</strong> {{ city.at_phrase() }}</span></p>
   {% endif %}
   <ul class="investigators">
     {% for investigator in view.investigators %}
     <li class="investigator-chip status-{{ investigator.status.code() }}">
-      <img src="/img/token-investigator-{{ investigator.id.code() }}.png" alt="" class="chip-token">
+      <img src="{{ root }}img/token-investigator-{{ investigator.id.code() }}.png" alt="" class="chip-token">
       <span class="chip-body">
         <span class="chip-name">{{ investigator.id.name() }}</span>
         {% if investigator.status.code() == "active" %}
         <span class="chip-stats">{{ investigator.san }} SAN · {{ investigator.location.at_phrase() }}</span>
         <span class="chip-items">
-          {% if investigator.weapon %}<img src="/img/token-weapon.png" alt="Arme" title="Arme">{% endif %}
-          {% if investigator.sign %}<img src="/img/token-sign.png" alt="Signe protecteur" title="Signe protecteur">{% endif %}
-          {% if investigator.medallion %}<img src="/img/token-medallion.png" alt="Médaillon" title="Médaillon de Fanatique">{% endif %}
+          {% if investigator.weapon %}<img src="{{ root }}img/token-weapon.png" alt="Arme" title="Arme">{% endif %}
+          {% if investigator.sign %}<img src="{{ root }}img/token-sign.png" alt="Signe protecteur" title="Signe protecteur">{% endif %}
+          {% if investigator.medallion %}<img src="{{ root }}img/token-medallion.png" alt="Médaillon" title="Médaillon de Fanatique">{% endif %}
           {% if investigator.spell %}<span class="spell" title="Connaît le sort de renvoi">✶ sort de renvoi</span>{% endif %}
         </span>
         {% for note in investigator.notes %}<span class="chip-note">{{ note }}</span>{% endfor %}

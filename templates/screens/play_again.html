@@ -3,7 +3,7 @@
 <form id="screen-form" method="post" action="{{ self.game_path() }}/play-again" class="stack">
   {% for investigator in self.movers() %}
   <label class="move-choice">
-    <img src="/img/token-investigator-{{ investigator.id.code() }}.png" alt="" class="resource-icon">
+    <img src="{{ root }}img/token-investigator-{{ investigator.id.code() }}.png" alt="" class="resource-icon">
     <span>{{ investigator.id.name() }}</span>
     <select name="move_{{ investigator.index }}" data-move-select>
       {% for choice in self.move_choices(investigator) %}

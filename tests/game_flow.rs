@@ -44,10 +44,7 @@ async fn a_new_game_waits_for_the_investigators_in_nantucket() {
     }
     assert_eq!(view.professor_hp, 14);
     assert!(view.log.iter().any(|line| line.text.contains("Nantucket")));
-    assert!(
-        game.path()
-            .starts_with(&format!("/games/{}/", game.game_id))
-    );
+    assert!(game.path().starts_with(&format!("games/{}/", game.game_id)));
 }
 
 #[tokio::test]

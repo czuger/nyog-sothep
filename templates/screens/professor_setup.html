@@ -4,7 +4,7 @@
    ville.</p>
 <form id="screen-form" method="post" action="{{ self.game_path() }}/setup" class="stack">
   <label class="move-choice">
-    <img src="/img/token-nyog-sothep.png" alt="" class="resource-icon">
+    <img src="{{ root }}img/token-nyog-sothep.png" alt="" class="resource-icon">
     <span>Nyog'Sothep apparaîtra à</span>
     <select name="nyog_city">
       {% for choice in self.city_choices() %}

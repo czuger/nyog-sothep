@@ -8,6 +8,7 @@ use crate::domain::{CounterKind, InvestigatorId, LocationId};
 use crate::error::AppError;
 use crate::service::ReplayView;
 use crate::web::board_view::BoardView;
+use crate::web::relative_root::RelativeRoot;
 
 /// The replay page: the map, and the recorded events that `replay.js` plays on it.
 #[derive(Template)]
@@ -19,6 +20,8 @@ pub struct ReplayPage {
     pub board: BoardView,
     /// The data the script reads, as JSON safe to embed in a `<script>` element.
     pub data: String,
+    /// The way back to the application's root, which prefixes every link.
+    pub root: RelativeRoot,
 }
 
 /// What `replay.js` reads: the French names it writes and the steps it plays.
@@ -50,7 +53,7 @@ impl ReplayPage {
     ///
     /// # Errors
     /// `Template` if the steps cannot be written as JSON.
-    pub fn new(view: ReplayView) -> Result<ReplayPage, AppError> {
+    pub fn new(view: ReplayView, root: RelativeRoot) -> Result<ReplayPage, AppError> {
         let data = ReplayData {
             places: LocationId::ALL
                 .into_iter()
@@ -89,12 +92,16 @@ impl ReplayPage {
             data: json.replace('<', "\\u003c"),
             view,
             board: BoardView::bare(),
+            root,
         })
     }
 
     /// The game's private URL.
     pub fn game_path(&self) -> String {
-        format!("/games/{}/{}", self.view.game_id, self.view.token)
+        format!(
+            "{}games/{}/{}",
+            self.root, self.view.game_id, self.view.token
+        )
     }
 
     /// The outcome's French text, as the human read it.

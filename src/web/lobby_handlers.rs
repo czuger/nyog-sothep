@@ -8,20 +8,24 @@ use crate::error::AppError;
 use crate::service::create_game as create_game_service;
 use crate::web::app_state::AppState;
 use crate::web::form_fields::{Fields, field};
+use crate::web::relative_root::RelativeRoot;
 
 #[derive(Template)]
 #[template(path = "lobby.html")]
-struct LobbyPage;
+struct LobbyPage {
+    root: RelativeRoot,
+}
 
 /// `GET /`: the game creation page.
-pub async fn show_lobby() -> Result<Html<String>, AppError> {
-    Ok(Html(LobbyPage.render()?))
+pub async fn show_lobby(root: RelativeRoot) -> Result<Html<String>, AppError> {
+    Ok(Html(LobbyPage { root }.render()?))
 }
 
 /// `POST /games`: creates a game where the human plays the `side` field (the investigators
 /// when absent) and sends them to its private URL.
 pub async fn create_game(
     State(state): State<AppState>,
+    root: RelativeRoot,
     Form(fields): Form<Fields>,
 ) -> Result<Redirect, AppError> {
     let human = match field(&fields, "side") {
@@ -30,5 +34,5 @@ pub async fn create_game(
         None => Side::Investigators,
     };
     let game = create_game_service(&state.pool, human).await?;
-    Ok(Redirect::to(&game.path()))
+    Ok(Redirect::to(&format!("{root}{}", game.path())))
 }
