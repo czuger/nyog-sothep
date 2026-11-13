@@ -1,28 +1,17 @@
-//! SQLite storage: one record type per table.
+//! PoloDB storage: one document per game holding its whole state, with its log and replay
+//! appended in batches, one per save.
 
-mod clue_record;
-mod codec;
-mod counter_record;
-mod database;
-mod destroyed_city_record;
-mod event_record;
-mod game_record;
-mod game_store;
-mod investigator_record;
-mod professor_record;
-mod replay_step_record;
-mod route_stage_record;
-mod token_tilt_record;
+mod document_source;
+mod game_document;
+mod log_batch;
+mod replay_batch;
+mod sequence;
+mod store;
+mod tilt_document;
 
-pub use clue_record::ClueRecord;
-pub use counter_record::CounterRecord;
-pub use database::connect;
-pub use destroyed_city_record::DestroyedCityRecord;
-pub use event_record::EventRecord;
-pub use game_record::GameRecord;
-pub use game_store::{append_history, load_state, save_state};
-pub use investigator_record::InvestigatorRecord;
-pub use professor_record::ProfessorRecord;
-pub use replay_step_record::ReplayStepRecord;
-pub use route_stage_record::RouteStageRecord;
-pub use token_tilt_record::TokenTiltRecord;
+pub use document_source::DocumentSource;
+pub use game_document::GameDocument;
+pub use log_batch::{LogBatch, LogEntry};
+pub use replay_batch::ReplayBatch;
+pub use store::Store;
+pub use tilt_document::TiltDocument;

@@ -17,8 +17,8 @@ It started as an unfinished Rails 5.2 application; the `rust_conversion` branch 
 ## Commands
 
 ```sh
-cargo run                                     # serve on http://127.0.0.1:3000 (DATABASE_URL, NYOG_SOTHEP_DATA_DIR, BIND_ADDR, NYOG_SOTHEP_SOCKET, RUST_LOG)
-cargo test                                    # unit tests + tests/ (in-memory SQLite)
+cargo run                                     # serve on http://127.0.0.1:3000 (DATABASE_PATH, NYOG_SOTHEP_DATA_DIR, BIND_ADDR, NYOG_SOTHEP_SOCKET, RUST_LOG)
+cargo test                                    # unit tests + tests/ (PoloDB in temporary folders)
 cargo test --test game_flow <name>            # one integration test
 cargo test --test simulation -- --nocapture   # the professor's AI against the investigators' AI; SIMULATION_DEBUG=1 describes stalled games, SIMULATION_TRACE=<seed> prints a game's log
 cargo run --release --example tune_ai -- [rounds] [games]   # tunes both AIs' weights by self-play
@@ -34,7 +34,7 @@ Deployment: `cargo deploy` (see the README) runs the binary as a systemd user se
 
 ## Architecture
 
-Stack: axum (HTTP), askama (server-rendered HTML in `templates/`), sqlx on SQLite. No front-end build:
+Stack: axum (HTTP), askama (server-rendered HTML in `templates/`), PoloDB (embedded document database on RocksDB). No front-end build:
 `static/style.css`, `static/board.js` and `static/replay.js`, images in `img/`, both embedded in the binary with
 rust-embed (`web/embedded_assets.rs`, read from disk in debug builds). `main.rs` reads `AppConfig` (`config.rs`) and
 calls `server::serve` (TCP, or the Unix socket when `NYOG_SOTHEP_SOCKET` is set, until SIGTERM/Ctrl-C).
@@ -105,24 +105,27 @@ Layers, from the inside out:
     either side from outside the engine plays the same games, and that the replay follows each game to its
     final board. `examples/tune_ai.rs` hill-climbs both sides' weights by self-play on every core, keeping a
     change only when it wins more by three standard errors.
-- **`src/db/`**: one record type per table (`GameRecord`, `ProfessorRecord`, `InvestigatorRecord`,
-  `CounterRecord`, `RouteStageRecord`, `DestroyedCityRecord`, `ClueRecord`, `EventRecord`, `ReplayStepRecord`),
-  with async functions taking `&mut SqliteConnection`; `game_store::load_state`/`save_state` rebuild and write a
-  whole `GameState` (`games.version` is bumped on every save; the phase, prompt and clues are stored as JSON) and
-  `append_history` appends an engine's log and replay steps (`replay_steps`, board as JSON, NULL when unchanged). Queries use runtime
-  `sqlx::query`/`query_as` (no `DATABASE_URL` at build time). `db::connect` runs `migrations/` (embedded with
-  `sqlx::migrate!`); schema changes go in a new migration file, never by editing an applied one. A partial unique
-  index enforces one placed counter per city.
+- **`src/db/`**: a document database, modelled on the game as one aggregate. `games` holds one `GameDocument`
+  per game: `_id` (numbered by the `sequences` collection), `token`, `version` (1 when created, bumped by every
+  `save`), the whole `GameState` embedded as it serializes (secrets included) and the tokens' `tilts`
+  (`TiltDocument`s). The log and the replay grow apart, in batches (bucket pattern): every save appends at most
+  one `LogBatch` (`log_batches`) and one `ReplayBatch` (`replay_batches`) tagged with the game id and the version,
+  indexed on `game_id`, so a save never rewrites the history and the game page never reads the replay's boards.
+  `Store` opens the database folder (created if missing, indexes created at open) and wraps it: `write` runs a
+  closure in a transaction, alone among writers (PoloDB transactions do not lock what they read), committing it
+  on success and rolling it back on error; `run` moves blocking work onto `spawn_blocking`. Reads take a
+  `DocumentSource` (the `Database`, or a `Transaction` that sees its own writes). No migrations: a field added
+  to a stored type must default when missing (`#[serde(default)]`) for the games already stored.
 - **`src/service/`**: one use case per file. `create_game` takes the human's `Side`, draws four investigators and
   a private token, runs the game until the human's first prompt (the first moves, or the professor's setup) and
-  stores everything (`games.human_side`). `answer_prompt` opens `begin_write` (`BEGIN IMMEDIATE`), loads the
-  state, runs the engine with real dice, `PetersenAi` and `InvestigatorsAi`, saves the state and appends the
-  log and the replay steps. `GameView` is the human's view of a game. Leading the investigators, it never holds the professor's
+  stores everything. `answer_prompt` loads the game inside `Store::write`, runs the engine with real dice,
+  `PetersenAi` and `InvestigatorsAi`, saves the state and the tilts and appends the log and the replay steps; a
+  refused answer writes nothing. `GameView` is the human's view of a game. Leading the investigators, it never holds the professor's
   position (only the last sighting), hand, hidden counters, route sheet or Nyog'Sothep's city while they are
   secret; playing the professor, it holds all of them (`CounterView::hidden` marks the counters the
   investigators have not found). At the end it reveals the route sheet, every counter and the scores.
-  `TokenTilts` gives every token a random tilt of up to 5° either way (table `token_tilts`), drawn again by
-  `refresh_tilts` after each save only for the tokens that moved. `ReplayView` holds the replay steps of a
+  `TokenTilts` gives every token a random tilt of up to 5° either way (stored in the game document), drawn again
+  by `refresh_tilts` before each save only for the tokens that moved. `ReplayView` holds the replay steps of a
   finished game (`AppError::GameNotOver` before the end), from the first one with a board.
 - **`src/web/`**: `router.rs` lists the routes (`/`, `POST /games` with the `side` field, `/rules` (the scanned French
   rules, `img/rules-*.jpg`), `/games/{id}/{token}`, `/games/{id}/{token}/replay` (`replay_handlers.rs`)

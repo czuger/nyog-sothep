@@ -18,8 +18,8 @@ Settings (environment variables):
 
 | Variable | Default | Meaning |
 |---|---|---|
-| `DATABASE_URL` | `sqlite://data/nyog_sothep.db` | SQLite database, created with its folder if missing |
-| `NYOG_SOTHEP_DATA_DIR` | | Folder holding `nyog_sothep.db`, used when `DATABASE_URL` is not set |
+| `DATABASE_PATH` | `data/nyog_sothep.polodb` | Folder of the PoloDB database, created if missing |
+| `NYOG_SOTHEP_DATA_DIR` | | Folder holding `nyog_sothep.polodb`, used when `DATABASE_PATH` is not set |
 | `BIND_ADDR` | `127.0.0.1:3000` | TCP address the server listens on |
 | `NYOG_SOTHEP_SOCKET` | | Unix socket to listen on instead of TCP |
 | `RUST_LOG` | `info` | Log filter |

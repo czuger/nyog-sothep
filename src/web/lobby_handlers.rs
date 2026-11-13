@@ -33,6 +33,6 @@ pub async fn create_game(
             .ok_or_else(|| AppError::InvalidForm(format!("camp inconnu « {code} »")))?,
         None => Side::Investigators,
     };
-    let game = create_game_service(&state.pool, human).await?;
+    let game = create_game_service(&state.store, human).await?;
     Ok(Redirect::to(&format!("{root}{}", game.path())))
 }

@@ -14,6 +14,6 @@ pub async fn show_game(
     Path((game_id, token)): Path<(i64, String)>,
     root: RelativeRoot,
 ) -> Result<Html<String>, AppError> {
-    let view = GameView::load(&state.pool, game_id, &token).await?;
+    let view = GameView::load(&state.store, game_id, &token).await?;
     Ok(Html(GamePage::new(view, None, root).render()?))
 }

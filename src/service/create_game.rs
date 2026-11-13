@@ -1,16 +1,14 @@
 use rand::distr::Alphanumeric;
 use rand::seq::SliceRandom;
 use rand::{Rng, RngExt};
-use sqlx::SqlitePool;
 
-use crate::db::{GameRecord, append_history, save_state};
+use crate::db::{GameDocument, Store};
 use crate::domain::investigator_ai::InvestigatorsAi;
 use crate::domain::professor_ai::PetersenAi;
 use crate::domain::turn::{Engine, GameState, History, Side};
 use crate::domain::{InvestigatorId, RandomDice};
 use crate::error::AppError;
 use crate::service::token_tilts::refresh_tilts;
-use crate::service::write_transaction::begin_write;
 
 /// Investigators played in a game (the rules' two-player setup).
 pub const INVESTIGATOR_COUNT: usize = 4;
@@ -38,18 +36,24 @@ impl CreatedGame {
 ///
 /// # Arguments
 /// * `human` - the side the human plays; the computer plays the other.
-pub async fn create_game(pool: &SqlitePool, human: Side) -> Result<CreatedGame, AppError> {
+///
+/// # Errors
+/// A database error.
+pub async fn create_game(store: &Store, human: Side) -> Result<CreatedGame, AppError> {
     let (token, state, history) = set_up(human);
-    let mut transaction = begin_write(pool).await?;
-    let game_id = GameRecord::insert(&mut transaction, &token, &state).await?;
-    let mut game = GameRecord::load(&mut transaction, game_id, &token)
-        .await?
-        .ok_or(AppError::GameNotFound)?;
-    save_state(&mut transaction, &mut game, &state).await?;
-    refresh_tilts(&mut transaction, game_id, &state).await?;
-    append_history(&mut transaction, game_id, &history).await?;
-    transaction.commit().await?;
-    Ok(CreatedGame { game_id, token })
+    let tilts = refresh_tilts(&[], &state);
+    store
+        .run(move |store| {
+            store.write(|transaction| {
+                let game = GameDocument::create(transaction, token, state, tilts)?;
+                game.record_history(transaction, &history)?;
+                Ok(CreatedGame {
+                    game_id: game.id,
+                    token: game.token,
+                })
+            })
+        })
+        .await
 }
 
 /// Draws the investigators and the private token, then starts the game.

@@ -24,13 +24,13 @@ pub async fn respond(
     answer: Result<Answer, AppError>,
 ) -> Result<Response, AppError> {
     let result = match answer {
-        Ok(answer) => answer_prompt(&state.pool, game_id, token, answer).await,
+        Ok(answer) => answer_prompt(&state.store, game_id, token, answer).await,
         Err(error) => Err(error),
     };
     match result {
         Ok(()) => Ok(Redirect::to(&format!("{root}games/{game_id}/{token}")).into_response()),
         Err(error) if !error.is_internal() && !matches!(error, AppError::GameNotFound) => {
-            let view = GameView::load(&state.pool, game_id, token).await?;
+            let view = GameView::load(&state.store, game_id, token).await?;
             let page = GamePage::new(view, Some(error.to_string()), root.clone());
             Ok((StatusCode::BAD_REQUEST, Html(page.render()?)).into_response())
         }

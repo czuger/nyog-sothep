@@ -1,6 +1,4 @@
-use sqlx::SqlitePool;
-
-use crate::db::{GameRecord, ReplayStepRecord};
+use crate::db::{GameDocument, ReplayBatch, Store};
 use crate::domain::turn::{Outcome, ReplayStep, Side};
 use crate::error::AppError;
 
@@ -25,25 +23,24 @@ impl ReplayView {
     /// # Errors
     /// `GameNotFound` for a wrong id or token, `GameNotOver` while the game goes on (the replay
     /// would give the professor's secrets away), or a database error.
-    pub async fn load(
-        pool: &SqlitePool,
-        game_id: i64,
-        token: &str,
-    ) -> Result<ReplayView, AppError> {
-        let mut connection = pool.acquire().await?;
-        let game = GameRecord::load(&mut connection, game_id, token)
-            .await?
-            .ok_or(AppError::GameNotFound)?;
-        let outcome = game.outcome()?.ok_or(AppError::GameNotOver)?;
-        let human = game.human()?;
-        let steps = ReplayStepRecord::load_all(&mut connection, game_id).await?;
-        Ok(ReplayView {
-            game_id,
-            token: game.token,
-            human,
-            outcome,
-            steps: from_first_board(steps),
-        })
+    pub async fn load(store: &Store, game_id: i64, token: &str) -> Result<ReplayView, AppError> {
+        let token = token.to_string();
+        store
+            .run(move |store| {
+                let database = store.database();
+                let game =
+                    GameDocument::find(database, game_id, &token)?.ok_or(AppError::GameNotFound)?;
+                let outcome = game.state.outcome.ok_or(AppError::GameNotOver)?;
+                let steps = ReplayBatch::oldest_first(database, game_id)?;
+                Ok(ReplayView {
+                    game_id,
+                    token: game.token,
+                    human: game.state.human,
+                    outcome,
+                    steps: from_first_board(steps),
+                })
+            })
+            .await
     }
 
     /// Whether the game was played before its events were recorded.

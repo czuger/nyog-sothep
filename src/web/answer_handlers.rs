@@ -121,7 +121,7 @@ mod tests {
     use axum::http::header::LOCATION;
 
     use super::*;
-    use crate::db;
+    use crate::db::Store;
     use crate::domain::LocationId;
     use crate::domain::turn::Side;
     use crate::service::create_game;
@@ -134,9 +134,13 @@ mod tests {
 
     #[tokio::test]
     async fn an_answer_redirects_and_a_refusal_shows_the_page_again() {
-        let pool = db::connect("sqlite::memory:").await.unwrap();
-        let state = AppState { pool };
-        let game = create_game(&state.pool, Side::Investigators).await.unwrap();
+        let folder = tempfile::tempdir().unwrap();
+        let state = AppState {
+            store: Store::open(folder.path()).unwrap(),
+        };
+        let game = create_game(&state.store, Side::Investigators)
+            .await
+            .unwrap();
         let path = || Path((game.game_id, game.token.clone()));
         let root = || RelativeRoot::of_path("/games/1/token/moves");
         let wrong = fields(&[("move_0", "boston")]);

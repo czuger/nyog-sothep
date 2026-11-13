@@ -14,6 +14,6 @@ pub async fn show_replay(
     Path((game_id, token)): Path<(i64, String)>,
     root: RelativeRoot,
 ) -> Result<Html<String>, AppError> {
-    let view = ReplayView::load(&state.pool, game_id, &token).await?;
+    let view = ReplayView::load(&state.store, game_id, &token).await?;
     Ok(Html(ReplayPage::new(view, root)?.render()?))
 }

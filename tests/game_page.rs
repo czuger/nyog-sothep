@@ -1,16 +1,15 @@
 //! The game page: one screen per prompt, and never a secret of the professor in the HTML.
 
 use askama::Template;
-use sqlx::SqlitePool;
 
-use nyog_sothep::db::{self, EventRecord, GameRecord, save_state};
+use nyog_sothep::db::{GameDocument, Store};
 use nyog_sothep::domain::investigator_ai::InvestigatorsAi;
 use nyog_sothep::domain::professor_ai::PetersenAi;
 use nyog_sothep::domain::turn::{
     Engine, GameState, Outcome, Phase, ProfessorMoveOptions, ProfessorPrompt, Prompt, Side,
 };
 use nyog_sothep::domain::{CounterKind, FightChoice, InvestigatorId, LocationId, RandomDice};
-use nyog_sothep::service::{GameView, TokenTilts, refresh_tilts};
+use nyog_sothep::service::{GameView, refresh_tilts};
 use nyog_sothep::web::{GamePage, RelativeRoot, Screen};
 
 const IDS: [InvestigatorId; 4] = [
@@ -38,25 +37,24 @@ fn secret_state() -> GameState {
     state
 }
 
+/// Stores the state and renders the page the human is shown.
 async fn render(state: &GameState) -> (Screen, String) {
-    let pool: SqlitePool = db::connect("sqlite::memory:").await.unwrap();
-    let mut connection = pool.acquire().await.unwrap();
-    let game_id = GameRecord::insert(&mut connection, "secret-token", state)
+    let folder = tempfile::tempdir().unwrap();
+    let store = Store::open(folder.path()).unwrap();
+    let game = store
+        .write(|transaction| {
+            let tilts = refresh_tilts(&[], state);
+            GameDocument::create(
+                transaction,
+                "secret-token".to_string(),
+                state.clone(),
+                tilts,
+            )
+        })
+        .unwrap();
+    let view = GameView::load(&store, game.id, "secret-token")
         .await
         .unwrap();
-    let mut game = GameRecord::load(&mut connection, game_id, "secret-token")
-        .await
-        .unwrap()
-        .unwrap();
-    save_state(&mut connection, &mut game, state).await.unwrap();
-    refresh_tilts(&mut connection, game_id, state)
-        .await
-        .unwrap();
-    let tilts = TokenTilts::load(&mut connection, game_id).await.unwrap();
-    let log = EventRecord::newest_first(&mut connection, game_id)
-        .await
-        .unwrap();
-    let view = GameView::of(&game, state, log, tilts);
     let page = GamePage::new(view, None, RelativeRoot::of_path("/games/1/secret-token"));
     (page.screen, page.render().unwrap())
 }

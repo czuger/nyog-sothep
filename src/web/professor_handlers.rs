@@ -160,7 +160,7 @@ mod tests {
     use axum::http::StatusCode;
 
     use super::*;
-    use crate::db;
+    use crate::db::Store;
     use crate::domain::LocationId;
     use crate::domain::turn::Side;
     use crate::service::{GameView, create_game};
@@ -177,12 +177,14 @@ mod tests {
 
     #[tokio::test]
     async fn the_professor_sets_up_then_plays_on() {
-        let pool = db::connect("sqlite::memory:").await.unwrap();
-        let state = AppState { pool };
-        let game = create_game(&state.pool, Side::Professor).await.unwrap();
+        let folder = tempfile::tempdir().unwrap();
+        let state = AppState {
+            store: Store::open(folder.path()).unwrap(),
+        };
+        let game = create_game(&state.store, Side::Professor).await.unwrap();
         let path = || Path((game.game_id, game.token.clone()));
         let root = || RelativeRoot::of_path("/games/1/token/setup");
-        let view = GameView::load(&state.pool, game.game_id, &game.token)
+        let view = GameView::load(&state.store, game.game_id, &game.token)
             .await
             .unwrap();
         assert_eq!(GamePage::new(view, None, root()).screen, Screen::Setup);
@@ -198,7 +200,7 @@ mod tests {
             .await
             .unwrap();
         assert_eq!(response.status(), StatusCode::SEE_OTHER);
-        let view = GameView::load(&state.pool, game.game_id, &game.token)
+        let view = GameView::load(&state.store, game.game_id, &game.token)
             .await
             .unwrap();
         assert_ne!(GamePage::new(view, None, root()).screen, Screen::Setup);

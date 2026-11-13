@@ -9,26 +9,18 @@ use crate::domain::turn::AnswerError;
 /// The `Display` text is shown to the player, so it is written in French.
 #[derive(Debug, Error)]
 pub enum AppError {
-    /// The database failed.
+    /// The database failed, or a stored document could not be read back.
     #[error("Erreur de base de données.")]
-    Database(#[from] sqlx::Error),
-    /// The database schema could not be migrated.
-    #[error("Impossible de mettre à jour la base de données.")]
-    Migration(#[from] sqlx::migrate::MigrateError),
-    /// The folder holding the database file could not be created.
+    Database(#[from] polodb_core::Error),
+    /// The folder holding the database could not be created.
     #[error("Impossible de créer le dossier de la base de données.")]
     DatabaseFolder(#[from] std::io::Error),
+    /// The blocking database work panicked.
+    #[error("Erreur interne du serveur.")]
+    Task(#[from] tokio::task::JoinError),
     /// A page could not be rendered.
     #[error("Impossible d'afficher la page.")]
     Template(#[from] askama::Error),
-    /// A stored value does not match any known variant.
-    #[error("Donnée invalide en base ({column} = {value}).")]
-    CorruptData {
-        /// The column holding the value.
-        column: &'static str,
-        /// The value that could not be read.
-        value: String,
-    },
     /// No game has this id and token.
     #[error("Cette partie n'existe pas.")]
     GameNotFound,
@@ -49,10 +41,9 @@ impl AppError {
         matches!(
             self,
             AppError::Database(_)
-                | AppError::Migration(_)
                 | AppError::DatabaseFolder(_)
+                | AppError::Task(_)
                 | AppError::Template(_)
-                | AppError::CorruptData { .. }
         )
     }
 }

@@ -1,45 +1,49 @@
 //! The replay of a finished game: every recorded event, secrets included, and only once over.
 
 use askama::Template;
-use sqlx::SqlitePool;
+use tempfile::TempDir;
 
-use nyog_sothep::db::{self, GameRecord, load_state, save_state};
+use nyog_sothep::db::{GameDocument, Store};
 use nyog_sothep::domain::turn::{Answer, MoveOrder, Outcome, Phase, Side};
 use nyog_sothep::error::AppError;
 use nyog_sothep::service::{CreatedGame, ReplayView, answer_prompt, create_game};
 use nyog_sothep::web::{RelativeRoot, ReplayPage};
 
+/// An empty store, and the folder holding it.
+fn open_store() -> (TempDir, Store) {
+    let folder = tempfile::tempdir().unwrap();
+    let store = Store::open(folder.path()).unwrap();
+    (folder, store)
+}
+
 /// Ends a stored game as if the investigators had killed the professor.
-async fn finish(pool: &SqlitePool, game: &CreatedGame) {
-    let mut connection = pool.acquire().await.unwrap();
-    let mut record = GameRecord::load(&mut connection, game.game_id, &game.token)
-        .await
-        .unwrap()
-        .unwrap();
-    let mut state = load_state(&mut connection, &record).await.unwrap();
-    state.outcome = Some(Outcome::ProfessorKilled);
-    state.phase = Phase::Finished;
-    state.prompt = None;
-    save_state(&mut connection, &mut record, &state)
-        .await
+fn finish(store: &Store, game: &CreatedGame) {
+    store
+        .write(|transaction| {
+            let mut stored = GameDocument::find(transaction, game.game_id, &game.token)?.unwrap();
+            stored.state.outcome = Some(Outcome::ProfessorKilled);
+            stored.state.phase = Phase::Finished;
+            stored.state.prompt = None;
+            stored.save(transaction)
+        })
         .unwrap();
 }
 
 #[tokio::test]
 async fn a_finished_game_is_replayed_with_its_secrets() {
-    let pool = db::connect("sqlite::memory:").await.unwrap();
-    let game = create_game(&pool, Side::Investigators).await.unwrap();
+    let (_folder, store) = open_store();
+    let game = create_game(&store, Side::Investigators).await.unwrap();
     let stay = Answer::Moves((0..4).map(|index| (index, MoveOrder::Stay)).collect());
-    answer_prompt(&pool, game.game_id, &game.token, stay)
+    answer_prompt(&store, game.game_id, &game.token, stay)
         .await
         .unwrap();
     assert!(matches!(
-        ReplayView::load(&pool, game.game_id, &game.token).await,
+        ReplayView::load(&store, game.game_id, &game.token).await,
         Err(AppError::GameNotOver)
     ));
-    finish(&pool, &game).await;
+    finish(&store, &game);
 
-    let view = ReplayView::load(&pool, game.game_id, &game.token)
+    let view = ReplayView::load(&store, game.game_id, &game.token)
         .await
         .unwrap();
     assert!(view.steps[0].board.is_some());
@@ -75,10 +79,10 @@ async fn a_finished_game_is_replayed_with_its_secrets() {
 
 #[tokio::test]
 async fn a_replay_needs_the_games_token() {
-    let pool = db::connect("sqlite::memory:").await.unwrap();
-    let game = create_game(&pool, Side::Professor).await.unwrap();
+    let (_folder, store) = open_store();
+    let game = create_game(&store, Side::Professor).await.unwrap();
     assert!(matches!(
-        ReplayView::load(&pool, game.game_id, "wrong").await,
+        ReplayView::load(&store, game.game_id, "wrong").await,
         Err(AppError::GameNotFound)
     ));
 }

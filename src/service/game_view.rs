@@ -1,6 +1,4 @@
-use sqlx::SqlitePool;
-
-use crate::db::{EventRecord, GameRecord, load_state};
+use crate::db::{GameDocument, LogBatch, LogEntry, Store};
 use crate::domain::turn::{
     ClueKind, GameState, MoveOptions, Outcome, ProfessorPrompt, Prompt, RouteStage, Side,
 };
@@ -127,7 +125,7 @@ pub struct GameView {
     /// The investigators' notebook, oldest first.
     pub notebook: Vec<NotebookLine>,
     /// The game log, newest first.
-    pub log: Vec<EventRecord>,
+    pub log: Vec<LogEntry>,
     /// The professor's route sheet, shown to the professor, or at the end.
     pub route_sheet: Vec<RouteStage>,
     /// The investigators' scores, at the end only.
@@ -140,25 +138,24 @@ impl GameView {
     /// Loads the view of a game.
     ///
     /// # Errors
-    /// `GameNotFound` for a wrong id or token.
-    pub async fn load(pool: &SqlitePool, game_id: i64, token: &str) -> Result<GameView, AppError> {
-        let mut connection = pool.acquire().await?;
-        let game = GameRecord::load(&mut connection, game_id, token)
-            .await?
-            .ok_or(AppError::GameNotFound)?;
-        let state = load_state(&mut connection, &game).await?;
-        let log = EventRecord::newest_first(&mut connection, game_id).await?;
-        let tilts = TokenTilts::load(&mut connection, game_id).await?;
-        Ok(GameView::of(&game, &state, log, tilts))
+    /// `GameNotFound` for a wrong id or token, or a database error.
+    pub async fn load(store: &Store, game_id: i64, token: &str) -> Result<GameView, AppError> {
+        let token = token.to_string();
+        store
+            .run(move |store| {
+                let database = store.database();
+                let game =
+                    GameDocument::find(database, game_id, &token)?.ok_or(AppError::GameNotFound)?;
+                let log = LogBatch::newest_first(database, game_id)?;
+                Ok(GameView::of(&game, log))
+            })
+            .await
     }
 
-    /// Builds the view from the full state, keeping only what the human may see.
-    pub fn of(
-        game: &GameRecord,
-        state: &GameState,
-        log: Vec<EventRecord>,
-        mut tilts: TokenTilts,
-    ) -> GameView {
+    /// Builds the view from the stored game, keeping only what the human may see.
+    pub fn of(game: &GameDocument, log: Vec<LogEntry>) -> GameView {
+        let state = &game.state;
+        let mut tilts = TokenTilts::of_documents(&game.tilts);
         let finished = state.is_finished();
         let secrets = finished || state.human == Side::Professor;
         let revealed = secrets || state.nyog.is_summoned();

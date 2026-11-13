@@ -1,16 +1,14 @@
 use std::collections::HashMap;
 
 use rand::RngExt;
-use sqlx::SqliteConnection;
 
-use crate::db::TokenTiltRecord;
+use crate::db::TiltDocument;
 use crate::domain::turn::GameState;
 use crate::domain::{CounterKind, InvestigatorId, LocationId};
-use crate::error::AppError;
 use crate::service::game_view::last_sighting;
 
 /// Largest tilt of a token, in tenths of a degree either way.
-const MAX_TILT_TENTHS: i64 = 50;
+const MAX_TILT_TENTHS: i32 = 50;
 
 /// A token drawn tilted on the map.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -46,29 +44,25 @@ impl TiltedToken {
 /// The rotations the tokens of a game are drawn with, kept until they move.
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct TokenTilts {
-    tenths: HashMap<String, i64>,
+    tenths: HashMap<String, i32>,
 }
 
 impl TokenTilts {
-    /// Loads the tilts of a game.
-    pub async fn load(
-        connection: &mut SqliteConnection,
-        game_id: i64,
-    ) -> Result<TokenTilts, AppError> {
-        let records = TokenTiltRecord::load_all(connection, game_id).await?;
-        Ok(TokenTilts {
-            tenths: records
-                .into_iter()
-                .map(|record| (record.token, record.tenths))
+    /// The tilts stored with a game.
+    pub fn of_documents(documents: &[TiltDocument]) -> TokenTilts {
+        TokenTilts {
+            tenths: documents
+                .iter()
+                .map(|document| (document.token.clone(), document.tenths))
                 .collect(),
-        })
+        }
     }
 
     /// The rotation of a token, in degrees (none for a token never tilted yet).
     pub fn of(&self, token: TiltedToken) -> f64 {
         self.tenths
             .get(&token.key())
-            .map_or(0.0, |tenths| *tenths as f64 / 10.0)
+            .map_or(0.0, |tenths| f64::from(*tenths) / 10.0)
     }
 
     /// Drops the tilt of a token the human must not follow.
@@ -77,45 +71,23 @@ impl TokenTilts {
     }
 }
 
-/// Draws a new tilt for every token that moved or appeared since the last save, and forgets
-/// the tokens that left the board.
-///
-/// # Errors
-/// A database error.
-pub async fn refresh_tilts(
-    connection: &mut SqliteConnection,
-    game_id: i64,
-    state: &GameState,
-) -> Result<(), AppError> {
-    let stored = TokenTiltRecord::load_all(connection, game_id).await?;
-    let placements = placements(state);
-    for record in new_tilts(&stored, &placements) {
-        record.save(connection, game_id).await?;
-    }
-    for record in &stored {
-        if !placements
-            .iter()
-            .any(|(token, _)| token.key() == record.token)
-        {
-            TokenTiltRecord::delete(connection, game_id, &record.token).await?;
-        }
-    }
-    Ok(())
-}
-
-/// A new random tilt for every token that moved; drawn before any write since the generator
-/// cannot be held across an `.await`.
-fn new_tilts(
-    stored: &[TokenTiltRecord],
-    placements: &[(TiltedToken, LocationId)],
-) -> Vec<TokenTiltRecord> {
+/// The tilts to store with a game: kept for the tokens that stayed put, drawn again for those
+/// that moved or appeared since `stored`, and dropped for those that left the board.
+pub fn refresh_tilts(stored: &[TiltDocument], state: &GameState) -> Vec<TiltDocument> {
     let mut rng = rand::rng();
-    moved(stored, placements)
+    placements(state)
         .into_iter()
-        .map(|(token, location)| TokenTiltRecord {
-            token: token.key(),
-            location: location.code().to_string(),
-            tenths: rng.random_range(-MAX_TILT_TENTHS..=MAX_TILT_TENTHS),
+        .map(|(token, location)| {
+            let key = token.key();
+            stored
+                .iter()
+                .find(|document| document.token == key && document.location == location)
+                .cloned()
+                .unwrap_or_else(|| TiltDocument {
+                    token: key,
+                    location,
+                    tenths: rng.random_range(-MAX_TILT_TENTHS..=MAX_TILT_TENTHS),
+                })
         })
         .collect()
 }
@@ -154,26 +126,9 @@ fn placements(state: &GameState) -> Vec<(TiltedToken, LocationId)> {
     placements
 }
 
-/// The tokens whose stored tilt was drawn elsewhere, or that have none yet.
-fn moved(
-    stored: &[TokenTiltRecord],
-    placements: &[(TiltedToken, LocationId)],
-) -> Vec<(TiltedToken, LocationId)> {
-    placements
-        .iter()
-        .filter(|(token, location)| {
-            !stored
-                .iter()
-                .any(|record| record.token == token.key() && record.location == location.code())
-        })
-        .copied()
-        .collect()
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::db::{GameRecord, connect};
     use crate::domain::RandomDice;
     use crate::domain::investigator_ai::InvestigatorsAi;
     use crate::domain::professor_ai::PetersenAi;
@@ -187,40 +142,7 @@ mod tests {
     ];
 
     #[test]
-    fn only_moved_or_new_tokens_get_a_new_tilt() {
-        let stored = vec![
-            TokenTiltRecord {
-                token: TiltedToken::Investigator(InvestigatorId::Armitage).key(),
-                location: LocationId::Boston.code().to_string(),
-                tenths: 25,
-            },
-            TokenTiltRecord {
-                token: TiltedToken::Professor.key(),
-                location: LocationId::Worcester.code().to_string(),
-                tenths: -10,
-            },
-        ];
-        let placements = [
-            (
-                TiltedToken::Investigator(InvestigatorId::Armitage),
-                LocationId::Boston,
-            ),
-            (TiltedToken::Professor, LocationId::Lynn),
-            (TiltedToken::Nyog, LocationId::Concord),
-        ];
-        assert_eq!(
-            moved(&stored, &placements),
-            vec![
-                (TiltedToken::Professor, LocationId::Lynn),
-                (TiltedToken::Nyog, LocationId::Concord),
-            ]
-        );
-    }
-
-    #[tokio::test]
-    async fn tilts_are_kept_until_the_token_moves() {
-        let pool = connect("sqlite::memory:").await.unwrap();
-        let mut connection = pool.acquire().await.unwrap();
+    fn tilts_are_kept_until_the_token_moves() {
         let (mut state, _) = Engine::new_game(
             &IDS,
             Side::Investigators,
@@ -228,40 +150,42 @@ mod tests {
             &mut PetersenAi::seeded(2),
             &mut InvestigatorsAi::seeded(2),
         );
-        let game_id = GameRecord::insert(&mut connection, "token", &state)
-            .await
-            .unwrap();
-        refresh_tilts(&mut connection, game_id, &state)
-            .await
-            .unwrap();
-        let first = TokenTiltRecord::load_all(&mut connection, game_id)
-            .await
-            .unwrap();
+        let first = refresh_tilts(&[], &state);
         assert!(
             first
                 .iter()
-                .all(|record| record.tenths.abs() <= MAX_TILT_TENTHS)
+                .all(|document| document.tenths.abs() <= MAX_TILT_TENTHS)
         );
-        assert!(
-            first
-                .iter()
-                .any(|record| record.token == "investigator:walker")
-        );
+        let walker = TiltedToken::Investigator(InvestigatorId::Walker).key();
+        assert!(first.iter().any(|document| document.token == walker));
 
         state.investigators[3].location = LocationId::NantucketSound;
-        refresh_tilts(&mut connection, game_id, &state)
-            .await
-            .unwrap();
-        let second = TokenTiltRecord::load_all(&mut connection, game_id)
-            .await
-            .unwrap();
+        let second = refresh_tilts(&first, &state);
         assert_eq!(first.len(), second.len());
         for (before, after) in first.iter().zip(&second) {
-            if after.token == "investigator:walker" {
-                assert_eq!(after.location, LocationId::NantucketSound.code());
+            if after.token == walker {
+                assert_eq!(after.location, LocationId::NantucketSound);
             } else {
                 assert_eq!(before, after);
             }
         }
+    }
+
+    #[test]
+    fn tokens_off_the_board_lose_their_tilt() {
+        let (state, _) = Engine::new_game(
+            &IDS,
+            Side::Investigators,
+            &mut RandomDice::seeded(2),
+            &mut PetersenAi::seeded(2),
+            &mut InvestigatorsAi::seeded(2),
+        );
+        let gone = TiltDocument {
+            token: TiltedToken::Destroyed(LocationId::Boston).key(),
+            location: LocationId::Boston,
+            tenths: 7,
+        };
+        let refreshed = refresh_tilts(std::slice::from_ref(&gone), &state);
+        assert!(!refreshed.contains(&gone));
     }
 }

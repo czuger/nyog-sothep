@@ -1,6 +1,7 @@
 use nyog_sothep::config::AppConfig;
+use nyog_sothep::db::Store;
+use nyog_sothep::server;
 use nyog_sothep::web::{AppState, build_router};
-use nyog_sothep::{db, server};
 use tracing_subscriber::EnvFilter;
 
 #[tokio::main]
@@ -11,9 +12,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         )
         .init();
     let config = AppConfig::from_env();
-    let pool = db::connect(&config.database_url).await?;
-    let router = build_router(AppState { pool: pool.clone() });
+    let store = Store::open(&config.database_path)?;
+    let router = build_router(AppState { store });
     server::serve(router, &config.listen_on).await?;
-    pool.close().await;
     Ok(())
 }

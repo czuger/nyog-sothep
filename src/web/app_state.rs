@@ -1,8 +1,8 @@
-use sqlx::SqlitePool;
+use crate::db::Store;
 
 /// State shared by every request handler.
 #[derive(Clone)]
 pub struct AppState {
-    /// Database connection pool.
-    pub pool: SqlitePool,
+    /// The database.
+    pub store: Store,
 }

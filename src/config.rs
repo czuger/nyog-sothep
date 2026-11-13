@@ -2,13 +2,13 @@
 
 use std::path::PathBuf;
 
-const DEFAULT_DATABASE_URL: &str = "sqlite://data/nyog_sothep.db";
+const DEFAULT_DATABASE_PATH: &str = "data/nyog_sothep.polodb";
 const DEFAULT_BIND_ADDR: &str = "127.0.0.1:3000";
-const DATABASE_FILE: &str = "nyog_sothep.db";
+const DATABASE_FOLDER: &str = "nyog_sothep.polodb";
 
-/// SQLite URL, wins over the data directory.
-const DATABASE_URL_VAR: &str = "DATABASE_URL";
-/// Directory holding the database file (set by `cargo deploy` from `data-dirs`).
+/// Folder of the PoloDB database, wins over the data directory.
+const DATABASE_PATH_VAR: &str = "DATABASE_PATH";
+/// Directory holding the database folder (set by `cargo deploy` from `data-dirs`).
 const DATA_DIR_VAR: &str = "NYOG_SOTHEP_DATA_DIR";
 /// Unix socket to listen on instead of TCP (set by `cargo deploy`).
 const SOCKET_VAR: &str = "NYOG_SOTHEP_SOCKET";
@@ -27,8 +27,8 @@ pub enum ListenOn {
 /// Server settings.
 #[derive(Debug, Clone)]
 pub struct AppConfig {
-    /// SQLite URL, the file is created if missing.
-    pub database_url: String,
+    /// Folder of the PoloDB database, created if missing.
+    pub database_path: PathBuf,
     /// Where the server listens.
     pub listen_on: ListenOn,
 }
@@ -42,10 +42,10 @@ impl AppConfig {
     /// Builds the settings from a variable lookup; an empty variable counts as unset.
     fn from_lookup(lookup: impl Fn(&str) -> Option<String>) -> AppConfig {
         let var = |name: &str| lookup(name).filter(|value| !value.is_empty());
-        let database_url = match (var(DATABASE_URL_VAR), var(DATA_DIR_VAR)) {
-            (Some(url), _) => url,
-            (None, Some(dir)) => format!("sqlite://{}/{DATABASE_FILE}", dir.trim_end_matches('/')),
-            (None, None) => DEFAULT_DATABASE_URL.to_string(),
+        let database_path = match (var(DATABASE_PATH_VAR), var(DATA_DIR_VAR)) {
+            (Some(path), _) => PathBuf::from(path),
+            (None, Some(dir)) => PathBuf::from(dir).join(DATABASE_FOLDER),
+            (None, None) => PathBuf::from(DEFAULT_DATABASE_PATH),
         };
         let listen_on = match var(SOCKET_VAR) {
             Some(path) => ListenOn::UnixSocket(PathBuf::from(path)),
@@ -54,7 +54,7 @@ impl AppConfig {
             }
         };
         AppConfig {
-            database_url,
+            database_path,
             listen_on,
         }
     }
@@ -75,7 +75,7 @@ mod tests {
     #[test]
     fn defaults_to_local_tcp_and_database() {
         let config = config(&[]);
-        assert_eq!(config.database_url, DEFAULT_DATABASE_URL);
+        assert_eq!(config.database_path, PathBuf::from(DEFAULT_DATABASE_PATH));
         assert_eq!(
             config.listen_on,
             ListenOn::Tcp(DEFAULT_BIND_ADDR.to_string())
@@ -98,20 +98,20 @@ mod tests {
     fn the_data_dir_holds_the_database_unless_a_url_is_given() {
         let in_dir = config(&[("NYOG_SOTHEP_DATA_DIR", "/srv/app/data/db/")]);
         assert_eq!(
-            in_dir.database_url,
-            "sqlite:///srv/app/data/db/nyog_sothep.db"
+            in_dir.database_path,
+            PathBuf::from("/srv/app/data/db/nyog_sothep.polodb")
         );
         let explicit = config(&[
             ("NYOG_SOTHEP_DATA_DIR", "/srv/app/data/db"),
-            ("DATABASE_URL", "sqlite://other.db"),
+            ("DATABASE_PATH", "other.polodb"),
         ]);
-        assert_eq!(explicit.database_url, "sqlite://other.db");
+        assert_eq!(explicit.database_path, PathBuf::from("other.polodb"));
     }
 
     #[test]
     fn empty_variables_count_as_unset() {
-        let config = config(&[("NYOG_SOTHEP_SOCKET", ""), ("DATABASE_URL", "")]);
-        assert_eq!(config.database_url, DEFAULT_DATABASE_URL);
+        let config = config(&[("NYOG_SOTHEP_SOCKET", ""), ("DATABASE_PATH", "")]);
+        assert_eq!(config.database_path, PathBuf::from(DEFAULT_DATABASE_PATH));
         assert_eq!(
             config.listen_on,
             ListenOn::Tcp(DEFAULT_BIND_ADDR.to_string())
