@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="656" height="640" viewBox="0 0 82 80">
+<defs><filter id="w" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency="0.09" numOctaves="2" seed="9" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="1.5" xChannelSelector="R" yChannelSelector="G"/></filter></defs>
+<rect width="82" height="80" fill="#F3E49C"/>
+<g filter="url(#w)" stroke="#15120a" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" fill="#F3E49C">
+<g transform="rotate(-7 41 35)">
+<path d="M19,7 H54 L63,16 V63 H19 Z"/><path d="M54,7 V16 H63" stroke-width="1.4"/>
+<path d="M25,15h20" stroke-width="2.6"/>
+<g stroke-width="1"><path d="M25,23h31M25,28h31M25,33h26M25,38h31M25,43h14M25,56 q3,-5 5,0 q2,4 4,-2 q2,-4 5,2"/></g>
+<circle cx="50" cy="50" r="8" stroke-width="1.5"/><circle cx="50" cy="50" r="4.5" stroke-width="1"/><path d="M47.5,50h5M50,47.5v5" stroke-width="1"/></g>
+</g>
+<text x="41" y="76" text-anchor="middle" font-family="Arial" font-size="8" fill="#15120a" stroke="#15120a" stroke-width="0.25">LAISSEZ-PASSER</text>
+</svg>

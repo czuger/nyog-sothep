@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="656" height="640" viewBox="0 0 82 80">
+<defs><filter id="w" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency="0.09" numOctaves="2" seed="11" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="1.5" xChannelSelector="R" yChannelSelector="G"/></filter></defs>
+<rect width="82" height="80" fill="#F3E49C"/>
+<g filter="url(#w)" stroke="#15120a" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" fill="#F3E49C">
+<g transform="rotate(9 41 36)">
+<rect x="37" y="5" width="9" height="8" rx="1" fill="#15120a"/>
+<path d="M35.5,13 h12 v7 q8,2 8,9 V60 q0,3 -3,3 H30.5 q-3,0 -3,-3 V29 q0,-7 8,-9 z"/>
+<path d="M35.5,16.5h12" stroke-width="1.2"/>
+<rect x="31" y="34" width="21" height="18" stroke-width="1.3"/>
+<g stroke-width="1"><path d="M34,38.5h15M34,42.5h15M36,47h11"/><path d="M30,56h4M30,59h7M49,56h4M46,59h7M29.5,30l3,-4" stroke-width="0.9"/></g></g>
+</g>
+<text x="41" y="76" text-anchor="middle" font-family="Arial" font-size="9" fill="#15120a" stroke="#15120a" stroke-width="0.25">LAUDANUM</text>
+</svg>

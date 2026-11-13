@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="656" height="640" viewBox="0 0 82 80">
+<defs><filter id="w" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency="0.09" numOctaves="2" seed="19" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="1.5" xChannelSelector="R" yChannelSelector="G"/></filter></defs>
+<rect width="82" height="80" fill="#F3E49C"/>
+<g filter="url(#w)" stroke="#15120a" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" fill="#F3E49C">
+<path d="M24,13 L60,7 L66,52 L30,61 Z" fill="#15120a"/>
+<path d="M24,13 L17,17 L23,64 L30,61 Z"/>
+<path d="M23,64 L59,56 L66,52" fill="none"/>
+<g stroke-width="0.8"><path d="M25,62.3 L61,54.3 M27,61.5 L63,53.3"/></g>
+<g stroke="#F3E49C" fill="none"><path d="M28.5,17 L56.5,12.3 L61.5,49 L33.5,56 Z" stroke-width="0.9"/>
+<circle cx="45" cy="33.5" r="10.5" stroke-width="1.2"/>
+<path d="M45,24.5 L50.6,41 L36.3,31 L53.7,30.2 L39.8,41.6 Z" stroke-width="1"/></g>
+<circle cx="45" cy="34" r="1.5" fill="#F3E49C" stroke="none"/>
+<path d="M64,29 l5,-1 l1,6 l-5,1" stroke-width="1.4"/>
+</g>
+<text x="41" y="76" text-anchor="middle" font-family="Arial" font-size="8" fill="#15120a" stroke="#15120a" stroke-width="0.25">NECRONOMICON</text>
+</svg>
