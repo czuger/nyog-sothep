@@ -4,7 +4,7 @@ use askama::Template;
 use serde::Serialize;
 
 use crate::domain::map::location;
-use crate::domain::{CounterKind, InvestigatorId, LocationId};
+use crate::domain::{CounterKind, InvestigatorId, Item, LocationId};
 use crate::error::AppError;
 use crate::service::ReplayView;
 use crate::web::board_view::BoardView;
@@ -30,6 +30,7 @@ struct ReplayData<'a> {
     places: BTreeMap<&'static str, PlaceData>,
     investigators: BTreeMap<&'static str, InvestigatorData>,
     counters: BTreeMap<&'static str, &'static str>,
+    items: BTreeMap<&'static str, &'static str>,
     steps: &'a [crate::domain::turn::ReplayStep],
 }
 
@@ -82,6 +83,10 @@ impl ReplayPage {
             counters: CounterKind::ALL
                 .into_iter()
                 .map(|kind| (kind.code(), kind.name()))
+                .collect(),
+            items: Item::objects()
+                .into_iter()
+                .map(|item| (item.code(), item.name()))
                 .collect(),
             steps: &view.steps,
         };

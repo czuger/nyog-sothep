@@ -12,6 +12,7 @@ mod investigator;
 pub mod investigator_ai;
 mod investigator_id;
 mod investigator_status;
+pub mod item;
 pub mod location_id;
 mod location_kind;
 pub mod map;
@@ -35,6 +36,7 @@ pub use fight_choice::FightChoice;
 pub use investigator::{Investigator, STARTING_CITY, STARTING_SAN_BONUS, STARTING_SAN_DICE};
 pub use investigator_id::InvestigatorId;
 pub use investigator_status::InvestigatorStatus;
+pub use item::{Gear, Item, Protection, Weapon};
 pub use location_id::{LOCATION_COUNT, LocationId};
 pub use location_kind::LocationKind;
 pub use nyog_sothep::{

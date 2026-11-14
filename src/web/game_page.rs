@@ -140,13 +140,8 @@ impl GamePage {
 
     /// How many dice the prompted investigator rolls on an event table.
     pub fn event_dice(&self) -> u8 {
-        self.prompted().map_or(1, |investigator| {
-            match (investigator.sign, investigator.medallion) {
-                (true, true) => 3,
-                (true, false) => 2,
-                _ => 1,
-            }
-        })
+        self.prompted()
+            .map_or(1, |investigator| investigator.event_dice)
     }
 
     /// The question asked about the named cities.

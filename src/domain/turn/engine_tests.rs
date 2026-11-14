@@ -32,6 +32,7 @@ fn new_game(brain: &mut ScriptedProfessor) -> GameState {
     let (state, _) = Engine::new_game(
         &IDS,
         Side::Investigators,
+        RuleSet::Original,
         &mut dice,
         brain,
         &mut investigators,
@@ -100,6 +101,7 @@ fn the_replay_reveals_the_setup_and_the_dice() {
     let (state, history) = Engine::new_game(
         &IDS,
         Side::Investigators,
+        RuleSet::Original,
         &mut dice,
         &mut brain,
         &mut investigators,
@@ -540,7 +542,14 @@ fn teleportation_moves_a_nearby_investigator() {
 fn professor_game(brain: &mut ScriptedProfessor) -> GameState {
     let mut dice = ScriptedDice::new(&[4; 12], 1);
     let mut investigators = InvestigatorsAi::seeded(0);
-    let (state, _) = Engine::new_game(&IDS, Side::Professor, &mut dice, brain, &mut investigators);
+    let (state, _) = Engine::new_game(
+        &IDS,
+        Side::Professor,
+        RuleSet::Original,
+        &mut dice,
+        brain,
+        &mut investigators,
+    );
     state
 }
 

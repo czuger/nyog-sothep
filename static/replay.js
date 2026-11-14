@@ -142,9 +142,13 @@
     if (investigator.status === 'Active') {
       body.append(element('span', { class: 'chip-stats' }, [investigator.san + ' SAN · ' + place(investigator.location).at]));
       const items = element('span', { class: 'chip-items' });
-      if (investigator.weapon) items.append(image(IMG + 'token-weapon.png', 'Arme'));
-      if (investigator.sign) items.append(image(IMG + 'token-sign.png', 'Signe protecteur'));
-      if (investigator.medallion) items.append(image(IMG + 'token-medallion.png', 'Médaillon de Fanatique'));
+      const held = [];
+      if (investigator.weapon) held.push(investigator.weapon_kind);
+      if (investigator.sign) held.push(investigator.protection);
+      if (investigator.medallion) held.push('medallion');
+      held.concat(investigator.gear).forEach(function (code) {
+        items.append(image(IMG + 'token-' + code + '.png', data.items[code]));
+      });
       if (investigator.spell) items.append(element('span', { class: 'spell' }, ['✶ sort de renvoi']));
       body.append(items);
     } else {
@@ -191,7 +195,10 @@
   }
 
   function diceText(dice) {
-    return dice.map(function (value) { return String.fromCodePoint(0x2680 + value - 1); }).join(' ');
+    // A d20 above 6 has no die face: it is written as a number.
+    return dice.map(function (value) {
+      return value <= 6 ? String.fromCodePoint(0x2680 + value - 1) : '(' + value + ')';
+    }).join(' ');
   }
 
   // The journal lists every step, newest first; the steps still to come stay hidden.

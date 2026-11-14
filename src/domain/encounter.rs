@@ -3,6 +3,7 @@
 use crate::domain::counter_kind::CounterKind;
 use crate::domain::dice::Dice;
 use crate::domain::investigator::Investigator;
+use crate::domain::item::{Gear, Protection};
 
 /// What becomes of the counter after the encounter.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -32,6 +33,8 @@ pub struct EncounterOutcome {
     pub forbids_city: bool,
     /// Coming turns lost.
     pub lost_turns: u8,
+    /// A single-use object used up.
+    pub spends: Option<Gear>,
     /// What becomes of the counter.
     pub fate: CounterFate,
     /// The investigator may still draw an event.
@@ -41,7 +44,8 @@ pub struct EncounterOutcome {
 }
 
 impl EncounterOutcome {
-    fn new(fate: CounterFate, text: String) -> EncounterOutcome {
+    /// An outcome with no effect but the counter's fate and the narration.
+    pub fn new(fate: CounterFate, text: String) -> EncounterOutcome {
         EncounterOutcome {
             san_loss: 0,
             loses_sign: false,
@@ -50,6 +54,7 @@ impl EncounterOutcome {
             pushed_back: false,
             forbids_city: false,
             lost_turns: 0,
+            spends: None,
             fate,
             event_allowed: false,
             text,
@@ -104,13 +109,16 @@ fn ghouls(investigator: &Investigator, dice: &mut dyn Dice) -> EncounterOutcome 
 fn deep_ones(investigator: &Investigator) -> EncounterOutcome {
     let name = investigator.id.name();
     if investigator.sign {
-        let mut outcome = EncounterOutcome::new(
-            CounterFate::Reserve,
-            format!(
+        let text = match investigator.protection {
+            Protection::Sign => format!(
                 "{name} rencontre des Profonds et les repousse avec son signe protecteur, qu'{} perd avec 1 SAN.",
                 investigator.id.pronoun()
             ),
-        );
+            Protection::MnarStone => format!(
+                "{name} rencontre des Profonds et les repousse avec sa pierre étoilée de Mnar, mais perd 1 SAN."
+            ),
+        };
+        let mut outcome = EncounterOutcome::new(CounterFate::Reserve, text);
         outcome.san_loss = 1;
         outcome.loses_sign = true;
         outcome.event_allowed = true;
@@ -137,9 +145,9 @@ fn fanatics(investigator: &Investigator, dice: &mut dyn Dice) -> EncounterOutcom
         outcome.pushed_back = true;
         return outcome;
     }
-    let roll = dice.d6() + u8::from(investigator.medallion);
+    let roll = dice.d6() + u8::from(investigator.medallion) + investigator.weapon_kind.bonus();
     let mut outcome = match roll {
-        7 => EncounterOutcome::new(
+        7.. => EncounterOutcome::new(
             CounterFate::Removed,
             format!("{name} rencontre des Fanatiques et les tue sans y laisser sa raison."),
         ),

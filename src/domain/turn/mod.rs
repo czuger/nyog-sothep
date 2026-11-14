@@ -29,6 +29,7 @@ mod recorded_dice;
 mod replay;
 mod replay_board;
 mod replay_step;
+mod rule_sets;
 mod sanity;
 mod setup;
 mod side;
@@ -49,6 +50,7 @@ pub use professor_prompt::{ProfessorAnswer, ProfessorPrompt};
 pub use prompt::{Answer, MoveOrder, Prompt};
 pub use replay_board::{ReplayBoard, ReplayCounter, ReplayInvestigator};
 pub use replay_step::ReplayStep;
+pub use rule_sets::RuleSet;
 pub use side::Side;
 
 #[cfg(test)]

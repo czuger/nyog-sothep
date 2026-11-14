@@ -4,7 +4,7 @@ use askama::Template;
 use tempfile::TempDir;
 
 use nyog_sothep::db::{GameDocument, Store};
-use nyog_sothep::domain::turn::{Answer, MoveOrder, Outcome, Phase, Side};
+use nyog_sothep::domain::turn::{Answer, MoveOrder, Outcome, Phase, RuleSet, Side};
 use nyog_sothep::error::AppError;
 use nyog_sothep::service::{CreatedGame, ReplayView, answer_prompt, create_game};
 use nyog_sothep::web::{RelativeRoot, ReplayPage};
@@ -32,7 +32,9 @@ fn finish(store: &Store, game: &CreatedGame) {
 #[tokio::test]
 async fn a_finished_game_is_replayed_with_its_secrets() {
     let (_folder, store) = open_store();
-    let game = create_game(&store, Side::Investigators).await.unwrap();
+    let game = create_game(&store, Side::Investigators, RuleSet::Original)
+        .await
+        .unwrap();
     let stay = Answer::Moves((0..4).map(|index| (index, MoveOrder::Stay)).collect());
     answer_prompt(&store, game.game_id, &game.token, stay)
         .await
@@ -80,7 +82,9 @@ async fn a_finished_game_is_replayed_with_its_secrets() {
 #[tokio::test]
 async fn a_replay_needs_the_games_token() {
     let (_folder, store) = open_store();
-    let game = create_game(&store, Side::Professor).await.unwrap();
+    let game = create_game(&store, Side::Professor, RuleSet::Original)
+        .await
+        .unwrap();
     assert!(matches!(
         ReplayView::load(&store, game.game_id, "wrong").await,
         Err(AppError::GameNotFound)

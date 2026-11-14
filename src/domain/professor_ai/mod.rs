@@ -23,10 +23,11 @@ mod ai_tests;
 /// A game in its first movement phase, built by hand for the AI tests.
 #[cfg(test)]
 pub(crate) fn test_state() -> crate::domain::turn::GameState {
-    use crate::domain::turn::{GameState, Phase, Professor, Prompt, Side};
+    use crate::domain::turn::{GameState, Phase, Professor, Prompt, RuleSet, Side};
     use crate::domain::{CounterPool, Investigator, InvestigatorId, LocationId, NyogSothep};
     GameState {
         human: Side::Investigators,
+        rules: RuleSet::Original,
         turn: 1,
         phase: Phase::Moves,
         prompt: Some(Prompt::Moves),

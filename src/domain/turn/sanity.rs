@@ -15,6 +15,23 @@ impl Engine<'_> {
         }
     }
 
+    /// An investigator regains SAN, up to the most the rules allow.
+    ///
+    /// # Returns
+    /// The SAN actually regained.
+    pub(super) fn gain_san(&mut self, investigator: usize, gain: i32) -> i32 {
+        let cap = self
+            .rules()
+            .san_cap(&self.state.investigators[investigator]);
+        let target = &mut self.state.investigators[investigator];
+        if !target.is_active() {
+            return 0;
+        }
+        let before = target.san;
+        target.san = (before + gain).min(cap.max(before));
+        target.san - before
+    }
+
     /// The investigator becomes a Fanatics counter, face up, where they stand.
     fn go_mad(&mut self, investigator: usize) {
         let target = &mut self.state.investigators[investigator];
@@ -36,12 +53,18 @@ impl Engine<'_> {
 
     /// Nyog'Sothep kills an investigator who has no protective sign.
     pub(super) fn kill(&mut self, investigator: usize) {
-        let target = &mut self.state.investigators[investigator];
-        target.status = InvestigatorStatus::Dead;
-        let (name, pronoun) = (target.id.name(), target.id.pronoun());
+        let id = self.state.investigators[investigator].id;
         self.log(format!(
-            "{name} se trouve face à Nyog'Sothep sans signe protecteur : {pronoun} meurt sur-le-champ."
+            "{} se trouve face à Nyog'Sothep sans signe protecteur : {} meurt sur-le-champ.",
+            id.name(),
+            id.pronoun()
         ));
+        self.put_to_death(investigator);
+    }
+
+    /// The investigator dies, after the log has told how.
+    pub(super) fn put_to_death(&mut self, investigator: usize) {
+        self.state.investigators[investigator].status = InvestigatorStatus::Dead;
         self.check_end();
     }
 }

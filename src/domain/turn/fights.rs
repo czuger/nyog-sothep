@@ -1,4 +1,5 @@
 use crate::domain::fight_choice::FightChoice;
+use crate::domain::item::Protection;
 use crate::domain::location_id::LocationId;
 use crate::domain::professor_fight::{self, PROFESSOR_HP, ProfessorAfterFight};
 use crate::domain::travel::{self, Network};
@@ -69,8 +70,9 @@ impl Engine<'_> {
     }
 
     fn resolve_fight(&mut self, investigator: usize, choice: FightChoice) {
-        let outcome = professor_fight::resolve(choice, &mut self.dice);
-        let id = self.state.investigators[investigator].id;
+        let fighter = &self.state.investigators[investigator];
+        let outcome = professor_fight::resolve(choice, fighter.weapon_kind.bonus(), &mut self.dice);
+        let (id, protection) = (fighter.id, fighter.protection);
         let name = id.name();
         match choice {
             FightChoice::Weapon if outcome.damage == 0 => {
@@ -80,10 +82,20 @@ impl Engine<'_> {
                 "{name} tire sur le professeur et lui fait perdre {} points de vie.",
                 outcome.damage
             )),
-            FightChoice::Sign => self.log(format!(
-                "{name} brandit son signe protecteur : {} perd 2 SAN et son signe, mais repousse le professeur.",
-                id.pronoun()
+            FightChoice::Dynamite => self.log(format!(
+                "{name} lance sa dynamite sur le professeur et lui fait perdre {} points de vie.",
+                outcome.damage
             )),
+            FightChoice::Sign => self.log(match protection {
+                Protection::Sign => format!(
+                    "{name} brandit son signe protecteur : {} perd 2 SAN et son signe, mais repousse le professeur.",
+                    id.pronoun()
+                ),
+                Protection::MnarStone => format!(
+                    "{name} brandit sa pierre étoilée de Mnar : {} perd 2 SAN, mais repousse le professeur.",
+                    id.pronoun()
+                ),
+            }),
             FightChoice::Hide => self.log(format!(
                 "Grâce à son médaillon, {} passe pour un Fanatique : il ne se passe rien.",
                 id.inner_name()
@@ -94,8 +106,12 @@ impl Engine<'_> {
             )),
         }
         self.change_san(investigator, -outcome.san_loss);
+        let fighter = &mut self.state.investigators[investigator];
         if outcome.loses_sign {
-            self.state.investigators[investigator].sign = false;
+            fighter.lose_protection();
+        }
+        if let Some(gear) = outcome.spends {
+            fighter.spend(gear);
         }
         if outcome.damage > 0 && self.wound_professor(investigator, outcome.damage) {
             return;
@@ -121,6 +137,7 @@ impl Engine<'_> {
             self.finish(Outcome::ProfessorKilled);
             return true;
         }
+        self.rules().professor_wounded(self);
         false
     }
 

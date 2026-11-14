@@ -6,7 +6,7 @@ use nyog_sothep::db::{GameDocument, Store};
 use nyog_sothep::domain::investigator_ai::InvestigatorsAi;
 use nyog_sothep::domain::professor_ai::PetersenAi;
 use nyog_sothep::domain::turn::{
-    Engine, GameState, Outcome, Phase, ProfessorMoveOptions, ProfessorPrompt, Prompt, Side,
+    Engine, GameState, Outcome, Phase, ProfessorMoveOptions, ProfessorPrompt, Prompt, RuleSet, Side,
 };
 use nyog_sothep::domain::{CounterKind, FightChoice, InvestigatorId, LocationId, RandomDice};
 use nyog_sothep::service::{GameView, refresh_tilts};
@@ -24,6 +24,7 @@ fn secret_state() -> GameState {
     let (mut state, _) = Engine::new_game(
         &IDS,
         Side::Investigators,
+        RuleSet::Original,
         &mut RandomDice::seeded(5),
         &mut PetersenAi::seeded(5),
         &mut InvestigatorsAi::seeded(5),

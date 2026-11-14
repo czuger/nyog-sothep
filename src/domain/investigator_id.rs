@@ -67,6 +67,18 @@ impl InvestigatorId {
         }
     }
 
+    /// The name after « à »: « au docteur Armitage », « à Jenny Barnes ».
+    pub fn to_name(self) -> &'static str {
+        match self {
+            InvestigatorId::Armitage => "au docteur Armitage",
+            InvestigatorId::Carter => "à Randolph Carter",
+            InvestigatorId::Malone => "à Thomas Malone",
+            InvestigatorId::Johansen => "au capitaine Johansen",
+            InvestigatorId::Barnes => "à Jenny Barnes",
+            InvestigatorId::Walker => "à Daisy Walker",
+        }
+    }
+
     /// French name after « de » (« de Randolph Carter », « du capitaine Johansen »).
     pub fn of_name(self) -> &'static str {
         match self {

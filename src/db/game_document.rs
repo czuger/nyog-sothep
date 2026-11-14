@@ -112,7 +112,7 @@ mod tests {
     use crate::domain::investigator_ai::InvestigatorsAi;
     use crate::domain::professor_ai::PetersenAi;
     use crate::domain::turn::{
-        Answer, Engine, MoveOrder, ProfessorAnswer, ProfessorPrompt, Prompt, Side,
+        Answer, Engine, MoveOrder, ProfessorAnswer, ProfessorPrompt, Prompt, RuleSet, Side,
     };
     use crate::domain::{InvestigatorId, LocationId, RandomDice};
 
@@ -145,6 +145,7 @@ mod tests {
         let (state, _) = Engine::new_game(
             &IDS,
             Side::Investigators,
+            RuleSet::Original,
             &mut dice,
             &mut ai,
             &mut investigators,
@@ -187,6 +188,7 @@ mod tests {
         let (mut state, _) = Engine::new_game(
             &IDS,
             Side::Professor,
+            RuleSet::Original,
             &mut dice,
             &mut ai,
             &mut investigators,
@@ -215,6 +217,7 @@ mod tests {
         let (state, history) = Engine::new_game(
             &IDS,
             Side::Investigators,
+            RuleSet::Original,
             &mut RandomDice::seeded(4),
             &mut PetersenAi::seeded(4),
             &mut InvestigatorsAi::seeded(4),

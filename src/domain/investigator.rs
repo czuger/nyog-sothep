@@ -2,6 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::domain::investigator_id::InvestigatorId;
 use crate::domain::investigator_status::InvestigatorStatus;
+use crate::domain::item::{Gear, Item, Protection, Weapon};
 use crate::domain::location_id::LocationId;
 
 /// SAN dice rolled for each investigator at the start, plus a fixed bonus (`3d6 + 3`).
@@ -18,12 +19,24 @@ pub struct Investigator {
     pub id: InvestigatorId,
     /// Sanity points; at 0 the investigator goes mad.
     pub san: i32,
+    /// SAN rolled at the start.
+    #[serde(default)]
+    pub starting_san: i32,
     /// Holds a weapon.
     pub weapon: bool,
-    /// Holds a protective sign.
+    /// Which weapon, when holding one.
+    #[serde(default)]
+    pub weapon_kind: Weapon,
+    /// Holds a protection (a protective sign in the original rules).
     pub sign: bool,
+    /// Which protection, when holding one.
+    #[serde(default)]
+    pub protection: Protection,
     /// Holds a Fanatic medallion.
     pub medallion: bool,
+    /// Various objects (fan-made version).
+    #[serde(default)]
+    pub gear: Vec<Gear>,
     /// Knows the banishment spell.
     pub spell: bool,
     /// Current location.
@@ -60,9 +73,13 @@ impl Investigator {
         Investigator {
             id,
             san,
+            starting_san: san,
             weapon: false,
+            weapon_kind: Weapon::Revolver,
             sign: false,
+            protection: Protection::Sign,
             medallion: false,
+            gear: Vec::new(),
             spell: false,
             location: STARTING_CITY,
             previous: STARTING_CITY,
@@ -91,6 +108,69 @@ impl Investigator {
             (true, true) => 3,
             (true, false) => 2,
             _ => 1,
+        }
+    }
+
+    /// Takes an item (an object already held of the same sort is replaced).
+    pub fn take(&mut self, item: Item) {
+        match item {
+            Item::Weapon(weapon) => {
+                self.weapon = true;
+                self.weapon_kind = weapon;
+            }
+            Item::Protection(protection) => {
+                self.sign = true;
+                self.protection = protection;
+            }
+            Item::Medallion => self.medallion = true,
+            Item::Spell => self.spell = true,
+            Item::Gear(gear) => self.gear.push(gear),
+        }
+    }
+
+    /// Whether the investigator holds this very item.
+    pub fn holds(&self, item: Item) -> bool {
+        match item {
+            Item::Weapon(weapon) => self.weapon && self.weapon_kind == weapon,
+            Item::Protection(protection) => self.sign && self.protection == protection,
+            Item::Medallion => self.medallion,
+            Item::Spell => self.spell,
+            Item::Gear(gear) => self.gear.contains(&gear),
+        }
+    }
+
+    /// The objects carried, in display order (the spell is not an object).
+    pub fn items(&self) -> Vec<Item> {
+        let mut items = Vec::new();
+        if self.weapon {
+            items.push(Item::Weapon(self.weapon_kind));
+        }
+        if self.sign {
+            items.push(Item::Protection(self.protection));
+        }
+        if self.medallion {
+            items.push(Item::Medallion);
+        }
+        items.extend(self.gear.iter().map(|gear| Item::Gear(*gear)));
+        items
+    }
+
+    /// The protection is used up, unless it is never lost.
+    pub fn lose_protection(&mut self) {
+        self.sign &= !self.protection.is_lost_on_use();
+    }
+
+    /// Uses up one object.
+    ///
+    /// # Returns
+    /// `false` when the investigator did not hold it.
+    pub fn spend(&mut self, gear: Gear) -> bool {
+        match self.gear.iter().position(|held| *held == gear) {
+            Some(index) => {
+                self.gear.remove(index);
+                true
+            }
+            None => false,
         }
     }
 

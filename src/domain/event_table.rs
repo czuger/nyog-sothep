@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::domain::event_effect::EventEffect;
+use crate::domain::item::{Item, REVOLVER, SIGN};
 use crate::domain::professor_question::ProfessorQuestion;
 
 /// The two investigator event tables of the rules.
@@ -72,11 +73,11 @@ fn table_two(roll: u8) -> EventEffect {
             ..effect(0)
         },
         2 => EventEffect {
-            gains_weapon: true,
+            gains: Some(REVOLVER),
             ..effect(-2)
         },
         3 => EventEffect {
-            gains_sign: true,
+            gains: Some(SIGN),
             ..effect(-2)
         },
         4 => EventEffect {
@@ -85,7 +86,7 @@ fn table_two(roll: u8) -> EventEffect {
         },
         5 => ask(ProfessorQuestion::NameCities(3)),
         6 => EventEffect {
-            learns_spell: true,
+            gains: Some(Item::Spell),
             ..effect(-2)
         },
         7 => EventEffect {
@@ -97,17 +98,17 @@ fn table_two(roll: u8) -> EventEffect {
             ..effect(0)
         },
         9 => EventEffect {
-            gains_medallion: true,
+            gains: Some(Item::Medallion),
             plays_again: true,
             ..effect(0)
         },
         10 => ask(ProfessorQuestion::NameCities(2)),
         11 => EventEffect {
-            gains_weapon: true,
+            gains: Some(REVOLVER),
             ..effect(-2)
         },
         12 => EventEffect {
-            learns_spell: true,
+            gains: Some(Item::Spell),
             ..effect(-3)
         },
         13 => ask(ProfessorQuestion::RevealPosition),
@@ -129,11 +130,11 @@ fn table_three(roll: u8) -> EventEffect {
             ..effect(5)
         },
         2 => EventEffect {
-            gains_weapon: true,
+            gains: Some(REVOLVER),
             ..effect(-3)
         },
         3 => EventEffect {
-            learns_spell: true,
+            gains: Some(Item::Spell),
             ..effect(-3)
         },
         4 => EventEffect {
@@ -141,7 +142,7 @@ fn table_three(roll: u8) -> EventEffect {
             ..effect(0)
         },
         5 => EventEffect {
-            gains_sign: true,
+            gains: Some(SIGN),
             ..effect(-2)
         },
         6 => ask(ProfessorQuestion::NameCities(3)),
@@ -150,17 +151,17 @@ fn table_three(roll: u8) -> EventEffect {
             ..effect(0)
         },
         8 => EventEffect {
-            gains_medallion: true,
+            gains: Some(Item::Medallion),
             ..effect(-3)
         },
         9 => ask(ProfessorQuestion::NameCities(2)),
         10 => EventEffect {
-            learns_spell: true,
+            gains: Some(Item::Spell),
             plays_again: true,
             ..effect(-2)
         },
         11 => EventEffect {
-            gains_weapon: true,
+            gains: Some(REVOLVER),
             plays_again: true,
             ..effect(0)
         },
@@ -242,9 +243,9 @@ mod tests {
     #[test]
     fn rows_match_the_rules() {
         let row = EventTable::Two.effect(9);
-        assert!(row.gains_medallion && row.plays_again);
+        assert!(row.gains == Some(Item::Medallion) && row.plays_again);
         let row = EventTable::Three.effect(10);
-        assert!(row.learns_spell && row.plays_again && row.san == -2);
+        assert!(row.gains == Some(Item::Spell) && row.plays_again && row.san == -2);
         assert_eq!(
             EventTable::Three.effect(15).question,
             Some(ProfessorQuestion::NyogSothepInTwoCities { optional: true })

@@ -2,6 +2,7 @@
 
 use crate::domain::dice::Dice;
 use crate::domain::fight_choice::FightChoice;
+use crate::domain::item::Gear;
 
 /// What the professor does after the fight.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -21,8 +22,10 @@ pub struct FightOutcome {
     pub san_loss: i32,
     /// Hit points lost by the professor.
     pub damage: i32,
-    /// The investigator loses their protective sign.
+    /// The investigator uses their protection (a sign is then lost).
     pub loses_sign: bool,
+    /// A single-use object used up.
+    pub spends: Option<Gear>,
     /// The professor moves the investigator two cities.
     pub carries_investigator: bool,
     /// What the professor does next.
@@ -32,22 +35,32 @@ pub struct FightOutcome {
 /// The professor's hit points at the start.
 pub const PROFESSOR_HP: i32 = 14;
 
-/// Resolves a fight with the investigator's choice.
-pub fn resolve(choice: FightChoice, dice: &mut dyn Dice) -> FightOutcome {
+/// Hit points the dynamite takes from the professor.
+pub const DYNAMITE_DAMAGE: i32 = 3;
+
+/// Resolves a fight with the investigator's choice; `weapon_bonus` is added to the shooting die.
+pub fn resolve(choice: FightChoice, weapon_bonus: u8, dice: &mut dyn Dice) -> FightOutcome {
     let calm = FightOutcome {
         san_loss: 0,
         damage: 0,
         loses_sign: false,
+        spends: None,
         carries_investigator: false,
         professor: ProfessorAfterFight::Stays,
     };
     match choice {
         FightChoice::Weapon => FightOutcome {
-            damage: match dice.d6() {
+            damage: match dice.d6() + weapon_bonus {
                 1 => 0,
-                6 => 3,
+                6.. => 3,
                 _ => 2,
             },
+            professor: ProfessorAfterFight::Retreats,
+            ..calm
+        },
+        FightChoice::Dynamite => FightOutcome {
+            damage: DYNAMITE_DAMAGE,
+            spends: Some(Gear::Dynamite),
             professor: ProfessorAfterFight::Retreats,
             ..calm
         },
@@ -77,7 +90,7 @@ mod tests {
     fn weapon_damage_follows_the_die() {
         let mut dice = ScriptedDice::new(&[1, 2, 5, 6], 1);
         let damages: Vec<i32> = (0..4)
-            .map(|_| resolve(FightChoice::Weapon, &mut dice).damage)
+            .map(|_| resolve(FightChoice::Weapon, 0, &mut dice).damage)
             .collect();
         assert_eq!(damages, vec![0, 2, 2, 3]);
     }
@@ -96,9 +109,9 @@ mod tests {
             vec![FightChoice::Sign, FightChoice::Hide]
         );
         let mut dice = ScriptedDice::new(&[], 1);
-        let outcome = resolve(FightChoice::Sign, &mut dice);
+        let outcome = resolve(FightChoice::Sign, 0, &mut dice);
         assert!(outcome.loses_sign && outcome.san_loss == 2);
         assert_eq!(outcome.professor, ProfessorAfterFight::PushedBack);
-        assert!(resolve(FightChoice::Unarmed, &mut dice).carries_investigator);
+        assert!(resolve(FightChoice::Unarmed, 0, &mut dice).carries_investigator);
     }
 }

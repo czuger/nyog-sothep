@@ -132,7 +132,7 @@ mod tests {
     use crate::domain::RandomDice;
     use crate::domain::investigator_ai::InvestigatorsAi;
     use crate::domain::professor_ai::PetersenAi;
-    use crate::domain::turn::{Engine, Side};
+    use crate::domain::turn::{Engine, RuleSet, Side};
 
     const IDS: [InvestigatorId; 4] = [
         InvestigatorId::Armitage,
@@ -146,6 +146,7 @@ mod tests {
         let (mut state, _) = Engine::new_game(
             &IDS,
             Side::Investigators,
+            RuleSet::Original,
             &mut RandomDice::seeded(2),
             &mut PetersenAi::seeded(2),
             &mut InvestigatorsAi::seeded(2),
@@ -176,6 +177,7 @@ mod tests {
         let (state, _) = Engine::new_game(
             &IDS,
             Side::Investigators,
+            RuleSet::Original,
             &mut RandomDice::seeded(2),
             &mut PetersenAi::seeded(2),
             &mut InvestigatorsAi::seeded(2),

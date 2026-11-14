@@ -9,10 +9,13 @@ use crate::domain::turn::phase::{ActionStep, Phase};
 use crate::domain::turn::professor_prompt::ProfessorPrompt;
 use crate::domain::turn::prompt::Prompt;
 
+/// How far the professor may stand to answer « yes » to [`ProfessorQuestion::WithinThreeCities`].
+const WITHIN_STEPS: u8 = 3;
+
 impl Engine<'_> {
     /// The professor answers an event's question. Facts come from the state itself; the cities
     /// he names are asked of him and checked, so he can never lie.
-    pub(super) fn professor_answers(&mut self, question: ProfessorQuestion) {
+    pub(super) fn professor_answers(&mut self, investigator: usize, question: ProfessorQuestion) {
         match question {
             ProfessorQuestion::NameCities(count) => self.name_cities(usize::from(count)),
             ProfessorQuestion::RevealPosition => self.reveal_position(),
@@ -37,6 +40,14 @@ impl Engine<'_> {
                 self.clue(ClueKind::SeaAnnouncements);
             }
             ProfessorQuestion::NameFanaticsCities => self.name_fanatics_cities(),
+            ProfessorQuestion::WithinThreeCities => self.within_reach(investigator),
+            ProfessorQuestion::CountFanaticsCities => {
+                let count = self.state.counters.fanatics_cities().len();
+                self.log(format!(
+                    "Le professeur a des Fanatiques en place dans {count} ville(s)."
+                ));
+                self.clue(ClueKind::FanaticsCount { count });
+            }
             ProfessorQuestion::EncountersInTwoCities
             | ProfessorQuestion::NyogSothepInTwoCities { .. }
             | ProfessorQuestion::EncounterInOneCity => {}
@@ -113,6 +124,20 @@ impl Engine<'_> {
             }
             _ => {}
         }
+    }
+
+    /// He says whether he stands within three steps of the investigator.
+    fn within_reach(&mut self, investigator: usize) {
+        let from = self.state.investigators[investigator].location;
+        let inside = travel::distance(self.state.professor.location, from, Network::All, |_| true)
+            .is_some_and(|steps| steps <= WITHIN_STEPS);
+        let kind = ClueKind::Within {
+            from,
+            steps: WITHIN_STEPS,
+            inside,
+        };
+        self.log(format!("Le professeur répond : {}", kind.describe()));
+        self.clue(kind);
     }
 
     fn reveal_position(&mut self) {

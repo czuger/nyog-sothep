@@ -2,6 +2,7 @@ use crate::domain::event_effect::EventEffect;
 use crate::domain::event_table::{EVENT_ROWS, EventTable};
 use crate::domain::investigator::Investigator;
 use crate::domain::investigator_ai::investigator_weights::InvestigatorWeights;
+use crate::domain::item::Item;
 use crate::domain::professor_belief::ProfessorBelief;
 use crate::domain::professor_question::ProfessorQuestion;
 use crate::domain::turn::GameState;
@@ -75,14 +76,20 @@ fn value(
         false => weights.sign_or_spell_worth,
     };
     let gains = [
-        (effect.gains_weapon && !me.weapon, weights.weapon_worth),
-        (effect.loses_weapon && me.weapon, -weights.weapon_worth),
-        (effect.gains_sign && !me.sign, rare),
         (
-            effect.gains_medallion && !me.medallion,
+            matches!(effect.gains, Some(Item::Weapon(_))) && !me.weapon,
+            weights.weapon_worth,
+        ),
+        (effect.loses_weapon && me.weapon, -weights.weapon_worth),
+        (
+            matches!(effect.gains, Some(Item::Protection(_))) && !me.sign,
+            rare,
+        ),
+        (
+            effect.gains == Some(Item::Medallion) && !me.medallion,
             weights.medallion_worth,
         ),
-        (effect.learns_spell && !me.spell, rare),
+        (effect.gains == Some(Item::Spell) && !me.spell, rare),
         (effect.goes_back, -1.0),
         (effect.skips_next_turn, -2.0),
         (effect.breaks_car, -1.0),
@@ -130,6 +137,8 @@ fn question_worth(
         ProfessorQuestion::EncountersInTwoCities | ProfessorQuestion::EncounterInOneCity => {
             ENCOUNTER_QUESTION_WORTH
         }
+        // Only on the fan-made tables, which are not chosen.
+        ProfessorQuestion::WithinThreeCities | ProfessorQuestion::CountFanaticsCities => 0.0,
     }
 }
 

@@ -1,4 +1,5 @@
 <section class="panel banner">
+  <p class="banner-rules">{{ view.rules.label() }}</p>
   <p class="banner-professor">
     <img src="{{ root }}img/token-professor.png" alt="" class="resource-icon">
     <span><strong>Professeur Petersen</strong> : {{ view.professor_hp }} points de vie, {{ self.professor_status() }}{% if view.sea_announcements %} · annonce ses déplacements en mer{% endif %}</span>
@@ -22,9 +23,7 @@
         {% if investigator.status.code() == "active" %}
         <span class="chip-stats">{{ investigator.san }} SAN · {{ investigator.location.at_phrase() }}</span>
         <span class="chip-items">
-          {% if investigator.weapon %}<img src="{{ root }}img/token-weapon.png" alt="Arme" title="Arme">{% endif %}
-          {% if investigator.sign %}<img src="{{ root }}img/token-sign.png" alt="Signe protecteur" title="Signe protecteur">{% endif %}
-          {% if investigator.medallion %}<img src="{{ root }}img/token-medallion.png" alt="Médaillon" title="Médaillon de Fanatique">{% endif %}
+          {% for item in investigator.items %}<img src="{{ root }}img/token-{{ item.code() }}.png" alt="{{ item.name() }}" title="{{ item.name() }}">{% endfor %}
           {% if investigator.spell %}<span class="spell" title="Connaît le sort de renvoi">✶ sort de renvoi</span>{% endif %}
         </span>
         {% for note in investigator.notes %}<span class="chip-note">{{ note }}</span>{% endfor %}

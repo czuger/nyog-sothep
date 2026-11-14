@@ -1,8 +1,6 @@
 use crate::domain::counter::{Counter, CounterPlace};
-use crate::domain::dice::Dice;
-use crate::domain::encounter::{self, CounterFate};
+use crate::domain::encounter::CounterFate;
 use crate::domain::event_effect::EventEffect;
-use crate::domain::event_table::EventTable;
 use crate::domain::turn::engine::Engine;
 use crate::domain::turn::fights::FightContext;
 use crate::domain::turn::phase::{ActionStep, Phase};
@@ -17,7 +15,7 @@ impl Engine<'_> {
             ActionStep::Fight => self.action_fight(investigator),
             ActionStep::Done => {
                 self.action_step(investigator + 1, ActionStep::Start);
-                self.update_banishment_target();
+                self.rules().update_banishment_target(self);
             }
             // Waiting steps without a prompt cannot happen; close the phase rather than loop.
             ActionStep::Event
@@ -30,7 +28,7 @@ impl Engine<'_> {
     /// Encounter, then the event table choice.
     fn action_start(&mut self, investigator: usize) {
         if investigator >= self.state.investigators.len() {
-            self.update_banishment_target();
+            self.rules().update_banishment_target(self);
             self.state.phase = Phase::ProfessorMove;
             return;
         }
@@ -54,20 +52,14 @@ impl Engine<'_> {
             }
         }
         if self.state.investigators[investigator].is_active() {
-            self.ask(
-                Prompt::Table { investigator },
-                Phase::Action {
-                    investigator,
-                    step: ActionStep::Event,
-                },
-            );
+            self.rules().ask_event(self, investigator);
         }
     }
 
     /// Resolves an encounter; returns whether an event may still be drawn.
     fn encounter(&mut self, investigator: usize, counter: Counter) -> bool {
         let city = self.state.investigators[investigator].location;
-        let outcome = encounter::resolve(
+        let outcome = self.rules().encounter(
             counter.kind,
             &self.state.investigators[investigator],
             &mut self.dice,
@@ -86,7 +78,12 @@ impl Engine<'_> {
             .state
             .is_destroyed(self.state.investigators[investigator].previous);
         let actor = &mut self.state.investigators[investigator];
-        actor.sign &= !outcome.loses_sign;
+        if outcome.loses_sign {
+            actor.lose_protection();
+        }
+        if let Some(gear) = outcome.spends {
+            actor.spend(gear);
+        }
         actor.medallion = (actor.medallion && !outcome.loses_medallion) || outcome.kills_fanatics;
         actor.fanatics_killed += u32::from(outcome.kills_fanatics);
         actor.skip_turns += outcome.lost_turns;
@@ -103,19 +100,9 @@ impl Engine<'_> {
         outcome.event_allowed
     }
 
-    /// Rolls on the chosen table and applies the event; the professor's answer, if any, comes
-    /// before the « play again » move.
-    pub(super) fn draw_event(&mut self, investigator: usize, table: EventTable) {
-        let actor = &self.state.investigators[investigator];
-        let dice_count = actor.event_dice();
-        let name = actor.id.name();
-        let roll = self.dice.roll(dice_count);
-        self.log(format!(
-            "{name} tire un événement sur la table {} ({dice_count}d6 : {roll}) : « {} »",
-            table.number(),
-            table.text(roll)
-        ));
-        let effect = table.effect(roll);
+    /// Applies a drawn event; the professor's answer, if any, comes before the « play again »
+    /// move.
+    pub(super) fn resolve_event(&mut self, investigator: usize, effect: EventEffect) {
         self.apply_event(investigator, &effect);
         if self.state.is_finished() || !self.state.investigators[investigator].is_active() {
             self.action_step(investigator, ActionStep::Done);
@@ -141,7 +128,7 @@ impl Engine<'_> {
                 );
                 return;
             }
-            self.professor_answers(question);
+            self.professor_answers(investigator, question);
         }
     }
 
@@ -150,10 +137,7 @@ impl Engine<'_> {
             .state
             .is_destroyed(self.state.investigators[investigator].previous);
         let actor = &mut self.state.investigators[investigator];
-        actor.weapon = (actor.weapon || effect.gains_weapon) && !effect.loses_weapon;
-        actor.sign |= effect.gains_sign;
-        actor.medallion |= effect.gains_medallion;
-        actor.spell |= effect.learns_spell;
+        actor.weapon &= !effect.loses_weapon;
         actor.car_broken |= effect.breaks_car;
         actor.skip_turns += u8::from(effect.skips_next_turn);
         if effect.goes_back && !back_destroyed {
@@ -161,8 +145,11 @@ impl Engine<'_> {
             let (name, at) = (actor.id.name(), actor.location.at_phrase());
             self.log(format!("{name} retourne {at}."));
         }
+        if let Some(item) = effect.gains {
+            self.rules().receive(self, investigator, item);
+        }
         if effect.san > 0 {
-            self.state.investigators[investigator].san += effect.san;
+            self.gain_san(investigator, effect.san);
         } else {
             self.change_san(investigator, effect.san);
         }

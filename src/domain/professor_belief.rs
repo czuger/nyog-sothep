@@ -162,6 +162,16 @@ impl ProfessorBelief {
                 let around = travel::within(*near, 0, TELEPORT_RANGE, Network::All, |_| true);
                 self.only(&around);
             }
+            ClueKind::Within {
+                from,
+                steps,
+                inside,
+            } => {
+                let near = travel::distances(*from, Network::All, |_| true);
+                self.keep(|location| {
+                    near[location.index()].is_some_and(|distance| distance <= *steps) == *inside
+                });
+            }
             _ => {}
         }
     }

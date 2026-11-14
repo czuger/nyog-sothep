@@ -31,4 +31,10 @@ impl Dice for RecordedDice<'_> {
         self.rolls.push(roll);
         roll
     }
+
+    fn d20(&mut self) -> u8 {
+        let roll = self.inner.d20();
+        self.rolls.push(roll);
+        roll
+    }
 }

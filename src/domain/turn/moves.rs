@@ -83,6 +83,7 @@ impl Engine<'_> {
 
     /// Applies one order of the movement phase; last turn's restrictions end with it.
     fn apply_move(&mut self, index: usize, order: MoveOrder) {
+        self.rules().before_move(self, index, order);
         let mover = &mut self.state.investigators[index];
         let (car_broken, free_pass) = (mover.car_broken, mover.free_border);
         mover.car_broken = false;
@@ -101,10 +102,9 @@ impl Engine<'_> {
             }
             MoveOrder::Stay => self.log(format!("{} reste {at}.", id.name())),
             MoveOrder::Psychoanalyst => {
-                let gain = i32::from(self.dice.d6());
-                let mover = &mut self.state.investigators[index];
-                mover.san += gain;
-                mover.skips_action = true;
+                let roll = i32::from(self.dice.d6());
+                let gain = self.gain_san(index, roll);
+                self.state.investigators[index].skips_action = true;
                 self.log(format!(
                     "{} consulte un psychanalyste {at} et regagne {gain} SAN.",
                     id.name()
@@ -118,6 +118,7 @@ impl Engine<'_> {
     fn travel(&mut self, index: usize, to: LocationId, free_pass: bool) {
         let mover = &self.state.investigators[index];
         let (id, from) = (mover.id, mover.location);
+        let free_pass = free_pass || self.rules().free_crossing(mover);
         if travel::crosses_border(from, to) && !free_pass {
             match self.dice.d6() {
                 5 => {

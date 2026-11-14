@@ -145,6 +145,8 @@ body.map-screen { overflow: hidden; }
 
 .banner p { margin: 0 0 6px; }
 .banner-professor { display: flex; gap: 8px; align-items: center; }
+.banner-rules { font-size: 0.85em; font-style: italic; opacity: 0.8; }
+.rules-choice { display: flex; gap: 6px; align-items: center; flex-basis: 100%; }
 .banner-hand { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
 .counter-choice { display: flex; gap: 8px; align-items: center; }
 .resource-icon { width: 32px; height: 32px; object-fit: contain; flex-shrink: 0; }

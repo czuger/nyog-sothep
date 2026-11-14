@@ -4,6 +4,7 @@ use crate::domain::counter::CounterPlace;
 use crate::domain::counter_kind::CounterKind;
 use crate::domain::investigator_id::InvestigatorId;
 use crate::domain::investigator_status::InvestigatorStatus;
+use crate::domain::item::{Gear, Protection, Weapon};
 use crate::domain::location_id::LocationId;
 use crate::domain::turn::game_state::GameState;
 use crate::domain::turn::phase::Phase;
@@ -42,10 +43,19 @@ pub struct ReplayInvestigator {
     pub status: InvestigatorStatus,
     /// Holds a weapon.
     pub weapon: bool,
-    /// Holds a protective sign.
+    /// Which weapon.
+    #[serde(default)]
+    pub weapon_kind: Weapon,
+    /// Holds a protection.
     pub sign: bool,
+    /// Which protection.
+    #[serde(default)]
+    pub protection: Protection,
     /// Holds a medallion.
     pub medallion: bool,
+    /// Various objects.
+    #[serde(default)]
+    pub gear: Vec<Gear>,
     /// Knows the banishment spell.
     pub spell: bool,
 }
@@ -77,8 +87,11 @@ impl ReplayBoard {
                     san: investigator.san,
                     status: investigator.status,
                     weapon: investigator.weapon,
+                    weapon_kind: investigator.weapon_kind,
                     sign: investigator.sign,
+                    protection: investigator.protection,
                     medallion: investigator.medallion,
+                    gear: investigator.gear.clone(),
                     spell: investigator.spell,
                 })
                 .collect(),

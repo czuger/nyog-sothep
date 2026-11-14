@@ -1,9 +1,9 @@
 use crate::db::{GameDocument, LogBatch, LogEntry, Store};
 use crate::domain::turn::{
-    ClueKind, GameState, MoveOptions, Outcome, ProfessorPrompt, Prompt, RouteStage, Side,
+    ClueKind, GameState, MoveOptions, Outcome, ProfessorPrompt, Prompt, RouteStage, RuleSet, Side,
 };
 use crate::domain::{
-    CounterKind, CounterPlace, InvestigatorId, InvestigatorStatus, LocationId, Score,
+    CounterKind, CounterPlace, InvestigatorId, InvestigatorStatus, Item, LocationId, Score,
 };
 use crate::error::AppError;
 use crate::service::token_tilts::{TiltedToken, TokenTilts};
@@ -36,12 +36,10 @@ pub struct InvestigatorView {
     pub id: InvestigatorId,
     /// Sanity points.
     pub san: i32,
-    /// Holds a weapon.
-    pub weapon: bool,
-    /// Holds a protective sign.
-    pub sign: bool,
-    /// Holds a medallion.
-    pub medallion: bool,
+    /// The objects carried.
+    pub items: Vec<Item>,
+    /// Dice rolled on Table 2 or 3.
+    pub event_dice: u8,
     /// Knows the banishment spell.
     pub spell: bool,
     /// Where they are.
@@ -90,6 +88,8 @@ pub struct ScoreLine {
 pub struct GameView {
     /// The side the human plays.
     pub human: Side,
+    /// The rules the game is played with.
+    pub rules: RuleSet,
     /// Game id.
     pub game_id: i64,
     /// Secret part of the game's private URL.
@@ -164,6 +164,7 @@ impl GameView {
         }
         GameView {
             human: state.human,
+            rules: state.rules,
             game_id: game.id,
             token: game.token.clone(),
             version: game.version,
@@ -276,9 +277,8 @@ fn investigators(state: &GameState) -> Vec<InvestigatorView> {
                 index,
                 id: investigator.id,
                 san: investigator.san,
-                weapon: investigator.weapon,
-                sign: investigator.sign,
-                medallion: investigator.medallion,
+                items: investigator.items(),
+                event_dice: investigator.event_dice(),
                 spell: investigator.spell,
                 location: investigator.location,
                 status: investigator.status,

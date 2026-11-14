@@ -36,7 +36,8 @@ impl MoveOptions {
             psychoanalyst: !replay
                 && from.is_city()
                 && !state.is_destroyed(from)
-                && !mover.car_broken,
+                && !mover.car_broken
+                && state.rules.rules().psychoanalyst_open(state),
             destinations,
         })
     }

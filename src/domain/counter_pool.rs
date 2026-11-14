@@ -96,6 +96,24 @@ impl CounterPool {
         self.change(kind, CounterPlace::Reserve, CounterPlace::Hand)
     }
 
+    /// Gives the professor a counter of this kind, from the reserve or else a new one: the
+    /// counters never run out (fan-made version).
+    pub fn supply(&mut self, kind: CounterKind) {
+        if !self.draw(kind) {
+            self.counters.push(Counter {
+                kind,
+                place: CounterPlace::Hand,
+            });
+        }
+    }
+
+    /// The professor's hand without the counters of one kind, sorted by kind.
+    pub fn hand_without(&self, kind: CounterKind) -> Vec<CounterKind> {
+        let mut hand = self.hand();
+        hand.retain(|held| *held != kind);
+        hand
+    }
+
     /// Puts a counter of this kind from the hand back into the reserve.
     pub fn discard(&mut self, kind: CounterKind) -> bool {
         self.change(kind, CounterPlace::Hand, CounterPlace::Reserve)
@@ -211,6 +229,21 @@ mod tests {
         assert!(pool.hand().is_empty());
         pool.set_place_at(LocationId::Boston, CounterPlace::Removed);
         assert!(pool.placed_at(LocationId::Boston).is_none());
+    }
+
+    #[test]
+    fn supplied_counters_never_run_out() {
+        let mut pool = CounterPool::full();
+        for _ in 0..3 {
+            pool.supply(CounterKind::FlyingHorror);
+        }
+        assert_eq!(pool.all().len(), 46);
+        assert_eq!(pool.hand(), vec![CounterKind::FlyingHorror; 3]);
+        pool.supply(CounterKind::Ghouls);
+        assert_eq!(
+            pool.hand_without(CounterKind::FlyingHorror),
+            vec![CounterKind::Ghouls]
+        );
     }
 
     #[test]

@@ -18,6 +18,7 @@ use crate::domain::turn::professor::{Professor, RouteStage};
 use crate::domain::turn::professor_brain::ProfessorBrain;
 use crate::domain::turn::professor_prompt::ProfessorPrompt;
 use crate::domain::turn::prompt::Prompt;
+use crate::domain::turn::rule_sets::RuleSet;
 use crate::domain::turn::side::Side;
 
 /// The professor's start when the computer's pick is refused.
@@ -33,9 +34,11 @@ impl Engine<'_> {
     ///
     /// # Arguments
     /// * `human` - the side the human plays; the matching brain is never asked.
+    /// * `rules` - the rules the game is played with.
     pub fn new_game(
         investigators: &[InvestigatorId],
         human: Side,
+        rules: RuleSet,
         dice: &mut dyn Dice,
         professor: &mut dyn ProfessorBrain,
         investigator_brain: &mut dyn InvestigatorBrain,
@@ -44,7 +47,7 @@ impl Engine<'_> {
             .iter()
             .map(|id| Investigator::new(*id, 0))
             .collect();
-        let mut state = blank_state(investigators, human);
+        let mut state = blank_state(investigators, human, rules);
         let mut engine = Engine::new(&mut state, dice, professor, investigator_brain);
         engine.replayed_board = None;
         let names: Vec<&str> = engine
@@ -69,6 +72,7 @@ impl Engine<'_> {
             let san = i32::from(self.dice.roll(STARTING_SAN_DICE)) + STARTING_SAN_BONUS;
             let investigator = &mut self.state.investigators[index];
             investigator.san = san;
+            investigator.starting_san = san;
             let name = investigator.id.name();
             self.reveal(format!("{name} commence avec {san} SAN."));
         }
@@ -108,9 +112,10 @@ impl Engine<'_> {
     }
 }
 
-fn blank_state(investigators: Vec<Investigator>, human: Side) -> GameState {
+fn blank_state(investigators: Vec<Investigator>, human: Side, rules: RuleSet) -> GameState {
     GameState {
         human,
+        rules,
         turn: 0,
         phase: Phase::Setup,
         prompt: None,

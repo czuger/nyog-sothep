@@ -5,7 +5,7 @@ use tempfile::TempDir;
 use nyog_sothep::db::Store;
 use nyog_sothep::domain::LocationId;
 use nyog_sothep::domain::turn::{
-    Answer, AnswerError, MoveOrder, ProfessorAnswer, ProfessorPrompt, Prompt, Side,
+    Answer, AnswerError, MoveOrder, ProfessorAnswer, ProfessorPrompt, Prompt, RuleSet, Side,
 };
 use nyog_sothep::error::AppError;
 use nyog_sothep::service::{CreatedGame, GameView, ProfessorSighting, answer_prompt, create_game};
@@ -29,9 +29,13 @@ async fn new_game() -> (TestStore, CreatedGame) {
 }
 
 async fn new_game_as(human: Side) -> (TestStore, CreatedGame) {
+    new_game_with(human, RuleSet::Original).await
+}
+
+async fn new_game_with(human: Side, rules: RuleSet) -> (TestStore, CreatedGame) {
     let folder = tempfile::tempdir().unwrap();
     let store = Store::open(folder.path()).unwrap();
-    let game = create_game(&store, human).await.unwrap();
+    let game = create_game(&store, human, rules).await.unwrap();
     (
         TestStore {
             store,
@@ -66,6 +70,25 @@ async fn a_new_game_waits_for_the_investigators_in_nantucket() {
     assert_eq!(view.professor_hp, 14);
     assert!(view.log.iter().any(|line| line.text.contains("Nantucket")));
     assert!(game.path().starts_with(&format!("games/{}/", game.game_id)));
+}
+
+#[tokio::test]
+async fn a_fan_made_game_keeps_its_rules_round_after_round() {
+    let (store, game) = new_game_with(Side::Investigators, RuleSet::FanMade).await;
+    assert_eq!(view(&store, &game).await.rules, RuleSet::FanMade);
+    // Everyone stays in Nantucket while only moves are asked (an event may ask a question).
+    for _ in 0..3 {
+        if view(&store, &game).await.prompt != Some(Prompt::Moves) {
+            break;
+        }
+        answer_prompt(&store, game.game_id, &game.token, everyone(MoveOrder::Stay))
+            .await
+            .unwrap();
+    }
+    let view = view(&store, &game).await;
+    assert_eq!(view.rules, RuleSet::FanMade);
+    assert!(view.log.iter().any(|line| line.text.contains("1d20")));
+    assert!(view.log.iter().all(|line| !line.text.contains("table 2")));
 }
 
 #[tokio::test]

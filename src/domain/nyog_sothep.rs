@@ -21,6 +21,9 @@ pub struct NyogSothep {
     pub joined: bool,
     /// The city where three spell holders gathered, which it must reach by the shortest path.
     pub target: Option<LocationId>,
+    /// Banishment attempts failed so far (fan-made progressive spell).
+    #[serde(default)]
+    pub failed_banishments: u32,
 }
 
 impl NyogSothep {
@@ -31,6 +34,7 @@ impl NyogSothep {
             location: None,
             joined: false,
             target: None,
+            failed_banishments: 0,
         }
     }
 

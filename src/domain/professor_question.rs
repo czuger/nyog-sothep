@@ -24,6 +24,10 @@ pub enum ProfessorQuestion {
     },
     /// The investigator names a city; he specifies its encounter, if any.
     EncounterInOneCity,
+    /// He says whether he stands three cities or less from the investigator.
+    WithinThreeCities,
+    /// He says in how many cities Fanatics are in place.
+    CountFanaticsCities,
 }
 
 impl ProfessorQuestion {

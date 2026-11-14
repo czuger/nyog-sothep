@@ -123,7 +123,7 @@ mod tests {
     use super::*;
     use crate::db::Store;
     use crate::domain::LocationId;
-    use crate::domain::turn::Side;
+    use crate::domain::turn::{RuleSet, Side};
     use crate::service::create_game;
     use crate::web::form_fields::fields;
 
@@ -138,7 +138,7 @@ mod tests {
         let state = AppState {
             store: Store::open(folder.path()).unwrap(),
         };
-        let game = create_game(&state.store, Side::Investigators)
+        let game = create_game(&state.store, Side::Investigators, RuleSet::Original)
             .await
             .unwrap();
         let path = || Path((game.game_id, game.token.clone()));

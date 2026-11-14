@@ -5,7 +5,6 @@ use crate::domain::investigator_ai::investigator_weights::InvestigatorWeights;
 use crate::domain::investigator_ai::paths::{UNREACHABLE, steps, walking_steps_from};
 use crate::domain::location_id::LocationId;
 use crate::domain::map;
-use crate::domain::nyog_sothep::BANISHERS_NEEDED;
 use crate::domain::turn::GameState;
 
 /// What each meeting with Nyog'Sothep costs a banisher after the first one.
@@ -53,11 +52,12 @@ pub(super) fn rally_point(state: &GameState, weights: &InvestigatorWeights) -> O
     map::cities()
         .filter(|city| !state.is_destroyed(*city))
         .min_by_key(|city| {
+            let needed = state.rules.banishers_needed();
             let mut reachable: Vec<u32> =
                 costs.iter().filter_map(|cost| cost[city.index()]).collect();
             reachable.sort_unstable();
-            let short = BANISHERS_NEEDED.saturating_sub(reachable.len());
-            let gathered = reachable.get(BANISHERS_NEEDED - 1).copied();
+            let short = needed.saturating_sub(reachable.len());
+            let gathered = reachable.get(needed - 1).copied();
             (short, gathered.unwrap_or(u32::MAX))
         })
 }
@@ -72,7 +72,7 @@ pub(super) fn banisher_rests(
     me: &Investigator,
 ) -> bool {
     let rally = rally_point(state, weights);
-    if banishers(state).len() >= BANISHERS_NEEDED && rally == Some(me.location) {
+    if banishers(state).len() >= state.rules.banishers_needed() && rally == Some(me.location) {
         return true;
     }
     let harassed = state
@@ -99,12 +99,13 @@ pub(super) fn ready_to_cast(state: &GameState, weights: &InvestigatorWeights) ->
             is_banisher(investigator) && f64::from(investigator.san) >= weights.casting_san
         })
         .count()
-        >= BANISHERS_NEEDED
+        >= state.rules.banishers_needed()
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::domain::nyog_sothep::BANISHERS_NEEDED;
     use crate::domain::professor_ai::test_state;
     use LocationId::*;
 

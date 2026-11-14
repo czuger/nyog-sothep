@@ -46,14 +46,14 @@ Layers, from the inside out:
     from `img/board.jpg`: French name, port flag, pixel position, `ROADS`, `SEA_LINKS`, `BORDER_CROSSINGS`) and
     `travel` (cached neighbour lists, BFS `distances`/`within`/`first_steps_towards` over `Network::All` (roads and
     sea, one step per turn) or `Network::Roads`).
-  - Rules primitives: `Dice` (`RandomDice`, and `ScriptedDice` for tests, which counts 1 to 6 after its script so
+  - Rules primitives: `Dice` (d6 and d20; `RandomDice`, and `ScriptedDice` for tests, which counts 1 to 6 after its script so
     that Table 1 rerolls end), `CounterKind`/`Counter`/`CounterPlace`/`CounterPool` (the 44 counters: reserve, hand,
     placed hidden or face up, removed), `table1` (2d6 roll with the "his choice" rows, `HAND_LIMIT`),
     `Investigator`/`InvestigatorId` (French name forms and gender agreement)/`InvestigatorStatus`, `encounter`
     (one outcome per counter), `EventTable`/`EventEffect`/`ProfessorQuestion` (Tables 2 and 3 as data, with the
     French row texts), `FightChoice` and `professor_fight`, `NyogSothep` and the banishment table, `Score`.
   - `turn/`: the turn engine, a pure state machine. `GameState` holds everything (the `Side` the human plays,
-    turn, `Phase` cursor, pending `Prompt`, professor, investigators, counters, Nyog'Sothep, destroyed cities,
+    the `RuleSet`, turn, `Phase` cursor, pending `Prompt`, professor, investigators, counters, Nyog'Sothep, destroyed cities,
     route sheet, the investigators' notebook of `Clue`s). Every decision of either side is a `Prompt`: the
     investigators' (moves of all four, table choice, named cities, play-again move, fight choice, banishment
     city) and the professor's, `Prompt::Professor(ProfessorPrompt)` (setup, Teleportation, move, attack, carry,
@@ -76,6 +76,19 @@ Layers, from the inside out:
     `professor_answers`, `computer_players`, `nyog_turn`, `moves`, `action_phase`, `fights`, `questions`,
     `sanity`, `setup`, `replay`); `engine_tests.rs` plays whole rounds with scripted dice and a scripted professor, from
     either side.
+  - `turn/rule_sets/`: the two rule sets, chosen when a game is created and stored in `GameState::rules`.
+    The engine never tests which one it plays: it calls the hooks of the `Rules` trait (`rules.rs`: how an
+    event is drawn, items received, SAN cap, psychoanalyst, borders, encounters, the professor's draws,
+    a wounded professor, Nyog'Sothep's rest and target, the banishment spell, the end of the game, and for the
+    AIs `banishers_needed` and `banishment_chance`), and `RuleSet::rules` is the only `match` on the variant.
+    `original/` holds the code proper to the published rules (Tables 2/3 prompt, Table 1 draws, the spell cast by
+    three, the Fanatics-destroyed house rule); `fan_made/` the whole variant of `fan_mode_proposition.md`
+    (`FanTable` A/B/C on a d20, `DrawSite` tables by place with unlimited counters, a Fanatic every 3 turns, kept without limit,
+    `equipment` for duplicates and the better object, dynamite and amulet encounters, the Ibn-Ghazi powder,
+    laudanum, the progressive solo spell, the end once nobody knows the spell) with its tests. What only depends
+    on the object held stays in the shared code as a property of the object (`item.rs`: `Weapon` and its bonus,
+    `Protection` and whether it is lost, `Gear`, `Item`; `FightChoice::Dynamite`): the original rules never hand
+    those objects out.
   - `ProfessorBelief` rebuilds from the notebook the set of locations where the investigators can still place
     the professor (one move per turn, three with the Flying Horror, narrowed by each clue), and `weights` how
     likely each one is from public facts (he avoids armed investigators and the sea, lingers near face-up
@@ -87,7 +100,8 @@ Layers, from the inside out:
     five Fanatics cities are in place, lays traps suited to the investigators near them, attacks only the
     defenceless, teleports armed investigators away, bluffs with decoy cities that are far from him but still
     believable, joins Nyog'Sothep at once after the summoning, and with it hunts the investigators on land, those
-    it can kill or drive mad and the spell holders first, never stepping onto three spell holders unless forced.
+    it can kill or drive mad and the spell holders first, avoiding the cities where the spell may banish it
+    (`Rules::banishment_chance`) unless every prey stands in one, and less and less as the hunt drags on.
     `pick_near_best` varies its moves. Its weights are a `ProfessorWeights` (`PetersenAi::with_weights`).
   - `investigator_ai/`: `InvestigatorsAi`, the computer's four investigators, stateless too, one file per
     decision. Armed investigators share out the professor's likely positions (`Hunt`: the weighted belief now
@@ -100,7 +114,7 @@ Layers, from the inside out:
     Foul One would strike them all the way, the others keep away from it, everyone avoids being shut in by
     ruins, and after a partial banishment it is sent back close to fit banishers, far away otherwise. Paths
     (`paths`) avoid destroyed cities. Its weights are an `InvestigatorWeights`
-    (`InvestigatorsAi::with_weights`). `tests/simulation.rs` plays 150 games of `PetersenAi` against it,
+    (`InvestigatorsAi::with_weights`). `tests/simulation.rs` plays 150 games of `PetersenAi` against it under each rule set,
     checking every answer of the professor's AI and that almost every game ends, and checks that playing
     either side from outside the engine plays the same games, and that the replay follows each game to its
     final board. `examples/tune_ai.rs` hill-climbs both sides' weights by self-play on every core, keeping a
@@ -116,7 +130,7 @@ Layers, from the inside out:
   on success and rolling it back on error; `run` moves blocking work onto `spawn_blocking`. Reads take a
   `DocumentSource` (the `Database`, or a `Transaction` that sees its own writes). No migrations: a field added
   to a stored type must default when missing (`#[serde(default)]`) for the games already stored.
-- **`src/service/`**: one use case per file. `create_game` takes the human's `Side`, draws four investigators and
+- **`src/service/`**: one use case per file. `create_game` takes the human's `Side` and the `RuleSet`, draws four investigators and
   a private token, runs the game until the human's first prompt (the first moves, or the professor's setup) and
   stores everything. `answer_prompt` loads the game inside `Store::write`, runs the engine with real dice,
   `PetersenAi` and `InvestigatorsAi`, saves the state and the tilts and appends the log and the replay steps; a
@@ -127,7 +141,7 @@ Layers, from the inside out:
   `TokenTilts` gives every token a random tilt of up to 5° either way (stored in the game document), drawn again
   by `refresh_tilts` before each save only for the tokens that moved. `ReplayView` holds the replay steps of a
   finished game (`AppError::GameNotOver` before the end), from the first one with a board.
-- **`src/web/`**: `router.rs` lists the routes (`/`, `POST /games` with the `side` field, `/rules` (the scanned French
+- **`src/web/`**: `router.rs` lists the routes (`/`, `POST /games` with the `side` field and the `rules` checkbox, `/rules` (the scanned French
   rules, `img/rules-*.jpg`), `/games/{id}/{token}`, `/games/{id}/{token}/replay` (`replay_handlers.rs`)
   and one `POST` per kind of answer: the investigators' `moves`, `table`, `cities`, `play-again`, `fight`,
   `banishment` in `answer_handlers.rs`, the professor's `setup`, `teleport`, `move`, `attack`, `location`

@@ -5,6 +5,10 @@ Choose your side when you start a game: lead the four Investigators against the 
 Petersen, hidden behind his screen, or play the professor against four investigators led by the computer. See
 `RULES.md` for the translated rules and the readings this implementation chose.
 
+Ticking « Version fan-made » when starting a game plays the variant of `fan_mode_proposition.md` instead: three
+d20 event tables, new objects, draws decided by the professor's place, Fanatics arriving on their own, a
+banishment spell cast alone that grows stronger with each failure, and more.
+
 ## Run
 
 ```sh
@@ -46,5 +50,5 @@ cargo deploy logs       # follow the journal
 
 ```sh
 cargo test
-cargo test --test simulation -- --nocapture   # the professor's AI against the investigators' AI, with statistics
+cargo test --test simulation -- --nocapture   # the professor's AI against the investigators' AI, with statistics for both rule sets
 ```

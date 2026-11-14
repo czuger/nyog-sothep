@@ -1,11 +1,17 @@
 use crate::domain::fight_choice::FightChoice;
 
-/// The best way to face the professor: shoot, then the sign, then the medallion.
+/// The best way to face the professor: the dynamite, shooting, then the sign, then the
+/// medallion.
 pub(super) fn choose_fight(options: &[FightChoice]) -> FightChoice {
-    [FightChoice::Weapon, FightChoice::Sign, FightChoice::Hide]
-        .into_iter()
-        .find(|choice| options.contains(choice))
-        .unwrap_or(FightChoice::Unarmed)
+    [
+        FightChoice::Dynamite,
+        FightChoice::Weapon,
+        FightChoice::Sign,
+        FightChoice::Hide,
+    ]
+    .into_iter()
+    .find(|choice| options.contains(choice))
+    .unwrap_or(FightChoice::Unarmed)
 }
 
 #[cfg(test)]

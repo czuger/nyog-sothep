@@ -11,7 +11,7 @@ use nyog_sothep::domain::investigator_ai::InvestigatorsAi;
 use nyog_sothep::domain::professor_ai::PetersenAi;
 use nyog_sothep::domain::turn::{
     Answer, Engine, GameState, InvestigatorBrain, Outcome, ProfessorBrain, ProfessorMove,
-    ProfessorMoveOptions, Prompt, ReplayBoard, ReplayStep, Side, Teleport,
+    ProfessorMoveOptions, Prompt, ReplayBoard, ReplayStep, RuleSet, Side, Teleport,
 };
 use nyog_sothep::domain::{CounterKind, InvestigatorId, LocationId, RandomDice};
 
@@ -120,14 +120,20 @@ impl ProfessorBrain for CheckedAi {
 
 /// Plays a game to its end (or the turn limit), with the replay steps written on the way;
 /// `SIMULATION_TRACE=<seed>` prints the end of that game's log.
-fn play_recorded(seed: u64, human: Side) -> (GameState, Vec<ReplayStep>) {
+fn play_recorded(seed: u64, human: Side, rules: RuleSet) -> (GameState, Vec<ReplayStep>) {
     let mut dice = RandomDice::seeded(seed);
     let mut professor = CheckedAi(PetersenAi::seeded(seed));
     let mut investigators = InvestigatorsAi::seeded(seed);
     let mut ids = InvestigatorId::ALL.to_vec();
     ids.truncate(4);
-    let (mut state, history) =
-        Engine::new_game(&ids, human, &mut dice, &mut professor, &mut investigators);
+    let (mut state, history) = Engine::new_game(
+        &ids,
+        human,
+        rules,
+        &mut dice,
+        &mut professor,
+        &mut investigators,
+    );
     let mut replay = history.replay;
     let mut log: Vec<String> = history.log.into_iter().map(|line| line.text).collect();
     while !state.is_finished() && state.turn <= TURN_LIMIT {
@@ -155,8 +161,8 @@ fn play_recorded(seed: u64, human: Side) -> (GameState, Vec<ReplayStep>) {
     (state, replay)
 }
 
-fn play(seed: u64, human: Side) -> (Option<Outcome>, u32, i32) {
-    let (state, _) = play_recorded(seed, human);
+fn play(seed: u64, human: Side, rules: RuleSet) -> (Option<Outcome>, u32, i32) {
+    let (state, _) = play_recorded(seed, human, rules);
     if state.outcome.is_none() && std::env::var("SIMULATION_DEBUG").is_ok() {
         let removed = state
             .counters
@@ -213,19 +219,26 @@ fn play(seed: u64, human: Side) -> (Option<Outcome>, u32, i32) {
 
 #[test]
 fn the_ais_play_full_games() {
-    simulate(Side::Investigators);
+    simulate(Side::Investigators, RuleSet::Original);
+}
+
+#[test]
+fn the_ais_play_full_fan_made_games() {
+    simulate(Side::Investigators, RuleSet::FanMade);
 }
 
 /// Answering the professor's prompts from outside the engine plays exactly the same games as
 /// letting the engine ask his brain.
 #[test]
 fn either_side_can_be_played_from_outside() {
-    for seed in 0..SAME_GAME_SEEDS {
-        assert_eq!(
-            play(seed, Side::Professor),
-            play(seed, Side::Investigators),
-            "seed {seed}"
-        );
+    for rules in RuleSet::ALL {
+        for seed in 0..SAME_GAME_SEEDS {
+            assert_eq!(
+                play(seed, Side::Professor, rules),
+                play(seed, Side::Investigators, rules),
+                "seed {seed}, {rules:?}"
+            );
+        }
     }
 }
 
@@ -233,9 +246,11 @@ fn either_side_can_be_played_from_outside() {
 /// end on the final state of the game.
 #[test]
 fn the_replay_follows_the_whole_game() {
-    for seed in 0..SAME_GAME_SEEDS {
+    for (seed, rules) in
+        (0..SAME_GAME_SEEDS).flat_map(|seed| RuleSet::ALL.map(|rules| (seed, rules)))
+    {
         for human in [Side::Investigators, Side::Professor] {
-            let (state, replay) = play_recorded(seed, human);
+            let (state, replay) = play_recorded(seed, human, rules);
             assert!(replay[0].board.is_some(), "seed {seed}");
             assert!(
                 replay
@@ -249,13 +264,13 @@ fn the_replay_follows_the_whole_game() {
     }
 }
 
-fn simulate(human: Side) {
+fn simulate(human: Side, rules: RuleSet) {
     let mut wins = [0u32; 5];
     let mut unfinished: u64 = 0;
     let mut turns = 0;
     let mut hit_points: i32 = 0;
     for seed in 0..GAMES {
-        let (outcome, length, hp) = play(seed, human);
+        let (outcome, length, hp) = play(seed, human, rules);
         turns += length;
         hit_points += hp;
         match outcome {
@@ -268,7 +283,8 @@ fn simulate(human: Side) {
         }
     }
     println!(
-        "{GAMES} games, {:.1} turns on average: professor killed {}, Fanatics destroyed {}, banished {}, Nyog'Sothep reigns {}, investigators lost {}, unfinished after {TURN_LIMIT} turns {}; the professor ends with {:.1} hit points on average",
+        "{}, {GAMES} games, {:.1} turns on average: professor killed {}, Fanatics destroyed {}, banished {}, Nyog'Sothep reigns {}, investigators lost {}, unfinished after {TURN_LIMIT} turns {}; the professor ends with {:.1} hit points on average",
+        rules.label(),
         f64::from(turns) / GAMES as f64,
         wins[0],
         wins[4],

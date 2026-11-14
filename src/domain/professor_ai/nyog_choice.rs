@@ -1,29 +1,41 @@
 //! Where Nyog'Sothep goes once the professor has joined it.
 
 use crate::domain::location_id::LocationId;
-use crate::domain::nyog_sothep::BANISHERS_NEEDED;
 use crate::domain::professor_ai::professor_weights::ProfessorWeights;
 use crate::domain::travel::{self, Network};
-use crate::domain::turn::GameState;
+use crate::domain::turn::{ClueKind, GameState};
 
 /// SAN at which meeting the Foul One may drive an investigator with a sign mad.
 const BREAKING_SAN: i32 = 4;
 /// A city is destroyed on entry, the sea is not.
 const CITY_BONUS: f64 = 0.5;
-/// Stepping onto three spell holders lets them cast the spell.
+/// What a banishment costs the professor, weighed by its chance.
 const SPELL_RISK: f64 = 50.0;
+/// Turns after the summoning over which the fear of the spell fades: the professor cannot win
+/// without facing the spell holders in the end.
+const PATIENCE: u32 = 12;
 
 /// Hunts the investigators: those without a protective sign die on meeting the Foul One, those
 /// with little SAN left go mad, and spell holders matter most.
 ///
 /// Each investigator draws Nyog'Sothep in proportion to their worth and inversely to their
 /// distance; those at sea, who cannot be met there, only count when nobody stands on land.
+/// Cities where the spell may banish it are avoided, unless every prey stands in one, and less
+/// and less as the hunt drags on.
 pub fn choose_nyog_step(
     state: &GameState,
     weights: &ProfessorWeights,
     options: &[LocationId],
 ) -> LocationId {
     let preys = preys(state, weights);
+    let rules = state.rules.rules();
+    let cornered = preys
+        .iter()
+        .all(|(at, _)| rules.banishment_chance(state, *at) > 0.0);
+    let fear = match cornered {
+        true => 0.0,
+        false => SPELL_RISK * fading_fear(state),
+    };
     let score = |to: LocationId| {
         let reach = travel::distances(to, Network::All, |_| true);
         let pull: f64 = preys
@@ -33,13 +45,23 @@ pub fn choose_nyog_step(
             })
             .sum();
         let city = if to.is_city() { CITY_BONUS } else { 0.0 };
-        pull + city - spell_risk(state, to)
+        pull + city - fear * rules.banishment_chance(state, to)
     };
     options
         .iter()
         .copied()
         .max_by(|a, b| score(*a).total_cmp(&score(*b)))
         .unwrap_or(state.professor.location)
+}
+
+/// 1 at the summoning, down to 0 after [`PATIENCE`] turns.
+fn fading_fear(state: &GameState) -> f64 {
+    let summoned = state.clues.iter().find_map(|clue| match clue.kind {
+        ClueKind::Summoned { .. } => Some(clue.turn),
+        _ => None,
+    });
+    let hunting = state.turn.saturating_sub(summoned.unwrap_or(state.turn));
+    (1.0 - f64::from(hunting) / f64::from(PATIENCE)).max(0.0)
 }
 
 /// The investigators Nyog'Sothep hunts, with where they stand and what meeting them is worth.
@@ -65,18 +87,6 @@ fn preys(state: &GameState, weights: &ProfessorWeights) -> Vec<(LocationId, f64)
     match on_land.is_empty() {
         true => all,
         false => on_land,
-    }
-}
-
-fn spell_risk(state: &GameState, to: LocationId) -> f64 {
-    let casters = state
-        .investigators_at(to)
-        .into_iter()
-        .filter(|index| state.investigators[*index].spell)
-        .count();
-    match casters >= BANISHERS_NEEDED {
-        true => SPELL_RISK,
-        false => 0.0,
     }
 }
 

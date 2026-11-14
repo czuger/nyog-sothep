@@ -10,6 +10,7 @@ use crate::domain::turn::outcome::Outcome;
 use crate::domain::turn::phase::Phase;
 use crate::domain::turn::professor::{Professor, RouteStage};
 use crate::domain::turn::prompt::Prompt;
+use crate::domain::turn::rule_sets::RuleSet;
 use crate::domain::turn::side::Side;
 
 /// The whole state of a game: everything the turn engine needs to resume.
@@ -17,6 +18,9 @@ use crate::domain::turn::side::Side;
 pub struct GameState {
     /// The side the human plays; the computer plays the other.
     pub human: Side,
+    /// The rules the game is played with.
+    #[serde(default)]
+    pub rules: RuleSet,
     /// The round being played (the professor's turn opens it).
     pub turn: u32,
     /// The engine's cursor.

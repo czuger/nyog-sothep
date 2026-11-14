@@ -81,6 +81,15 @@ pub enum ClueKind {
         /// Whether one of them is the appearance city.
         present: bool,
     },
+    /// Whether he stood within a few steps of a location.
+    Within {
+        /// The location the distance is counted from.
+        from: LocationId,
+        /// The most steps.
+        steps: u8,
+        /// Whether he stood that close.
+        inside: bool,
+    },
     /// Nyog'Sothep was summoned there.
     Summoned {
         /// The appearance city.
@@ -133,6 +142,14 @@ impl ClueKind {
             ClueKind::EncounterKind { city, kind } => match kind {
                 Some(kind) => format!("La rencontre de {city} : {}.", kind.name()),
                 None => format!("Il n'y a pas de rencontre à {city}."),
+            },
+            ClueKind::Within {
+                from,
+                steps,
+                inside,
+            } => match inside {
+                true => format!("Le professeur est à {steps} villes ou moins de {from}."),
+                false => format!("Le professeur est à plus de {steps} villes de {from}."),
             },
             ClueKind::NyogSothepAmong { cities, present } => match present {
                 true => format!("Nyog'Sothep doit apparaître à {}.", alternatives(cities)),

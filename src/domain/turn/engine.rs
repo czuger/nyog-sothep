@@ -12,6 +12,7 @@ use crate::domain::turn::prompt::{Answer, Prompt};
 use crate::domain::turn::recorded_dice::RecordedDice;
 use crate::domain::turn::replay_board::ReplayBoard;
 use crate::domain::turn::replay_step::ReplayStep;
+use crate::domain::turn::rule_sets::rules::Rules;
 
 /// The turn engine: plays the game forward until the human must decide or the game ends.
 ///
@@ -79,7 +80,7 @@ impl<'a> Engine<'a> {
                 Phase::ProfessorMovement => self.professor_movement(),
                 Phase::ProfessorSummon => self.professor_summon(),
                 Phase::ProfessorPlace => self.professor_place(),
-                Phase::ProfessorDraw { remaining } => self.professor_draw(remaining),
+                Phase::ProfessorDraw { remaining } => self.rules().professor_draw(self, remaining),
                 Phase::Moves => self.start_moves(),
                 Phase::Action { investigator, step } => self.action(investigator, step),
                 // Waiting phases without a prompt cannot happen; move on rather than loop.
@@ -173,19 +174,16 @@ impl<'a> Engine<'a> {
         self.log(outcome.text(self.state.human));
     }
 
-    /// Ends the game when too few investigators remain, or too few Fanatics to summon.
+    /// Ends the game once the rules decide it.
     pub(super) fn check_end(&mut self) {
-        let active = self.state.active_investigators().len();
-        let summoned = self.state.nyog.is_summoned();
-        if active == 0 {
-            self.finish(Outcome::InvestigatorsLost);
-        } else if summoned && active < crate::domain::BANISHERS_NEEDED {
-            self.finish(Outcome::NyogSothepReigns);
-        } else if !summoned
-            && self.state.counters.fanatics_in_play() < crate::domain::SUMMONING_FANATICS_CITIES
-        {
-            self.finish(Outcome::FanaticsDestroyed);
+        if let Some(outcome) = self.rules().outcome(self.state) {
+            self.finish(outcome);
         }
+    }
+
+    /// The rules of this game.
+    pub(super) fn rules(&self) -> &'static dyn Rules {
+        self.state.rules.rules()
     }
 
     /// Moves the action phase on to the given step of the same investigator.

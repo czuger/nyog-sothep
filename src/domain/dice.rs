@@ -5,10 +5,13 @@ use std::collections::VecDeque;
 use rand::rngs::StdRng;
 use rand::{RngExt, SeedableRng};
 
-/// A source of six-sided die rolls.
+/// A source of die rolls.
 pub trait Dice {
     /// Rolls one six-sided die (1 to 6).
     fn d6(&mut self) -> u8;
+
+    /// Rolls one twenty-sided die (1 to 20), for the fan-made event tables.
+    fn d20(&mut self) -> u8;
 
     /// Rolls `count` six-sided dice and returns their sum.
     fn roll(&mut self, count: u8) -> u8 {
@@ -47,9 +50,13 @@ impl Dice for RandomDice {
     fn d6(&mut self) -> u8 {
         self.rng.random_range(1..=6)
     }
+
+    fn d20(&mut self) -> u8 {
+        self.rng.random_range(1..=20)
+    }
 }
 
-/// Dice returning a fixed list of results, then counting 1 to 6 over and over.
+/// Dice returning a fixed list of results (for any die), then counting 1 to 6 over and over.
 ///
 /// The count goes on after the script so that loops rolling until some result (Table 1) always
 /// end.
@@ -81,6 +88,11 @@ impl Dice for ScriptedDice {
             self.next = roll % 6 + 1;
             roll
         })
+    }
+
+    /// The next scripted roll, then the same 1 to 6 count as [`Dice::d6`].
+    fn d20(&mut self) -> u8 {
+        self.d6()
     }
 }
 

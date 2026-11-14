@@ -5,7 +5,7 @@ use rand::{Rng, RngExt};
 use crate::db::{GameDocument, Store};
 use crate::domain::investigator_ai::InvestigatorsAi;
 use crate::domain::professor_ai::PetersenAi;
-use crate::domain::turn::{Engine, GameState, History, Side};
+use crate::domain::turn::{Engine, GameState, History, RuleSet, Side};
 use crate::domain::{InvestigatorId, RandomDice};
 use crate::error::AppError;
 use crate::service::token_tilts::refresh_tilts;
@@ -36,11 +36,16 @@ impl CreatedGame {
 ///
 /// # Arguments
 /// * `human` - the side the human plays; the computer plays the other.
+/// * `rules` - the rules the game is played with.
 ///
 /// # Errors
 /// A database error.
-pub async fn create_game(store: &Store, human: Side) -> Result<CreatedGame, AppError> {
-    let (token, state, history) = set_up(human);
+pub async fn create_game(
+    store: &Store,
+    human: Side,
+    rules: RuleSet,
+) -> Result<CreatedGame, AppError> {
+    let (token, state, history) = set_up(human, rules);
     let tilts = refresh_tilts(&[], &state);
     store
         .run(move |store| {
@@ -57,7 +62,7 @@ pub async fn create_game(store: &Store, human: Side) -> Result<CreatedGame, AppE
 }
 
 /// Draws the investigators and the private token, then starts the game.
-fn set_up(human: Side) -> (String, GameState, History) {
+fn set_up(human: Side, rules: RuleSet) -> (String, GameState, History) {
     let mut rng = rand::rng();
     let investigators = draw_investigators(&mut rng);
     let token: String = (0..TOKEN_LENGTH)
@@ -69,6 +74,7 @@ fn set_up(human: Side) -> (String, GameState, History) {
     let (state, history) = Engine::new_game(
         &investigators,
         human,
+        rules,
         &mut dice,
         &mut professor,
         &mut investigator_ai,

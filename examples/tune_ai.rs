@@ -13,7 +13,7 @@ use std::thread;
 
 use nyog_sothep::domain::investigator_ai::{InvestigatorWeights, InvestigatorsAi};
 use nyog_sothep::domain::professor_ai::{PetersenAi, ProfessorWeights};
-use nyog_sothep::domain::turn::{Engine, InvestigatorBrain, Side};
+use nyog_sothep::domain::turn::{Engine, InvestigatorBrain, RuleSet, Side};
 use nyog_sothep::domain::{InvestigatorId, RandomDice};
 
 const TURN_LIMIT: u32 = 120;
@@ -50,6 +50,7 @@ fn professor_score(seed: u64, weights: &Weights) -> f64 {
     let (mut state, _) = Engine::new_game(
         ids,
         Side::Investigators,
+        RuleSet::Original,
         &mut dice,
         &mut professor,
         &mut investigators,
