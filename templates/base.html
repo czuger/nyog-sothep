@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Nyog'Sothep{% endblock %}</title>
+  <link rel="stylesheet" href="{{ root }}static/style.css">
+</head>
+<body class="{% block body_class %}{% endblock %}">
+  <header class="site-header">
+    <a href="{{ root }}" class="site-title">Nyog'Sothep ou les brumes de l'Immonde</a>
+  </header>
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

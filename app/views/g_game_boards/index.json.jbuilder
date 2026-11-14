@@ -1,1 +1,0 @@
-json.array! @g_game_boards, partial: 'g_game_boards/g_game_board', as: :g_game_board

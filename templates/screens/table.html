@@ -1,0 +1,7 @@
+<h2>Événement pour {{ self.prompted_name() }}</h2>
+<p>Choisissez la table avant de lancer les dés : {{ self.event_dice() }}d6
+   {% if self.event_dice() == 1 %}(sans signe protecteur){% else if self.event_dice() == 2 %}(signe protecteur){% else %}(signe protecteur et médaillon){% endif %}.</p>
+<form id="screen-form" method="post" action="{{ self.game_path() }}/table" class="inline-form">
+  <button type="submit" name="table" value="2">Table 2</button>
+  <button type="submit" name="table" value="3">Table 3</button>
+</form>

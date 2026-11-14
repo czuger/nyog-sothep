@@ -1,0 +1,9 @@
+<h2>{{ self.prompted_name() }} face au professeur</h2>
+<p class="hint">Avec une arme : 1 rien, 2 à 5 il perd 2 points de vie, 6 il en perd 3, puis il se replie.
+   Avec le signe : vous perdez 2 SAN et le signe, il est repoussé. Avec le médaillon, vous passez pour
+   un Fanatique.</p>
+<form id="screen-form" method="post" action="{{ self.game_path() }}/fight" class="stack">
+  {% for choice in self.fight_choices() %}
+  <button type="submit" name="choice" value="{{ choice.value }}">{{ choice.label }}</button>
+  {% endfor %}
+</form>

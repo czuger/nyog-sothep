@@ -1,0 +1,42 @@
+[package]
+name = "nyog_sothep"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+askama = "0.16.1"
+axum = "0.8.9"
+polodb_core = "5.3.0"
+rand = "0.10.3"
+rust-embed = { version = "8.12", features = ["mime-guess"] }
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.145"
+thiserror = "2.0.21"
+tokio = { version = "1.53.2", features = ["macros", "rt-multi-thread", "net", "signal"] }
+tower-http = { version = "0.7.1", features = ["set-header"] }
+tracing = "0.1.44"
+tracing-subscriber = { version = "0.3.23", features = ["env-filter"] }
+
+[dev-dependencies]
+tempfile = "3.27.0"
+
+# How `cargo deploy` builds and starts this app. Server-specific values (host,
+# URL, paths, container) come from the DEPLOY_* environment variables only — see
+# the cargo-deploy README. Every key is optional; the commented values are the defaults.
+[package.metadata.deploy]
+# Sub-path nginx serves the app under.
+# url-prefix = "/nyog-sothep"
+# The socket path is passed to the app as <PREFIX>_SOCKET.
+# env-prefix = "NYOG_SOTHEP"
+# Arguments after the binary in ExecStart: the server takes none.
+args = []
+# Persistent directories: env var -> directory under $REMOTE_DIR/data/ (none by default).
+# The PoloDB database folder lives in data/db/.
+data-dirs = { NYOG_SOTHEP_DATA_DIR = "db" }
+# Extra service environment; NO_COLOR=1 is always set.
+# env = { RUST_LOG = "info" }
+# proxy-read-timeout = "60s"
+# Probed after each restart: must answer quickly, without network access.
+# health-path = "/"
+# build-target = "x86_64-unknown-linux-gnu"
+# keep-releases = 3

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Tour {{ view.turn }} — Nyog'Sothep{% endblock %}
+{% block body_class %}map-screen{% endblock %}
+{% block content %}
+{% include "board.html" %}
+
+<div class="floating-left">
+  <details class="panel floating floating-controls" open data-remember="controls">
+    <summary>{{ screen.title() }}{% if !view.is_finished() %} — tour {{ view.turn }}{% endif %}</summary>
+    {% include "partials/banner.html" %}
+    {% if let Some(error) = error %}<p class="error panel">{{ error }}</p>{% endif %}
+    {% include "partials/screen.html" %}
+  </details>
+  <nav class="panel floating-actions">
+    <a class="button" href="{{ root }}">Nouvelle partie</a>
+    <a class="button" href="{{ root }}rules" target="_blank">Règles</a>
+  </nav>
+</div>
+
+<div class="floating-column">
+  <details class="panel floating-side" open data-remember="notebook">
+    <summary>{% if self.is_professor() %}Carnet des investigateurs{% else %}Carnet{% endif %}</summary>
+    {% include "partials/notebook.html" %}
+  </details>
+  {% if self.is_professor() && !view.is_finished() %}
+  <details class="panel floating-side" open data-remember="route-sheet">
+    <summary>Feuille de route</summary>
+    <table class="score-table">
+      <thead><tr><th>Tour</th><th>Étape</th><th>Pion placé</th></tr></thead>
+      <tbody>
+        {% for line in self.route_lines() %}
+        <tr><td>{{ line.turn }}</td><td>{{ line.place }}</td><td>{{ line.counter }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </details>
+  {% endif %}
+  <details class="panel floating-side" open data-remember="log">
+    <summary>Journal</summary>
+    {% include "partials/log.html" %}
+  </details>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="{{ root }}static/board.js"></script>
+{% endblock %}

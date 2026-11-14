@@ -1,0 +1,16 @@
+<h2>Derrière votre écran</h2>
+<p>Choisissez sur la carte la ville où vous commencez, puis, en secret, celle où Nyog'Sothep apparaîtra. Pour
+   l'invoquer, il vous faudra des Fanatiques dans cinq villes et vous trouver à deux cases au plus de cette
+   ville.</p>
+<form id="screen-form" method="post" action="{{ self.game_path() }}/setup" class="stack">
+  <label class="move-choice">
+    <img src="{{ root }}img/token-nyog-sothep.png" alt="" class="resource-icon">
+    <span>Nyog'Sothep apparaîtra à</span>
+    <select name="nyog_city">
+      {% for choice in self.city_choices() %}
+      <option value="{{ choice.value }}">{{ choice.label }}</option>
+      {% endfor %}
+    </select>
+  </label>
+  <button type="submit">Commencer</button>
+</form>

@@ -1,0 +1,18 @@
+<h2>Déplacez vos investigateurs</h2>
+<p class="hint">Cliquez sur un investigateur cerclé, puis sur sa destination, ou choisissez dans la liste.
+   Un investigateur en mer ne tire pas d'événement et ne combat pas. Passer une frontière (pointillés)
+   demande un contrôle : 5 ou 6 au dé vous retient.</p>
+<form id="screen-form" method="post" action="{{ self.game_path() }}/moves" class="stack">
+  {% for investigator in self.movers() %}
+  <label class="move-choice">
+    <img src="{{ root }}img/token-investigator-{{ investigator.id.code() }}.png" alt="" class="resource-icon">
+    <span>{{ investigator.id.name() }}</span>
+    <select name="move_{{ investigator.index }}" data-move-select>
+      {% for choice in self.move_choices(investigator) %}
+      <option value="{{ choice.value }}">{{ choice.label }}</option>
+      {% endfor %}
+    </select>
+  </label>
+  {% endfor %}
+  <button type="submit">Valider les déplacements</button>
+</form>

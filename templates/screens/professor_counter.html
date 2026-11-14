@@ -1,0 +1,19 @@
+{% match screen %}
+{% when Screen::Placement %}
+<h2>Poser un pion ?</h2>
+<p class="hint">Le pion est posé face cachée là où vous êtes, et noté sur votre feuille de route.</p>
+{% when Screen::Table1 %}
+<h2>Le dé vous laisse choisir</h2>
+<p class="hint">Gardez l'un des deux pions.</p>
+{% else %}
+<h2>Votre main est pleine</h2>
+<p class="hint">Vous ne pouvez garder que cinq pions : défaussez-en un.</p>
+{% endmatch %}
+<form id="screen-form" method="post" action="{{ self.game_path() }}/{% if screen == Screen::Placement %}place{% else %}counter{% endif %}" class="stack">
+  {% for choice in self.counter_choices() %}
+  <button type="submit" name="counter" value="{{ choice.value }}" class="counter-choice">
+    <img src="{{ root }}{{ choice.image }}" alt="" class="resource-icon"> {{ choice.label }}
+  </button>
+  {% endfor %}
+  {% if screen == Screen::Placement %}<button type="submit" name="counter" value="none" class="secondary">Ne rien poser</button>{% endif %}
+</form>

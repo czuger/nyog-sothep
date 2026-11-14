@@ -1,0 +1,9 @@
+{% if view.notebook.is_empty() %}
+<p class="hint">{% if self.is_professor() %}Les investigateurs ne savent encore rien de vous.{% else %}Rien encore sur le professeur.{% endif %}</p>
+{% else %}
+<ol class="log notebook">
+  {% for line in view.notebook.iter().rev() %}
+  <li><span class="log-turn">T{{ line.turn }}</span> {{ line.text }}</li>
+  {% endfor %}
+</ol>
+{% endif %}

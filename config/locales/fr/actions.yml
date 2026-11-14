@@ -1,9 +1,0 @@
-fr:
-  actions:
-
-    go_psy:
-      log:
-        m: "%{investigator_name} va voir un psychanalyste. Il gagne %{san_gain} points de SAN mais passe son prochain tour."
-        f: "%{investigator_name} va voir un psychanalyste. Elle gagne %{san_gain} points de SAN mais passe son prochain tour."
-      log_summary:
-        "%{investigator_name} gagne %{san_gain} points de SAN."
